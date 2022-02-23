@@ -20,7 +20,6 @@ const mathDictionary = {
     "\\sum" : "\u2211",
     "\\prod" : "\u220F",
     "\\cdot" : "\u22C5",
-    
     "\\pm" : "\u00B1",
     "\\emptyset" : "\u2205",
     "\\sin" : "sin",
