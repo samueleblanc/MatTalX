@@ -6,7 +6,6 @@
     "background": {
       "service_worker": "convert.js"
     },
-    "permissions": ["activeTab", "scripting"],
     "action" : {
       "default_popup": "main.html",
       "default_icon": {
