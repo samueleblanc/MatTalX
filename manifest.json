@@ -1,7 +1,7 @@
 {
     "name": "MatTalX",
     "description": "Write mathematical expression in UTF-8 format",
-    "version": "0.0.5",
+    "version": "0.1.0",
     "manifest_version": 3,
     "background": {
       "service_worker": "convert.js"
