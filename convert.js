@@ -15,11 +15,19 @@ const mathDictionary = {
     "\\ointctrclockwise" : "\u2233",
     "\\sqint" : "\u2A16",
     "\\fint" : "\u2A0F",
+    "\\cupint" : "\u2A1A",
+    "\\capint" : "\u2A19",
+    "\\overbarint" : "\u2A1B",
+    "\\underbarint" : "\u2A1C",
+    "\\cupplus" : "\u228E",
+    "\\timesint" : "\u2A18",
     "\\ast" : "\u2217",
     "\\star" : "\u22C6",
     "\\partial" : "\u2202",
     "\\nabla" : "\u2207",
     "\\sqrt" : "\u221A",
+    "\\sqrt3" : "\u221B",
+    "\\sqrt4" : "\u221C",
     "\\circ" : "\u2218",
     "\\sum" : "\u2211",
     "\\prod" : "\u220F",
@@ -45,13 +53,21 @@ const mathDictionary = {
     "\\ln" : "ln",
     "\\lim" : "lim",
     "\\cup" : "\u222A",
+    "\\Cup" : "\u22D3",
     "\\sqcup" : "\u2294",
+    "\\sqCup" : "\u2A4F",
     "\\cap" : "\u2229",
+    "\\Cap" : "\u22D2",
     "\\sqcap" : "\u2293",
+    "\\sqCap" : "\u2A4E",
     "\\uplus" : "\u228E",
     "\\def" : "\u225D",
-    "\\vee" : "\u22C1",
-    "\\wedge" : "\u22C0",
+    "\\vee" : "\u2228",
+    "\\doublevee" : "\u2A56",
+    "\\wedge" : "\u2227",
+    "\\doublewedge" : "\u2A55",
+    "\\curlyvee" : "\u22CE",
+    "\\curlywedge" : "\u22CF",
     "\\diamond" : "\u22C4",
     "\\wr" : "\u2240",
     "\\oplus" : "\u2295",
@@ -59,7 +75,34 @@ const mathDictionary = {
     "\\otimes" : "\u2297",
     "\\oslash" : "\u2298",
     "\\odot" : "\u2299",
+    "\\boxplus" : "\u229E",
+    "\\boxminus" : "\u229F",
+    "\\boxtimes" : "\u22A0",
+    "\\boxdot" : "\u22A1",
     "\\amalg" : "\u2210",
+    "\\tprime" : "\u2034",
+
+    // Fractions
+    "\\frac1/2" : "\u00BD",
+    "\\frac1/7" : "⅐",
+    "\\frac1/9" : "⅑",
+    "\\frac1/10" : "⅒",
+    "\\frac1/3"  :"⅓",
+    "\\frac2/3" : "⅔",
+    "\\frac1/5" : "⅕",
+    "\\frac2/5" : "⅖",
+    "\\frac3/3" : "⅗",
+    "\\frac4/5" : "⅘",
+    "\\frac1/6" : "⅙",
+    "\\frac5/6" : "⅚",
+    "\\frac1/8" : "⅛",
+    "\\frac3/8" : "⅜",
+    "\\frac5/8" : "⅝",
+    "\\frac7/8" : "⅞",
+    "\\fraca/c" : "\u2100",
+    "\\fraca/s" : "\u2101",
+    "\\fracc/o" : "\u2105",
+    "\\fracc/u" : "\u2106",
 
     // Relations
     "\\forall" : "\u2200",
@@ -82,6 +125,10 @@ const mathDictionary = {
     "\\sqspset" : "\u2290",
     "\\sqsubseteq" : "\u2291",
     "\\sqsupseteq" : "\u2292",
+    "\\Subset" : "\u22D0",
+    "\\Supset" : "\u221D",
+    "\\subsetplus" : "\u2ABF",
+    "\\supsetplus" : "\u2AC0",
     "\\setminus" : "\u2216",
     "\\cong" : "\u2245",
     "\\ncong" : "\u2247",
@@ -127,6 +174,7 @@ const mathDictionary = {
     "\\precnsim" : "\u22E8",
     "\\succnsim" : "\u22E9",
     "\\perp" : "\u27C2",
+    "\\notperp" : "\u27C2\u0338",
     "\\parallel" : "\u2225",
     "\\nparallel" : "\u2226",
     "\\nmid" : "\u2224",
@@ -150,23 +198,82 @@ const mathDictionary = {
     "\\ntrianglerighteq" : "\u22ED",
     "\\triangleq" : "\u225C",
     "\\equest" : "\u225F",
+    "\\lquest" : "\u2A7B",
+    "\\rquest" : "\u2A7C",
+    "\\mquest" : "\u225E",
     "\\vdots" : "\u22EE",
     "\\cdots" : "\u22EF",
     "\\udots" : "\u22F0",
     "\\ddots" : "\u22F1",
     "\\ldots" : "\u2026",
+    "\\top" : "\u22A4",
+    "\\bot" : "\u22A5",
+    "\\between" : "\u226C",
 
     // Arrows
     "\\Rightarrow" : "\u21D2",
     "\\Leftarrow" : "\u21D0",
+    "\\nLeftarrow" : "\u21CD",
+    "\\nRightarrow" : "\u21CF",
+    "\\nLeftrightarrow" : "\u21CE",
+    "\\Uparrow" : "\u21D1",
+    "\\Downarrow" : "\u21D3",
+    "\\Updownarrow" : "\u21D5",
     "\\rightarrow" : "\u2192",
     "\\leftarrow" : "\u2190",
+    "\\leftrightarrow" : "\u2194",
+    "\\nleftrightarrow" : "\u21AE",
+    "\\uparrow" : "\u2191",
+    "\\downarrow" : "\u2193",
+    "\\updownarrow" : "\u2195",
+    "\\nleftarrow" : "\u219A",
+    "\\nrightarrow" : "\u219B",
     "\\Longleftarrow" : "\u27F8",
     "\\implies" : "\u27F9",
     "\\Leftrightarrow" : "\u21D4",
     "\\iff" : "\u27FA",
     "\\mapsto" : "\u27FC",
     "\\rightleftharpoons" : "\u21CC",
+    "\\leftrightharpoons" : "\u21CB",
+    "\\rightharpoonup" : "\u21C0",
+    "\\rightharpoondown" : "\u21C1",
+    "\\leftharpoonup" : "\u21BC",
+    "\\leftharpoondown" : "\u21BD",
+    "\\upharpoonleft" : "\u21BF",
+    "\\upharpoonright" : "\u21BE",
+    "\\downharpoonleft" : "\u21C3",
+    "\\downharpoonright" : "\u21C2", 
+    "\\hookleftarrow" : "\u21A9",
+    "\\hookrightarrow" : "\u21AA",
+    "\\nearrow" : "\u2197",
+    "\\searrow" : "\u2198",
+    "\\swarrow" : "\u2199",
+    "\\nwarrow" : "\u2196",
+    "\\twoheadleftarrow" : "\u219E",
+    "\\twoheadrightarrow" : "\u21A0",
+    "\\twoheaduparrow" : "\u219F",
+    "\\twoheaddownarrow" : "\u21A1",
+    "\\Lsh" : "\u21B0",
+    "\\Rsh" : "\u21B1",
+    "\\leftleftarrows" : "\u21C7",
+    "\\rightrightarrows" : "\u21C9",
+    "\\upuparrows" : "\u21C8",
+    "\\downdownarrows" : "\u21CA",
+    "\\leftrightarrows" : "\u21C6",
+    "\\rightleftarrows" : "\u21C4",
+    "\\Lleftarrow" : "\u21DA",
+    "\\Rrightarrow" : "\u21DB",
+    "\\leftarrowtail" : "\u21A2",
+    "\\rightarrowtail" : "\u21A3",
+    "\\leftsquigarrow" : "\u21DC",
+    "\\rightsquigarrow" : "\u21DD",
+    "\\leftrightsquigarrow" : "\u21AD",
+    "\\looparrowleft" : "\u21AB",
+    "\\looparrowright" : "\u21AC",
+    "\\circlearrowleft" : "\u21BA",
+    "\\circlearrowright" : "\u21BB",
+    "\\curvearrowleft" : "\u21B6",
+    "\\curvearrowright" : "\u21B7",
 
     // Greek alphabet
     "\\alpha" : "\u{1D6FC}",
@@ -212,23 +319,145 @@ const mathDictionary = {
     "\\omega" : "\u{1D714}",
 
     // Mathbb
+    "\\mathbbA" : "\u{1D538}",
+    "\\mathbbB" : "\u{1D539}",
     "\\mathbbC" : "\u2102",
-    "\\mathbbR" : "\u211D",
+    "\\mathbbD" : "\u{1D53B}",
+    "\\mathbbE" : "\u{1D53C}",
+    "\\mathbbF" : "\u{1D53D}",
+    "\\mathbbG" : "\u{1D53E}",
     "\\mathbbH" : "\u210D",
-    "\\mathbbQ" : "\u211A",
-    "\\mathbbZ" : "\u2124",
+    "\\mathbbI" : "\u{1D540}",
+    "\\mathbbJ" : "\u{1D541}",
+    "\\mathbbK" : "\u{1D542}",
+    "\\mathbbL" : "\u{1D543}",
+    "\\mathbbM" : "\u{1D544}",
     "\\mathbbN" : "\u2115",
+    "\\mathbbO" : "\u{1D546}",
     "\\mathbbP" : "\u2119",
-    "\\mathbbD" : "\u2145",
-    "\\mathbbd" : "\u2146",
-    "\\mathbbe" : "\u2147",
-    "\\mathbbi" : "\u2148",
-    "\\mathbbj" : "\u2149",
+    "\\mathbbQ" : "\u211A",
+    "\\mathbbR" : "\u211D",
+    "\\mathbbS" : "\u{1D54A}",
+    "\\mathbbT" : "\u{1D54B}",
+    "\\mathbbU" : "\u{1D54C}",
+    "\\mathbbV" : "\u{1D54D}",
+    "\\mathbbW" : "\u{1D54E}",
+    "\\mathbbX" : "\u{1D54F}",
+    "\\mathbbY" : "\u{1D550}",
+    "\\mathbbZ" : "\u2124",
+    "\\mathbba" : "\u{1D552}",
+    "\\mathbbb" : "\u{1D553}",
+    "\\mathbbc" : "\u{1D554}",
+    "\\mathbbd" : "\u{1D555}",
+    "\\mathbbe" : "\u{1D556}",
+    "\\mathbbf" : "\u{1D557}",
+    "\\mathbbg" : "\u{1D558}",
+    "\\mathbbh" : "\u{1D559}",
+    "\\mathbbi" : "\u{1D55A}",
+    "\\mathbbj" : "\u{1D55B}",
+    "\\mathbbk" : "\u{1D55C}",
+    "\\mathbbl" : "\u{1D55D}",
+    "\\mathbbm" : "\u{1D55E}",
+    "\\mathbbn" : "\u{1D55F}",
+    "\\mathbbo" : "\u{1D560}",
+    "\\mathbbp" : "\u{1D561}",
+    "\\mathbbq" : "\u{1D562}",
+    "\\mathbbr" : "\u{1D563}",
+    "\\mathbbs" : "\u{1D564}",
+    "\\mathbbt" : "\u{1D565}",
+    "\\mathbbu" : "\u{1D566}",
+    "\\mathbbv" : "\u{1D567}",
+    "\\mathbbw" : "\u{1D568}",
+    "\\mathbbx" : "\u{1D569}",
+    "\\mathbby" : "\u{1D56A}",
+    "\\mathbbz" : "\u{1D56B}",
+    
     "\\mathbbpi" : "\u213C",
     "\\mathbbPi" : "\u213F",
     "\\mathbbgamma" : "\u213D",
     "\\mathbbGamma" : "\u213E",
     "\\mathbbSigma" : "\u2140",
+
+    "\\mathbb0" : "\u{1D7D8}",
+    "\\mathbb1" : "\u{1D7D9}",
+    "\\mathbb2" : "\u{1D7DA}",
+    "\\mathbb3" : "\u{1D7DB}",
+    "\\mathbb4" : "\u{1D7DC}",
+    "\\mathbb5" : "\u{1D7DD}",
+    "\\mathbb6" : "\u{1D7DE}",
+    "\\mathbb7" : "\u{1D7DF}",
+    "\\mathbb8" : "\u{1D7E0}",
+    "\\mathbb9" : "\u{1D7E1}",
+
+    "\\mathbb{" : "\u2983",
+    "\\mathbb}" : "\u2984",
+    "\\llbracket" : "\u27E6",
+    "\\rrbracket" : "\u27E7",
+
+    // Mathbf
+    "\\mathbfA" : "\u{1D468}",
+    "\\mathbfa" : "\u{1D482}",
+    "\\mathbfB" : "\u{1D469}",
+    "\\mathbfb" : "\u{1D483}",
+    "\\mathbfC" : "\u{1D46A}",
+    "\\mathbfc" : "\u{1D484}",
+    "\\mathbfD" : "\u{1D46B}",
+    "\\mathbfd" : "\u{1D485}",
+    "\\mathbfE" : "\u{1D46C}",
+    "\\mathbfe" : "\u{1D486}",
+    "\\mathbfF" : "\u{1D46D}",
+    "\\mathbff" : "\u{1D487}",
+    "\\mathbfG" : "\u{1D46E}",
+    "\\mathbfg" : "\u{1D488}",
+    "\\mathbfH" : "\u{1D46F}",
+    "\\mathbfh" : "\u{1D489}",
+    "\\mathbfI" : "\u{1D470}",
+    "\\mathbfi" : "\u{1D48A}",
+    "\\mathbfJ" : "\u{1D471}",
+    "\\mathbfj" : "\u{1D48B}",
+    "\\mathbfK" : "\u{1D472}",
+    "\\mathbfk" : "\u{1D48C}",
+    "\\mathbfL" : "\u{1D473}",
+    "\\mathbfl" : "\u{1D48D}",
+    "\\mathbfM" : "\u{1D474}",
+    "\\mathbfm" : "\u{1D48E}",
+    "\\mathbfN" : "\u{1D475}",
+    "\\mathbfn" : "\u{1D48F}",
+    "\\mathbfO" : "\u{1D476}",
+    "\\mathbfo" : "\u{1D490}",
+    "\\mathbfP" : "\u{1D477}",
+    "\\mathbfp" : "\u{1D491}",
+    "\\mathbfQ" : "\u{1D478}",
+    "\\mathbfq" : "\u{1D492}",
+    "\\mathbfR" : "\u{1D479}",
+    "\\mathbfr" : "\u{1D493}",
+    "\\mathbfS" : "\u{1D47A}",
+    "\\mathbfs" : "\u{1D494}",
+    "\\mathbfT" : "\u{1D47B}",
+    "\\mathbft" : "\u{1D495}",
+    "\\mathbfU" : "\u{1D47C}",
+    "\\mathbfu" : "\u{1D496}",
+    "\\mathbfV" : "\u{1D47D}",
+    "\\mathbfv" : "\u{1D497}",
+    "\\mathbfW" : "\u{1D47E}",
+    "\\mathbfw" : "\u{1D498}",
+    "\\mathbfX" : "\u{1D47F}",
+    "\\mathbfx" : "\u{1D499}",
+    "\\mathbfY" : "\u{1D480}",
+    "\\mathbfy" : "\u{1D49A}",
+    "\\mathbfZ" : "\u{1D481}",
+    "\\mathbfz" : "\u{1D49B}",
+
+    "\\mathbf0" : "\u{1D7EC}",
+    "\\mathbf1" : "\u{1D7ED}",
+    "\\mathbf2" : "\u{1D7EE}",
+    "\\mathbf3" : "\u{1D7EF}",
+    "\\mathbf4" : "\u{1D7F0}",
+    "\\mathbf5" : "\u{1D7F1}",
+    "\\mathbf6" : "\u{1D7F2}",
+    "\\mathbf7" : "\u{1D7F3}",
+    "\\mathbf8" : "\u{1D7F4}",
+    "\\mathbf9" : "\u{1D7F5}",
 
     // Chess
     "\\wking" : "\u2654",
@@ -326,13 +555,152 @@ const mathDictionary = {
     "\\hatZ" : "\u{1D44D}\u0302",
     "\\hatz" : "\u{1D467}\u0302",
 
-    "\\veca" : "a\u20D7",
+    // Hat greek
+    "\\hatalpha" : "\u{1D6FC}\u0302",
+    "\\hatgamma" : "\u{1D6FE}\u0302",
+    "\\hateta" : "\u{1D702}\u0302",
+    "\\hatiota" : "\u{1D704}\u0302",
+    "\\hatkappa" : "\u{1D705}\u0302",
+    "\\hatvarkappa" : "\u{1D718}\u0302",
+    "\\hatmu" : "\u{1D707}\u0302",
+    "\\hatnu" : "\u{1D708}\u0302",
+    "\\hatpi" : "\u{1D70B}\u0302",
+    "\\hatvarpi" : "\u{1D71B}\u0302",
+    "\\hatrho" : "\u{1D70C}\u0302",
+    "\\hatvarrho" : "\u03F1\u0302",
+    "\\hatsigma" : "\u03C3\u0302",
+    "\\hatvarsigma" : "\u03C2\u0302",
+    "\\hattau" : "\u{1D70F}\u0302",
+    "\\hatupsilon" : "\u{1D710}\u0302",
+    "\\hatvarphi" : "\u{1D711}\u0302",
+    "\\hatchi" : "\u{1D712}\u0302",
+    "\\hatomega" : "\u{1D714}\u0302",
+    
+    // Overline
+    "\\overlineA" : "\u{1D434}\u0305",
+    "\\overlinea" : "\u{1D44E}\u0305",
+    "\\overlineB" : "\u{1D435}\u0305",
+    "\\overlineb" : "\u{1D44F}\u0305",
+    "\\overlineC" : "\u{1D436}\u0305",
+    "\\overlinec" : "\u{1D450}\u0305",
+    "\\overlineD" : "\u{1D437}\u0305",
+    "\\overlined" : "\u{1D451}\u0305",
+    "\\overlineE" : "\u{1D438}\u0305",
+    "\\overlinee" : "\u{1D452}\u0305",
+    "\\overlineF" : "\u{1D439}\u0305",
+    "\\overlinef" : "\u{1D453}\u0305",
+    "\\overlineG" : "\u{1D43A}\u0305",
+    "\\overlineg" : "\u{1D454}\u0305",
+    "\\overlineH" : "\u{1D43B}\u0305",
+    "\\overlineh" : "\u210E\u0305",
+    "\\overlineI" : "\u{1D43C}\u0305",
+    "\\overlinei" : "\u{1D456}\u0305",
+    "\\overlineJ" : "\u{1D43D}\u0305",
+    "\\overlinej" : "\u{1D457}\u0305",
+    "\\overlineK" : "\u{1D43E}\u0305",
+    "\\overlinek" : "\u{1D458}\u0305",
+    "\\overlineL" : "\u{1D43F}\u0305",
+    "\\overlinel" : "\u{1D459}\u0305",
+    "\\overlineM" : "\u{1D440}\u0305",
+    "\\overlinem" : "\u{1D45A}\u0305",
+    "\\overlineN" : "\u{1D441}\u0305",
+    "\\overlinen" : "\u{1D45B}\u0305",
+    "\\overlineO" : "\u{1D442}\u0305",
+    "\\overlineo" : "\u{1D45C}\u0305",
+    "\\overlineP" : "\u{1D443}\u0305",
+    "\\overlinep" : "\u{1D45D}\u0305",
+    "\\overlineQ" : "\u{1D444}\u0305",
+    "\\overlineq" : "\u{1D45E}\u0305",
+    "\\overlineR" : "\u{1D445}\u0305",
+    "\\overliner" : "\u{1D45F}\u0305",
+    "\\overlineS" : "\u{1D446}\u0305",
+    "\\overlines" : "\u{1D460}\u0305",
+    "\\overlineT" : "\u{1D447}\u0305",
+    "\\overlinet" : "\u{1D461}\u0305",
+    "\\overlineU" : "\u{1D448}\u0305",
+    "\\overlineu" : "\u{1D462}\u0305",
+    "\\overlineV" : "\u{1D449}\u0305",
+    "\\overlinev" : "\u{1D463}\u0305",
+    "\\overlineW" : "\u{1D44A}\u0305",
+    "\\overlinew" : "\u{1D464}\u0305",
+    "\\overlineX" : "\u{1D44B}\u0305",
+    "\\overlinex" : "\u{1D465}\u0305",
+    "\\overlineY" : "\u{1D44C}\u0305",
+    "\\overliney" : "\u{1D466}\u0305",
+    "\\overlineZ" : "\u{1D44D}\u0305",
+    "\\overlinez" : "\u{1D467}\u0305",
+
+    // Overline greek
+    "\\overlinealpha" : "\u{1D6FC}\u0305",
+    "\\overlinebeta" : "\u{1D6FD}\u0305",
+    "\\overlineGamma" : "\u{1D6E4}\u0305",
+    "\\overlinegamma" : "\u{1D6FE}\u0305",
+    "\\overlineDelta" : "\u0394\u0305",
+    "\\overlinedelta" : "\u03B4\u0305",
+    "\\overlineepsilon" : "\u03F5\u0305",
+    "\\overlinevarepsilon" : "\u03B5\u0305",
+    "\\overlinezeta" : "\u03B6\u0305",
+    "\\overlineeta" : "\u{1D702}\u0305",
+    "\\overlineTheta" : "\u0398\u0305",
+    "\\overlinetheta" : "\u{1D703}\u0305",
+    "\\overlinevartheta" : "\u03D1\u0305",
+    "\\overlineiota" : "\u{1D704}\u0305",
+    "\\overlinekappa" : "\u{1D705}\u0305",
+    "\\overlinevarkappa" : "\u{1D718}\u0305",
+    "\\overlineLambda" : "\u039B\u0305",
+    "\\overlinelambda" : "\u03BB\u0305",
+    "\\overlinemu" : "\u{1D707}\u0305",
+    "\\overlinenu" : "\u{1D708}\u0305",
+    "\\overlineXi" : "\u039E\u0305",
+    "\\overlinexi" : "\u{1D709}\u0305",
+    "\\overlinePi" : "\u03A0\u0305",
+    "\\overlinepi" : "\u{1D70B}\u0305",
+    "\\overlinevarpi" : "\u{1D71B}\u0305",
+    "\\overlinerho" : "\u{1D70C}\u0305",
+    "\\overlinevarrho" : "\u03F1\u0305",
+    "\\overlineSigma" : "\u03A3\u0305",
+    "\\overlinesigma" : "\u03C3\u0305",
+    "\\overlinevarsigma" : "\u03C2\u0305",
+    "\\overlinetau" : "\u{1D70F}\u0305",
+    "\\overlineUpsilon" : "\u{1D6F6}\u0305",
+    "\\overlineupsilon" : "\u{1D710}\u0305",
+    "\\overlinePhi" : "\u{1D6BD}\u0305",
+    "\\overlinephi" : "\u{1D719}\u0305",
+    "\\overlinevarphi" : "\u{1D711}\u0305",
+    "\\overlinechi" : "\u{1D712}\u0305",
+    "\\overlinePsi" : "\u{1D6F9}\u0305",
+    "\\overlinepsi" : "\u{1D713}\u0305",
+    "\\overlineOmega" : "\u2126\u0305",
+    "\\overlineomega" : "\u{1D714}\u0305",
+
+    // Greek subscript and superscript
+    "\\^beta" : "\u1D5D",
+    "\\^Gamma" : "ᣘ",
+    "\\^gamma" : "\u1D5E",
+    "\\^Delta" : "ᐞ",
+    "\\^delta" : "\u1D5F",
+    "\\^epsilon" : "ᵋ",
+    "\\^Lambda" : "ᣔ",
+    "\\^theta" : "\u1DBF",
+    "\\^iota" : "ᶥ",
+    "\\^nu" : "ᶹ",
+    "\\^phi" : "\u1D60",
+    "\\^chi" : "\u1D61",
+
+    "\\_beta" : "\u1D66",
+    "\\_gamma" : "\u1D67",
+    "\\_rho" : "\u1D68",
+    "\\_phi" : "\u1D69",
+    "\\_chi" : "\u1D6A",
 
     // Other symbols
     "\\infty" : "\u221E",
     "\\angle" : "\u2220",
     "\\measuredangle" : "\u2221",
+    "\\sphericalangle" : "\u2222",
+    "\\rightangle" : "\u299C",
     "\\hbar" : "\u210F",
+    "\\ell" : "\u2113",
     "\\dagger" : "\u2020",
     "\\ddagger" : "\u2021",
     "\\qc" : "\u269C",
@@ -344,12 +712,15 @@ const mathDictionary = {
     "\\bullet" : "\u25CF",
     "\\langle" : "\u27E8",
     "\\rangle" : "\u27E9",
+    "\\llangle" : "\u27EA",
+    "\\rrangle" : "\u27EB",
     "\\lceil" : "\u2308",
     "\\rceil" : "\u2309",
     "\\lfloor" : "\u230A",
     "\\rfloor" : "\u230B",
     "\\frown" : "\u2322",
     "\\smile" : "\u2323",
+    "\\" : "\\",
     "\\:" : "\\:",
     "\\\\" : "\u000A",
     "\\tab" : "\u0009"
@@ -361,7 +732,6 @@ const lettersSymbols = {
     "=" : "\u003D",
     "'" : "\u2032",
     '"' : "\u2033",
-    "'''" : "\u2034", // Triple prime can't work since it's more than one letter
     "/" : "\u2215",
     "," : ",",
     "." : ".",
@@ -445,7 +815,7 @@ const lettersSymbols = {
 };
 
 const subscript = {
-    "_" : "_",
+    "_" : "",
     "0" : "\u2080",
     "1" : "\u2081",
     "2" : "\u2082",
@@ -465,19 +835,23 @@ const subscript = {
     "e" : "\u2091",
     "h" : "\u2095",
     "i" : "\u1D62",
+    "j" : "ⱼ",
     "k" : "\u2096",
     "l" : "\u2097",
     "m" : "\u2098",
     "n" : "\u2099",
     "o" : "\u2092",
     "p" : "\u209A",
+    "r" : "ᵣ",
     "s" : "\u209B",
     "t" : "\u209C",
+    "u" : "ᵤ",
+    "v" : "ᵥ",
     "x" : "\u2093",
 };
 
 const superscript = {
-    "^" : "^",
+    "^" : "",
     "0" : "\u2070",
     "1" : "\u00B9",
     "2" : "\u00B2",
@@ -492,7 +866,53 @@ const superscript = {
     "-" : "\u207B",
     "=" : "\u207C",
     "(" : "\u207D",
-    ")" : "\u207E"
+    ")" : "\u207E",
+    "\\" : "ᐠ",
+    "/" : "ᐟ",
+    "A" : "ᴬ",
+    "a" : "ᵃ",
+    "B" : "ᴮ",
+    "b" : "ᵇ",
+    "c" : "ᶜ",
+    "D" : "ᴰ",
+    "d" : "ᵈ",
+    "E" : "ᴱ",
+    "e" : "ᵉ",
+    "f" : "ᶠ",
+    "G" : "ᴳ",
+    "g" : "ᵍ",
+    "H" : "ᴴ",
+    "h" : "ʰ",
+    "I" : "ᴵ",
+    "i" : "ⁱ",
+    "J" : "ᴶ",
+    "j" : "ʲ",
+    "K" : "ᴷ",
+    "k" : "ᵏ",
+    "L" : "ᴸ",
+    "l" : "ˡ",
+    "M" : "ᴹ",
+    "m" : "ᵐ",
+    "N" : "ᴺ",
+    "n" : "ⁿ",
+    "O" : "ᴼ",
+    "o" : "ᵒ",
+    "P" : "ᴾ",
+    "p" : "ᵖ",
+    "R" : "ᴿ",
+    "r" : "ʳ",
+    "s" : "ˢ",
+    "T" : "ᵀ",
+    "t" : "ᵗ",
+    "U" : "ᵁ",
+    "u" : "ᵘ",
+    "V" : "ⱽ",
+    "v" : "ᵛ",
+    "W" : "ᵂ",
+    "w" : "ʷ",
+    "x" : "ˣ",
+    "y" : "ʸ",
+    "z" : "ᶻ"
 };
 
 // Submit button
@@ -507,27 +927,6 @@ copyButton.onclick = function () {copy()};
 const resetButton = document.getElementById("reset");
 resetButton.onclick = function () {clear()};
 
-// Remove space
-function removeSpace(text) {
-    let checkedButton = document.getElementById("remove");
-    if (checkedButton.checked == true) {
-        text = text.replace(/ /g, "")
-    };
-    return text;
-};
-
-// Add spaces
-function addSpace(text) {
-    text = text.replace(/\\:/g, " ");
-    return text;
-};
-
-// Add spaces around equal
-function equalSignSpace(text) {
-    text = text.replace(/\=/g, " \= ");
-    return text;
-};
-
 // Copy to clipboard
 function copy() {
     const copyText = document.getElementById("text_out");
@@ -539,6 +938,23 @@ function copy() {
 // Clears "Text copied!"
 function clear() {
     document.getElementById("popup").innerHTML = "";
+};
+
+// Remove space
+function removeSpace(text) {
+    let checkedButton = document.getElementById("remove");
+    if (checkedButton.checked == true) {
+        text = text.replace(/ /g, "");
+        text = text.replace(/\=/g, " \= ");
+        text = text.replace(/\u27F9/g, " \u27F9 ");
+    };
+    return text;
+};
+
+// Add spaces
+function spaceCommand(text) {
+    text = text.replace(/\\:/g, " ");
+    return text;
 };
 
 // Takes word and replace letter by letter in the dictionary
@@ -560,10 +976,8 @@ function convert(words, newText) {
             newText = newText.replace(words[i], mathDictionary[words[i]]);
         } else if (firstLetter == "_") {
             newText = newText.replace(words[i], replaceLetters(words[i], subscript));
-            newText = newText.replace(" _", "");
         } else if (firstLetter == "^") {
             newText = newText.replace(words[i], replaceLetters(words[i], superscript));
-            newText = newText.replace(" ^", "");
         } else {
             newText = newText.replace(words[i], replaceLetters(words[i], lettersSymbols));
         };
@@ -574,26 +988,16 @@ function convert(words, newText) {
 // Takes the original text and spits out the new one
 function main() {
     const fullText = document.text_input.text_in.value;
+    const words = fullText.split(" ");
     let newText = fullText;
-    let words = fullText.split(" ");
     newText = convert(words, newText);
     newText = removeSpace(newText);
-    newText = equalSignSpace(newText);
-    newText = addSpace(newText);
+    newText = spaceCommand(newText);
     document.text_input.text_out.value = newText;
     document.getElementById("text_out").disabled = false; 
 };
 
 
-
-// The following functions are not currently used, but might be in the future, 
-// if a "mathmode", between "$" is implemented.
-
-// **NOT USED** Deletes "$" in text
-function deletesDollar(text) {
-    text = text.replace(/\$/g, "");
-    return text.replace(/  /g, " ");
-};
 
 // **NOT USED** Alerts if mistake
 function mistakes(command, word, text) {
@@ -603,16 +1007,4 @@ function mistakes(command, word, text) {
         return text.replace(word, alertWord);
     };
     return text;
-};
-
-// **NOT USED** Finds where mathmode is
-function mathMode(text) {
-    let i;
-    let indexes = [];
-    for (i in text) {
-        if (text[i] == "$") {
-            indexes.push(i);
-        };
-    };
-    return indexes;
 };

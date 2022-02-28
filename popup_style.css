@@ -104,6 +104,7 @@ header {
 }
 .dropdownInfo a {
     display: block;
+    padding: 5px;
     color: black;
     font-size: 15x;
     font-family: 'Times New Roman';
