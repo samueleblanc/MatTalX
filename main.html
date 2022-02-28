@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!--Code: https://github.com/samueleblanc/MatTalX-->
     <meta charset="UTF-8">
     <link rel="stylesheet" href="popup_style.css">
-    <script src="converter.js" defer></script>
+    <script src="convert.js" defer></script>
     <link rel="icon" href="Images/mattalk favicon.png">
 </head>
 <body>
     <header>
-        <a target="_blank" href="https://samueleblanc.com"><img id="info" alt="Info" src="Images/question mark.png"></a><img id="title" alt="MatTalX" src="Images/mattalk logo.png">
+        <div class="infoDiv"><button class="infoButton"><img class="info" alt="Info" src="Images/question mark.png"></button><br>
+        <div class="dropdownInfo">
+            <a target="_blank" href="https://samueleblanc.com/">Documentation</a><br>
+            <a target="_blank" href="https://github.com/samueleblanc/MatTalX">Code (GitHub)</a><br>
+            <form><label for="remove">Remove spaces</label><input type="checkbox" value="true" name="remove" id="remove" checked><input type="hidden" name="remove" value="false"></form>
+        </div></div>
+        <img id="title" alt="MatTalX" src="Images/mattalk logo.png">
     </header>
     <div id="body">
     <form name="text_input">

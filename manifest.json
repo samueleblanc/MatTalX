@@ -4,9 +4,9 @@
     "version": "0.0.5",
     "manifest_version": 3,
     "background": {
-      "service_worker": "converter.js"
+      "service_worker": "convert.js"
     },
-    "permissions": ["storage", "activeTab", "scripting"],
+    "permissions": ["activeTab", "scripting"],
     "action" : {
       "default_popup": "main.html",
       "default_icon": {
