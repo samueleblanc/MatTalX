@@ -2,7 +2,10 @@
 const mathDictionary = {
     // Math operators
     "\\times" : "\u00D7",
+    "\\rtimes" : "\u22CA",
+    "\\ltimes" : "\u22C9",
     "\\div" : "\u00F7",
+    "\\longdiv" : "\u27CC",
     "\\int" : "\u222B",
     "\\iint" : "\u222C",
     "\\iiint" : "\u222D",
@@ -52,6 +55,7 @@ const mathDictionary = {
     "\\log" : "log",
     "\\ln" : "ln",
     "\\lim" : "lim",
+    "\\mod" : "mod",
     "\\cup" : "\u222A",
     "\\Cup" : "\u22D3",
     "\\sqcup" : "\u2294",
@@ -81,6 +85,8 @@ const mathDictionary = {
     "\\boxdot" : "\u22A1",
     "\\amalg" : "\u2210",
     "\\tprime" : "\u2034",
+    "\\lthree" : "\u22CB",
+    "\\rthree" : "\u22CC",
 
     // Fractions
     "\\frac1/2" : "\u00BD",
@@ -133,8 +139,10 @@ const mathDictionary = {
     "\\cong" : "\u2245",
     "\\ncong" : "\u2247",
     "\\propto" : "\u221D",
-    "\\sim" : "\u223C",
     "\\equiv" : "\u2261",
+    "\\superequiv" : "\u2263",
+    "\\tbond" : "\u2261",
+    "\\qbond" : "\u2263",
     "\\doteq" : "\u2250",
     "\\neq" : "\u2260",
     "\\approx" : "\u2248",
@@ -174,7 +182,6 @@ const mathDictionary = {
     "\\precnsim" : "\u22E8",
     "\\succnsim" : "\u22E9",
     "\\perp" : "\u27C2",
-    "\\notperp" : "\u27C2\u0338",
     "\\parallel" : "\u2225",
     "\\nparallel" : "\u2226",
     "\\nmid" : "\u2224",
@@ -215,16 +222,24 @@ const mathDictionary = {
 
     // Arrows
     "\\Rightarrow" : "\u21D2",
+    "\\=>" : "\u21D2",
     "\\Leftarrow" : "\u21D0",
+    "\\<=" : "\u21D0",
     "\\nLeftarrow" : "\u21CD",
     "\\nRightarrow" : "\u21CF",
     "\\nLeftrightarrow" : "\u21CE",
+    "\\<=>" : "\u21D4",
     "\\Uparrow" : "\u21D1",
     "\\Downarrow" : "\u21D3",
     "\\Updownarrow" : "\u21D5",
     "\\rightarrow" : "\u2192",
+    "\\->" : "\u2192",
+    "\\longrightarrow" : "\u27F6",
+    "\\-->" : "\u27F6",
     "\\leftarrow" : "\u2190",
+    "\\<-" : "\u2190",
     "\\leftrightarrow" : "\u2194",
+    "\\<->" : "\u2194",
     "\\nleftrightarrow" : "\u21AE",
     "\\uparrow" : "\u2191",
     "\\downarrow" : "\u2193",
@@ -392,13 +407,6 @@ const mathDictionary = {
     "\\mathbb8" : "\u{1D7E0}",
     "\\mathbb9" : "\u{1D7E1}",
 
-    "\\lBrace" : "\u2983",
-    "\\rBrace" : "\u2984",
-    "\\llbracket" : "\u27E6",
-    "\\rrbracket" : "\u27E7",
-    "\\llparenthesis" : "\u2985",
-    "\\rrparenthesis" : "\u2986",
-
     // Mathbf
     "\\mathbfA" : "\u{1D468}",
     "\\mathbfa" : "\u{1D482}",
@@ -506,6 +514,14 @@ const mathDictionary = {
     "\\mathbfOmega" : "\u{1D6C0}",
     "\\mathbfomega" : "\u{1D74E}",
 
+    // For Lewis Notation
+    "\\above." : "\u0307",
+    "\\below." : "\u0323",
+    "\\above:" : "\u0308",
+    "\\below:" : "\u0324",
+    "\\mid." : "\u2E31",
+    "\\mid:" : "\u003A",
+
     // Chess
     "\\wking" : "\u2654",
     "\\wqueen" : "\u2655",
@@ -548,177 +564,90 @@ const mathDictionary = {
     "\\won" : "\u20A9",
     "\\baht" : "\u0E3F",
 
-    // Hat
-    "\\hatA" : "\u{1D434}\u0302",
-    "\\hata" : "\u{1D44E}\u0302",
-    "\\hatB" : "\u{1D435}\u0302",
-    "\\hatb" : "\u{1D44F}\u0302",
-    "\\hatC" : "\u{1D436}\u0302",
-    "\\hatc" : "\u{1D450}\u0302",
-    "\\hatD" : "\u{1D437}\u0302",
-    "\\hatd" : "\u{1D451}\u0302",
-    "\\hatE" : "\u{1D438}\u0302",
-    "\\hate" : "\u{1D452}\u0302",
-    "\\hatF" : "\u{1D439}\u0302",
-    "\\hatf" : "\u{1D453}\u0302",
-    "\\hatG" : "\u{1D43A}\u0302",
-    "\\hatg" : "\u{1D454}\u0302",
-    "\\hatH" : "\u{1D43B}\u0302",
-    "\\hath" : "\u210E\u0302",
-    "\\hatI" : "\u{1D43C}\u0302",
-    "\\hati" : "\u{1D456}\u0302",
-    "\\hatJ" : "\u{1D43D}\u0302",
-    "\\hatj" : "\u{1D457}\u0302",
-    "\\hatK" : "\u{1D43E}\u0302",
-    "\\hatk" : "\u{1D458}\u0302",
-    "\\hatL" : "\u{1D43F}\u0302",
-    "\\hatl" : "\u{1D459}\u0302",
-    "\\hatM" : "\u{1D440}\u0302",
-    "\\hatm" : "\u{1D45A}\u0302",
-    "\\hatN" : "\u{1D441}\u0302",
-    "\\hatn" : "\u{1D45B}\u0302",
-    "\\hatO" : "\u{1D442}\u0302",
-    "\\hato" : "\u{1D45C}\u0302",
-    "\\hatP" : "\u{1D443}\u0302",
-    "\\hatp" : "\u{1D45D}\u0302",
-    "\\hatQ" : "\u{1D444}\u0302",
-    "\\hatq" : "\u{1D45E}\u0302",
-    "\\hatR" : "\u{1D445}\u0302",
-    "\\hatr" : "\u{1D45F}\u0302",
-    "\\hatS" : "\u{1D446}\u0302",
-    "\\hats" : "\u{1D460}\u0302",
-    "\\hatT" : "\u{1D447}\u0302",
-    "\\hatt" : "\u{1D461}\u0302",
-    "\\hatU" : "\u{1D448}\u0302",
-    "\\hatu" : "\u{1D462}\u0302",
-    "\\hatV" : "\u{1D449}\u0302",
-    "\\hatv" : "\u{1D463}\u0302",
-    "\\hatW" : "\u{1D44A}\u0302",
-    "\\hatw" : "\u{1D464}\u0302",
-    "\\hatX" : "\u{1D44B}\u0302",
-    "\\hatx" : "\u{1D465}\u0302",
-    "\\hatY" : "\u{1D44C}\u0302",
-    "\\haty" : "\u{1D466}\u0302",
-    "\\hatZ" : "\u{1D44D}\u0302",
-    "\\hatz" : "\u{1D467}\u0302",
-
-    // Hat greek
-    "\\hatalpha" : "\u{1D6FC}\u0302",
-    "\\hatgamma" : "\u{1D6FE}\u0302",
-    "\\hateta" : "\u{1D702}\u0302",
-    "\\hatiota" : "\u{1D704}\u0302",
-    "\\hatkappa" : "\u{1D705}\u0302",
-    "\\hatvarkappa" : "\u{1D718}\u0302",
-    "\\hatmu" : "\u{1D707}\u0302",
-    "\\hatnu" : "\u{1D708}\u0302",
-    "\\hatpi" : "\u{1D70B}\u0302",
-    "\\hatvarpi" : "\u{1D71B}\u0302",
-    "\\hatrho" : "\u{1D70C}\u0302",
-    "\\hatvarrho" : "\u03F1\u0302",
-    "\\hatsigma" : "\u03C3\u0302",
-    "\\hatvarsigma" : "\u03C2\u0302",
-    "\\hattau" : "\u{1D70F}\u0302",
-    "\\hatupsilon" : "\u{1D710}\u0302",
-    "\\hatvarphi" : "\u{1D711}\u0302",
-    "\\hatchi" : "\u{1D712}\u0302",
-    "\\hatomega" : "\u{1D714}\u0302",
+    // Non italic letters
+    "\\A" : "A",
+    "\\a" : "a",
+    "\\B" : "B",
+    "\\b" : "b",
+    "\\C" : "C",
+    "\\c" : "c",
+    "\\D" : "D",
+    "\\d" : "d",
+    "\\E" : "E",
+    "\\e" : "e",
+    "\\F" : "F",
+    "\\f" : "f",
+    "\\G" : "G",
+    "\\g" : "g",
+    "\\H" : "H",
+    "\\h" : "h",
+    "\\I" : "I",
+    "\\i" : "i",
+    "\\J" : "J",
+    "\\j" : "j",
+    "\\K" : "K",
+    "\\k" : "k",
+    "\\L" : "L",
+    "\\l" : "l",
+    "\\M" : "M",
+    "\\m" : "m",
+    "\\N" : "N",
+    "\\n" : "n",
+    "\\O" : "O",
+    "\\o" : "o",
+    "\\P" : "P",
+    "\\p" : "p",
+    "\\Q" : "Q",
+    "\\q" : "q",
+    "\\R" : "R",
+    "\\r" : "r",
+    "\\S" : "S",
+    "\\s" : "s",
+    "\\T" : "T",
+    "\\t" : "t",
+    "\\U" : "U",
+    "\\u" : "u",
+    "\\V" : "V",
+    "\\v" : "v",
+    "\\W" : "W",
+    "\\w" : "w",
+    "\\X" : "X",
+    "\\x" : "x",
+    "\\Y" : "Y",
+    "\\y" : "y",
+    "\\Z" : "Z",
+    "\\z" : "z",
     
-    // Overline
-    "\\overlineA" : "\u{1D434}\u0305",
-    "\\overlinea" : "\u{1D44E}\u0305",
-    "\\overlineB" : "\u{1D435}\u0305",
-    "\\overlineb" : "\u{1D44F}\u0305",
-    "\\overlineC" : "\u{1D436}\u0305",
-    "\\overlinec" : "\u{1D450}\u0305",
-    "\\overlineD" : "\u{1D437}\u0305",
-    "\\overlined" : "\u{1D451}\u0305",
-    "\\overlineE" : "\u{1D438}\u0305",
-    "\\overlinee" : "\u{1D452}\u0305",
-    "\\overlineF" : "\u{1D439}\u0305",
-    "\\overlinef" : "\u{1D453}\u0305",
-    "\\overlineG" : "\u{1D43A}\u0305",
-    "\\overlineg" : "\u{1D454}\u0305",
-    "\\overlineH" : "\u{1D43B}\u0305",
-    "\\overlineh" : "\u210E\u0305",
-    "\\overlineI" : "\u{1D43C}\u0305",
-    "\\overlinei" : "\u{1D456}\u0305",
-    "\\overlineJ" : "\u{1D43D}\u0305",
-    "\\overlinej" : "\u{1D457}\u0305",
-    "\\overlineK" : "\u{1D43E}\u0305",
-    "\\overlinek" : "\u{1D458}\u0305",
-    "\\overlineL" : "\u{1D43F}\u0305",
-    "\\overlinel" : "\u{1D459}\u0305",
-    "\\overlineM" : "\u{1D440}\u0305",
-    "\\overlinem" : "\u{1D45A}\u0305",
-    "\\overlineN" : "\u{1D441}\u0305",
-    "\\overlinen" : "\u{1D45B}\u0305",
-    "\\overlineO" : "\u{1D442}\u0305",
-    "\\overlineo" : "\u{1D45C}\u0305",
-    "\\overlineP" : "\u{1D443}\u0305",
-    "\\overlinep" : "\u{1D45D}\u0305",
-    "\\overlineQ" : "\u{1D444}\u0305",
-    "\\overlineq" : "\u{1D45E}\u0305",
-    "\\overlineR" : "\u{1D445}\u0305",
-    "\\overliner" : "\u{1D45F}\u0305",
-    "\\overlineS" : "\u{1D446}\u0305",
-    "\\overlines" : "\u{1D460}\u0305",
-    "\\overlineT" : "\u{1D447}\u0305",
-    "\\overlinet" : "\u{1D461}\u0305",
-    "\\overlineU" : "\u{1D448}\u0305",
-    "\\overlineu" : "\u{1D462}\u0305",
-    "\\overlineV" : "\u{1D449}\u0305",
-    "\\overlinev" : "\u{1D463}\u0305",
-    "\\overlineW" : "\u{1D44A}\u0305",
-    "\\overlinew" : "\u{1D464}\u0305",
-    "\\overlineX" : "\u{1D44B}\u0305",
-    "\\overlinex" : "\u{1D465}\u0305",
-    "\\overlineY" : "\u{1D44C}\u0305",
-    "\\overliney" : "\u{1D466}\u0305",
-    "\\overlineZ" : "\u{1D44D}\u0305",
-    "\\overlinez" : "\u{1D467}\u0305",
+    // Combining
+    "\\overline" : "\u0305",
+    "\\underline" : "\u0332",
+    "\\ooverline" : "\u035E",
+    "\\uunderline" : "\u035F",
+    "\\overfrown" : "\u0361",
+    "\\oversmile" : "\u035D",
+    "\\undersmile" : "\u035C",
+    "\\hat" : "\u0302",
+    "\\not" : "\u0338",
+    "\\tilde" : "\u0303",
+    "\\ttilde" : "\u0360",
+    "\\vec" : "\u20D7",
+    "\\overinf" : "\u1AB2",  // Only works on certain website/apps
 
-    // Overline greek
-    "\\overlinealpha" : "\u{1D6FC}\u0305",
-    "\\overlinebeta" : "\u{1D6FD}\u0305",
-    "\\overlineGamma" : "\u{1D6E4}\u0305",
-    "\\overlinegamma" : "\u{1D6FE}\u0305",
-    "\\overlineDelta" : "\u0394\u0305",
-    "\\overlinedelta" : "\u03B4\u0305",
-    "\\overlineepsilon" : "\u03F5\u0305",
-    "\\overlinevarepsilon" : "\u03B5\u0305",
-    "\\overlinezeta" : "\u03B6\u0305",
-    "\\overlineeta" : "\u{1D702}\u0305",
-    "\\overlineTheta" : "\u0398\u0305",
-    "\\overlinetheta" : "\u{1D703}\u0305",
-    "\\overlinevartheta" : "\u03D1\u0305",
-    "\\overlineiota" : "\u{1D704}\u0305",
-    "\\overlinekappa" : "\u{1D705}\u0305",
-    "\\overlinevarkappa" : "\u{1D718}\u0305",
-    "\\overlineLambda" : "\u039B\u0305",
-    "\\overlinelambda" : "\u03BB\u0305",
-    "\\overlinemu" : "\u{1D707}\u0305",
-    "\\overlinenu" : "\u{1D708}\u0305",
-    "\\overlineXi" : "\u039E\u0305",
-    "\\overlinexi" : "\u{1D709}\u0305",
-    "\\overlinePi" : "\u03A0\u0305",
-    "\\overlinepi" : "\u{1D70B}\u0305",
-    "\\overlinevarpi" : "\u{1D71B}\u0305",
-    "\\overlinerho" : "\u{1D70C}\u0305",
-    "\\overlinevarrho" : "\u03F1\u0305",
-    "\\overlineSigma" : "\u03A3\u0305",
-    "\\overlinesigma" : "\u03C3\u0305",
-    "\\overlinevarsigma" : "\u03C2\u0305",
-    "\\overlinetau" : "\u{1D70F}\u0305",
-    "\\overlineUpsilon" : "\u{1D6F6}\u0305",
-    "\\overlineupsilon" : "\u{1D710}\u0305",
-    "\\overlinePhi" : "\u{1D6BD}\u0305",
-    "\\overlinephi" : "\u{1D719}\u0305",
-    "\\overlinevarphi" : "\u{1D711}\u0305",
-    "\\overlinechi" : "\u{1D712}\u0305",
-    "\\overlinePsi" : "\u{1D6F9}\u0305",
-    "\\overlinepsi" : "\u{1D713}\u0305",
-    "\\overlineOmega" : "\u2126\u0305",
-    "\\overlineomega" : "\u{1D714}\u0305",
+    "\\overa" : "\u0363",
+    "\\overc" : "\u0368",
+    "\\overd" : "\u0369",
+    "\\overe" : "\u0364",
+    "\\overh" : "\u036A",
+    "\\overi" : "\u0365",
+    "\\overk" : "\u1DDC",  // Only works on certain website/apps
+    "\\overm" : "\u036B",
+    "\\overn" : "\u1DE0",  // Only works on certain website/apps
+    "\\overo" : "\u0366",
+    "\\overr" : "\u036C",
+    "\\overt" : "\u036D",
+    "\\overu" : "\u0367",
+    "\\overv" : "\u036E",
+    "\\overx" : "\u036F",
 
     // Greek subscript and superscript
     "\\^beta" : "\u1D5D",
@@ -742,6 +671,10 @@ const mathDictionary = {
 
     // Other symbols
     "\\infty" : "\u221E",
+    "\\iinfin" : "\u29DC",
+    "\\tieinfty" : "\u29DD",
+    "\\nvinfty" : "\u29DE",
+    "\\acidfree" : "\u267E",
     "\\angle" : "\u2220",
     "\\measuredangle" : "\u2221",
     "\\sphericalangle" : "\u2222",
@@ -756,6 +689,7 @@ const mathDictionary = {
     "\\copyright" : "\u00A9",
     "\\registered" : "\u00AE",
     "\\wp" : "\u2118",
+    "\\emdash" : "\u2014",
     "\\bullet" : "\u25CF",
     "\\langle" : "\u27E8",
     "\\rangle" : "\u27E9",
@@ -765,11 +699,18 @@ const mathDictionary = {
     "\\rceil" : "\u2309",
     "\\lfloor" : "\u230A",
     "\\rfloor" : "\u230B",
+    "\\lBrace" : "\u2983",
+    "\\rBrace" : "\u2984",
+    "\\llbracket" : "\u27E6",
+    "\\rrbracket" : "\u27E7",
+    "\\llparenthesis" : "\u2985",
+    "\\rrparenthesis" : "\u2986",
     "\\frown" : "\u2322",
     "\\smile" : "\u2323",
     "\\qed" : "\u220E",
     "\\" : "\\",
     "\\:" : "\\:",
+    "\\colon" : "\u003A",
     "\\\\" : "\u000A",
     "\\tab" : "\u0009"
 };
@@ -798,7 +739,7 @@ const lettersSymbols = {
     ">" : "\u003E",
     "%" : "%",
     "#" : "#",
-    ":" : ":",
+    ":" : "\u2236",
     ";" : ";",
     "0" : "0",
     "1" : "1",
@@ -965,6 +906,96 @@ const superscript = {
     "z" : "ᶻ"
 };
 
+const lettersChem = {
+    "+" : "\u002B",
+    "-" : "\u2212",
+    "=" : "\u003D",
+    "'" : "\u2032",
+    '"' : "\u2033",
+    "/" : "\u2215",
+    "," : ",",
+    "." : ".",
+    "°" : "°",
+    "|" : "|",
+    "!" : "!",
+    "?" : "?",
+    "&" : "&",
+    "(" : "(",
+    ")" : ")",
+    "{" : "{",
+    "}" : "}",
+    "[" : "[",
+    "]" : "]",
+    "<" : "\u003C",
+    ">" : "\u003E",
+    "%" : "%",
+    "#" : "#",
+    ":" : ":",
+    ";" : ";",
+    "0" : "0",
+    "1" : "1",
+    "2" : "2",
+    "3" : "3",
+    "4" : "4",
+    "5" : "5",
+    "6" : "6",
+    "7" : "7",
+    "8" : "8",
+    "9" : "9", 
+    "A" : "A",
+    "a" : "a",
+    "B" : "B",
+    "b" : "b",
+    "C" : "C",
+    "c" : "c",
+    "D" : "D",
+    "d" : "d",
+    "E" : "E",
+    "e" : "e",
+    "F" : "F",
+    "f" : "f",
+    "G" : "G",
+    "g" : "g",
+    "H" : "H",
+    "h" : "h",
+    "I" : "I",
+    "i" : "i",
+    "J" : "J",
+    "j" : "j",
+    "K" : "K",
+    "k" : "k",
+    "L" : "L",
+    "l" : "l",
+    "M" : "M",
+    "m" : "m",
+    "N" : "N",
+    "n" : "n",
+    "O" : "O",
+    "o" : "o",
+    "P" : "P",
+    "p" : "p",
+    "Q" : "Q",
+    "q" : "q",
+    "R" : "R",
+    "r" : "r",
+    "S" : "S",
+    "s" : "s",
+    "T" : "T",
+    "t" : "t",
+    "U" : "U",
+    "u" : "u",
+    "V" : "V",
+    "v" : "v",
+    "W" : "W",
+    "w" : "w",
+    "X" : "X",
+    "x" : "x",
+    "Y" : "Y",
+    "y" : "y",
+    "Z" : "Z",
+    "z" : "z",
+};
+
 // Submit button
 const submit = document.getElementById("button");
 submit.onclick = function() {main()};
@@ -982,12 +1013,12 @@ function copy() {
     const copyText = document.getElementById("text_out");
     navigator.clipboard.writeText(copyText.value);
 
-    document.getElementById("popup").innerHTML = "Text copied!";
+    document.getElementById("popup").textContent = "Text copied!";
 };
 
 // Clears "Text copied!"
 function clear() {
-    document.getElementById("popup").innerHTML = "";
+    document.getElementById("popup").textContent = "";
 };
 
 // Remove space
@@ -1017,9 +1048,46 @@ function replaceLetters(word, dictionary) {
     return newWord;
 };
 
+// Chemistry package
+function chemistry(words, newText) {
+    let i;
+    for (i in words) {
+        let firstLetter = words[i].charAt(0);
+        if (firstLetter == "\\") {
+            newText = newText.replace(words[i], mathDictionary[words[i]]);
+        } else if (firstLetter == "_") {
+            newText = newText.replace(words[i], replaceLetters(words[i], subscript));
+        } else if (firstLetter == "^") {
+            newText = newText.replace(words[i], replaceLetters(words[i], superscript));
+        } else {
+            newText = newText.replace(words[i], replaceLetters(words[i], lettersChem));
+        };
+    };
+    return newText;
+};
+
+// Adjust the spaces for the Chemistry package
+function adjustSpaceChem(text) {
+    text = text.replace(/ /g, "");
+    text = text.replace(/\+/g, " + ");
+    text = text.replace(/\u27F6/g, " \u27F6 ");
+    text = text.replace(/\u21CC/g, " \u21CC ");
+    text = text.replace(/\u21CB/g, " \u21CB ");
+    text = text.replace(/\u21C0/g, " \u21C0 ");
+    text = text.replace(/\u21C1/g, " \u21C1 ");
+    text = text.replace(/\u21BC/g, " \u21BC ");
+    text = text.replace(/\u21BD/g, " \u21BD ");
+    return text;
+};
+
 // Takes text and convert word by word in the dictionary or in function replaceLetters
 function convert(words, newText) {
     let i;
+    if (words[0] == "$chem") {
+        newText = newText.replace("$chem", "");
+        newText = chemistry(words, newText);
+        newText = adjustSpaceChem(newText);
+    } else {
     for (i in words) {
         let firstLetter = words[i].charAt(0);
         if (firstLetter == "\\") {
@@ -1032,6 +1100,8 @@ function convert(words, newText) {
             newText = newText.replace(words[i], replaceLetters(words[i], lettersSymbols));
         };
     };
+    newText = removeSpace(newText);
+    };
     return newText;
 };
 
@@ -1041,7 +1111,6 @@ function main() {
     const words = fullText.split(" ");
     let newText = fullText;
     newText = convert(words, newText);
-    newText = removeSpace(newText);
     newText = spaceCommand(newText);
     document.text_input.text_out.value = newText;
     document.getElementById("text_out").disabled = false; 
