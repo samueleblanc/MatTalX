@@ -1,3 +1,5 @@
+/// Global variables ///
+
 // Dictionary for text conversion
 const mathDictionary = {
     // Math operators
@@ -33,6 +35,8 @@ const mathDictionary = {
     "\\sqrt4" : "\u221C",
     "\\circ" : "\u2218",
     "\\sum" : "\u2211",
+    "\\osum" : "\u2A0A",
+    "\\sumint" : "\u2A0B",
     "\\prod" : "\u220F",
     "\\cdot" : "\u22C5",
     "\\pm" : "\u00B1",
@@ -87,8 +91,11 @@ const mathDictionary = {
     "\\tprime" : "\u2034",
     "\\lthree" : "\u22CB",
     "\\rthree" : "\u22CC",
+    "\\pitchfork" : "\u22D4",
+    "\\topfork" : "\u2ADA",
 
     // Fractions
+    "\\frac" : "\u2215",  // Better suited for superscript over subscript
     "\\frac1/2" : "\u00BD",
     "\\frac1/7" : "⅐",
     "\\frac1/9" : "⅑",
@@ -140,10 +147,12 @@ const mathDictionary = {
     "\\ncong" : "\u2247",
     "\\propto" : "\u221D",
     "\\equiv" : "\u2261",
+    "\\dotequiv" : "\u2A67",
     "\\superequiv" : "\u2263",
     "\\tbond" : "\u2261",
     "\\qbond" : "\u2263",
     "\\doteq" : "\u2250",
+    "\\eqdot" : "\u2A66",
     "\\neq" : "\u2260",
     "\\approx" : "\u2248",
     "\\sim" : "\u223C",
@@ -182,8 +191,11 @@ const mathDictionary = {
     "\\precnsim" : "\u22E8",
     "\\succnsim" : "\u22E9",
     "\\perp" : "\u27C2",
+    "\\Perp" : "\u2AEB",
     "\\parallel" : "\u2225",
     "\\nparallel" : "\u2226",
+    "\\vvvert" : "\u2AF4",
+    "\\nvvvert" : "\u2AF5",
     "\\nmid" : "\u2224",
     "\\asymp" : "\u224D",
     "\\neg" : "\u00AC",
@@ -219,6 +231,10 @@ const mathDictionary = {
     "\\top" : "\u22A4",
     "\\bot" : "\u22A5",
     "\\between" : "\u226C",
+    "\\therefore" : "\u2234",
+    "\\because" : "\u2235",
+    "\\squaredots" : "\u2237",
+    "\\dotminus" : "\u2238",
 
     // Arrows
     "\\Rightarrow" : "\u21D2",
@@ -669,6 +685,20 @@ const mathDictionary = {
     "\\_phi" : "\u1D69",
     "\\_chi" : "\u1D6A",
 
+    "\\^int" : "ᶴ",
+
+    // Music
+    "\\flat" : "\u{1D12C}",
+    "\\natural" : "\u{1D12E}",
+    "\\sharp" : "\u{1D130}",
+    "\\eightnote" : "\u{1D160}",
+    "\\sixteenthnote" : "\u{1D161}",
+    "\\halfnote" : "\u{1D15E}",
+    "\\quarternote" : "\u{1D15F}",
+    "\\fullnote" : "\u{1D15D}",
+    "\\doublenote" : "\u266B",
+    "\\trebleclef" : "\u{1D11E}",
+
     // Other symbols
     "\\infty" : "\u221E",
     "\\iinfin" : "\u29DC",
@@ -708,6 +738,13 @@ const mathDictionary = {
     "\\frown" : "\u2322",
     "\\smile" : "\u2323",
     "\\qed" : "\u220E",
+    "\\male" : "\u2642",
+    "\\female" : "\u2640",
+    "\\Hermaphrodite" : "\u26A5",
+    "\\neuter" : "\u26B2",
+    "\\malemale" : "\u26A3",
+    "\\femalefemale" : "\u26A2",
+    "\\femalemale" : "\u26A4",
     "\\" : "\\",
     "\\:" : "\\:",
     "\\colon" : "\u003A",
@@ -716,12 +753,14 @@ const mathDictionary = {
 };
 
 const lettersSymbols = {
+    "\u000A" : "", // Cancels the line skipped by pressing "enter", use "\\" instead
     "+" : "\u002B",
     "-" : "\u2212",
     "=" : "\u003D",
     "'" : "\u2032",
     '"' : "\u2033",
-    "/" : "\u2215",
+    "/" : "/",
+    "\\" : "\\",
     "," : ",",
     "." : ".",
     "°" : "°",
@@ -737,6 +776,8 @@ const lettersSymbols = {
     "]" : "]",
     "<" : "\u003C",
     ">" : "\u003E",
+    "^" : "^",
+    "_" : "_",
     "%" : "%",
     "#" : "#",
     ":" : "\u2236",
@@ -802,7 +843,7 @@ const lettersSymbols = {
     "Y" : "\u{1D44C}",
     "y" : "\u{1D466}",
     "Z" : "\u{1D44D}",
-    "z" : "\u{1D467}",
+    "z" : "\u{1D467}"
 };
 
 const subscript = {
@@ -907,12 +948,14 @@ const superscript = {
 };
 
 const lettersChem = {
+    "\u000A" : "", // Cancels the line skipped by pressing "enter", use "\\" instead
     "+" : "\u002B",
     "-" : "\u2212",
     "=" : "\u003D",
     "'" : "\u2032",
     '"' : "\u2033",
-    "/" : "\u2215",
+    "/" : "/",
+    "\\" : "\\",
     "," : ",",
     "." : ".",
     "°" : "°",
@@ -928,6 +971,8 @@ const lettersChem = {
     "]" : "]",
     "<" : "\u003C",
     ">" : "\u003E",
+    "^" : "^",
+    "_" : "_",
     "%" : "%",
     "#" : "#",
     ":" : ":",
@@ -1008,22 +1053,36 @@ copyButton.onclick = function () {copy()};
 const resetButton = document.getElementById("reset");
 resetButton.onclick = function () {clear()};
 
+// Every undefined commands
+let errorsList = "";
+
+
+
+/// FUNCTIONS ///
+
 // Copy to clipboard
 function copy() {
     const copyText = document.getElementById("text_out");
     navigator.clipboard.writeText(copyText.value);
+    copyButton.value = "Copied!";
+    copyButton.style.cursor = "default";
 
-    document.getElementById("popup").textContent = "Text copied!";
+    setTimeout(() => {
+        copyButton.value = "Copy text";
+        copyButton.style.cursor = "pointer";
+    }, 3000)  // Returns to initial copyButton
 };
 
 // Clears "Text copied!"
 function clear() {
-    document.getElementById("popup").textContent = "";
+    copyButton.value = "Copy text";
+    copyButton.style.cursor = "pointer";
+    document.getElementById("mistakes").textContent = "";
 };
 
 // Remove space
 function removeSpace(text) {
-    let checkedButton = document.getElementById("remove");
+    const checkedButton = document.getElementById("remove");
     if (checkedButton.checked == true) {
         text = text.replace(/ /g, "");
         text = text.replace(/\=/g, " \= ");
@@ -1055,12 +1114,16 @@ function chemistry(words, newText) {
         let firstLetter = words[i].charAt(0);
         if (firstLetter == "\\") {
             newText = newText.replace(words[i], mathDictionary[words[i]]);
+            mistakes(words[i], mathDictionary[words[i]]);
         } else if (firstLetter == "_") {
             newText = newText.replace(words[i], replaceLetters(words[i], subscript));
+            mistakes(words[i], replaceLetters(words[i], subscript));
         } else if (firstLetter == "^") {
             newText = newText.replace(words[i], replaceLetters(words[i], superscript));
+            mistakes(words[i], replaceLetters(words[i], superscript));
         } else {
             newText = newText.replace(words[i], replaceLetters(words[i], lettersChem));
+            mistakes(words[i], replaceLetters(words[i], lettersChem));
         };
     };
     return newText;
@@ -1080,6 +1143,30 @@ function adjustSpaceChem(text) {
     return text;
 };
 
+// Changes "undefined" to "err"
+function errors(text) {
+    const err = "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}"; // bold "err" with two "x" under it
+    text = text.replace(/undefined/g, err);
+    return text;
+};
+
+// Writes every errors in a box, so it's easier to find them
+function mistakes(textInput, textOutput) {
+    const popup = document.getElementById("mistakes");
+    const text = "<span id='errorsTitle'>Errors: </span><br>";
+    if (textOutput === undefined) {
+        errorsList += '"' + textInput + '" <br>';
+    };
+    if (errorsList.length > 0) {
+        popup.innerHTML = text + errorsList;
+        
+        popup.style.fontFamily = "Times New Roman";
+        popup.style.fontSize = "15px";
+        const errorsTitleStyle = document.getElementById("errorsTitle").style;
+        errorsTitleStyle.fontWeight = "bold";
+    };
+};
+
 // Takes text and convert word by word in the dictionary or in function replaceLetters
 function convert(words, newText) {
     let i;
@@ -1092,38 +1179,38 @@ function convert(words, newText) {
         let firstLetter = words[i].charAt(0);
         if (firstLetter == "\\") {
             newText = newText.replace(words[i], mathDictionary[words[i]]);
+            mistakes(words[i], mathDictionary[words[i]]);
         } else if (firstLetter == "_") {
             newText = newText.replace(words[i], replaceLetters(words[i], subscript));
+            mistakes(words[i], replaceLetters(words[i], subscript));
         } else if (firstLetter == "^") {
             newText = newText.replace(words[i], replaceLetters(words[i], superscript));
+            mistakes(words[i], replaceLetters(words[i], superscript));
         } else {
             newText = newText.replace(words[i], replaceLetters(words[i], lettersSymbols));
+            mistakes(words[i], replaceLetters(words[i], lettersSymbols));
         };
     };
     newText = removeSpace(newText);
     };
+    newText = errors(newText);
     return newText;
 };
 
 // Takes the original text and spits out the new one
 function main() {
+
+    document.getElementById("mistakes").innerHTML = "";  // Starts with an empty box for errors
+    errorsList = "";  // Makes sure it starts empty
+
     const fullText = document.text_input.text_in.value;
     const words = fullText.split(" ");
     let newText = fullText;
+
     newText = convert(words, newText);
     newText = spaceCommand(newText);
     document.text_input.text_out.value = newText;
-    document.getElementById("text_out").disabled = false; 
+    document.getElementById("text_out").disabled = false;
+
 };
 
-
-
-// **NOT USED** Alerts if mistake
-function mistakes(command, word, text) {
-    if (command === undefined) {
-        // alert(word + "is not a command")
-        let alertWord = "*" + word + "*";
-        return text.replace(word, alertWord);
-    };
-    return text;
-};

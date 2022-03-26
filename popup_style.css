@@ -7,6 +7,7 @@ body{
     width: 100%;
     height: 100px;
     font-size: 14px;
+    text-decoration: none;
 }
 #text_out {
     border: 1px solid gray;
@@ -14,6 +15,7 @@ body{
     width: 100%;
     height: 100px;
     font-size: 15px;
+    text-decoration: none;
 }
 #button {
     font-size: 14px;
@@ -35,6 +37,8 @@ body{
     font-family: 'Lucida Grande';
     border: 1px solid black;
     border-radius: 7px;
+    width: 70px;
+    height: auto;
     transition-duration: 0.2s;
 }
 #copy:hover {
@@ -42,6 +46,8 @@ body{
     font-family: 'Lucida Grande';
     border: 1px solid black;
     border-radius: 7px;
+    width: 70px;
+    height: auto;
     cursor: pointer;
     background-color: lightgrey;
 }
@@ -74,10 +80,6 @@ body{
 header {
     margin-left: 10px;
     margin-right: 10px;
-}
-#popup {
-    text-align: center;
-    color: black;
 }
 #remove {
     cursor: pointer;

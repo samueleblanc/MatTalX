@@ -1,7 +1,7 @@
 {
     "name": "MatTalX - Write math symbols",
     "description": "Write mathematical expression in UTF format",
-    "version": "0.2.0",
+    "version": "0.3.2",
     "manifest_version": 3,
     "background": {
       "service_worker": "convert.js"
