@@ -1075,14 +1075,15 @@ function copy() {
     }, 3000)  // Returns to initial copyButton
 };
 
-// Clears "Text copied!"
+// Pretty self explanatory
 function clear() {
     copyButton.value = "Copy text";
     copyButton.style.cursor = "pointer";
     document.getElementById("mistakes").textContent = "";
+    document.getElementById("text_out").disabled = true;
 };
 
-// Remove space
+// Remove spaces and add some around "=" and "\implies"
 function removeSpace(text) {
     const checkedButton = document.getElementById("remove");
     if (checkedButton.checked == true) {
@@ -1093,7 +1094,7 @@ function removeSpace(text) {
     return text;
 };
 
-// Add spaces
+// Add spaces ("\:" command)
 function spaceCommand(text) {
     text = text.replace(/\\:/g, " ");
     return text;
@@ -1131,7 +1132,7 @@ function chemistry(words, newText) {
     return newText;
 };
 
-// Adjust the spaces for the Chemistry package
+// Add spaces (around "+" and arrows) for the Chemistry package
 function adjustSpaceChem(text) {
     text = text.replace(/ /g, "");
     text = text.replace(/\+/g, " + ");
