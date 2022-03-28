@@ -235,6 +235,8 @@ const mathDictionary = {
     "\\because" : "\u2235",
     "\\squaredots" : "\u2237",
     "\\dotminus" : "\u2238",
+    "\\max" : "max",
+    "\\min" : "min",
 
     // Arrows
     "\\Rightarrow" : "\u21D2",
