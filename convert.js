@@ -1,4 +1,14 @@
+/*
+    The main purpose of this program is to take a text as input (mostly LaTeX commands), 
+    to convert them into the desired symbol (UTF) and finally to display them so they can 
+    be copied and sent via Messenger, Instagram, Twitter, etc.
+*/
+
+
+
+
 /// Global variables ///
+
 
 // Dictionary for text conversion
 const mathDictionary = {
@@ -56,6 +66,7 @@ const mathDictionary = {
     "\\arcsec" : "arcsec",
     "\\*" : "*",
     "\\det" : "det",
+    "\\rank" : "rank",
     "\\log" : "log",
     "\\ln" : "ln",
     "\\lim" : "lim",
@@ -83,6 +94,10 @@ const mathDictionary = {
     "\\otimes" : "\u2297",
     "\\oslash" : "\u2298",
     "\\odot" : "\u2299",
+    "\\obullet" : "\u29BF",
+    "\\ocirc" : "\u29BE",
+    "\\operp" : "\u29B9",
+    "\\oparallel" : "\u29B7",
     "\\boxplus" : "\u229E",
     "\\boxminus" : "\u229F",
     "\\boxtimes" : "\u22A0",
@@ -93,6 +108,12 @@ const mathDictionary = {
     "\\rthree" : "\u22CC",
     "\\pitchfork" : "\u22D4",
     "\\topfork" : "\u2ADA",
+    "\\invamp" : "\u214B",
+    "\\originalof" : "\u22B6",
+    "\\imageof" : "\u22B7",
+    "\\multimap" : "\u22B8",
+    "\\leftmultimap" : "\u27DC",
+    "\\uptack" : "\u27DF",
 
     // Fractions
     "\\frac" : "\u2215",  // Better suited for superscript over subscript
@@ -123,6 +144,8 @@ const mathDictionary = {
     "\\nexists" : "\u2204",
     "\\land" : "\u2227",
     "\\lor" : "\u2228",
+    "\\sqland" : "\u27CE",
+    "\\sqlor" : "\u27CF",
     "\\in" : "\u2208",
     "\\notin" : "\u2209",
     "\\ni" : "\u220B",
@@ -142,6 +165,8 @@ const mathDictionary = {
     "\\Supset" : "\u22D1",
     "\\subsetplus" : "\u2ABF",
     "\\supsetplus" : "\u2AC0",
+    "\\osubset" : "\u27C3",
+    "\\osupset" : "\u27C4",
     "\\setminus" : "\u2216",
     "\\cong" : "\u2245",
     "\\ncong" : "\u2247",
@@ -196,6 +221,7 @@ const mathDictionary = {
     "\\nparallel" : "\u2226",
     "\\vvvert" : "\u2AF4",
     "\\nvvvert" : "\u2AF5",
+    "\\mid" : "|",
     "\\nmid" : "\u2224",
     "\\asymp" : "\u224D",
     "\\neg" : "\u00AC",
@@ -237,6 +263,10 @@ const mathDictionary = {
     "\\dotminus" : "\u2238",
     "\\max" : "max",
     "\\min" : "min",
+    "\\grad" : "grad",
+    "\\div" : "div",
+    "\\curl" : "curl",
+    "\\ratio" : "\u2236",  // Same as ":", except with "$chem"
 
     // Arrows
     "\\Rightarrow" : "\u21D2",
@@ -312,47 +342,67 @@ const mathDictionary = {
     "\\curvearrowright" : "\u21B7",
 
     // Greek alphabet
+    "\\Alpha" : "\u{1D6E2}",
     "\\alpha" : "\u{1D6FC}",
+    "\\Beta" : "\u{1D6E3}",
     "\\beta" : "\u{1D6FD}",
     "\\Gamma" : "\u{1D6E4}",
     "\\gamma" : "\u{1D6FE}",
     "\\Delta" : "\u0394",
     "\\delta" : "\u03B4",
+    "\\Epsilon" : "\u{1D6E6}",
     "\\epsilon" : "\u03F5",
     "\\varepsilon" : "\u03B5",
+    "\\Zeta" : "\u{1D6E7}",
     "\\zeta" : "\u03B6",
+    "\\Eta" : "\u{1D6E8}",
     "\\eta" : "\u{1D702}",
     "\\Theta" : "\u0398",
     "\\theta" : "\u{1D703}",
     "\\vartheta" : "\u03D1",
+    "\\Iota" : "\u{1D6EA}",
     "\\iota" : "\u{1D704}",
+    "\\Kappa" : "\u{1D6EB}",
     "\\kappa" : "\u{1D705}",
     "\\varkappa" : "\u{1D718}",
     "\\Lambda" : "\u039B",
     "\\lambda" : "\u03BB",
+    "\\Mu" : "\u{1D6ED}",
     "\\mu" : "\u{1D707}",
+    "\\Nu" : "\u{1D6EE}",
     "\\nu" : "\u{1D708}",
     "\\Xi" : "\u039E",
     "\\xi" : "\u{1D709}",
+    "\\Omicron" : "\u{1D6F0}",
+    "\\omicron" : "\u{1D70A}",
     "\\Pi" : "\u03A0",
     "\\pi" : "\u{1D70B}",
     "\\varpi" : "\u{1D71B}",
+    "\\Rho" : "\u{1D6F2}",
     "\\rho" : "\u{1D70C}",
     "\\varrho" : "\u03F1",
     "\\Sigma" : "\u03A3",
     "\\sigma" : "\u03C3",
     "\\varsigma" : "\u03C2",
+    "\\Tau" : "\u{1D6F5}",
     "\\tau" : "\u{1D70F}",
     "\\Upsilon" : "\u{1D6F6}",
     "\\upsilon" : "\u{1D710}",
     "\\Phi" : "\u03A6",
     "\\phi" : "\u{1D719}",
     "\\varphi" : "\u{1D711}",
+    "\\Chi" : "\u{1D6F8}",
     "\\chi" : "\u{1D712}",
     "\\Psi" : "\u{1D6F9}",
     "\\psi" : "\u{1D713}",
     "\\Omega" : "\u2126",
     "\\omega" : "\u{1D714}",
+
+    // Hebrew alphabet
+    "\\aleph" : "\u2135",
+    "\\beth" : "\u2136",
+    "\\gimel" : "\u2137",
+    "\\dalet" : "\u2138",
 
     // Mathbb
     "\\mathbbA" : "\u{1D538}",
@@ -490,47 +540,169 @@ const mathDictionary = {
     "\\mathbf8" : "\u{1D7F4}",
     "\\mathbf9" : "\u{1D7F5}",
 
+    "\\mathbfAlpha" : "\u{1D71C}",
     "\\mathbfalpha" : "\u{1D736}",
+    "\\mathbfBeta" : "\u{1D71D}",
     "\\mathbfbeta" : "\u{1D737}",
     "\\mathbfGamma" : "\u{1D71E}",
     "\\mathbfgamma" : "\u{1D738}",
     "\\mathbfDelta" : "\u{1D6AB}",
     "\\mathbfdelta" : "\u{1D6C5}",
+    "\\mathbfEpsilon" : "\u{1D720}",
     "\\mathbfepsilon" : "\u{1D6DC}",
     "\\mathbfvarepsilon" : "\u{1D6C6}",
+    "\\mathbfZeta" : "\u{1D721}",
     "\\mathbfzeta" : "\u{1D6C7}",
+    "\\mathbfEta" : "\u{1D722}",
     "\\mathbfeta" : "\u{1D73C}",
     "\\mathbfTheta" : "\u{1D6BD}",
     "\\mathbftheta" : "\u{1D73D}",
     "\\mathbfvartheta" : "\u{1D6DD}",
+    "\\mathbfIota" : "\u{1D724}",
     "\\mathbfiota" : "\u{1D73E}",
+    "\\mathbfKappa" : "\u{1D725}",
     "\\mathbfkappa" : "\u{1D73F}",
     "\\mathbfvarkappa" : "\u{1D752}",
     "\\mathbfLambda" : "\u{1D6B2}",
     "\\mathbflambda" : "\u{1D6CC}",
+    "\\mathbfMu" : "\u{1D727}",
     "\\mathbfmu" : "\u{1D741}",
+    "\\mathbfNu" : "\u{1D728}",
     "\\mathbfnu" : "\u{1D742}",
     "\\mathbfXi" : "\u{1D6B5}",
     "\\mathbfxi" : "\u{1D743}",
+    "\\mathbfOmicron" : "\u{1D72A}",
+    "\\mathbfomicron" : "\u{1D744}",
     "\\mathbfPi" : "\u{1D6B7}",
     "\\mathbfpi" : "\u{1D745}",
     "\\mathbfvarpi" : "\u{1D755}",
+    "\\mathbfRho" : "\u{1D72C}",
     "\\mathbfrho" : "\u{1D746}",
     "\\mathbfvarrho" : "\u{1D6E0}",
     "\\mathbfSigma" : "\u{1D6BA}",
     "\\mathbfsigma" : "\u{1D6D4}",
     "\\mathbfvarsigma" : "\u{1D6D3}",
+    "\\mathbfTau" : "\u{1D72F}",
     "\\mathbftau" : "\u{1D749}",
     "\\mathbfUpsilon" : "\u{1D730}",
     "\\mathbfupsilon" : "\u{1D74A}",
     "\\mathbfPhi" : "\u{1D6BD}",
     "\\mathbfphi" : "\u{1D753}",
     "\\mathbfvarphi" : "\u{1D74B}",
+    "\\mathbfChi" : "\u{1D732}",
     "\\mathbfchi" : "\u{1D74C}",
     "\\mathbfPsi" : "\u{1D733}",
     "\\mathbfpsi" : "\u{1D74D}",
     "\\mathbfOmega" : "\u{1D6C0}",
     "\\mathbfomega" : "\u{1D74E}",
+
+    // Fraktur
+    "\\mathfrakA" : "\u{1D504}",
+    "\\mathfraka" : "\u{1D51E}",
+    "\\mathfrakB" : "\u{1D505}",
+    "\\mathfrakb" : "\u{1D51F}",
+    "\\mathfrakC" : "\u212D",
+    "\\mathfrakc" : "\u{1D520}",
+    "\\mathfrakD" : "\u{1D507}",
+    "\\mathfrakd" : "\u{1D521}",
+    "\\mathfrakE" : "\u{1D508}",
+    "\\mathfrake" : "\u{1D522}",
+    "\\mathfrakF" : "\u{1D509}",
+    "\\mathfrakf" : "\u{1D523}",
+    "\\mathfrakG" : "\u{1D50A}",
+    "\\mathfrakg" : "\u{1D524}",
+    "\\mathfrakH" : "\u210C",
+    "\\mathfrakh" : "\u{1D525}",
+    "\\mathfrakI" : "\u2111",
+    "\\mathfraki" : "\u{1D526}",
+    "\\mathfrakJ" : "\u{1D50D}",
+    "\\mathfrakj" : "\u{1D527}",
+    "\\mathfrakK" : "\u{1D50E}",
+    "\\mathfrakk" : "\u{1D528}",
+    "\\mathfrakL" : "\u{1D50F}",
+    "\\mathfrakl" : "\u{1D529}",
+    "\\mathfrakM" : "\u{1D510}",
+    "\\mathfrakm" : "\u{1D52A}",
+    "\\mathfrakN" : "\u{1D511}",
+    "\\mathfrakn" : "\u{1D52B}",
+    "\\mathfrakO" : "\u{1D512}",
+    "\\mathfrako" : "\u{1D52C}",
+    "\\mathfrakP" : "\u{1D513}",
+    "\\mathfrakp" : "\u{1D52D}",
+    "\\mathfrakQ" : "\u{1D514}",
+    "\\mathfrakq" : "\u{1D52E}",
+    "\\mathfrakR" : "\u211C",
+    "\\mathfrakr" : "\u{1D52F}",
+    "\\mathfrakS" : "\u{1D516}",
+    "\\mathfraks" : "\u{1D530}",
+    "\\mathfrakT" : "\u{1D517}",
+    "\\mathfrakt" : "\u{1D531}",
+    "\\mathfrakU" : "\u{1D518}",
+    "\\mathfraku" : "\u{1D532}",
+    "\\mathfrakV" : "\u{1D519}",
+    "\\mathfrakv" : "\u{1D533}",
+    "\\mathfrakW" : "\u{1D51A}",
+    "\\mathfrakw" : "\u{1D534}",
+    "\\mathfrakX" : "\u{1D51B}",
+    "\\mathfrakx" : "\u{1D535}",
+    "\\mathfrakY" : "\u{1D51C}",
+    "\\mathfraky" : "\u{1D536}",
+    "\\mathfrakZ" : "\u2128",
+    "\\mathfrakz" : "\u{1D537}",
+
+    // Script
+    "\\mathcalA" : "\u{1D49C}",
+    "\\mathcala" : "\u{1D4B6}",
+    "\\mathcalB" : "\u212C",
+    "\\mathcalb" : "\u{1D4B7}",
+    "\\mathcalC" : "\u{1D49E}",
+    "\\mathcalc" : "\u{1D4B8}",
+    "\\mathcalD" : "\u{1D49F}",
+    "\\mathcald" : "\u{1D4B9}",
+    "\\mathcalE" : "\u2130",
+    "\\mathcale" : "\u212F",
+    "\\mathcalF" : "\u2131",
+    "\\mathcalf" : "\u{1D4BB}",
+    "\\mathcalG" : "\u{1D4A2}",
+    "\\mathcalg" : "\u210A",
+    "\\mathcalH" : "\u210B",
+    "\\mathcalh" : "\u{1D4BD}",
+    "\\mathcalI" : "\u2110",
+    "\\mathcali" : "\u{1D4BE}",
+    "\\mathcalJ" : "\u{1D4A5}",
+    "\\mathcalj" : "\u{1D4BF}",
+    "\\mathcalK" : "\u{1D4A6}",
+    "\\mathcalk" : "\u{1D4C0}",
+    "\\mathcalL" : "\u2112",
+    "\\mathcall" : "\u{1D4C1}",
+    "\\mathcalM" : "\u2133",
+    "\\mathcalm" : "\u{1D4C2}",
+    "\\mathcalN" : "\u{1D4A9}",
+    "\\mathcaln" : "\u{1D4C3}",
+    "\\mathcalO" : "\u{1D4AA}",
+    "\\mathcalo" : "\u2134",
+    "\\mathcalP" : "\u{1D4AB}",
+    "\\mathcalp" : "\u{1D4C5}",
+    "\\mathcalQ" : "\u{1D4AC}",
+    "\\mathcalq" : "\u{1D4C6}",
+    "\\mathcalR" : "\u211B",
+    "\\mathcalr" : "\u{1D4C7}",
+    "\\mathcalS" : "\u{1D4AE}",
+    "\\mathcals" : "\u{1D4C8}",
+    "\\mathcalT" : "\u{1D4AF}",
+    "\\mathcalt" : "\u{1D4C9}",
+    "\\mathcalU" : "\u{1D4B0}",
+    "\\mathcalu" : "\u{1D4CA}",
+    "\\mathcalV" : "\u{1D4B1}",
+    "\\mathcalv" : "\u{1D4CB}",
+    "\\mathcalW" : "\u{1D4B2}",
+    "\\mathcalw" : "\u{1D4CC}",
+    "\\mathcalX" : "\u{1D4B3}",
+    "\\mathcalx" : "\u{1D4CD}",
+    "\\mathcalY" : "\u{1D4B4}",
+    "\\mathcaly" : "\u{1D4CE}",
+    "\\mathcalZ" : "\u{1D4B5}",
+    "\\mathcalz" : "\u{1D4CF}",
 
     // For Lewis Notation
     "\\above." : "\u0307",
@@ -641,6 +813,7 @@ const mathDictionary = {
     "\\underline" : "\u0332",
     "\\ooverline" : "\u035E",
     "\\uunderline" : "\u035F",
+    "\\uunderarrow" : "\u0362",
     "\\overfrown" : "\u0361",
     "\\oversmile" : "\u035D",
     "\\undersmile" : "\u035C",
@@ -650,6 +823,8 @@ const mathDictionary = {
     "\\ttilde" : "\u0360",
     "\\vec" : "\u20D7",
     "\\overinf" : "\u1AB2",  // Only works on certain website/apps
+    "\\overring" : "\u030A",
+    "\\overcirc" : "\u030A",
 
     "\\overa" : "\u0363",
     "\\overc" : "\u0368",
@@ -678,16 +853,46 @@ const mathDictionary = {
     "\\^theta" : "\u1DBF",
     "\\^iota" : "ᶥ",
     "\\^nu" : "ᶹ",
-    "\\^phi" : "\u1D60",
+    "\\^sigma" : "ᣙ",
+    "\\^phi" : "ᶲ",
+    "\\^varphi" : "\u1D60",
+    "\\^rho" : "ᣖ",
     "\\^chi" : "\u1D61",
 
     "\\_beta" : "\u1D66",
     "\\_gamma" : "\u1D67",
     "\\_rho" : "\u1D68",
-    "\\_phi" : "\u1D69",
+    "\\_varphi" : "\u1D69",
     "\\_chi" : "\u1D6A",
 
     "\\^int" : "ᶴ",
+    "\\^neq" : "ᙾ",
+    "\\^circ" : "°",
+    "\\^dollar" : "ᙚ",
+    "\\^infty" : "\\: \u1AB2 \\:",  // Only works on certain website/apps
+    "\\^emptyset" : "\u{1D1A9}",
+
+    "\\_->" : "\\: \\: \u0362 \\: \\:",
+    "\\_rightarrow" : "\\: \\: \u0362 \\: \\:",
+    "\\_infty" : "\\: \u035A \\:",
+
+    "\\^" : "^",
+    "\\_" : "_",
+
+    // Matrix
+    "\\id1" : "[1]",
+    "\\id2" : "\u23A1 \\: 1 \\: 0 \\: \u23A4 \u000A \u23A3 \\: 0 \\: 1 \\: \u23A6",
+    "\\id3" : "\u23A1 \\: 1 \\: 0 \\: 0 \\: \u23A4 \u000A \u23A2 \\: 0 \\: 1 \\: 0 \\: \u23A5 \u000A \u23A3 \\: 0 \\: 0 \\: 1 \\: \u23A6",
+    "\\id4" : "\u23A1 \\: 1 \\: 0 \\: 0 \\: 0 \\: \u23A4 \u000A \u23A2 \\: 0 \\: 1 \\: 0 \\: 0 \\: \u23A5 \u000A \u23A2 \\: 0 \\: 0 \\: 1 \\: 0 \\: \u23A5 \u000A \u23A3 \\: 0 \\: 0 \\: 0 \\: 1 \\: \u23A6",
+    "\\idn" : "\u23A1 \\: 1 \\: 0 \\: \u22EF \\: 0 \\: \u23A4 \u000A \u23A2 \\: 0 \\: 1 \\: \u22EF \\: 0 \\: \u23A5 \u000A \u23A2 \\: \\: \u22EE \\: \\: \u22EE \\: \\: \u22F1 \\: \\: \u22EE \\: \u23A5 \u000A \u23A3 \\: 0 \\: 0 \\: \u22EF \\: 1 \\: \u23A6",
+    
+    // To build your own
+    "\\mlceil" : "\u23A1",
+    "\\mrceil" : "\u23A4",
+    "\\mlmid" : "\u23A2",
+    "\\mrmid" : "\u23A5",
+    "\\mlfloor" : "\u23A3",
+    "\\mrfloor" : "\u23A6",
 
     // Music
     "\\flat" : "\u{1D12C}",
@@ -707,6 +912,9 @@ const mathDictionary = {
     "\\tieinfty" : "\u29DD",
     "\\nvinfty" : "\u29DE",
     "\\acidfree" : "\u267E",
+    "\\radioactive" : "\u2622",
+    "\\biohazard" : "\u2623",
+    "\\atom" : "\u269B",
     "\\angle" : "\u2220",
     "\\measuredangle" : "\u2221",
     "\\sphericalangle" : "\u2222",
@@ -715,12 +923,18 @@ const mathDictionary = {
     "\\ell" : "\u2113",
     "\\dagger" : "\u2020",
     "\\ddagger" : "\u2021",
+    "\\hermitian" : "\u22B9",
     "\\qc" : "\u269C",
     "\\section" : "\u00A7",
     "\\paragraph" : "\u00B6",
     "\\copyright" : "\u00A9",
     "\\registered" : "\u00AE",
     "\\wp" : "\u2118",
+    "\\laplace" : "\u2112",
+    "\\bloch" : "\u212C",
+    "\\im" : "\u2111",
+    "\\fourier" : "\u2131",
+    "\\angstrom" : "\u212B",
     "\\emdash" : "\u2014",
     "\\bullet" : "\u25CF",
     "\\langle" : "\u27E8",
@@ -748,7 +962,8 @@ const mathDictionary = {
     "\\femalefemale" : "\u26A2",
     "\\femalemale" : "\u26A4",
     "\\" : "\\",
-    "\\:" : "\\:",
+    "\\:" : "\\:",  // Space
+    "\\;" : "\\: \\:",  // Double space
     "\\colon" : "\u003A",
     "\\\\" : "\u000A",
     "\\tab" : "\u0009"
@@ -769,6 +984,8 @@ const lettersSymbols = {
     "|" : "|",
     "!" : "!",
     "?" : "?",
+    "$" : "$",
+    "@" : "@",
     "&" : "&",
     "(" : "(",
     ")" : ")",
@@ -850,6 +1067,8 @@ const lettersSymbols = {
 
 const subscript = {
     "_" : "",
+    "{" : "",  // No error if someone uses ^{x} instead of ^x (aka LaTeX habits)
+    "}" : "",
     "0" : "\u2080",
     "1" : "\u2081",
     "2" : "\u2082",
@@ -865,6 +1084,8 @@ const subscript = {
     "=" : "\u208C",
     "(" : "\u208D",
     ")" : "\u208E",
+    "," : "\\: \u0326 \\:",
+    "." : "\\: \u0323 \\:",
     "a" : "\u2090",
     "e" : "\u2091",
     "h" : "\u2095",
@@ -886,6 +1107,8 @@ const subscript = {
 
 const superscript = {
     "^" : "",
+    "{" : "",  // No error if someone uses ^{x} instead of ^x (aka LaTeX habits)
+    "}" : "",
     "0" : "\u2070",
     "1" : "\u00B9",
     "2" : "\u00B2",
@@ -903,6 +1126,9 @@ const superscript = {
     ")" : "\u207E",
     "\\" : "ᐠ",
     "/" : "ᐟ",
+    "." : "ᐧ",
+    "," : "\u02D2",
+    "$" : "ᙚ",
     "A" : "ᴬ",
     "a" : "ᵃ",
     "B" : "ᴮ",
@@ -976,8 +1202,10 @@ const lettersChem = {
     "^" : "^",
     "_" : "_",
     "%" : "%",
+    "$" : "$",
+    "@" : "@",
     "#" : "#",
-    ":" : ":",
+    ":" : ":",  // Same as "\colon", use "\ratio" instead to get the same as without "$chem"
     ";" : ";",
     "0" : "0",
     "1" : "1",
@@ -1049,33 +1277,124 @@ submit.onclick = function() {main()};
 
 // Copy button
 const copyButton = document.getElementById("copy");
-copyButton.onclick = function () {copy()};
+copyButton.onclick = function() {copyTextOut()};
 
 // Clear button
 const resetButton = document.getElementById("reset");
-resetButton.onclick = function () {clear()};
+resetButton.onclick = function() {clear()};
+
+// Remove spaces button
+const spacesButton = document.getElementById("remove");
 
 // Every undefined commands
 let errorsList = "";
 
 
 
+
 /// FUNCTIONS ///
 
-// Copy to clipboard
-function copy() {
-    const copyText = document.getElementById("text_out");
-    navigator.clipboard.writeText(copyText.value);
-    copyButton.value = "Copied!";
-    copyButton.style.cursor = "default";
+// Saves the text in the first box so it doesn't disappear if you change page or close MatTalX
+window.addEventListener("blur", () => {
+    chrome.storage.sync.set({"box1" : document.getElementById("text_in").value});
+    chrome.storage.sync.set({"check" : spacesButton.checked});
+});
 
-    setTimeout(() => {
-        copyButton.value = "Copy text";
-        copyButton.style.cursor = "pointer";
-    }, 3000)  // Returns to initial copyButton
+// Retreives the text when the popup reopens
+window.addEventListener("focus", () => {
+    const textIn = document.getElementById("text_in");
+    chrome.storage.sync.get(["box1"], (text) => {
+        if (text.box1 !== undefined) {
+            textIn.value = text.box1;
+        };
+    });
+    chrome.storage.sync.get(["check"], (button) => {
+        if (button.check === false) {
+            spacesButton.checked = false;
+        };
+    })
+    textIn.focus();
+});
+
+// Listens for message from background.js
+chrome.runtime.onMessage.addListener((message) => {
+    if (message == "installed") {
+        firstMessage();
+    } else if (message == "updated") {
+        updateMessage();
+    } else if (message == "copyFirst") {
+        copyTextIn();
+    } else if (message == "copySecond") {
+        copyTextOut();
+    } else if (message == "closePopup") {
+        window.close();
+    };
+    return true;
+});
+
+// Message for first time users
+function firstMessage() {
+    // Writes explanation in the two text boxes
+    let text = "Welcome to MatTalX! At any moment, you can look at the documentation by putting your mouse above the question mark (?) " + 
+    "on the top right corner. MatTalX almost always uses the same command as LaTeX, but there are some differences.";
+    let tutorial = "First and foremost, it is important to always separate commands with spaces\r\n" + 
+    " \\alpha_i → error | \\alpha _i → 𝛼ᵢ\r\n" + 
+    "Every letter will automatically be converted to a mathematical font, if you do not want that, you can start your text with '$chem'. " + 
+    "If you simply want a single letter to not be in the mathematical font, add '\\' before the letter\r\n" + 
+    " a → \u{1d44e} | \\a → a\r\n" + 
+    "As a last tip, if you get an error and the command seems right, the character that you want might not exist in unicode.\r\n" + 
+    " x ^z → \u{1d465}ᶻ | x ^Z → \u{1d465} error (ie z exists in superscript but not Z)\r\n" +
+    "But, before jumping to conclusion, please look at the documentation! The command, for various reason, might be different than in LaTeX!";
+    document.text_input.text_in.value = text;
+    document.text_input.text_out.value = tutorial;
 };
 
-// Pretty self explanatory
+// Message after an update
+function updateMessage() {
+    // Get current version
+    let req = new XMLHttpRequest();
+    req.open("GET", "manifest.json", false);
+    req.send(null);
+    const currentVersion = JSON.parse(req.responseText);
+
+    // Writes explanation in the second box
+    // To be changed by hand every version
+    let majorChanges = "Welcome to MatTalX version " + currentVersion["version"] + "\r\n \r\n" + 
+    "Major changes: \r\n" +
+    "1) Start the text with '$matrix' and convert [a,b][0,1] to a matrix!\r\n" + 
+    "2) Press Ctrl+M to open MatTalx and Alt+M to close it. Press Alt+1 to copy what's in the first box (input) and Alt+2 to copy what's in the second box (output)\r\n" +
+    "3) New commands were added, find more about them in the documentation! Simply put your mouse above the question mark (?) to find it.";
+    document.text_input.text_out.value = majorChanges;
+};
+
+// Copy second box (output) to clipboard
+function copyTextOut() {
+    const copyText = document.getElementById("text_out");
+    if (copyText.disabled === false) {
+        navigator.clipboard.writeText(copyText.value);
+        copyButton.value = "Copied!";
+        copyButton.style.cursor = "default";
+        copyText.style.border = "2px solid black";
+
+        setTimeout(() => {
+            copyButton.value = "Copy text";
+            copyButton.style.cursor = "pointer";
+            copyText.style.border = "1px solid black";
+        }, 2500)  // Returns to initial copyButton
+    };
+};
+
+// Copy first box (input) to clipboard
+function copyTextIn() {
+    const textIn = document.getElementById("text_in");
+    navigator.clipboard.writeText(textIn.value);
+    textIn.style.border = "2px solid black";
+    setTimeout(() => {
+        textIn.style.border = "1px solid black";
+    }, 2500);
+};
+
+// Clears everything
 function clear() {
     copyButton.value = "Copy text";
     copyButton.style.cursor = "pointer";
@@ -1085,11 +1404,11 @@ function clear() {
 
 // Remove spaces and add some around "=" and "\implies"
 function removeSpace(text) {
-    const checkedButton = document.getElementById("remove");
-    if (checkedButton.checked == true) {
+    if (spacesButton.checked == true) {
         text = text.replace(/ /g, "");
         text = text.replace(/\=/g, " \= ");
-        text = text.replace(/\u27F9/g, " \u27F9 ");
+        text = text.replace(/\u2260/g, " \u2260 ");  // not equal ("\neq")
+        text = text.replace(/\u27F9/g, " \u27F9 ");  // "\implies" arrow
     };
     return text;
 };
@@ -1106,6 +1425,7 @@ function replaceLetters(word, dictionary) {
     let newWord = "";
     for (i in word) {
         newWord += word[i].replace(word[i], dictionary[word[i]]);
+        mistakes(word, dictionary[word[i]], word[i]);
     };
     return newWord;
 };
@@ -1120,30 +1440,136 @@ function chemistry(words, newText) {
             mistakes(words[i], mathDictionary[words[i]]);
         } else if (firstLetter == "_") {
             newText = newText.replace(words[i], replaceLetters(words[i], subscript));
-            mistakes(words[i], replaceLetters(words[i], subscript));
         } else if (firstLetter == "^") {
             newText = newText.replace(words[i], replaceLetters(words[i], superscript));
-            mistakes(words[i], replaceLetters(words[i], superscript));
         } else {
             newText = newText.replace(words[i], replaceLetters(words[i], lettersChem));
-            mistakes(words[i], replaceLetters(words[i], lettersChem));
         };
     };
     return newText;
 };
 
-// Add spaces (around "+" and arrows) for the Chemistry package
+// Remove spaces and add some around "+" and arrows for the Chemistry package
 function adjustSpaceChem(text) {
-    text = text.replace(/ /g, "");
-    text = text.replace(/\+/g, " + ");
-    text = text.replace(/\u27F6/g, " \u27F6 ");
-    text = text.replace(/\u21CC/g, " \u21CC ");
-    text = text.replace(/\u21CB/g, " \u21CB ");
-    text = text.replace(/\u21C0/g, " \u21C0 ");
-    text = text.replace(/\u21C1/g, " \u21C1 ");
-    text = text.replace(/\u21BC/g, " \u21BC ");
-    text = text.replace(/\u21BD/g, " \u21BD ");
+    if (spacesButton.checked == true) {
+        text = text.replace(/ /g, "");
+        text = text.replace(/\+/g, " + ");
+        text = text.replace(/\u27F6/g, " \u27F6 ");
+        text = text.replace(/\u21CC/g, " \u21CC ");
+        text = text.replace(/\u21CB/g, " \u21CB ");
+        text = text.replace(/\u21C0/g, " \u21C0 ");
+        text = text.replace(/\u21C1/g, " \u21C1 ");
+        text = text.replace(/\u21BC/g, " \u21BC ");
+        text = text.replace(/\u21BD/g, " \u21BD ");
+    };
     return text;
+};
+
+// Matrix package, converts arrays into a matrix
+function matrix(text) {
+    text = text.replace(/ /g, "");
+    let matrixText = "";
+    let i, x;
+    let cpt = 0;
+    let rceil = 0;
+    let lceil = 0;
+    let lfloor = 0;
+    let rfloor = 0;
+
+    for (x in text) {
+        if (text[x] == "[" || text[x] == "]") {
+            cpt += 1;
+        };
+    };
+    if (cpt == 2) {
+        // vector (ie single line matrix)
+        matrixText = text.replace(/ /g, "");
+        matrixText = matrixText.replace(/\[/g, "[ ");
+        matrixText = matrixText.replace(/\]/g, " ]");
+        matrixText = matrixText.replace(/,/g, "\\:");
+        return matrixText;
+    } else {
+        for (i in text) {
+            if (text[i] == "[" && rceil == 0) {
+                matrixText += "\u23A1 ";
+                rceil += 1;
+            } else if (text[i] == "]" && lceil == 0) {
+                matrixText += " \u23A4\u000A";
+                lceil += 1;
+            } else if (text[i] == "]") {
+                matrixText += " \u23A5\u000A";
+            } else if (text[i] == "[") {
+                matrixText += "\u23A2 ";
+            } else {
+                matrixText += text[i];
+            }
+        };
+        for (let n = matrixText.length; n > 0; n--) {
+            if (matrixText[n] == "\u23A5" && n > rfloor) {
+                matrixText = matrixText.split("");
+                matrixText[n] = "\u23A6";
+                matrixText[n+1] = "";  // removes "\u000A" since it's the last line
+                matrixText = matrixText.join("");
+                rfloor = n;
+            } else if (matrixText[n] == "\u23A2" && n > lfloor) {
+                matrixText = matrixText.split("");
+                matrixText[n] = "\u23A3";
+                matrixText = matrixText.join("");
+                lfloor = n;
+            };
+        };
+    };
+    matrixText = matrixCols(matrixText);  // Adjusts columns width
+    matrixText = matrixText.replace(/,/g, "\\:");  // Add spaces between characters
+    if ((cpt % 2 != 0) || (cpt == 0)) {
+        matrixText = "";
+        mistakes('Wrong arguments given" \r\n \r\nExample: "$matrix [a,b,c] [d,e,f] [1,2,3]', undefined);
+    };
+    return matrixText;
+};
+
+// Adjusts columns length for $matrix package
+function matrixCols(matrix) {
+    let positionLength = 0;
+    let posLengths = [];
+    let matrixPositions = [];
+    let matrixPos = 0;
+    let realPositions = [];
+    for (let i in matrix) {
+        if (matrix[i] == ",") {
+            matrixPositions.push(matrixPos);
+            matrixPos += 1;
+            posLengths.push(positionLength);
+            positionLength = 0;
+            realPositions.push(i-1);
+        } else if ((matrix[i] == "\u23A4") || (matrix[i] == "\u23A5") || (matrix[i] == "\u23A6")) {  // right bracket
+            matrixPositions.push(matrixPos);
+            matrixPos = 0;
+            posLengths.push(positionLength);
+            positionLength = 0;
+            realPositions.push(i-2);
+        } else if ((matrix[i] == "\u23A1") || (matrix[i] == "\u23A2") || (matrix[i] == "\u23A3") || (matrix[i] == " ") || (matrix[i] == "\u000A")) {  // left bracket and spaces
+            continue;
+        } else {
+            positionLength += 1;
+        };
+    };
+    // Add spaces to adjust columns length
+    let spacesAdded = 1;
+    for (let i in posLengths) {
+        for (let n in matrixPositions) {
+            if (matrixPositions[i] == matrixPositions[n]) {
+                matrix = matrix.split("");
+                while (posLengths[i] < posLengths[n]) {
+                    matrix.splice(realPositions[i] + spacesAdded, 0, " ");
+                    posLengths[i] += 1;
+                    spacesAdded += 1;
+                };
+                matrix = matrix.join("");
+            };
+        };
+    };
+    return matrix;
 };
 
 // Changes "undefined" to "err"
@@ -1154,19 +1580,22 @@ function errors(text) {
 };
 
 // Writes every errors in a box, so it's easier to find them
-function mistakes(textInput, textOutput) {
+function mistakes(textInput, textOutput, letter="") {
     const popup = document.getElementById("mistakes");
-    const text = "<span id='errorsTitle'>Errors: </span><br>";
+    popup.setAttribute("style", "white-space: pre;");
+    const text = "\u{1D404}\u{1D42B}\u{1D42B}\u{1D428}\u{1D42B}\u{1D42C}: \r\n";  // "Errors" in bold
     if (textOutput === undefined) {
-        errorsList += '"' + textInput + '" <br>';
+        if (letter != "") {
+            errorsList += textInput + " \u2192 " + '"' + letter + '" \r\n';
+        } else {
+        errorsList += '"' + textInput + '" \r\n';
+        };
     };
     if (errorsList.length > 0) {
-        popup.innerHTML = text + errorsList;
+        popup.textContent = text + errorsList;
         
         popup.style.fontFamily = "Times New Roman";
         popup.style.fontSize = "15px";
-        const errorsTitleStyle = document.getElementById("errorsTitle").style;
-        errorsTitleStyle.fontWeight = "bold";
     };
 };
 
@@ -1177,21 +1606,22 @@ function convert(words, newText) {
         newText = newText.replace("$chem", "");
         newText = chemistry(words, newText);
         newText = adjustSpaceChem(newText);
+    } else if (words[0] == "$matrix") {
+        newText = newText.replace("$matrix", "");
+        newText = matrix(newText);
     } else {
-    for (i in words) {
+        for (i in words) {
         let firstLetter = words[i].charAt(0);
         if (firstLetter == "\\") {
             newText = newText.replace(words[i], mathDictionary[words[i]]);
             mistakes(words[i], mathDictionary[words[i]]);
         } else if (firstLetter == "_") {
             newText = newText.replace(words[i], replaceLetters(words[i], subscript));
-            mistakes(words[i], replaceLetters(words[i], subscript));
         } else if (firstLetter == "^") {
             newText = newText.replace(words[i], replaceLetters(words[i], superscript));
-            mistakes(words[i], replaceLetters(words[i], superscript));
         } else {
+            newText = errors(newText);  // Removes bug ("undefined" with a letter from undefined after)
             newText = newText.replace(words[i], replaceLetters(words[i], lettersSymbols));
-            mistakes(words[i], replaceLetters(words[i], lettersSymbols));
         };
     };
     newText = removeSpace(newText);
@@ -1202,8 +1632,7 @@ function convert(words, newText) {
 
 // Takes the original text and spits out the new one
 function main() {
-
-    document.getElementById("mistakes").innerHTML = "";  // Starts with an empty box for errors
+    document.getElementById("mistakes").textContent = "";  // Starts with an empty box for errors
     errorsList = "";  // Makes sure it starts empty
 
     const fullText = document.text_input.text_in.value;
@@ -1214,6 +1643,5 @@ function main() {
     newText = spaceCommand(newText);
     document.text_input.text_out.value = newText;
     document.getElementById("text_out").disabled = false;
-
 };
 
