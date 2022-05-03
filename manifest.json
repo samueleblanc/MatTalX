@@ -47,6 +47,5 @@
       },
       "default_title" : "MatTalX - Write math symbols"
     },
-    "permissions" : ["storage"],
-    "host_permissions": ["*://*/*"]
+    "permissions" : ["storage"]
   }
