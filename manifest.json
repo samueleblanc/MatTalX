@@ -1,7 +1,7 @@
 {
     "name": "MatTalX - Write math symbols",
     "description": "Write mathematical expression in UTF format - Convert LaTeX command to text!",
-    "version": "1.0.0",
+    "version": "1.5.0",
     "icons" : {
       "32": "/Images/mattalx_favicon32.png",
       "48": "/Images/mattalx_favicon48.png",
@@ -16,30 +16,11 @@
         "suggested_key" : {
           "default" : "Ctrl+M",
           "mac" : "Command+M"
-        },
-        "description" : "Open MatTalX"
-      },
-      "close-popup" : {
-        "suggested_key" : {
-          "default" : "Alt+M"
-        },
-        "description" : "Close MatTalX"
-      },
-      "copy-text-out" : {
-        "suggested_key" : {
-          "default" : "Alt+2"
-        },
-        "description" : "Copy text of the second box (output)"
-      },
-      "copy-text-in" : {
-        "suggested_key" : {
-          "default" : "Alt+1"
-        },
-        "description" : "Copy text of the first box (input)"
+        }
       }
     },
     "action" : {
-      "default_popup": "main.html",
+      "default_popup": "popup.html",
       "default_icon": {
         "32": "/Images/mattalx_favicon32.png",
         "48": "/Images/mattalx_favicon48.png",
