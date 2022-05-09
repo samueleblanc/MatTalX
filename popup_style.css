@@ -98,14 +98,13 @@ header {
 .dropdownInfo {
     display: none;
     position: absolute;
-    width: 100%;
-    min-width: 150px;
+    width: max-content;
     overflow: auto;
     right: 0;
     background-color: whitesmoke;
     border-radius: 7px;
 }
-.dropdownInfo a {
+.dropdownInfo a{
     display: block;
     padding: 5px;
     color: black;
@@ -122,4 +121,33 @@ header {
     background-color: white;
     border: none;
     float: right;
+}
+.shortcutTitle {
+    padding-top: 6px;
+    padding-bottom: 0px;
+}
+.shortcuts {
+    color: black;
+    font-size: 15x;
+    font-family: 'Times New Roman';
+    text-decoration: none;
+}
+.suggestion {
+    display: inline-block;
+    position: relative;
+}
+#suggestions {
+    display: none;
+    width: 140px;
+    min-height: 20px;
+    height: fit-content;
+    border: 1px solid gray;
+    border-radius: 5px;
+    background-color: whitesmoke;
+    position: absolute;
+}
+tr, td {
+    border-collapse: collapse;
+    border: 1px solid whitesmoke;
+    background-color: white;
 }
