@@ -1321,6 +1321,7 @@ window.addEventListener("focus", () => {
         };
     });
     chrome.storage.sync.get(["check"], (button) => {
+        // Default is true
         if (button.check === false) {
             spacesButton.checked = false;
         };
@@ -1400,7 +1401,8 @@ window.addEventListener("keydown", (keyPressed) => {
                 suggestions(word);
             } else if ((keyPressed.key === "ArrowUp") || (keyPressed.key === "ArrowRight") || (keyPressed.key === "ArrowLeft") || (keyPressed.key === "ArrowDown")) {
                 suggestionsPopup.textContent = "";
-                let word = findWord(textIn.value, textIn.selectionEnd - 1);
+                const arrows = {"ArrowUp": 0, "ArrowRight": 1, "ArrowLeft": -1, "ArrowDown": 0};
+                let word = findWord(textIn.value, (textIn.selectionEnd - 1 + arrows[keyPressed.key]));  // Only adjusts the cursor position for right and left arrows
                 suggestions(word);
             };
         };
@@ -1440,6 +1442,7 @@ function suggestions(command) {
         cell.textContent = "The first character of the command must be a backslash (\\)";
     } else {
         const textIn = document.getElementById("text_in");
+        command = command.substring(1, command.length);  // Erases the backslash (for instance, \arrow will also show \rightarrow, etc.)
         for (keys in mathDictionary) {
             // Puts commands in button form, so they can be clicked on to replace the command being written
             if (keys.toLowerCase().indexOf(command.toLowerCase()) !== -1) {
