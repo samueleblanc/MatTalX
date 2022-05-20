@@ -977,6 +977,7 @@ const mathDictionary = {
     "\\;" : "\\: \\:",  // Double space
     "\\colon" : "\u003A",
     "\\\\" : "\u000A",
+    "\\linebreak" : "\u000A",
     "\\tab" : "\u0009"
 };
 
@@ -1011,6 +1012,7 @@ const lettersSymbols = {
     "#" : "#",
     ":" : "\u2236",
     ";" : ";",
+    "…" : "…",
     "0" : "0",
     "1" : "1",
     "2" : "2",
@@ -1216,6 +1218,7 @@ const lettersChem = {
     "#" : "#",
     ":" : ":",  // Same as "\colon", use "\ratio" instead to get the same as without "$chem"
     ";" : ";",
+    "…" : "…",
     "0" : "0",
     "1" : "1",
     "2" : "2",
@@ -1360,11 +1363,10 @@ function firstMessage() {
 function updateMessage() {
     // Writes explanation in the second box
     // To be changed by hand every version
-    let majorChanges = "Welcome to MatTalX version 1.5.0 \r\n \r\n" + 
+    let majorChanges = "Welcome to MatTalX version 1.5.1 \r\n \r\n" + 
     "Major changes: \r\n" +
-    "1) Press Alt+S while writing a command to show suggestions!\r\n" + 
-    "2) Press Ctrl+M to open or close MatTalx, press Alt+I to copy what's in the first box (input) and Alt+O to copy what's in the second box (output)\r\n" +
-    "3) New commands were added, find more about them in the documentation! Simply put your mouse above the question mark (?) to find it.";
+    "1) Some minor bug were fixed with 'suggestions box' and url to documentation \r\n" +
+    "2) New commands were added, find more about them in the documentation! Simply put your mouse above the question mark (?) to find it.";
     document.text_input.text_out.value = majorChanges;
 };
 
@@ -1489,11 +1491,11 @@ function closeSuggestions() {
 function semiAutoCompletion(textIn, cursorPosition, command) {
     let textOut = textIn;
     // Find end of word
-    while ((textIn.charAt(cursorPosition) !== " ") && (textIn.charAt(cursorPosition) !== "")) {
+    while ((textIn.charAt(cursorPosition) !== " ") && (textIn.charAt(cursorPosition) !== "") && (textIn.charAt(cursorPosition) !== "\u000A")) {
         cursorPosition += 1;
     };
     // Deletes word
-    while ((textIn.charAt(cursorPosition - 1) !== " ") && (textIn.charAt(cursorPosition - 1) !== "")) {
+    while ((textIn.charAt(cursorPosition - 1) !== " ") && (textIn.charAt(cursorPosition - 1) !== "") && (textIn.charAt(cursorPosition - 1) !== "\u000A")) {
         textOut = textOut.split("");
         textOut[cursorPosition] = "";
         textOut = textOut.join("");
