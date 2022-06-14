@@ -1,5 +1,8 @@
 ![MatTalX logo](chrome/Images/mattalx_logo.png)
 
+
+## Documentation
+
 <a href="https://samueleblanc.com/mattalx/documentation.html" target="_blank">Full documentation</a>
 
 ## Presentation from the Chrome webstore and Firefox Add-ons marketplace
