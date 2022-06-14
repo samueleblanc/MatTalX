@@ -1,0 +1,43 @@
+<!--The GitHub repo for the website is at https://github.com/samueleblanc/Website-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://samueleblanc.com/mattalx/web-version.css">
+    <script src="https://samueleblanc.com/mattalx/convert-text.js" defer></script>
+    <link rel="icon" href="https://samueleblanc.com/Pictures/mattalx favicon.png">
+    <title>MatTalX</title>
+</head>
+<body>
+    <header>
+        <div class="infoDiv"><button class="infoButton"><img class="info" alt="Info" src="https://samueleblanc.com/Pictures/question mark.png"></button><br>
+        <div class="dropdownInfo">
+            <a target="_blank" href="https://samueleblanc.com/mattalx/documentation.html">Documentation</a>
+            <a target="_blank" href="https://github.com/samueleblanc/MatTalX">Code (GitHub)</a>
+            <label for="remove">Remove spaces</label><input type="checkbox" name="remove" id="remove" checked><br>
+            <p class="shortcuts">
+            <b class="shortcutTitle">Shorcuts</b><br>
+                Alt+I : Copy input (first box)<br>
+                Alt+O : Copy ouput (second box)<br>
+                Alt+S : Open/Close suggestions</p>
+        </div></div><br>
+        <img id="title" alt="MatTalX" src="https://samueleblanc.com/Pictures/mattalx logo.png">
+    </header>
+    <div id="body">
+    <form name="text_input">
+        <textarea type="text" name="text_in" id="text_in"></textarea>
+        <div class="suggestion"><table id="suggestions"></table></div><br>
+        <input type="button" value="Convert" id="button">
+        <input type="button" value="Suggestions" id="suggestionsBtn">
+        <input type="reset" value="Clear" id="reset"><br><br>
+        <textarea type="text" name="text_out" id="text_out" disabled></textarea><br><br>
+        <input type="button" value="Copy text" id="copy"><br>
+        <p id="mistakes"></p><br>
+    </form>
+    </div>
+<a href="https://chrome.google.com/webstore/detail/mattalx-write-math-symbol/jllceliamggkpffccbefpefgmcigaglb" target="_blank"><img src="https://samueleblanc.com/Pictures/chrome web store.png" alt="Chrome web store" id="chromeStore"></a><br>
+<a href="https://addons.mozilla.org/firefox/addon/mattalx-write-math-symbols/" target="_blank"><img src="https://samueleblanc.com/Pictures/firefox addons.png" alt="Firefox Add-ons" id="firefoxAddOns"></a>
+</body>
+</html>
