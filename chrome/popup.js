@@ -1458,8 +1458,8 @@ function updateMessage(version) {
     // To be changed by hand every version
     let majorChanges = "Welcome to MatTalX version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
-    "1) Write a message for every update (like this one) and for first time users \r\n" +
-    "2) New commands were added, find more about them in the documentation! Simply put your mouse above the question mark (?) to find it.";
+    "1) Box drawing commands were added, find more about them in the documentation! Simply put your mouse above the question mark (?) to find it.\r\n \r\n" + 
+    "ex:  \\boxur → └";
     document.text_input.text_out.value = majorChanges;
 };
 
