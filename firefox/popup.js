@@ -3037,7 +3037,7 @@ function updateMessage(version) {
     document.text_input.text_out.value = majorChanges;
 };
 
-// Listens for Alt+S to show suggestions, Alt+I to copy text of the first box (input) and Alt+O to copy text in the second box (output)
+// Listens for Alt+C to show suggestions, Alt+I to copy text of the first box (input) and Alt+O to copy text in the second box (output)
 document.addEventListener("keydown", (keyPressed) => {
     const textIn = document.getElementById("text_in");
     // Alt+S to shows suggestions but closes the popup if the suggestion box is already opened
