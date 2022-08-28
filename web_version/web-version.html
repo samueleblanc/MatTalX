@@ -5,8 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://samueleblanc.com/mattalx/web-version.css">
-    <script src="https://samueleblanc.com/mattalx/convert-text.js" defer></script>
+    <link rel="stylesheet" href="web-version.css">
+    <script src="/web_version/convert-text.js" defer></script>
     <link rel="icon" href="https://samueleblanc.com/Pictures/mattalx favicon.png">
     <title>MatTalX</title>
 </head>
@@ -16,7 +16,7 @@
         <div class="dropdownInfo">
             <a target="_blank" href="https://samueleblanc.com/mattalx/documentation.html">Documentation</a>
             <a target="_blank" href="https://github.com/samueleblanc/MatTalX">Code (GitHub)</a>
-            <label for="remove">Remove spaces</label><input type="checkbox" name="remove" id="remove" checked><br>
+            <label for="adjust">Adjust spaces</label><input type="checkbox" name="adjust" id="adjust" checked><br>
             <p class="shortcuts">
             <b class="shortcutTitle">Shorcuts</b><br>
                 Alt+I : Copy input (first box)<br>
@@ -27,12 +27,12 @@
     </header>
     <div id="body">
     <form name="text_input">
-        <textarea type="text" name="text_in" id="text_in"></textarea>
+        <textarea type="text" name="text_in" id="text_in" spellcheck="false"></textarea>
         <div class="suggestion"><table id="suggestions"></table></div><br>
         <input type="button" value="Convert" id="button">
         <input type="button" value="Suggestions" id="suggestionsBtn">
         <input type="reset" value="Clear" id="reset"><br><br>
-        <textarea type="text" name="text_out" id="text_out" disabled></textarea><br><br>
+        <textarea type="text" name="text_out" id="text_out" spellcheck="false" disabled></textarea><br><br>
         <input type="button" value="Copy text" id="copy"><br>
         <p id="mistakes"></p><br>
     </form>

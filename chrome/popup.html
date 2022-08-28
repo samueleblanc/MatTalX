@@ -14,7 +14,7 @@
         <div class="dropdownInfo">
             <a target="_blank" href="https://samueleblanc.com/mattalx/documentation.html">Documentation</a>
             <a target="_blank" href="https://github.com/samueleblanc/MatTalX">Code (GitHub)</a>
-            <label for="remove">Remove spaces</label><input type="checkbox" name="remove" id="remove" checked><br>
+            <label for="adjust">Adjust spaces</label><input type="checkbox" name="adjust" id="adjust" checked><br>
             <p class="shortcuts"></p>
             <b class="shortcutTitle">Shorcuts</b><br>
                 Ctrl+M : Open/Close MatTalX<br>
@@ -26,11 +26,11 @@
     </header>
     <div id="body">
     <form name="text_input">
-        <textarea type="text" name="text_in" id="text_in"></textarea>
+        <textarea type="text" name="text_in" id="text_in" spellcheck="false"></textarea>
         <div class="suggestion"><table id="suggestions"></table></div><br>
         <input type="button" value="Convert" id="button">
         <input type="reset" value="Clear" id="reset"><br><br>
-        <textarea type="text" name="text_out" id="text_out" disabled></textarea><br><br>
+        <textarea type="text" name="text_out" id="text_out" spellcheck="false" disabled></textarea><br><br>
         <input type="button" value="Copy text" id="copy"><br>
         <p id="mistakes"></p><br>
     </form>

@@ -14,3 +14,10 @@ browser.runtime.onInstalled.addListener((details) => {
     };
 }
 );
+
+// Seems to work fine for Chrome, but require that for Firefox
+browser.runtime.onUpdateAvailable.addListener((details) => {
+    console.log("Updating to version " + details + ". Delete MatTalX and redownload it if it doesn't work.");
+    browser.runtime.reload();
+}
+);
