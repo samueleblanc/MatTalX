@@ -3188,6 +3188,8 @@ function showCommand(key) {
             return "\\frac{1}{2} \u2192 ¹∕₂";
         } else if (key == "\\frac*") {
             return "\\frac*{1}{2} \u2192 ½";
+        } else if ((key == "\\above") || (key == "\\below")) {
+            return key + "{}";
         } else {
             return key + "{abc} \u2192 " + (mathDictionary[key](["a", "b", "c"], mathDictionary[key])).join("");
         };
