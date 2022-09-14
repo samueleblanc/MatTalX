@@ -1195,7 +1195,7 @@ const textbf = (arg, initialCommand) => {
         "8" : "\u{1D7F4}",
         "9" : "\u{1D7F5}",
 
-		" " : " "
+		" " : (spacesButton.checked) ? "\\: " : " "
 	};
 	return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1418,7 +1418,7 @@ const textit = (arg, initialCommand) => {
         "8" : "8",
         "9" : "9",
 
-		" " : " "
+		" " : (spacesButton.checked) ? "\\: " : " "
 	};
 	return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1578,7 +1578,7 @@ const texttt = (arg, initialCommand) => {
         "{" : "{",
         "}" : "}",
 
-        " " : " "
+        " " : (spacesButton.checked) ? "\\: " : " "
     };
     return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1751,7 +1751,7 @@ const text = (arg, initialCommand) => {
         "{" : "{",
         "}" : "}",
 
-        " " : " ",
+        " " : (spacesButton.checked) ? "\\: " : " "
     };
     return replaceLetters(arg, symbols, initialCommand);
 };

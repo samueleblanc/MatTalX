@@ -1195,7 +1195,7 @@ const textbf = (arg, initialCommand) => {
         "8" : "\u{1D7F4}",
         "9" : "\u{1D7F5}",
 
-		" " : " "
+		" " : (spacesButton.checked) ? "\\: " : " "
 	};
 	return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1418,7 +1418,7 @@ const textit = (arg, initialCommand) => {
         "8" : "8",
         "9" : "9",
 
-		" " : " "
+		" " : (spacesButton.checked) ? "\\: " : " "
 	};
 	return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1578,7 +1578,7 @@ const texttt = (arg, initialCommand) => {
         "{" : "{",
         "}" : "}",
 
-        " " : " "
+        " " : (spacesButton.checked) ? "\\: " : " "
     };
     return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1751,7 +1751,7 @@ const text = (arg, initialCommand) => {
         "{" : "{",
         "}" : "}",
 
-        " " : " ",
+        " " : (spacesButton.checked) ? "\\: " : " "
     };
     return replaceLetters(arg, symbols, initialCommand);
 };
@@ -3026,12 +3026,7 @@ function updateMessage(version) {
     // To be changed by hand every version
     let majorChanges = "Welcome to MatTalX version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
-    " 1) Subscript and superscript must be inside curly brackets :\r\nx^{2} → 𝑥²\r\n" + 
-    " 2) \\sqrt[n]{x} → ⁿ√𝑥 | \\sqrt[n]* → ⁿ√ | \\frac{1}{2} → ¹∕₂ | \\frac*{1}{2} → ½\r\n" + 
-    " 3) No need to separate command by spaces :\r\n\\alpha+\\beta → 𝛼 + 𝛽\r\n" + 
-    " 4) Change font for multiple letters at a time :\r\n\\mathcal{ABC} → 𝒜ℬ𝒞\r\n" + 
-    " 5) The 'Remove spaces' button was changed to 'Adjust spaces' since it automatically removes and add spaces depending on surrounding symbols :\r\n" + 
-    "x^{2}=4, \\: x\\in\\mathbb{N}\\implies x=+2 → 𝑥² = 4, 𝑥 ∈ ℕ ⟹ 𝑥 = +2";
+    " 1) Spacing bug fixed in \\text{}, \\textbf{}, \\textit{} and \\texttt{}";
     document.text_input.text_out.value = majorChanges;
 };
 
@@ -3272,7 +3267,7 @@ function adjustSpaces(input) {
                 "\u2260", "\u226E", "\u226F", "\u2264", "\u2A7D", "\u2265", "\u2A7E", "\u2270", "\u2271", "\u2A87", "\u2268", "\u2A88",
                 "\u2269", "\u2A89", "\u2A8A", "\u22E6", "\u22E7", "\u226A", "\u22D8", "\u226B", "\u22D9", "\u227A", "\u227B", "\u2280",
                 "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
-                "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF"];
+                "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u225D"];
         const conditionalSpaces = ["+", "-", "\u002B", "\u2212", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
         let output = "";
         input = input.replace(/ /g, "");
@@ -3311,7 +3306,7 @@ function adjustSpaceChem(input) {
                 "\u2260", "\u226E", "\u226F", "\u2264", "\u2A7D", "\u2265", "\u2A7E", "\u2270", "\u2271", "\u2A87", "\u2268", "\u2A88",
                 "\u2269", "\u2A89", "\u2A8A", "\u22E6", "\u22E7", "\u226A", "\u22D8", "\u226B", "\u22D9", "\u227A", "\u227B", "\u2280",
                 "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
-                "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF"];
+                "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u225D"];
         const conditionalSpaces = ["+", "\u002B", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
         let output = "";
         input = input.replace(/ /g, "");
