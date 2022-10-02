@@ -292,7 +292,7 @@ const mathbf = (arg, initialCommand) => {
         "ϵ" : "\u{1D6DC}",
         "ε" : "\u{1D6C6}",
         "𝛧" : "\u{1D721}",
-        "ζ" : "\u{1D6C7}",
+        "𝜁" : "\u{1D73B}",
         "𝛨" : "\u{1D722}",
         "𝜂" : "\u{1D73C}",
         "Θ" : "\u{1D6BD}",
@@ -924,7 +924,7 @@ const superscript = (arg, initialCommand, forFrac=false) => {
         "≠" : "ᙾ",
         "∘" : "°",
         "$" : "ᙚ",
-        "∞" : "\\: \u1AB2 \\:",  // Only works on certain website/apps
+        "∞" : "\u2710\u1AB2\u2710",  // Only works on certain website/apps
         "∅" : "\u{1D1A9}",
 
         " " : " "
@@ -956,8 +956,8 @@ const subscript = (arg, initialCommand, forFrac=false) => {
         "=" : "\u208C",
         "(" : "\u208D",
         ")" : "\u208E",
-        "," : "\\: \u0326 \\:",
-        "." : "\\: \u0323 \\:",
+        "," : "\u2710\u0326\u2710",
+        "." : "\u2710\u0323\u2710",
 
         "a" : "\u2090",
         "e" : "\u2091",
@@ -1010,8 +1010,8 @@ const subscript = (arg, initialCommand, forFrac=false) => {
         "𝜙" : "\u1D69",
         "𝜒" : "\u1D6A",
     
-        "→" : "\\: \\: \u0362 \\: \\:",
-        "∞" : "\\: \u035A \\:",
+        "→" : "\u2710\u2710\u0362\u2710\u2710",
+        "∞" : "\u2710\u035A\u2710",
 
         " " : " "
     };
@@ -1195,7 +1195,7 @@ const textbf = (arg, initialCommand) => {
         "8" : "\u{1D7F4}",
         "9" : "\u{1D7F5}",
 
-		" " : (spacesButton.checked) ? "\\: " : " "
+		" " : "\u2710"
 	};
 	return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1418,7 +1418,7 @@ const textit = (arg, initialCommand) => {
         "8" : "8",
         "9" : "9",
 
-		" " : (spacesButton.checked) ? "\\: " : " "
+		" " : "\u2710"
 	};
 	return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1578,7 +1578,7 @@ const texttt = (arg, initialCommand) => {
         "{" : "{",
         "}" : "}",
 
-        " " : (spacesButton.checked) ? "\\: " : " "
+        " " : "\u2710"
     };
     return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1751,7 +1751,7 @@ const text = (arg, initialCommand) => {
         "{" : "{",
         "}" : "}",
 
-        " " : (spacesButton.checked) ? "\\: " : " "
+        " " : "\u2710"
     };
     return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1762,15 +1762,9 @@ const hspace = (arg, initialCommand) => {
     if (num * 0 !== 0) {
         spaces = mistakes(initialCommand + "{" + num + "}", undefined, "argument must be a number");
     } else {
-        if (spacesButton.checked == true) {
-            for (let i=0; i<parseInt(arg); i++) {
-                spaces += "\\: ";
-            };
-        } else {
-            for (let i=0; i<parseInt(arg); i++) {
-                spaces += " ";
-            };
-        };  
+        for (let i=0; i<parseInt(arg); i++) {
+            spaces += "\u2710";
+        };
     };
     return spaces;
 };
@@ -1985,7 +1979,7 @@ const hat = (arg, initialCommand) => {return combineSymbols(arg, initialCommand,
 
 const not = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u0338")};
 
-const tidle = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u0303", "\u0360")};
+const tilde = (arg, initialCommand) => {if ((arg == "\u27F6") || (arg == "\u2192")) {return ["\u2972"]} else {return combineSymbols(arg, initialCommand, "\u0303", "\u0360")}};
 
 const dot = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u0307")};
 
@@ -2383,6 +2377,9 @@ const mathDictionary = {
     "\\rightdasharrow" : "\u21E2",
     "\\updasharrow" : "\u21E1",
     "\\downdasharrow" : "\u21E3",
+    "\\tildeabovearrow" : "\u2972",
+    "\\tildebelowarrow" : "\u2974",
+    "\\equalabovearrow" : "\u2971",
 
     // Greek alphabet
     "\\Alpha" : "\u{1D6E2}",
@@ -2397,7 +2394,7 @@ const mathDictionary = {
     "\\epsilon" : "\u03F5",
     "\\varepsilon" : "\u03B5",
     "\\Zeta" : "\u{1D6E7}",
-    "\\zeta" : "\u03B6",
+    "\\zeta" : "\u{1D701}",
     "\\Eta" : "\u{1D6E8}",
     "\\eta" : "\u{1D702}",
     "\\Theta" : "\u0398",
@@ -2478,7 +2475,7 @@ const mathDictionary = {
     "\\undersmile" : undersmile,
     "\\hat" : hat,
     "\\not" : not,
-    "\\tilde" : tidle,
+    "\\tilde" : tilde,
     "\\vec" : vec,
     "\\dot" : dot,
     "\\ddot" : ddot,
@@ -2598,10 +2595,10 @@ const mathDictionary = {
 
     // Matrix
     "\\id1" : "[1]",
-    "\\id2" : "\u23A1 \\: 1 \\: 0 \\: \u23A4 \u000A \u23A3 \\: 0 \\: 1 \\: \u23A6",
-    "\\id3" : "\u23A1 \\: 1 \\: 0 \\: 0 \\: \u23A4 \u000A \u23A2 \\: 0 \\: 1 \\: 0 \\: \u23A5 \u000A \u23A3 \\: 0 \\: 0 \\: 1 \\: \u23A6",
-    "\\id4" : "\u23A1 \\: 1 \\: 0 \\: 0 \\: 0 \\: \u23A4 \u000A \u23A2 \\: 0 \\: 1 \\: 0 \\: 0 \\: \u23A5 \u000A \u23A2 \\: 0 \\: 0 \\: 1 \\: 0 \\: \u23A5 \u000A \u23A3 \\: 0 \\: 0 \\: 0 \\: 1 \\: \u23A6",
-    "\\idn" : "\u23A1 \\: 1 \\: 0 \\: \u22EF \\: 0 \\: \u23A4 \u000A \u23A2 \\: 0 \\: 1 \\: \u22EF \\: 0 \\: \u23A5 \u000A \u23A2 \\: \\: \u22EE \\: \\: \u22EE \\: \\: \u22F1 \\: \\: \u22EE \\: \u23A5 \u000A \u23A3 \\: 0 \\: 0 \\: \u22EF \\: 1 \\: \u23A6",
+    "\\id2" : "\u23A1 \u2710 1 \u2710 0 \u2710 \u23A4 \u000A \u23A3 \u2710 0 \u2710 1 \u2710 \u23A6",
+    "\\id3" : "\u23A1 \u2710 1 \u2710 0 \u2710 0 \u2710 \u23A4 \u000A \u23A2 \u2710 0 \u2710 1 \u2710 0 \u2710 \u23A5 \u000A \u23A3 \u2710 0 \u2710 0 \u2710 1 \u2710 \u23A6",
+    "\\id4" : "\u23A1 \u2710 1 \u2710 0 \u2710 0 \u2710 0 \u2710 \u23A4 \u000A \u23A2 \u2710 0 \u2710 1 \u2710 0 \u2710 0 \u2710 \u23A5 \u000A \u23A2 \u2710 0 \u2710 0 \u2710 1 \u2710 0 \u2710 \u23A5 \u000A \u23A3 \u2710 0 \u2710 0 \u2710 0 \u2710 1 \u2710 \u23A6",
+    "\\idn" : "\u23A1 \u2710 1 \u2710 0 \u2710 \u22EF \u2710 0 \u2710 \u23A4 \u000A \u23A2 \u2710 0 \u2710 1 \u2710 \u22EF \u2710 0 \u2710 \u23A5 \u000A \u23A2 \u2710 \u2710 \u22EE \u2710 \u2710 \u22EE \u2710 \u2710 \u22F1 \u2710 \u2710 \u22EE \u2710 \u23A5 \u000A \u23A3 \u2710 0 \u2710 0 \u2710 \u22EF \u2710 1 \u2710 \u23A6",
     
     // To build your own
     "\\mlceil" : "\u23A1",
@@ -2724,8 +2721,10 @@ const mathDictionary = {
     "\\femalefemale" : "\u26A2",
     "\\femalemale" : "\u26A4",
     "\\" : "\\",
-    "\\:" : "\\:",  // Space
-    "\\;" : "\\: \\:",  // Double space
+    "\\:" : "\u2710",  // Space (internally represented with \u2710 ✐, but switched to a real space before output)
+    "\\;" : "\u2710\u2710",  // Double space
+    "\\quad" : "\u2710\u2710\u2710",
+    "\\qquad" : "\u2710\u2710\u2710\u2710",
     "\\colon" : "\u003A",
     "\\\\" : "\u000A",
     "\\linebreak" : "\u000A",
@@ -3209,7 +3208,7 @@ function clear() {
 
 // Add spaces ("\:" command)
 function spaceCommand(text) {
-    text = text.replace(/\\:/g, " ");
+    text = text.replace(/\u2710/g, " ");
     return text;
 };
 
@@ -3226,19 +3225,19 @@ function adjustSpaces(input) {
                 "\u2260", "\u226E", "\u226F", "\u2264", "\u2A7D", "\u2265", "\u2A7E", "\u2270", "\u2271", "\u2A87", "\u2268", "\u2A88",
                 "\u2269", "\u2A89", "\u2A8A", "\u22E6", "\u22E7", "\u226A", "\u22D8", "\u226B", "\u22D9", "\u227A", "\u227B", "\u2280",
                 "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
-                "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF"];
+                "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u2971", "\u2972", "\u2974"];
         const conditionalSpaces = ["+", "-", "\u002B", "\u2212", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
         let output = "";
         input = input.replace(/ /g, "");
         for (let i in input) {
             if (symbolSpaced.includes(input[i])) {
-                if (output[output.length - 1] !== " ") {
+                if ((output[output.length - 1] !== " ") && (output[output.length - 1] !== undefined)) {
                     output += " " + input[i] + " ";
                 } else {
                     output += input[i] + " ";
                 };
             } else if (conditionalSpaces.includes(input[i])) {
-                if (output[output.length - 1] !== " ") {
+                if ((output[output.length - 1] !== " ") && (output[output.length - 1] !== undefined)) {
                     output += " " + input[i] + " ";
                 } else {
                     output += input[i];
@@ -3266,19 +3265,19 @@ function adjustSpaceChem(input) {
                 "\u2260", "\u226E", "\u226F", "\u2264", "\u2A7D", "\u2265", "\u2A7E", "\u2270", "\u2271", "\u2A87", "\u2268", "\u2A88",
                 "\u2269", "\u2A89", "\u2A8A", "\u22E6", "\u22E7", "\u226A", "\u22D8", "\u226B", "\u22D9", "\u227A", "\u227B", "\u2280",
                 "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
-                "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF"];
+                "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u2971", "\u2972", "\u2974"];
         const conditionalSpaces = ["+", "\u002B", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
         let output = "";
         input = input.replace(/ /g, "");
         for (let i in input) {
             if (symbolSpaced.includes(input[i])) {
-                if (output[output.length - 1] !== " ") {
+                if ((output[output.length - 1] !== " ") && (output[output.length - 1] !== undefined)) {
                     output += " " + input[i] + " ";
                 } else {
                     output += input[i] + " ";
                 };
             } else if (conditionalSpaces.includes(input[i])) {
-                if (output[output.length - 1] !== " ") {
+                if ((output[output.length - 1] !== " ") && (output[output.length - 1] !== undefined)) {
                     output += " " + input[i] + " ";
                 } else {
                     output += input[i];
@@ -3618,7 +3617,7 @@ function matrix(text) {
         matrixText = text.replace(/ /g, "");
         matrixText = matrixText.replace(/\[/g, "[ ");
         matrixText = matrixText.replace(/\]/g, " ]");
-        matrixText = matrixText.replace(/,/g, "\\:");
+        matrixText = matrixText.replace(/,/g, "\u2710");
         return matrixText;
     } else {
         for (i in text) {
