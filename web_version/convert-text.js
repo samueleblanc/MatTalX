@@ -1981,7 +1981,7 @@ const not = (arg, initialCommand) => {return combineSymbols(arg, initialCommand,
 
 const tilde = (arg, initialCommand) => {if ((arg == "\u27F6") || (arg == "\u2192")) {return ["\u2972"]} else {return combineSymbols(arg, initialCommand, "\u0303", "\u0360")}};
 
-const dot = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u0307")};
+const dot = (arg, initialCommand) => {if ((arg == "=") || (arg == "\u003D")) {return ["\u2250"]} else if (arg == "\u2261") {return ["\u2A67"]} else {return combineSymbols(arg, initialCommand, "\u0307")}};
 
 const ddot = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u0308")};
 
@@ -2656,6 +2656,10 @@ const mathDictionary = {
     "\\boxVH" : "\u256C",
 
     // Other symbols
+    "\\LaTeX" : "𝐿ᴬ𝑇ᴇ𝑋",
+    "\\TeX" : "𝑇ᴇ𝑋",
+    "\\MatTalX" : "𝑀ᴀᴛ𝑇ᴀʟ𝑋",
+    "\\CaMuS" : "𝐶ᴬ𝑀ᴜ𝑆",  // http://camus.math.usherbrooke.ca/index.html
     "\\infty" : "\u221E",
     "\\iinfin" : "\u29DC",
     "\\tieinfty" : "\u29DD",
@@ -3140,13 +3144,29 @@ function showCommand(key) {
             return "\\frac{1}{2} \u2192 ¹∕₂";
         } else if (key == "\\frac*") {
             return "\\frac*{1}{2} \u2192 ½";
-        } else if ((key == "\\above") || (key == "\\below")) {
+        } else if ((key == "\\above") || (key == "\\below") || (key == "\\hspace") || (key == "\\vskip")) {
             return key + "{}";
+        } else if ((key == "_") || (key == "^")) {
+            return "x" + key + "{a1} \u2192 𝑥" + (mathDictionary[key](["a", "1"], mathDictionary[key])).join("");
         } else {
             return key + "{abc} \u2192 " + (mathDictionary[key](["a", "b", "c"], mathDictionary[key])).join("");
         };
     } else {
-        return mathDictionary[key]
+        if (key == "\\:") {
+            return "1 space";
+        } else if ((key == "\\;") || ((key == "\\quad") || (key == "\\qquad"))) {
+            return mathDictionary[key].length + " spaces";
+        } else if ((key == "\\id2") || (key == "\\id3") || (key == "\\id4") || (key == "\\idn")) {
+            const M = {
+                "\\id2": "⎡ 1 0 ⎤\u000A⎣ 0 1 ⎦",
+                "\\id3" : "⎡ 1 0 0 ⎤\u000A⎢ 0 1 0 ⎥\u000A⎣ 0 0 1 ⎦",
+                "\\id4" : "⎡ 1 0 0 0 ⎤\u000A⎢ 0 1 0 0 ⎥\u000A⎢ 0 0 1 0 ⎥\u000A⎣ 0 0 0 1 ⎦",
+                "\\idn" : "⎡ 1 0 ⋯ 0 ⎤\u000A⎢ 0 1 ⋯ 0 ⎥\u000A⎢  ⋮  ⋮  ⋱  ⋮ ⎥\u000A⎣ 0 0 ⋯ 1 ⎦"
+            }
+            return M[key];
+        } else {
+            return mathDictionary[key]
+        };
     };
 };
 
@@ -3476,11 +3496,16 @@ function replaceText(fullText, plainTextConverter) {
                             arg = true;
                             numberCurly += 1;
                         } else {
-                            newText += addSymbol(mathDictionary[temporaryBox.join("")]);
-                            newText += addSymbol(undefined);
-                            mistakes("'" + temporaryBox.join("") + "' does not take any arguments.", undefined, " '" + temporaryBox.join("") + "\\{' and " + "'" + temporaryBox.join("") + " {' ⇒ '" + temporaryBox.join("") + "{' ");
-                            temporaryBox = [];
-                            trigger = false;
+                            if ((typeof mathDictionary[temporaryBox.join("")] == "function") || (temporaryBox.join("").slice(0, 5) === "\\sqrt")) {
+                                arg = true;
+                                numberCurly += 1;
+                            } else {
+                                newText += addSymbol(mathDictionary[temporaryBox.join("")]);
+                                mistakes(temporaryBox.join(""), mathDictionary[temporaryBox.join("")]);
+                                newText += "{";
+                                temporaryBox = [];
+                                trigger = false;
+                            };
                         };
                     };
                 } else if (fullText[char] == "}") {
