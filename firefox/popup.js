@@ -2000,101 +2000,113 @@ const acute = (arg, initialCommand) => {return combineSymbols(arg, initialComman
 
 const grave = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u0300")};
 
+const Above = {
+    "." : "\u0307",
+    ":" : "\u0308",
+    "\u2236" : "\u0308",
+    "-" : "\u0305",
+    "−" : "\u0305",
+    "`" : "\u0300",
+    "´" : "\u0301",
+    "^" : "\u0302",
+    "=" : "\u033F",
+    "∼" : "\u0303",
+    "∞" : "\u1AB2", // Only works on certain website/apps
+    "∘" : "\u030A",
+    "°" : "\u030A",
+    "a" : "\u0363",
+    "𝑎" : "\u0363",
+    "b" : "\u1DE8",
+    "𝑏" : "\u1DE8",
+    "c" : "\u0368",
+    "𝑐" : "\u0368",
+    "d" : "\u0369",
+    "𝑑" : "\u0369",
+    "e" : "\u0364",
+    "𝑒" : "\u0364",
+    "f" : "\u1DEB",
+    "𝑓" : "\u1DEB",
+    "h" : "\u036A",
+    "ℎ" : "\u036A",
+    "i" : "\u0365",
+    "𝑖" : "\u0365",
+    "k" : "\u1DDC",  // Only works on certain website/apps
+    "𝑘" : "\u1DDC",
+    "m" : "\u036B",
+    "𝑚" : "\u036B",
+    "N" : "\u1DE1",
+    "𝑁" : "\u1DE1",
+    "n" : "\u1DE0",  // Only works on certain website/apps
+    "𝑛" : "\u1DE0",
+    "o" : "\u0366",
+    "𝑜" : "\u0366",
+    "p" : "\u1DEE",
+    "𝑝" : "\u1DEE",
+    "R" : "\u1DE2",
+    "𝑅" : "\u1DE2",
+    "r" : "\u036C",
+    "𝑟" : "\u036C",
+    "t" : "\u036D",
+    "𝑡" : "\u036D",
+    "u" : "\u0367",
+    "𝑢" : "\u0367",
+    "v" : "\u036E",
+    "𝑣" : "\u036E",
+    "x" : "\u036F",
+    "𝑥" : "\u036F",
+
+    "𝛼" : "\u1DE7",
+    "𝛽" : "\u1DE9",
+
+    "↼" : "\u20D0",
+    "⇀" : "\u20D1",
+    "↔" : "\u20E1",
+    "↶" : "\u20D4",
+    "↷" : "\u20D5",
+    "←" : "\u20D6",
+    "→" : "\u20D7",
+    "↓" : "\u1AB3",
+    "∴" : "\u1AB4",
+    "⋯" : "\u20DB",
+    "…" : "\u20DB",
+    " " : " "
+};
+
 const above = (arg, initialCommand) => {
     if (arg.length > 1) {
         return mistakes(initialCommand + "{" + arg.join("") + "}", undefined, "Only one argument accepted");
     };
-    const symbols = {
-        "." : "\u0307",
-        ":" : "\u0308",
-        "\u2236" : "\u0308",
-        "=" : "\u033F",
-        "∞" : "\u1AB2", // Only works on certain website/apps
-        "∘" : "\u030A",
-        "°" : "\u030A",
-        "a" : "\u0363",
-        "𝑎" : "\u0363",
-        "b" : "\u1DE8",
-        "𝑏" : "\u1DE8",
-        "c" : "\u0368",
-        "𝑐" : "\u0368",
-        "d" : "\u0369",
-        "𝑑" : "\u0369",
-        "e" : "\u0364",
-        "𝑒" : "\u0364",
-        "f" : "\u1DEB",
-        "𝑓" : "\u1DEB",
-        "h" : "\u036A",
-        "ℎ" : "\u036A",
-        "i" : "\u0365",
-        "𝑖" : "\u0365",
-        "k" : "\u1DDC",  // Only works on certain website/apps
-        "𝑘" : "\u1DDC",
-        "m" : "\u036B",
-        "𝑚" : "\u036B",
-        "N" : "\u1DE1",
-        "𝑁" : "\u1DE1",
-        "n" : "\u1DE0",  // Only works on certain website/apps
-        "𝑛" : "\u1DE0",
-        "o" : "\u0366",
-        "𝑜" : "\u0366",
-        "R" : "\u1DE2",
-        "𝑅" : "\u1DE2",
-        "r" : "\u036C",
-        "𝑟" : "\u036C",
-        "t" : "\u036D",
-        "𝑡" : "\u036D",
-        "u" : "\u0367",
-        "𝑢" : "\u0367",
-        "v" : "\u036E",
-        "𝑣" : "\u036E",
-        "x" : "\u036F",
-        "𝑥" : "\u036F",
+    mistakes(initialCommand + "{" + arg.join("") + "}", Above[arg[0]], (arg[0] !== undefined) ? arg[0] : "Argument doesn't exist");
+    return Above[arg[0]];
+};
 
-        "𝛼" : "\u1DE7",
-        "𝛽" : "\u1DE9",
-
-        "↼" : "\u20D0",
-        "⇀" : "\u20D1",
-        "↔" : "\u20E1",
-        "↶" : "\u20D4",
-        "↷" : "\u20D5",
-        "←" : "\u20D6",
-        "→" : "\u20D7",
-        "↓" : "\u1AB3",
-        "∴" : "\u1AB4",
-        "⋯" : "\u20DB",
-        "…" : "\u20DB",
-        " " : " "
-    };
-    mistakes(initialCommand + "{" + arg.join("") + "}", symbols[arg[0]], (arg[0] !== undefined) ? arg[0] : "Argument doesn't exist");
-    return symbols[arg[0]];
+const Below = {
+    "." : "\u0323",
+    ":" : "\u0324",
+    "\u2236" : "\u0324",
+    "-" : "\u0332",
+    "−" : "\u0332",
+    "=" : "\u0333",
+    "m" : "\u1AC0",
+    "𝑚" : "\u1AC0",
+    "x" : "\u0353",
+    "𝑥" : "\u0353",
+    "w" : "\u1ABF",
+    "𝑤" : "\u1ABF",
+    "↽" : "\u20ED",
+    "⇁" : "\u20EC",
+    "←" : "\u20EE",
+    "→" : "\u20EF",
+    "↔" : "\u034D",
+    " " : " "
 };
 
 const below = (arg, initialCommand) => {
     if (arg.length > 1) {
         return mistakes(initialCommand + "{" + arg.join("") + "}", undefined, "Only one argument accepted");
     };
-    const symbols = {
-        "." : "\u0323",
-        ":" : "\u0324",
-        "\u2236" : "\u0324",
-        "=" : "\u0333",
-        "m" : "\u1AC0",
-        "𝑚" : "\u1AC0",
-        "x" : "\u0353",
-        "𝑥" : "\u0353",
-        "w" : "\u1ABF",
-        "𝑤" : "\u1ABF",
-        "↽" : "\u20ED",
-        "⇁" : "\u20EC",
-        "←" : "\u20EE",
-        "→" : "\u20EF",
-        "↔" : "\u034D",
-        " " : " "
-    };
-    mistakes(initialCommand + "{" + arg.join("") + "}", symbols[arg[0]], (arg[0] !== undefined) ? arg[0] : "Argument doesn't exist");
-    return symbols[arg[0]];
+    mistakes(initialCommand + "{" + arg.join("") + "}", Below[arg[0]], (arg[0] !== undefined) ? arg[0] : "Argument doesn't exist");
+    return Below[arg[0]];
 };
 
 // Dictionary for text conversion
