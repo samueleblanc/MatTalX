@@ -1397,6 +1397,7 @@ const textit = (arg, initialCommand) => {
         "|" : "|",
         "\\" : "\\",
         ":" : ":",
+        "∶" : ":",
         ";" : ";",
         ">" : ">",
         "<" : "<",
@@ -1567,6 +1568,7 @@ const texttt = (arg, initialCommand) => {
         "|" : "|",
         "\\" : "\\",
         ":" : ":",
+        "∶" : ":",
         ";" : ";",
         ">" : ">",
         "<" : "<",
@@ -1641,6 +1643,8 @@ const text = (arg, initialCommand) => {
         "t" : "t",
         "U" : "U",
         "u" : "u",
+        "Ù" : "Ù",
+        "ù" : "ù",
         "V" : "V",
         "v" : "v",
         "W" : "W",
@@ -1740,6 +1744,7 @@ const text = (arg, initialCommand) => {
         "|" : "|",
         "\\" : "\\",
         ":" : ":",
+        "∶" : ":",
         ";" : ";",
         ">" : ">",
         "<" : "<",
@@ -1969,6 +1974,8 @@ const underline = (arg, initialCommand) => {return combineSymbols(arg, initialCo
 
 const vec = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u20D7")};
 
+const hvec = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u20D1")};
+
 const overfrown = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u0361", "\u0361")};
 
 const oversmile = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u035D", "\u035D")};
@@ -1987,6 +1994,12 @@ const ddot = (arg, initialCommand) => {return combineSymbols(arg, initialCommand
 
 const underarrow = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u0362", "\u0362")};
 
+const underharpoon = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u20EC")};
+
+const acute = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u0301")};
+
+const grave = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u0300")};
+
 const above = (arg, initialCommand) => {
     if (arg.length > 1) {
         return mistakes(initialCommand + "{" + arg.join("") + "}", undefined, "Only one argument accepted");
@@ -1995,17 +2008,22 @@ const above = (arg, initialCommand) => {
         "." : "\u0307",
         ":" : "\u0308",
         "\u2236" : "\u0308",
+        "=" : "\u033F",
         "∞" : "\u1AB2", // Only works on certain website/apps
         "∘" : "\u030A",
         "°" : "\u030A",
         "a" : "\u0363",
         "𝑎" : "\u0363",
+        "b" : "\u1DE8",
+        "𝑏" : "\u1DE8",
         "c" : "\u0368",
         "𝑐" : "\u0368",
         "d" : "\u0369",
         "𝑑" : "\u0369",
         "e" : "\u0364",
         "𝑒" : "\u0364",
+        "f" : "\u1DEB",
+        "𝑓" : "\u1DEB",
         "h" : "\u036A",
         "ℎ" : "\u036A",
         "i" : "\u0365",
@@ -2014,10 +2032,14 @@ const above = (arg, initialCommand) => {
         "𝑘" : "\u1DDC",
         "m" : "\u036B",
         "𝑚" : "\u036B",
+        "N" : "\u1DE1",
+        "𝑁" : "\u1DE1",
         "n" : "\u1DE0",  // Only works on certain website/apps
         "𝑛" : "\u1DE0",
         "o" : "\u0366",
         "𝑜" : "\u0366",
+        "R" : "\u1DE2",
+        "𝑅" : "\u1DE2",
         "r" : "\u036C",
         "𝑟" : "\u036C",
         "t" : "\u036D",
@@ -2028,6 +2050,21 @@ const above = (arg, initialCommand) => {
         "𝑣" : "\u036E",
         "x" : "\u036F",
         "𝑥" : "\u036F",
+
+        "𝛼" : "\u1DE7",
+        "𝛽" : "\u1DE9",
+
+        "↼" : "\u20D0",
+        "⇀" : "\u20D1",
+        "↔" : "\u20E1",
+        "↶" : "\u20D4",
+        "↷" : "\u20D5",
+        "←" : "\u20D6",
+        "→" : "\u20D7",
+        "↓" : "\u1AB3",
+        "∴" : "\u1AB4",
+        "⋯" : "\u20DB",
+        "…" : "\u20DB",
         " " : " "
     };
     mistakes(initialCommand + "{" + arg.join("") + "}", symbols[arg[0]], (arg[0] !== undefined) ? arg[0] : "Argument doesn't exist");
@@ -2042,8 +2079,18 @@ const below = (arg, initialCommand) => {
         "." : "\u0323",
         ":" : "\u0324",
         "\u2236" : "\u0324",
+        "=" : "\u0333",
+        "m" : "\u1AC0",
+        "𝑚" : "\u1AC0",
         "x" : "\u0353",
         "𝑥" : "\u0353",
+        "w" : "\u1ABF",
+        "𝑤" : "\u1ABF",
+        "↽" : "\u20ED",
+        "⇁" : "\u20EC",
+        "←" : "\u20EE",
+        "→" : "\u20EF",
+        "↔" : "\u034D",
         " " : " "
     };
     mistakes(initialCommand + "{" + arg.join("") + "}", symbols[arg[0]], (arg[0] !== undefined) ? arg[0] : "Argument doesn't exist");
@@ -2470,6 +2517,7 @@ const mathDictionary = {
     "\\overline" : overline,
     "\\underline" : underline,
     "\\underarrow" : underarrow,
+    "\\underharpoon" : underharpoon,
     "\\overfrown" : overfrown,
     "\\oversmile" : oversmile,
     "\\undersmile" : undersmile,
@@ -2477,8 +2525,11 @@ const mathDictionary = {
     "\\not" : not,
     "\\tilde" : tilde,
     "\\vec" : vec,
+    "\\hvec" : hvec,
     "\\dot" : dot,
     "\\ddot" : ddot,
+    "\\acute" : acute,
+    "\\grave" : grave,
 
     // For Lewis Notation
     "\\above" : above,
@@ -2579,6 +2630,8 @@ const mathDictionary = {
     "\\t" : "t",
     "\\U" : "U",
     "\\u" : "u",
+    "\\Ù" : "Ù",
+    "\\ù" : "ù",
     "\\V" : "V",
     "\\v" : "v",
     "\\W" : "W",
@@ -2717,6 +2770,9 @@ const mathDictionary = {
     "\\frown" : "\u2322",
     "\\smile" : "\u2323",
     "\\qed" : "\u220E",
+    "\\blacksquare" : "\u25A0",
+    "\\square" : "\u25A1",
+    "\\lightning" : "\u21AF",
     "\\male" : "\u2642",
     "\\female" : "\u2640",
     "\\Hermaphrodite" : "\u26A5",
@@ -2931,6 +2987,8 @@ const lettersChem = {
     "t" : "t",
     "U" : "U",
     "u" : "u",
+    "Ù" : "Ù",
+    "ù" : "ù",
     "V" : "V",
     "v" : "v",
     "W" : "W",
@@ -3031,10 +3089,18 @@ function updateMessage(version) {
     // To be changed by hand every version
     let majorChanges = "Welcome to MatTalX version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
-    " 1) Added \\LaTeX, \\TeX and \\MatTalX commands\r\n" + 
-    " 2) Fixed \\dot{=}\r\n" + 
-    " 3) Fixed bug when opening the completion box\r\n" + 
-    " 4) Removed error message when trying to pass an argument not required";
+    " 1) Added \\acute{}, \\grave{}, \\hvec{} and \\underharpoon{}\r\n" +
+    "  i) \\acute{x} → 𝑥́ \r\n" + 
+    "  ii) \\grave{x} → 𝑥̀ \r\n" + 
+    "  iii) \\hvec{x} → 𝑥⃑ \r\n" + 
+    "  iv) \\underharpoon{x} → 𝑥⃬ \r\n" 
+    " 2) 'Ù' and 'ù' can be obtained directly with \\Ù, \\ù or $chem Ù, ù\r\n" + 
+    " 3) Added \\lightning, \\square and \\blacksquare\r\n" + 
+    "  i) ↯\r\n" +
+    "  ii) □\r\n" + 
+    "  iii) ■\r\n" + 
+    " 4) Added various arrows and letters as argument in the \\above{} and \\below{} commands\r\n" + 
+    " 5) Improvements with 'Adjust spaces'";
     document.text_input.text_out.value = majorChanges;
 };
 
@@ -3280,9 +3346,61 @@ function spaceCommand(text) {
 };
 
 // Removes spaces and add some depending on surrounding symbols
-function adjustSpaces(input) {
+function adjustSpacesCommon(input, symbolSpaced, conditionalSpaces) {
+    input = input.slice(0, input.length - 1)
     if ((spacesButton.checked == true) && (input.length > 2)) {
-        const symbolSpaced = ["=", "\u003D", "\u21D2", "\u21D0", "\u21CD", "\u21CF", "\u21CE", "\u2192", "\u27F6", "\u2190", "\u27F5", 
+        const noSpaceSymbols = Object.values(Superscript).concat(Object.values(Subscript), Object.values(Above), Object.values(Below)).filter(x => {return x !== "\u2710";});
+        let output = "";
+        input = input.replace(/ /g, "");
+        let delayedSpace = false;
+        let spaceStored = [];
+        for (let i in input) {
+            delayedSpace = noSpaceSymbols.includes(input[parseInt(i)+1]);
+            if (symbolSpaced.includes(input[i])) {
+                if ((output[output.length - 1] !== " ") && (output[output.length - 1] !== undefined)) {
+                    if (delayedSpace) {
+                        output += " " + input[i];
+                        spaceStored.push(" ");
+                    } else {
+                        output += " " + input[i] + " ";
+                    }
+                } else {
+                    if (delayedSpace) {
+                        output += input[i];
+                        spaceStored.push(" ");
+                    } else {
+                        output += input[i] + " ";
+                    };
+                };
+            } else if (conditionalSpaces.includes(input[i])) {
+                if ((output[output.length - 1] !== " ") && (output[output.length - 1] !== undefined)) {
+                    if (delayedSpace) {
+                        output += " " + input[i];
+                    } else {
+                        output += " " + input[i] + " ";
+                    };
+                } else {
+                    output += input[i];
+                };
+            } else {
+                if (spaceStored.length >= 1) {
+                    output += input[i] + " ";
+                    spaceStored = [];
+                }
+                else {
+                    output += input[i];
+                }
+            };
+        };
+        return spaceCommand(output);
+    } else {
+        return spaceCommand(input);
+    };
+};
+
+// Calls adjustSpacesCommon with specific symbols where spaces around them should be omitted
+function adjustSpaces(input) {
+    const symbolSpaced = ["=", "\u003D", "\u21D2", "\u21D0", "\u21CD", "\u21CF", "\u21CE", "\u2192", "\u27F6", "\u2190", "\u27F5", 
                 "\u2194", "\u21AE", "\u219A", "\u219B", "\u27F8", "\u27F9", "\u27F9", "\u21D4", "\u27FA", "\u27FC", "\u21CC", "\u21CB", 
                 "\u21C0", "\u21C1", "\u21BC", "\u21BD", "\u219E", "\u21A0", "\u21C7", "\u21C9", "\u21F6", "\u21C6", "\u21C4", "\u21DA", 
                 "\u21DB", "\u21A2", "\u21A3", "\u21DC", "\u21DD", "\u21AD", "\u27FF", "\u21E0", "\u21E2", "\u2208", "\u2209", "\u220B",
@@ -3291,70 +3409,25 @@ function adjustSpaces(input) {
                 "\u2260", "\u226E", "\u226F", "\u2264", "\u2A7D", "\u2265", "\u2A7E", "\u2270", "\u2271", "\u2A87", "\u2268", "\u2A88",
                 "\u2269", "\u2A89", "\u2A8A", "\u22E6", "\u22E7", "\u226A", "\u22D8", "\u226B", "\u22D9", "\u227A", "\u227B", "\u2280",
                 "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
-                "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u225D", "\u2971", "\u2972", "\u2974"];
-        const conditionalSpaces = ["+", "-", "\u002B", "\u2212", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
-        let output = "";
-        input = input.replace(/ /g, "");
-        for (let i in input) {
-            if (symbolSpaced.includes(input[i])) {
-                if ((output[output.length - 1] !== " ") && (output[output.length - 1] !== undefined)) {
-                    output += " " + input[i] + " ";
-                } else {
-                    output += input[i] + " ";
-                };
-            } else if (conditionalSpaces.includes(input[i])) {
-                if ((output[output.length - 1] !== " ") && (output[output.length - 1] !== undefined)) {
-                    output += " " + input[i] + " ";
-                } else {
-                    output += input[i];
-                };
-            } else {
-                output += input[i];
-            };
-        };
-        return spaceCommand(output);
-    } else {
-        return (input[input.length -1] === " ") ? spaceCommand(input.slice(0, input.length - 1)): spaceCommand(input);
-    };
+                "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u2971", "\u2972", "\u2974"];
+    const conditionalSpaces = ["+", "-", "\u002B", "\u2212", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
+    return adjustSpacesCommon(input, symbolSpaced, conditionalSpaces);
 };
 
-// Removes spaces and add some depending on surrounding symbols
+// Calls adjustSpacesCommon with specific symbols where spaces around them should be omitted
 function adjustSpaceChem(input) {
-    if ((spacesButton.checked == true) && (input.length > 2)) {
-        const symbolSpaced = ["\u21D2", "\u21D0", "\u21CD", "\u21CF", "\u21CE", "\u2192", "\u27F6", "\u2190", "\u27F5", 
-                "\u2194", "\u21AE", "\u219A", "\u219B", "\u27F8", "\u27F9", "\u27F9", "\u21D4", "\u27FA", "\u27FC", "\u21CC", "\u21CB", 
-                "\u21C0", "\u21C1", "\u21BC", "\u21BD", "\u219E", "\u21A0", "\u21C7", "\u21C9", "\u21F6", "\u21C6", "\u21C4", "\u21DA", 
-                "\u21DB", "\u21A2", "\u21A3", "\u21DC", "\u21DD", "\u21AD", "\u27FF", "\u21E0", "\u21E2", "\u2208", "\u2209", "\u220B",
-                "\u2282", "\u2284", "\u2286", "\u2288", "\u2283", "\u2285", "\u2287", "\u2289", "\u228F", "\u2290", "\u2291", "\u2292",
-                "\u22D0", "\u22D1", "\u2ABF", "\u2AC0", "\u27C3", "\u27C4", "\u2245", "\u2247", "\u221D", "\u2A67",
-                "\u2260", "\u226E", "\u226F", "\u2264", "\u2A7D", "\u2265", "\u2A7E", "\u2270", "\u2271", "\u2A87", "\u2268", "\u2A88",
-                "\u2269", "\u2A89", "\u2A8A", "\u22E6", "\u22E7", "\u226A", "\u22D8", "\u226B", "\u22D9", "\u227A", "\u227B", "\u2280",
-                "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
-                "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u225D", "\u2971", "\u2972", "\u2974"];
-        const conditionalSpaces = ["+", "\u002B", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
-        let output = "";
-        input = input.replace(/ /g, "");
-        for (let i in input) {
-            if (symbolSpaced.includes(input[i])) {
-                if ((output[output.length - 1] !== " ") && (output[output.length - 1] !== undefined)) {
-                    output += " " + input[i] + " ";
-                } else {
-                    output += input[i] + " ";
-                };
-            } else if (conditionalSpaces.includes(input[i])) {
-                if ((output[output.length - 1] !== " ") && (output[output.length - 1] !== undefined)) {
-                    output += " " + input[i] + " ";
-                } else {
-                    output += input[i];
-                };
-            } else {
-                output += input[i];
-            };
-        };
-        return spaceCommand(output);
-    } else {
-        return (input[input.length -1] === " ") ? spaceCommand(input.slice(0, input.length - 1)): spaceCommand(input);
-    };
+    const symbolSpaced = ["\u21D2", "\u21D0", "\u21CD", "\u21CF", "\u21CE", "\u2192", "\u27F6", "\u2190", "\u27F5", 
+            "\u2194", "\u21AE", "\u219A", "\u219B", "\u27F8", "\u27F9", "\u27F9", "\u21D4", "\u27FA", "\u27FC", "\u21CC", "\u21CB", 
+            "\u21C0", "\u21C1", "\u21BC", "\u21BD", "\u219E", "\u21A0", "\u21C7", "\u21C9", "\u21F6", "\u21C6", "\u21C4", "\u21DA", 
+            "\u21DB", "\u21A2", "\u21A3", "\u21DC", "\u21DD", "\u21AD", "\u27FF", "\u21E0", "\u21E2", "\u2208", "\u2209", "\u220B",
+            "\u2282", "\u2284", "\u2286", "\u2288", "\u2283", "\u2285", "\u2287", "\u2289", "\u228F", "\u2290", "\u2291", "\u2292",
+            "\u22D0", "\u22D1", "\u2ABF", "\u2AC0", "\u27C3", "\u27C4", "\u2245", "\u2247", "\u221D", "\u2A67",
+            "\u2260", "\u226E", "\u226F", "\u2264", "\u2A7D", "\u2265", "\u2A7E", "\u2270", "\u2271", "\u2A87", "\u2268", "\u2A88",
+            "\u2269", "\u2A89", "\u2A8A", "\u22E6", "\u22E7", "\u226A", "\u22D8", "\u226B", "\u22D9", "\u227A", "\u227B", "\u2280",
+            "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
+            "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u2971", "\u2972", "\u2974"];
+    const conditionalSpaces = ["+", "\u002B", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
+    return adjustSpacesCommon(input, symbolSpaced, conditionalSpaces);
 };
 
 // Main function, loops on letters and convert the input into characters
