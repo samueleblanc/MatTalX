@@ -781,155 +781,156 @@ const mathfrak = (arg, initialCommand) => {
     return replaceLetters(arg, symbols, initialCommand);
 };
 
+const Superscript = {
+    "0" : "\u2070",
+    "1" : "\u00B9",
+    "2" : "\u00B2",
+    "3" : "\u00B3",
+    "4" : "\u2074",
+    "5" : "\u2075",
+    "6" : "\u2076",
+    "7" : "\u2077",
+    "8" : "\u2078",
+    "9" : "\u2079",
+
+    "+" : "\u207A",
+    "-" : "\u207B",
+    "\u2212" : "\u207B",
+    "=" : "\u207C",
+    "(" : "\u207D",
+    ")" : "\u207E",
+    "\\" : "ᐠ",
+    "/" : "ᐟ",
+    "." : "ᐧ",
+    "," : "\u02D2",
+    "$" : "ᙚ",
+
+    "A" : "ᴬ",
+    "a" : "ᵃ",
+    "B" : "ᴮ",
+    "b" : "ᵇ",
+    "C" : "ᶜ",
+    "c" : "ᶜ",
+    "D" : "ᴰ",
+    "d" : "ᵈ",
+    "E" : "ᴱ",
+    "e" : "ᵉ",
+    "f" : "ᶠ",
+    "G" : "ᴳ",
+    "g" : "ᵍ",
+    "H" : "ᴴ",
+    "h" : "ʰ",
+    "I" : "ᴵ",
+    "i" : "ⁱ",
+    "J" : "ᴶ",
+    "j" : "ʲ",
+    "K" : "ᴷ",
+    "k" : "ᵏ",
+    "L" : "ᴸ",
+    "l" : "ˡ",
+    "M" : "ᴹ",
+    "m" : "ᵐ",
+    "N" : "ᴺ",
+    "n" : "ⁿ",
+    "O" : "ᴼ",
+    "o" : "ᵒ",
+    "P" : "ᴾ",
+    "p" : "ᵖ",
+    "R" : "ᴿ",
+    "r" : "ʳ",
+    "S" : "ˢ",
+    "s" : "ˢ",
+    "T" : "ᵀ",
+    "t" : "ᵗ",
+    "U" : "ᵁ",
+    "u" : "ᵘ",
+    "V" : "ⱽ",
+    "v" : "ᵛ",
+    "W" : "ᵂ",
+    "w" : "ʷ",
+    "X" : "ˣ",
+    "x" : "ˣ",
+    "y" : "ʸ",
+    "Z" : "ᶻ",
+    "z" : "ᶻ",
+
+    "𝐴" : "ᴬ",
+    "𝑎" : "ᵃ",
+    "𝐵" : "ᴮ",
+    "𝑏" : "ᵇ",
+    "𝐶" : "ᶜ",
+    "𝑐" : "ᶜ",
+    "𝐷" : "ᴰ",
+    "𝑑" : "ᵈ",
+    "𝐸" : "ᴱ",
+    "𝑒" : "ᵉ",
+    "𝑓" : "ᶠ",
+    "𝐺" : "ᴳ",
+    "𝑔" : "ᵍ",
+    "𝐻" : "ᴴ",
+    "ℎ" : "ʰ",
+    "𝐼" : "ᴵ",
+    "𝑖" : "ⁱ",
+    "𝐽" : "ᴶ",
+    "𝑗" : "ʲ",
+    "𝐾" : "ᴷ",
+    "𝑘" : "ᵏ",
+    "𝐿" : "ᴸ",
+    "𝑙" : "ˡ",
+    "𝑀" : "ᴹ",
+    "𝑚" : "ᵐ",
+    "𝑁" : "ᴺ",
+    "𝑛" : "ⁿ",
+    "𝑂" : "ᴼ",
+    "𝑜" : "ᵒ",
+    "𝑃" : "ᴾ",
+    "𝑝" : "ᵖ",
+    "𝑅" : "ᴿ",
+    "𝑟" : "ʳ",
+    "𝑆" : "ˢ",
+    "𝑠" : "ˢ",
+    "𝑇" : "ᵀ",
+    "𝑡" : "ᵗ",
+    "𝑈" : "ᵁ",
+    "𝑢" : "ᵘ",
+    "𝑉" : "ⱽ",
+    "𝑣" : "ᵛ",
+    "𝑊" : "ᵂ",
+    "𝑤" : "ʷ",
+    "𝑋" : "ˣ",
+    "𝑥" : "ˣ",
+    "𝑦" : "ʸ",
+    "𝑍" : "ᶻ",
+    "𝑧" : "ᶻ",
+
+    "𝛽" : "\u1D5D",
+    "𝛤" : "ᣘ",
+    "𝛾" : "\u1D5E",
+    "Δ" : "ᐞ",
+    "δ" : "\u1D5F",
+    "ϵ" : "ᵋ",
+    "Λ" : "ᣔ",
+    "𝜃" : "\u1DBF",
+    "𝜄" : "ᶥ",
+    "𝜈" : "ᶹ",
+    "σ" : "ᣙ",
+    "𝜙" : "ᶲ",
+    "𝜑" : "\u1D60",
+    "𝜌" : "ᣖ",
+    "𝜒" : "\u1D61",
+
+    "∫" : "ᶴ",
+    "≠" : "ᙾ",
+    "∘" : "°",
+    "$" : "ᙚ",
+    "∞" : "\u2710\u1AB2\u2710",  // Only works on certain website/apps
+    "∅" : "\u{1D1A9}",
+
+    " " : " "
+};
+
 const superscript = (arg, initialCommand, forFrac=false) => {
-    const sup = {
-        "0" : "\u2070",
-        "1" : "\u00B9",
-        "2" : "\u00B2",
-        "3" : "\u00B3",
-        "4" : "\u2074",
-        "5" : "\u2075",
-        "6" : "\u2076",
-        "7" : "\u2077",
-        "8" : "\u2078",
-        "9" : "\u2079",
-
-        "+" : "\u207A",
-        "-" : "\u207B",
-        "\u2212" : "\u207B",
-        "=" : "\u207C",
-        "(" : "\u207D",
-        ")" : "\u207E",
-        "\\" : "ᐠ",
-        "/" : "ᐟ",
-        "." : "ᐧ",
-        "," : "\u02D2",
-        "$" : "ᙚ",
-
-        "A" : "ᴬ",
-        "a" : "ᵃ",
-        "B" : "ᴮ",
-        "b" : "ᵇ",
-        "C" : "ᶜ",
-        "c" : "ᶜ",
-        "D" : "ᴰ",
-        "d" : "ᵈ",
-        "E" : "ᴱ",
-        "e" : "ᵉ",
-        "f" : "ᶠ",
-        "G" : "ᴳ",
-        "g" : "ᵍ",
-        "H" : "ᴴ",
-        "h" : "ʰ",
-        "I" : "ᴵ",
-        "i" : "ⁱ",
-        "J" : "ᴶ",
-        "j" : "ʲ",
-        "K" : "ᴷ",
-        "k" : "ᵏ",
-        "L" : "ᴸ",
-        "l" : "ˡ",
-        "M" : "ᴹ",
-        "m" : "ᵐ",
-        "N" : "ᴺ",
-        "n" : "ⁿ",
-        "O" : "ᴼ",
-        "o" : "ᵒ",
-        "P" : "ᴾ",
-        "p" : "ᵖ",
-        "R" : "ᴿ",
-        "r" : "ʳ",
-        "S" : "ˢ",
-        "s" : "ˢ",
-        "T" : "ᵀ",
-        "t" : "ᵗ",
-        "U" : "ᵁ",
-        "u" : "ᵘ",
-        "V" : "ⱽ",
-        "v" : "ᵛ",
-        "W" : "ᵂ",
-        "w" : "ʷ",
-        "X" : "ˣ",
-        "x" : "ˣ",
-        "y" : "ʸ",
-        "Z" : "ᶻ",
-        "z" : "ᶻ",
-
-        "𝐴" : "ᴬ",
-        "𝑎" : "ᵃ",
-        "𝐵" : "ᴮ",
-        "𝑏" : "ᵇ",
-        "𝐶" : "ᶜ",
-        "𝑐" : "ᶜ",
-        "𝐷" : "ᴰ",
-        "𝑑" : "ᵈ",
-        "𝐸" : "ᴱ",
-        "𝑒" : "ᵉ",
-        "𝑓" : "ᶠ",
-        "𝐺" : "ᴳ",
-        "𝑔" : "ᵍ",
-        "𝐻" : "ᴴ",
-        "ℎ" : "ʰ",
-        "𝐼" : "ᴵ",
-        "𝑖" : "ⁱ",
-        "𝐽" : "ᴶ",
-        "𝑗" : "ʲ",
-        "𝐾" : "ᴷ",
-        "𝑘" : "ᵏ",
-        "𝐿" : "ᴸ",
-        "𝑙" : "ˡ",
-        "𝑀" : "ᴹ",
-        "𝑚" : "ᵐ",
-        "𝑁" : "ᴺ",
-        "𝑛" : "ⁿ",
-        "𝑂" : "ᴼ",
-        "𝑜" : "ᵒ",
-        "𝑃" : "ᴾ",
-        "𝑝" : "ᵖ",
-        "𝑅" : "ᴿ",
-        "𝑟" : "ʳ",
-        "𝑆" : "ˢ",
-        "𝑠" : "ˢ",
-        "𝑇" : "ᵀ",
-        "𝑡" : "ᵗ",
-        "𝑈" : "ᵁ",
-        "𝑢" : "ᵘ",
-        "𝑉" : "ⱽ",
-        "𝑣" : "ᵛ",
-        "𝑊" : "ᵂ",
-        "𝑤" : "ʷ",
-        "𝑋" : "ˣ",
-        "𝑥" : "ˣ",
-        "𝑦" : "ʸ",
-        "𝑍" : "ᶻ",
-        "𝑧" : "ᶻ",
-
-        "𝛽" : "\u1D5D",
-        "𝛤" : "ᣘ",
-        "𝛾" : "\u1D5E",
-        "Δ" : "ᐞ",
-        "δ" : "\u1D5F",
-        "ϵ" : "ᵋ",
-        "Λ" : "ᣔ",
-        "𝜃" : "\u1DBF",
-        "𝜄" : "ᶥ",
-        "𝜈" : "ᶹ",
-        "σ" : "ᣙ",
-        "𝜙" : "ᶲ",
-        "𝜑" : "\u1D60",
-        "𝜌" : "ᣖ",
-        "𝜒" : "\u1D61",
-
-        "∫" : "ᶴ",
-        "≠" : "ᙾ",
-        "∘" : "°",
-        "$" : "ᙚ",
-        "∞" : "\u2710\u1AB2\u2710",  // Only works on certain website/apps
-        "∅" : "\u{1D1A9}",
-
-        " " : " "
-    };
-    let output = replaceLetters(arg, sup, initialCommand, !forFrac);
+    let output = replaceLetters(arg, Superscript, initialCommand, !forFrac);
     if ((output.indexOf("\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}") === -1) || (forFrac)) {
         return output;
     } else {
@@ -937,85 +938,86 @@ const superscript = (arg, initialCommand, forFrac=false) => {
     };
 };
 
+const Subscript = {
+    "0" : "\u2080",
+    "1" : "\u2081",
+    "2" : "\u2082",
+    "3" : "\u2083",
+    "4" : "\u2084",
+    "5" : "\u2085",
+    "6" : "\u2086",
+    "7" : "\u2087",
+    "8" : "\u2088",
+    "9" : "\u2089",
+
+    "+" : "\u208A",
+    "-" : "\u208B",
+    "\u2212" : "\u208B",
+    "=" : "\u208C",
+    "(" : "\u208D",
+    ")" : "\u208E",
+    "," : "\u2710\u0326\u2710",
+    "." : "\u2710\u0323\u2710",
+
+    "a" : "\u2090",
+    "e" : "\u2091",
+    "h" : "\u2095",
+    "i" : "\u1D62",
+    "j" : "ⱼ",
+    "k" : "\u2096",
+    "l" : "\u2097",
+    "m" : "\u2098",
+    "n" : "\u2099",
+    "O" : "\u2092",
+    "o" : "\u2092",
+    "p" : "\u209A",
+    "r" : "ᵣ",
+    "S" : "\u209B",
+    "s" : "\u209B",
+    "t" : "\u209C",
+    "u" : "ᵤ",
+    "V" : "ᵥ",
+    "v" : "ᵥ",
+    "X" : "\u2093",
+    "x" : "\u2093",
+
+    "𝑎" : "\u2090",
+    "𝑒" : "\u2091",
+    "ℎ" : "\u2095",
+    "𝑖" : "\u1D62",
+    "𝑗" : "ⱼ",
+    "𝑘" : "\u2096",
+    "𝑙" : "\u2097",
+    "𝑚" : "\u2098",
+    "𝑛" : "\u2099",
+    "𝑂" : "\u2092",
+    "𝑜" : "\u2092",
+    "𝑝" : "\u209A",
+    "𝑟" : "ᵣ",
+    "𝑆" : "\u209B",
+    "𝑠" : "\u209B",
+    "𝑡" : "\u209C",
+    "𝑢" : "ᵤ",
+    "𝑉" : "ᵥ",
+    "𝑣" : "ᵥ",
+    "𝑋" : "\u2093",
+    "𝑥" : "\u2093",
+
+    "𝛽" : "\u1D66",
+    "𝛾" : "\u1D67",
+    "𝜌" : "\u1D68",
+    "𝜑" : "\u1D69",
+    "𝜙" : "\u1D69",
+    "𝜒" : "\u1D6A",
+
+    "→" : "\u2710\u2710\u0362\u2710\u2710",
+    "∞" : "\u2710\u035A\u2710",
+
+    " " : " "
+};
+
 const subscript = (arg, initialCommand, forFrac=false) => {
-    const sub = {
-        "0" : "\u2080",
-        "1" : "\u2081",
-        "2" : "\u2082",
-        "3" : "\u2083",
-        "4" : "\u2084",
-        "5" : "\u2085",
-        "6" : "\u2086",
-        "7" : "\u2087",
-        "8" : "\u2088",
-        "9" : "\u2089",
-
-        "+" : "\u208A",
-        "-" : "\u208B",
-        "\u2212" : "\u208B",
-        "=" : "\u208C",
-        "(" : "\u208D",
-        ")" : "\u208E",
-        "," : "\u2710\u0326\u2710",
-        "." : "\u2710\u0323\u2710",
-
-        "a" : "\u2090",
-        "e" : "\u2091",
-        "h" : "\u2095",
-        "i" : "\u1D62",
-        "j" : "ⱼ",
-        "k" : "\u2096",
-        "l" : "\u2097",
-        "m" : "\u2098",
-        "n" : "\u2099",
-        "O" : "\u2092",
-        "o" : "\u2092",
-        "p" : "\u209A",
-        "r" : "ᵣ",
-        "S" : "\u209B",
-        "s" : "\u209B",
-        "t" : "\u209C",
-        "u" : "ᵤ",
-        "V" : "ᵥ",
-        "v" : "ᵥ",
-        "X" : "\u2093",
-        "x" : "\u2093",
-
-        "𝑎" : "\u2090",
-        "𝑒" : "\u2091",
-        "ℎ" : "\u2095",
-        "𝑖" : "\u1D62",
-        "𝑗" : "ⱼ",
-        "𝑘" : "\u2096",
-        "𝑙" : "\u2097",
-        "𝑚" : "\u2098",
-        "𝑛" : "\u2099",
-        "𝑂" : "\u2092",
-        "𝑜" : "\u2092",
-        "𝑝" : "\u209A",
-        "𝑟" : "ᵣ",
-        "𝑆" : "\u209B",
-        "𝑠" : "\u209B",
-        "𝑡" : "\u209C",
-        "𝑢" : "ᵤ",
-        "𝑉" : "ᵥ",
-        "𝑣" : "ᵥ",
-        "𝑋" : "\u2093",
-        "𝑥" : "\u2093",
-
-        "𝛽" : "\u1D66",
-        "𝛾" : "\u1D67",
-        "𝜌" : "\u1D68",
-        "𝜑" : "\u1D69",
-        "𝜙" : "\u1D69",
-        "𝜒" : "\u1D6A",
-    
-        "→" : "\u2710\u2710\u0362\u2710\u2710",
-        "∞" : "\u2710\u035A\u2710",
-
-        " " : " "
-    };
-    let output = replaceLetters(arg, sub, initialCommand, !forFrac);
+    let output = replaceLetters(arg, Subscript, initialCommand, !forFrac);
     if ((output.indexOf("\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}") === -1) || (forFrac)) {
         return output;
     } else {
@@ -3037,124 +3039,10 @@ let errorsList = "";
 
 
 
-
 /// FUNCTIONS ///
 
-// Saves the text in the first box so it doesn't disappear if you change page or close MatTalX
-window.addEventListener("blur", () => {
-    chrome.storage.sync.set({"box1" : document.getElementById("text_in").value});
-    chrome.storage.sync.set({"check" : spacesButton.checked});
-});
 
-// Retreives the text when the popup reopens
-window.addEventListener("focus", () => {
-    const textIn = document.getElementById("text_in");
-    chrome.storage.sync.get(["box1"], (text) => {
-        if (text.box1 !== undefined) {
-            textIn.value = text.box1;
-        };
-    });
-    chrome.storage.sync.get(["check"], (button) => {
-        // Default is true
-        if (button.check === false) {
-            spacesButton.checked = false;
-        };
-    })
-    textIn.focus();
-});
-
-// Listens for 'message' from background.js
-window.addEventListener("DOMContentLoaded", () => {
-    const manifest = chrome.runtime.getManifest();
-    chrome.storage.local.get("reason", (details) => {
-        if (details.reason === "install") {
-            firstMessage(manifest.version);
-        } else if (details.reason === "update") {
-            updateMessage(manifest.version);
-        };
-    });
-    chrome.storage.local.remove("reason");
-});
-
-// Message for first time users
-function firstMessage(version) {
-    // Writes explanation in the two text boxes
-    let text = "Welcome to MatTalX version " + version + "! At any moment, you can look at the documentation by putting your mouse above the question mark (?) " + 
-    "on the top right corner. MatTalX almost always uses the same command as LaTeX, but there are some differences.";
-    let tutorial = "First and foremost, it is important to remember that MatTalX converts the command into text, therefore a command like: \r\n" + 
-    "x^{x^{x^{x}}} will give an error, since it can't fit in a line.\r\n \r\n" +
-    "Every letter will automatically be converted to a mathematical font, if you do not want that, you can put the text inside the command \\text{}. " + 
-    "If you simply want a single letter to not be in the mathematical font, add '\\' before the letter:\r\n" + 
-    " a → \u{1d44e} | \\a (or \\text{a}) → a\r\n \r\n" + 
-    "As a last tip, if you get an error and the command seems right, the character that you want might not exist in unicode:\r\n" + 
-    " x^{y} → 𝑥ʸ | x^{Y} → 𝑥^(𝑌) (ie y exists in superscript but not Y)\r\n \r\n" +
-    "But, before jumping to conclusion, please look at the documentation! The command, for various reason, might be different than in LaTeX!";
-    document.text_input.text_in.value = text;
-    document.text_input.text_out.value = tutorial;
-};
-
-// Message after an update
-function updateMessage(version) {
-    // Writes explanation in the second box
-    // To be changed by hand every version
-    let majorChanges = "Welcome to MatTalX version " + version + "\r\n \r\n" + 
-    "Major changes: \r\n" +
-    " 1) Added \\acute{}, \\grave{}, \\hvec{} and \\underharpoon{}\r\n" +
-    "  i) \\acute{x} → 𝑥́ \r\n" + 
-    "  ii) \\grave{x} → 𝑥̀ \r\n" + 
-    "  iii) \\hvec{x} → 𝑥⃑ \r\n" + 
-    "  iv) \\underharpoon{x} → 𝑥⃬ \r\n" 
-    " 2) 'Ù' and 'ù' can be obtained directly with \\Ù, \\ù or $chem Ù, ù\r\n" + 
-    " 3) Added \\lightning, \\square and \\blacksquare\r\n" + 
-    "  i) ↯\r\n" +
-    "  ii) □\r\n" + 
-    "  iii) ■\r\n" + 
-    " 4) Added various arrows and letters as argument in the \\above{} and \\below{} commands\r\n" + 
-    " 5) Improvements with 'Adjust spaces'";
-    document.text_input.text_out.value = majorChanges;
-};
-
-// Listens for Alt+S to show suggestions, Alt+I to copy text of the first box (input) and Alt+O to copy text in the second box (output)
-document.addEventListener("keydown", (keyPressed) => {
-    const textIn = document.getElementById("text_in");
-    // Alt+S to shows suggestions but closes the popup if the suggestion box is already opened
-    if ((keyPressed.key === "s") && keyPressed.altKey && (textIn == document.activeElement)) {
-        if (suggestionsPopup.style.display !== "inline-block") { 
-            suggestionsPopup.textContent = "";
-            let word = findWord(textIn.value, (textIn.selectionEnd - 1));
-            suggestionsPopup.style.display = "inline-block";
-            suggestions(word);
-        } else {
-            closeSuggestions();
-        };
-    } else if (((keyPressed.code === "Space") || (keyPressed.code === "Tab")) && (suggestionsPopup.style.display === "inline-block")) {
-        closeSuggestions();
-    } else if ((keyPressed.key === "i") && keyPressed.altKey) {
-        copyTextIn();
-    } else if ((keyPressed.key === "o") && keyPressed.altKey) {
-        copyTextOut();
-    } else {
-        // If any key is pressed while the suggestion popup is opened, it adjusts the suggestions
-        // The word must be adjusted "by hand" because the eventListener is synchronous
-        if (suggestionsPopup.style.display === "inline-block") {
-            if (keyPressed.key === "Backspace") {
-                suggestionsPopup.textContent = "";
-                let word = findWord(textIn.value, textIn.selectionEnd - 1, "Backspace");
-                suggestions(word);
-            } else if (keyPressed.key.length === 1) {
-                suggestionsPopup.textContent = "";
-                let word = findWord(textIn.value, textIn.selectionEnd - 1, keyPressed.key);
-                suggestions(word);
-            } else if ((keyPressed.key === "ArrowUp") || (keyPressed.key === "ArrowRight") || (keyPressed.key === "ArrowLeft") || (keyPressed.key === "ArrowDown")) {
-                suggestionsPopup.textContent = "";
-                const arrows = {"ArrowUp": 0, "ArrowRight": 1, "ArrowLeft": -1, "ArrowDown": 0};
-                let word = findWord(textIn.value, (textIn.selectionEnd - 1 + arrows[keyPressed.key]));  // Only adjusts the cursor position for right and left arrows
-                suggestions(word);
-            };
-        };
-    };
-});
-
+// Used in the suggestion / completion popup
 // Finds the word that is touched by the cursor
 function findWord(text, cursorPosition, addedLetter="") {
     if (addedLetter.length === 1) {  // ie a letter
@@ -3442,7 +3330,6 @@ function adjustSpaceChem(input) {
 
 // Main function, loops on letters and convert the input into characters
 function replaceText(fullText, plainTextConverter) {
-    // TODO: Clean the function, it is quite a mess
     let newText = "";
     let temporaryBox = [];
     let temporaryArg = [];
