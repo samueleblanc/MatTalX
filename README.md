@@ -1,4 +1,4 @@
-![MatTalX logo](chrome/Images/mattalx_logo.png)
+![MatTalX logo](common/Images/mattalx_logo.png)
 
 
 ## Documentation
