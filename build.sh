@@ -25,13 +25,17 @@ firefox_addon () {
 }
 
 website () {
-    cat common/popup.js > ~/Website/mattalx/convert-text.js
-    cat web_version/web-specific.js >> ~/Website/mattalx/convert-text.js
-    cat web_version/web-version.html > ~/Website/mattalx/web-version.html
-    cat web_version/web-version.css > ~/Website/mattalx/web-version.css
-    cd ~/Website/mattalx
-    git commit -a -m "update to newest version"
-    git push origin master
+    mkdir webtest
+    cp -r common/Images webtest
+    cp common/popup.js webtest
+    cat web_version/web-specific.js >> webtest/popup.js
+    mv webtest/popup.js webtest/convert-text.js
+    cp web_version/web-version.css webtest
+    cp web_version/web-version.html webtest
+}
+
+testing () {
+    echo "Not implemented yet"
 }
 
 if  [[ $1 == "firefox" ]]; then
@@ -48,10 +52,12 @@ elif [[ $1 == "chrome" ]]; then
     fi
 elif [[ $1 == "website" ]]; then
     website
-elif [[ $1 == "all" ]]; then
+elif [[ $1 == "b-all" ]]; then
     firefox_addon
     chrome_ext
     website
+elif [[ $1 == "test" ]]; then
+    testing
 else
-    echo "Accepted arguments: 'firefox', 'chrome', 'website' or 'all'."
+    echo "Accepted arguments: 'firefox', 'chrome', 'website', 'b-all' or 'test'."
 fi

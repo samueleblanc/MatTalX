@@ -22,17 +22,6 @@ function updateMessage(version) {
     // To be changed by hand every version
     let majorChanges = "Welcome to MatTalX version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
-    " 1) Added \\acute{}, \\grave{}, \\hvec{} and \\underharpoon{}\r\n" +
-    "  i) \\acute{x} → 𝑥́ \r\n" + 
-    "  ii) \\grave{x} → 𝑥̀ \r\n" + 
-    "  iii) \\hvec{x} → 𝑥⃑ \r\n" + 
-    "  iv) \\underharpoon{x} → 𝑥⃬ \r\n" 
-    " 2) 'Ù' and 'ù' can be obtained directly with \\Ù, \\ù or $chem Ù, ù\r\n" + 
-    " 3) Added \\lightning, \\square and \\blacksquare\r\n" + 
-    "  i) ↯\r\n" +
-    "  ii) □\r\n" + 
-    "  iii) ■\r\n" + 
-    " 4) Added various arrows and letters as argument in the \\above{} and \\below{} commands\r\n" + 
-    " 5) Improvements with 'Adjust spaces'";
+    " 1) Improvements with 'Adjust spaces'";
     document.text_input.text_out.value = majorChanges;
 };
