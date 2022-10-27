@@ -51,5 +51,14 @@ Thank you for considering to help out! Pull requests and issues are welcomed!
 
 Please add comments to your code.
 
+## Testing
+A basic test can be ran with `bash build.sh test`
+
+For a full test, it's recommended to build the extension or add-on (`bash build.sh chrome` or `bash build.sh firefox` respectively) and then test it in the browser.
+
+Links for testing in the browser:  
+* chrome://extensions/
+* about:debugging#/runtime/this-firefox
+
 ## License
 MIT

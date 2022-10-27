@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-# Creates a directory and a zip file for either a chrome extension or firefox addon
+# Creates a directory and a zip file for either a chrome extension or firefox add-on
 # Can also test MatTalX, however, it's not a complete test
 
 chrome_ext () {
@@ -57,6 +57,7 @@ testing () {
     if [[ -e mattalx_test ]]; then
         rm -r mattalx_test
     fi
+    echo "Creating directory..."
     mkdir test_mattalx
     cp -r common/Images test_mattalx
     cp common/popup.js test_mattalx
@@ -68,8 +69,11 @@ testing () {
     sed -i '37d' test_mattalx/index.html
     sed -i '37d' test_mattalx/index.html
     cat test.txt >> test_mattalx/index.html
+    echo "Directory made"
+    echo "Opening MatTalX on localhost"
     cd test_mattalx
     http-server -s -o
+    echo "--Done--"
 }
 
 if  [[ $1 == "firefox" ]]; then
@@ -85,5 +89,5 @@ elif [[ $1 == "b-all" ]]; then
 elif [[ $1 == "test" ]]; then
     testing
 else
-    echo "Accepted arguments: 'firefox', 'chrome', 'website', 'b-all' or 'test'."
+    echo "Accepted arguments: 'firefox', 'chrome', 'website', 'b-all' or 'test'." # b-all stands for build all
 fi
