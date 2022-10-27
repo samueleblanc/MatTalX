@@ -153,6 +153,8 @@ const mathbb = (arg, initialCommand) => {
         "]" : "⟧",
         "}" : "⦄",
         ")" : "⦆",
+
+        "\u2710" : " ",
         " " : " "
     };
     return replaceLetters(arg, symbols, initialCommand);
@@ -444,6 +446,7 @@ const mathbf = (arg, initialCommand) => {
         "ℨ" : "\u{1D585}",
         "𝔷" : "\u{1D59F}",
 
+        "\u2710" : " ",
         " " : " "
     };
     return replaceLetters(arg, symbols, initialCommand);
@@ -610,6 +613,7 @@ const mathcal = (arg, initialCommand) => {
         "𝒁" : "\u{1D4E9}",
         "𝒛" : "\u{1D503}",
 
+        "\u2710" : " ",
         " " : " "
     };
     return replaceLetters(arg, symbols, initialCommand);
@@ -776,6 +780,7 @@ const mathfrak = (arg, initialCommand) => {
         "𝒁" : "\u{1D585}",
         "𝒛" : "\u{1D59F}",
 
+        "\u2710" : " ",
         " " : " "
     };
     return replaceLetters(arg, symbols, initialCommand);
@@ -926,6 +931,7 @@ const Superscript = {
     "∞" : "\u2710\u1AB2\u2710",  // Only works on certain website/apps
     "∅" : "\u{1D1A9}",
 
+    "\u2710" : " ",
     " " : " "
 };
 
@@ -1013,6 +1019,7 @@ const Subscript = {
     "→" : "\u2710\u2710\u0362\u2710\u2710",
     "∞" : "\u2710\u035A\u2710",
 
+    "\u2710" : " ",
     " " : " "
 };
 
@@ -1197,6 +1204,46 @@ const textbf = (arg, initialCommand) => {
         "8" : "\u{1D7F4}",
         "9" : "\u{1D7F5}",
 
+        // These symbols don't exist in textbf, but doesn't output an error
+        "." : ".",
+        "," : ",",
+        "'" : "'",
+        "′" : "'",
+        '"' : '"',
+        "″" : '"',
+        "!" : "!",
+        "?" : "?",
+        "-" : "-",
+        "\u2212" : "\u2212",
+        "_" : "_",
+        "^" : "^",
+        "/" : "/",
+        "+" : "+",
+        "=" : "=",
+        "$" : "$",
+        "¢" : "¢",
+        "£" : "£",
+        "%" : "%",
+        "&" : "&",
+        "*" : "*",
+        "@" : "@",
+        "#" : "#",
+        "|" : "|",
+        "\\" : "\\",
+        ":" : ":",
+        "∶" : ":",
+        ";" : ";",
+        ">" : ">",
+        "<" : "<",
+        "°" : "°",
+        "(" : "(",
+        ")" : ")",
+        "[" : "[",
+        "]" : "]",
+        "{" : "{",
+        "}" : "}",
+
+		"\u2710" : "\u2710",
 		" " : "\u2710"
 	};
 	return replaceLetters(arg, symbols, initialCommand);
@@ -1378,7 +1425,9 @@ const textit = (arg, initialCommand) => {
         "." : ".",
         "," : ",",
         "'" : "'",
+        "′" : "'",
         '"' : '"',
+        "″" : '"',
         "!" : "!",
         "?" : "?",
         "-" : "-",
@@ -1421,6 +1470,7 @@ const textit = (arg, initialCommand) => {
         "8" : "8",
         "9" : "9",
 
+        "\u2710" : "\u2710",
 		" " : "\u2710"
 	};
 	return replaceLetters(arg, symbols, initialCommand);
@@ -1549,7 +1599,9 @@ const texttt = (arg, initialCommand) => {
         "." : ".",
         "," : ",",
         "'" : "'",
+        "′" : "'",
         '"' : '"',
+        "″" : '"',
         "!" : "!",
         "?" : "?",
         "-" : "-",
@@ -1582,7 +1634,8 @@ const texttt = (arg, initialCommand) => {
         "{" : "{",
         "}" : "}",
 
-        " " : "\u2710"
+        "\u2710" : "\u2710",
+		" " : "\u2710"
     };
     return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1725,7 +1778,9 @@ const text = (arg, initialCommand) => {
         "." : ".",
         "," : ",",
         "'" : "'",
+        "′" : "'",
         '"' : '"',
+        "″" : '"',
         "!" : "!",
         "?" : "?",
         "-" : "-",
@@ -1758,7 +1813,8 @@ const text = (arg, initialCommand) => {
         "{" : "{",
         "}" : "}",
 
-        " " : "\u2710"
+        "\u2710" : "\u2710",
+		" " : "\u2710"
     };
     return replaceLetters(arg, symbols, initialCommand);
 };
@@ -2903,6 +2959,7 @@ const lettersSymbols = {
     "y" : "\u{1D466}",
     "Z" : "\u{1D44D}",
     "z" : "\u{1D467}",
+    "\u2710" : " ",
     " " : " "
 };
 
@@ -3013,6 +3070,7 @@ const lettersChem = {
     "y" : "y",
     "Z" : "Z",
     "z" : "z",
+    "\u2710" : " ",
     " " : " "
 };
 
