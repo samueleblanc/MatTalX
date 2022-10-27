@@ -22,8 +22,8 @@ suggestionsBtn.onclick = () => {
     };
 };
 
-// Listens for Alt+S to show suggestions, Alt+I to copy text of the first box (input) and Alt+O to copy text in the second box (output)
 window.addEventListener("keydown", (keyPressed) => {
+    // Listens for Alt+S to show suggestions, Alt+I to copy text of the first box (input) and Alt+O to copy text in the second box (output)
     const textIn = document.getElementById("text_in");
     // Alt+S to shows suggestions but closes the popup if the suggestion box is already opened
     if ((keyPressed.key === "s") && keyPressed.altKey && (textIn == document.activeElement)) {

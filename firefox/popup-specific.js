@@ -1,16 +1,16 @@
 
 // Functions specific to Firefox
 
-// Saves the text in the first box so it doesn't disappear if you change page or close MatTalX
 window.addEventListener("blur", () => {
+    // Saves the text in the first box so it doesn't disappear if you change page or close MatTalX
     browser.storage.local.set({
         "box1" : document.getElementById("text_in").value,
         "check" : spacesButton.checked
     });
 });
 
-// Retreives the text when the popup reopens
 window.addEventListener("focus", () => {
+    // Retreives the text when the popup reopens
     const textIn = document.getElementById("text_in");
     browser.storage.local.get("box1", (text) => {
         if (text.box1 !== undefined) {
@@ -26,8 +26,8 @@ window.addEventListener("focus", () => {
     textIn.focus();
 });
 
-// Listens for 'message' from background.js
 window.addEventListener("DOMContentLoaded", () => {
+    // Listens for 'message' from background.js
     const manifest = browser.runtime.getManifest();
     browser.storage.local.get("reason", (details) => {
         if (details.reason === "install") {
@@ -39,8 +39,8 @@ window.addEventListener("DOMContentLoaded", () => {
     browser.storage.local.remove("reason");
 });
 
-// Listens for Alt+C to show suggestions, Alt+I to copy text of the first box (input) and Alt+O to copy text in the second box (output)
 document.addEventListener("keydown", (keyPressed) => {
+    // Listens for Alt+C to show suggestions, Alt+I to copy text of the first box (input) and Alt+O to copy text in the second box (output)
     const textIn = document.getElementById("text_in");
     // Alt+S to shows suggestions but closes the popup if the suggestion box is already opened
     if ((keyPressed.key === "c") && keyPressed.altKey && (textIn == document.activeElement)) {

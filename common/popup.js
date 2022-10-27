@@ -12,6 +12,7 @@
 // Functions to convert text
 
 function replaceLetters(letters, dict, initialCommand, checkMistakes=true) {
+    // Used by a lot of functions to convert every letter in a string of characters
     let newtext = [];
     for (let c in letters) {
         newtext.push(addSymbol(dict[letters[c]]));
@@ -23,6 +24,8 @@ function replaceLetters(letters, dict, initialCommand, checkMistakes=true) {
 };
 
 const mathbb = (arg, initialCommand) => {
+    // mathbb stands for math blackboard-bold
+    // This function converts the list of characters to the corresponding blackboard-bold character
     const symbols = {
         "A" : "\u{1D538}",
         "B" : "\u{1D539}",
@@ -161,6 +164,8 @@ const mathbb = (arg, initialCommand) => {
 };
 
 const mathbf = (arg, initialCommand) => {
+    // mathbf stands for math bold font
+    // This function converts the list of characters to the corresponding bold font character
     const symbols = {
         "A" : "\u{1D468}",
         "a" : "\u{1D482}",
@@ -453,6 +458,8 @@ const mathbf = (arg, initialCommand) => {
 };
 
 const mathcal = (arg, initialCommand) => {
+    // mathcal stands for math calligraphic
+    // This function converts the list of characters to the corresponding calligraphic character
     const symbols = {
         "A" : "\u{1D49C}",
         "a" : "\u{1D4B6}",
@@ -620,6 +627,8 @@ const mathcal = (arg, initialCommand) => {
 };
 
 const mathfrak = (arg, initialCommand) => {
+    // mathfrak stands for math fraktur
+    // This function converts the list of characters to the corresponding fraktur character
     const symbols = {
         "A" : "\u{1D504}",
         "a" : "\u{1D51E}",
@@ -786,6 +795,7 @@ const mathfrak = (arg, initialCommand) => {
     return replaceLetters(arg, symbols, initialCommand);
 };
 
+// Superscript is used (by the superscript function) to convert characters to the corresponding superscript character
 const Superscript = {
     "0" : "\u2070",
     "1" : "\u00B9",
@@ -936,6 +946,8 @@ const Superscript = {
 };
 
 const superscript = (arg, initialCommand, forFrac=false) => {
+    // Sends input to be converted by replaceLetters
+    // This function is by default not called by the frac function
     let output = replaceLetters(arg, Superscript, initialCommand, !forFrac);
     if ((output.indexOf("\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}") === -1) || (forFrac)) {
         return output;
@@ -944,6 +956,7 @@ const superscript = (arg, initialCommand, forFrac=false) => {
     };
 };
 
+// Subscript is used (by the subscript function) to convert characters to the corresponding subscript character
 const Subscript = {
     "0" : "\u2080",
     "1" : "\u2081",
@@ -1024,6 +1037,8 @@ const Subscript = {
 };
 
 const subscript = (arg, initialCommand, forFrac=false) => {
+    // Sends input to be converted by replaceLetters
+    // This function is by default not called by the frac function
     let output = replaceLetters(arg, Subscript, initialCommand, !forFrac);
     if ((output.indexOf("\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}") === -1) || (forFrac)) {
         return output;
@@ -1033,6 +1048,8 @@ const subscript = (arg, initialCommand, forFrac=false) => {
 };
 
 const textbf = (arg, initialCommand) => {
+    // textbf stands for text bold font
+    // This function converts the list of characters to the corresponding (text) bold font character
 	const symbols = {
         "A" : "\u{1D5D4}",
         "a" : "\u{1D5EE}",
@@ -1250,6 +1267,8 @@ const textbf = (arg, initialCommand) => {
 };
 
 const textit = (arg, initialCommand) => {
+    // textit stands for text italic
+    // This function converts the list of characters to the corresponding italic character
     const symbols = {
         "A" : "\u{1D608}",
         "a" : "\u{1D622}",
@@ -1477,6 +1496,8 @@ const textit = (arg, initialCommand) => {
 };
 
 const texttt = (arg, initialCommand) => {
+    // texttt stands for text typewriter
+    // This function converts the list of characters to the corresponding typewriter character
     const symbols = {
         "A" : "\u{1D670}",
         "a" : "\u{1D68A}",
@@ -1641,6 +1662,7 @@ const texttt = (arg, initialCommand) => {
 };
 
 const text = (arg, initialCommand) => {
+    // This function doesn't change the output (i.e. "abc" -> "abc")
     const symbols = {
         "A" : "A",
         "À" : "À",
@@ -1820,6 +1842,8 @@ const text = (arg, initialCommand) => {
 };
 
 const hspace = (arg, initialCommand) => {
+    // hspace stands for horizontal space
+    // Adds the number of space specified in 'arg'
     let spaces = "";
     const num = arg.join("");
     if (num * 0 !== 0) {
@@ -1833,6 +1857,8 @@ const hspace = (arg, initialCommand) => {
 };
 
 const vskip = (arg, initialCommand) => {
+    // vskip stands for vertical skip
+    // Adds the number of linebreaks specified in 'arg'
     let skips = "";
     const num = arg.join("");
     if (num * 0 !== 0) {
@@ -1846,6 +1872,7 @@ const vskip = (arg, initialCommand) => {
 };
 
 const sqrt = (arg, initialCommand) => {
+    // sqrt stands for square root
     const numStart = parseInt(initialCommand.indexOf("["));
     const numEnd = parseInt(initialCommand.indexOf("]"));
     let rootNum;
@@ -1861,6 +1888,8 @@ const sqrt = (arg, initialCommand) => {
     };
     let output = "";
     switch (rootNum) {
+        // There's already a unicode symbol for square root, cube root and 4th root
+        // If rootNum is different than those, the symbol is built
         case "3":
             output += "\u221B";
             break;
@@ -1883,6 +1912,8 @@ const sqrt = (arg, initialCommand) => {
 
 
 const sqrtNoArg = (arg, initialCommand) => {
+    // Compared with sqrt, this function only takes the root as parameter, not the argument
+    // For instance the 'cube root of two' would be in sqrt, but simply the 'cube root' would be parsed here 
     if (arg !== undefined) {
         mistakes(initialCommand + " does not take in arguments and should take the form \\sqrt[n]*", undefined, "ⁿ√  (use \\sqrt[n]{x} to get ⁿ√𝑥)");
         return addSymbol(undefined);
@@ -1918,6 +1949,8 @@ const sqrtNoArg = (arg, initialCommand) => {
 };
 
 const frac = (arg, initialCommand) => {
+    // Used to make a fraction
+    // If a character doesn't exist in superscript or subscript, it outputs the fraction in the format f(x)/g(x)
     let output = "";
     let nume = [];
     let deno = [];
@@ -1974,6 +2007,7 @@ const frac = (arg, initialCommand) => {
 };
 
 const singleCharFrac = (arg, initialCommand) => {
+    // Some fractions already exists as unicode symbols they can be accessed via this function
     let noSpaceArg = arg.join("").replace(/ /g, "");
     const fractions = {
         "1}{2" : "\u00BD",
@@ -2002,7 +2036,8 @@ const singleCharFrac = (arg, initialCommand) => {
 };
 
 const combineSymbols = (arg, initialCommand, symbol, forTwo=undefined) => {
-    // "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}"  ->  error symbol
+    // Appends a 'combining symbol' to a regular symbol to create a new one (e.g. 'e' + '´' -> é)
+    // N.B. "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}"  ->  error symbol
     let textComb = [];
     if ((arg.length === 2) && (forTwo !== undefined)) {
         textComb.push(arg[0] + forTwo + arg[1]);
@@ -2025,6 +2060,8 @@ const combineSymbols = (arg, initialCommand, symbol, forTwo=undefined) => {
     };
     return textComb;
 };
+
+// These functions call combineSymbols with a predetermined symbol
 
 const overline = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u0305")};
 
@@ -2058,6 +2095,7 @@ const acute = (arg, initialCommand) => {return combineSymbols(arg, initialComman
 
 const grave = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u0300")};
 
+// Dict with characters and their corresponding symbol that can be combined and put above another symbol
 const Above = {
     "." : "\u0307",
     ":" : "\u0308",
@@ -2131,6 +2169,7 @@ const Above = {
 };
 
 const above = (arg, initialCommand) => {
+    // Returns the symbol to be put above the preceding character in the input text
     if (arg.length > 1) {
         return mistakes(initialCommand + "{" + arg.join("") + "}", undefined, "Only one argument accepted");
     };
@@ -2138,6 +2177,7 @@ const above = (arg, initialCommand) => {
     return Above[arg[0]];
 };
 
+// Dict with characters and their corresponding symbol that can be combined and put below another symbol
 const Below = {
     "." : "\u0323",
     ":" : "\u0324",
@@ -2160,6 +2200,7 @@ const Below = {
 };
 
 const below = (arg, initialCommand) => {
+    // Returns the symbol to be put below the preceding character in the input text
     if (arg.length > 1) {
         return mistakes(initialCommand + "{" + arg.join("") + "}", undefined, "Only one argument accepted");
     };
@@ -2168,6 +2209,8 @@ const below = (arg, initialCommand) => {
 };
 
 // Dictionary for text conversion
+
+// mathDictionary is the main dict for converting commands into symbols
 const mathDictionary = {
     // Math operators
     "\\times" : "\u00D7",
@@ -2862,6 +2905,8 @@ const mathDictionary = {
     "\\tab" : "\u0009"
 };
 
+// Regular dict used to convert characters that are not a command
+// Automatically convert text into a mathematical font
 const lettersSymbols = {
     "+" : "\u002B",
     "-" : "\u2212",
@@ -2963,6 +3008,7 @@ const lettersSymbols = {
     " " : " "
 };
 
+// Dict used to convert characters that are not a command if the keyword $chem is used as the fist word of the text input
 const lettersChem = {
     "+" : "\u002B",
     "-" : "\u2212",
@@ -3074,7 +3120,7 @@ const lettersChem = {
     " " : " "
 };
 
-// Submit button
+// Submit button ('Convert' is what's seen by the users)
 const submit = document.getElementById("button");
 submit.onclick = function() {main()};
 
@@ -3090,6 +3136,7 @@ resetButton.onclick = function() {clear()};
 const spacesButton = document.getElementById("adjust");
 
 // Originally hidden
+// Can be accessed with a keyboard shortcut (Alt+S or Alt+C on chrome or firefox respectively)
 const suggestionsPopup = document.getElementById("suggestions");
 
 // Every undefined commands
@@ -3100,9 +3147,9 @@ let errorsList = "";
 /// FUNCTIONS ///
 
 
-// Used in the suggestion / completion popup
-// Finds the word that is touched by the cursor
 function findWord(text, cursorPosition, addedLetter="") {
+    // Used in the suggestion / completion popup
+    // Finds the word that is touched by the cursor
     if (addedLetter.length === 1) {  // ie a letter
         text = text.split("");
         text[cursorPosition] += addedLetter;
@@ -3131,8 +3178,8 @@ function findWord(text, cursorPosition, addedLetter="") {
     return word;
 };
 
-// Outputs list of other commands that are similar to the one currently being written
 function suggestions(command) {
+    // Outputs list of other commands that are similar to the one currently being written
     if (command === "") {
         closeSuggestions();
     } else if (command[0] !== "\\") {
@@ -3178,14 +3225,14 @@ function suggestions(command) {
     };
 };
 
-// Close and empties the suggestion popup
 function closeSuggestions() {
+    // Close and empties the suggestion popup
     suggestionsPopup.style.display = "none";
     suggestionsPopup.textContent = "";
 };
 
-// Replace the command being written by the selected suggestion
 function semiAutoCompletion(textIn, cursorPosition, command) {
+    // Replace the command being written by the selected suggestion
     let textOut = textIn;
     // Find end of word
     const wordsDelimiters = [" ", "", "\u000A", "\\", "^", "_", "(", ")", "[", "]", "{", "}", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];
@@ -3202,8 +3249,9 @@ function semiAutoCompletion(textIn, cursorPosition, command) {
     return textOut;
 };
 
-// Used in suggestions
 function showCommand(key) {
+    // Used in suggestions
+    // Changes what's seen when the user hovers on a command in the suggestion popup
     if (typeof mathDictionary[key] == "function") {
         if (key == "\\sqrt") {
             return "\\sqrt[n]{x} \u2192 ⁿ√𝑥";
@@ -3239,8 +3287,9 @@ function showCommand(key) {
     };
 };
 
-// Used in suggestions
 function toReplaceCommand(key) {
+    // Used in suggestions
+    // Changes what the user sees when the suggestion popup is opened
     if (typeof mathDictionary[key] == "function") {
         if (key == "\\sqrt") {
             return "\\sqrt[]{}";
@@ -3258,8 +3307,8 @@ function toReplaceCommand(key) {
     };
 };
 
-// Copy second box (output) to clipboard
 function copyTextOut() {
+    // Copy second box (output) to clipboard
     const copyText = document.getElementById("text_out");
     if (copyText.disabled === false) {
         navigator.clipboard.writeText(copyText.value);
@@ -3275,8 +3324,8 @@ function copyTextOut() {
     };
 };
 
-// Copy first box (input) to clipboard
 function copyTextIn() {
+    // Copy first box (input) to clipboard
     const textIn = document.getElementById("text_in");
     navigator.clipboard.writeText(textIn.value);
     textIn.style.border = "2px solid black";
@@ -3285,8 +3334,8 @@ function copyTextIn() {
     }, 2500);
 };
 
-// Clears everything
 function clear() {
+    // Clears everything
     copyButton.value = "Copy text";
     copyButton.style.cursor = "pointer";
     document.getElementById("mistakes").textContent = "";
@@ -3295,14 +3344,17 @@ function clear() {
     suggestionsPopup.textContent = "";
 };
 
-// Add spaces ("\:" command)
 function spaceCommand(text) {
+    // Add spaces ("\:" command)
+    // Internally, spaces that are kept even if 'Adjust space' is on are represented as \u2710
+    // this commands changes them back to spaces
     text = text.replace(/\u2710/g, " ");
     return text;
 };
 
-// Removes spaces and add some depending on surrounding symbols
 function adjustSpacesCommon(input, symbolSpaced, conditionalSpaces) {
+    // Removes spaces and add some depending on surrounding symbols
+    // Used if 'Adjust space' is on
     input = input.slice(0, input.length - 1)
     if ((spacesButton.checked == true) && (input.length > 2)) {
         const noSpaceSymbols = Object.values(Superscript).concat(Object.values(Subscript), Object.values(Above), Object.values(Below)).filter(x => {return x !== "\u2710";});
@@ -3358,8 +3410,8 @@ function adjustSpacesCommon(input, symbolSpaced, conditionalSpaces) {
     };
 };
 
-// Calls adjustSpacesCommon with specific symbols where spaces around them should be omitted
 function adjustSpaces(input) {
+    // Calls adjustSpacesCommon with specific symbols where spaces around them should be omitted
     const symbolSpaced = ["=", "\u003D", "\u21D2", "\u21D0", "\u21CD", "\u21CF", "\u21CE", "\u2192", "\u27F6", "\u2190", "\u27F5", 
                 "\u2194", "\u21AE", "\u219A", "\u219B", "\u27F8", "\u27F9", "\u27F9", "\u21D4", "\u27FA", "\u27FC", "\u21CC", "\u21CB", 
                 "\u21C0", "\u21C1", "\u21BC", "\u21BD", "\u219E", "\u21A0", "\u21C7", "\u21C9", "\u21F6", "\u21C6", "\u21C4", "\u21DA", 
@@ -3375,8 +3427,8 @@ function adjustSpaces(input) {
     return adjustSpacesCommon(input, symbolSpaced, conditionalSpaces);
 };
 
-// Calls adjustSpacesCommon with specific symbols where spaces around them should be omitted
 function adjustSpaceChem(input) {
+    // Calls adjustSpacesCommon with specific symbols where spaces around them should be omitted
     const symbolSpaced = ["\u21D2", "\u21D0", "\u21CD", "\u21CF", "\u21CE", "\u2192", "\u27F6", "\u2190", "\u27F5", 
             "\u2194", "\u21AE", "\u219A", "\u219B", "\u27F8", "\u27F9", "\u27F9", "\u21D4", "\u27FA", "\u27FC", "\u21CC", "\u21CB", 
             "\u21C0", "\u21C1", "\u21BC", "\u21BD", "\u219E", "\u21A0", "\u21C7", "\u21C9", "\u21F6", "\u21C6", "\u21C4", "\u21DA", 
@@ -3391,16 +3443,17 @@ function adjustSpaceChem(input) {
     return adjustSpacesCommon(input, symbolSpaced, conditionalSpaces);
 };
 
-// Main function, loops on letters and convert the input into characters
 function replaceText(fullText, plainTextConverter) {
+    // Main function, loops on letters and convert the input into characters
+    // TODO: Clean it up, and perhaps restructure it completely, a more 'object oriented' way to do it is perhaps better
     let newText = "";
-    let temporaryBox = [];
-    let temporaryArg = [];
-    let commandInArg = [];
-    let trigger = false;
-    let arg = false;
-    let triggerInArg = false;
-    let numberCurly = 0;
+    let temporaryBox = [];  // Stores characters that are in command (e.g. \int -> ['\', 'i', 'n', 't'])
+    let temporaryArg = [];  // Stores characters that are in command arguments (e.g. \text{ok} -> ['o', 'k'])
+    let commandInArg = [];  // Stores characters that are a command inside arguments (e.g. \dot{\equiv} -> ['\','e','q','u','i','v'])
+    let trigger = false;  // true if a command has begun (e.g. input: '\' -> true)
+    let arg = false;  // true if there's an argument at the end of a command (e.g. \mathbf + '{' -> true)
+    let triggerInArg = false;  // true if there's a command in an argument (e.g. \overline{ + '\' -> true)
+    let numberCurly = 0;  // Counts the number of curly brackets (except those used in the text like in 'S = {1,2,3}')
     const parentheses = ["(", ")"];
     const brackets = ["[", "]"];
     const commandStoppers = [" ", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];  // parentheses and brackets also stops commands (most of the time)
@@ -3676,8 +3729,8 @@ function replaceText(fullText, plainTextConverter) {
     return newText;
 };
 
-// Is called if there is a command as an argument of a command
 function embeddedCommand(command, endOfText, plainTextConverter) {
+    // Is called if there is a command as an argument of a command
     let args = [];
     endOfText = endOfText.substring(1);
     for (let c in endOfText) {
@@ -3699,8 +3752,9 @@ function embeddedCommand(command, endOfText, plainTextConverter) {
     };
 };
 
-// Matrix package, converts arrays into a matrix
 function matrix(text) {
+    // If the keyword $matrix is used as the first word of the input text, this function is called
+    // Converts arrays into a matrix (i.e. $matrix [a,b,c][1,2,3] will be converted to a matrix 2x3)
     text = text.replace(/ /g, "");
     let matrixText = "";
     let i, x;
@@ -3762,8 +3816,9 @@ function matrix(text) {
     return matrixText;
 };
 
-// Adjusts columns length for $matrix package
 function matrixCols(matrix) {
+    // Adjusts columns length for $matrix package
+    // So, if the input is [100,10,1][0,0,0], the output should still be a 2x3 matrix with the elements aligned
     let positionLength = 0;
     let posLengths = [];
     let matrixPositions = [];
@@ -3806,16 +3861,17 @@ function matrixCols(matrix) {
     return matrix;
 };
 
-// Return the command if it's defined, if not it returns a bold "err" with two "x" under it
 function addSymbol(command, keepArray=false) {
+    // Return the command if it's defined, if not it returns a bold "err" with two "x" under it
     if ((typeof command == "object") && !(keepArray)) {
+        // Changes an array of characters into a string
         command = command.join("");
     };
     return (command !== undefined) ? command : "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}";
 };
 
-// Return the commands in an array if it's defined, if not it returns a bold "err" with two "x" under it
 function addSymbolArray(args, command, checkMistakes=true) {
+    // Differs from the function above as it returns an array instead of a string
     let output = "";
     for (let i in args) {
         output += (args[i] !== undefined) ? args[i] : "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}";
@@ -3826,13 +3882,13 @@ function addSymbolArray(args, command, checkMistakes=true) {
     return output;
 };
 
-// Make sure the command is of the right type. Most of the time "function" is the one to watch
 function prohibitedType(command, type="function") {
+    // Make sure the command is of the right type. Most of the time "function" is the one to watch
     return (typeof command != type) ? command : "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}";
 };
 
-// Writes every errors in a box, so it's easier to find them
 function mistakes(textInput, textOutput, letter="") {
+    // Writes every errors in a box, so it's easier for the user to find them
     const popup = document.getElementById("mistakes");
     popup.setAttribute("style", "white-space: pre;");
     const text = "\u{1D404}\u{1D42B}\u{1D42B}\u{1D428}\u{1D42B}\u{1D42C}: \r\n";  // "Errors" in bold
@@ -3865,25 +3921,29 @@ function mistakes(textInput, textOutput, letter="") {
     return "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}"; // bold "err" with two "x" under it
 };
 
-// Takes text and convert word by word in the dictionary or in function replaceLetters
 function convert(fullText) {
+    // Takes text and convert word by word in the dictionary or in function replaceLetters
     const firstWord = fullText.split(" ")[0];
     if (firstWord === "$chem") {
+        // Chemistry package, differs in the automatic conversion of letters and spacing adjustments
         fullText = fullText.replace("$chem", "");
         fullText = replaceText(fullText, lettersChem);
         fullText = adjustSpaceChem(fullText);
     } else if (firstWord === "$matrix") {
+        // Matrix package, the input should be of the form [a,b,c][d,e,f]
         fullText = fullText.replace("$matrix", "");
         fullText = matrix(fullText);
     } else {
+        // Default package
         fullText = replaceText(fullText, lettersSymbols);
         fullText = adjustSpaces(fullText);
     };
     return fullText;
 };
 
-// Takes the original text and spits out the new one
 function main() {
+    // Takes the original text (input) and outputs the new one, with the converted symbols
+
     document.getElementById("mistakes").textContent = "";  // Starts with an empty box for errors
     errorsList = "";  // Makes sure it starts empty
 

@@ -1,14 +1,14 @@
 
 // Functions specific to Chrome
 
-// Saves the text in the first box so it doesn't disappear if you change page or close MatTalX
 window.addEventListener("blur", () => {
+    // Saves the text in the first box so it doesn't disappear if you change page or close MatTalX
     chrome.storage.sync.set({"box1" : document.getElementById("text_in").value});
     chrome.storage.sync.set({"check" : spacesButton.checked});
 });
 
-// Retreives the text when the popup reopens
 window.addEventListener("focus", () => {
+    // Retreives the text when the popup reopens
     const textIn = document.getElementById("text_in");
     chrome.storage.sync.get(["box1"], (text) => {
         if (text.box1 !== undefined) {
@@ -24,8 +24,8 @@ window.addEventListener("focus", () => {
     textIn.focus();
 });
 
-// Listens for 'message' from background.js
 window.addEventListener("DOMContentLoaded", () => {
+    // Listens for 'message' from background.js
     const manifest = chrome.runtime.getManifest();
     chrome.storage.local.get("reason", (details) => {
         if (details.reason === "install") {
@@ -37,8 +37,8 @@ window.addEventListener("DOMContentLoaded", () => {
     chrome.storage.local.remove("reason");
 });
 
-// Listens for Alt+S to show suggestions, Alt+I to copy text of the first box (input) and Alt+O to copy text in the second box (output)
 document.addEventListener("keydown", (keyPressed) => {
+    // Listens for Alt+S to show suggestions, Alt+I to copy text of the first box (input) and Alt+O to copy text in the second box (output)
     const textIn = document.getElementById("text_in");
     // Alt+S to shows suggestions but closes the popup if the suggestion box is already opened
     if ((keyPressed.key === "s") && keyPressed.altKey && (textIn == document.activeElement)) {
