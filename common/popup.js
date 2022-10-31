@@ -157,7 +157,11 @@ const mathbb = (arg, initialCommand) => {
         "}" : "⦄",
         ")" : "⦆",
 
-        "\u2710" : " ",
+        // Spaces (\:, \;, \quad and \qquad are passed as a single character in mistakes) 
+        "\u2710" : "\u2710",
+        "\u2710\u2710" : "\u2710\u2710",
+        "\u2710\u2710\u2710" : "\u2710\u2710\u2710",
+        "\u2710\u2710\u2710\u2710" : "\u2710\u2710\u2710\u2710",
         " " : " "
     };
     return replaceLetters(arg, symbols, initialCommand);
@@ -451,7 +455,11 @@ const mathbf = (arg, initialCommand) => {
         "ℨ" : "\u{1D585}",
         "𝔷" : "\u{1D59F}",
 
-        "\u2710" : " ",
+        // Spaces (\:, \;, \quad and \qquad are passed as a single character in mistakes) 
+        "\u2710" : "\u2710",
+        "\u2710\u2710" : "\u2710\u2710",
+        "\u2710\u2710\u2710" : "\u2710\u2710\u2710",
+        "\u2710\u2710\u2710\u2710" : "\u2710\u2710\u2710\u2710",
         " " : " "
     };
     return replaceLetters(arg, symbols, initialCommand);
@@ -620,7 +628,11 @@ const mathcal = (arg, initialCommand) => {
         "𝒁" : "\u{1D4E9}",
         "𝒛" : "\u{1D503}",
 
-        "\u2710" : " ",
+        // Spaces (\:, \;, \quad and \qquad are passed as a single character in mistakes) 
+        "\u2710" : "\u2710",
+        "\u2710\u2710" : "\u2710\u2710",
+        "\u2710\u2710\u2710" : "\u2710\u2710\u2710",
+        "\u2710\u2710\u2710\u2710" : "\u2710\u2710\u2710\u2710",
         " " : " "
     };
     return replaceLetters(arg, symbols, initialCommand);
@@ -789,7 +801,11 @@ const mathfrak = (arg, initialCommand) => {
         "𝒁" : "\u{1D585}",
         "𝒛" : "\u{1D59F}",
 
-        "\u2710" : " ",
+        // Spaces (\:, \;, \quad and \qquad are passed as a single character in mistakes) 
+        "\u2710" : "\u2710",
+        "\u2710\u2710" : "\u2710\u2710",
+        "\u2710\u2710\u2710" : "\u2710\u2710\u2710",
+        "\u2710\u2710\u2710\u2710" : "\u2710\u2710\u2710\u2710",
         " " : " "
     };
     return replaceLetters(arg, symbols, initialCommand);
@@ -941,7 +957,7 @@ const Superscript = {
     "∞" : "\u2710\u1AB2\u2710",  // Only works on certain website/apps
     "∅" : "\u{1D1A9}",
 
-    "\u2710" : " ",
+    "\u2710" : "\u2710",
     " " : " "
 };
 
@@ -1032,7 +1048,7 @@ const Subscript = {
     "→" : "\u2710\u2710\u0362\u2710\u2710",
     "∞" : "\u2710\u035A\u2710",
 
-    "\u2710" : " ",
+    "\u2710" : "\u2710",
     " " : " "
 };
 
@@ -1260,7 +1276,6 @@ const textbf = (arg, initialCommand) => {
         "{" : "{",
         "}" : "}",
 
-		"\u2710" : "\u2710",
 		" " : "\u2710"
 	};
 	return replaceLetters(arg, symbols, initialCommand);
@@ -1489,7 +1504,6 @@ const textit = (arg, initialCommand) => {
         "8" : "8",
         "9" : "9",
 
-        "\u2710" : "\u2710",
 		" " : "\u2710"
 	};
 	return replaceLetters(arg, symbols, initialCommand);
@@ -1655,7 +1669,6 @@ const texttt = (arg, initialCommand) => {
         "{" : "{",
         "}" : "}",
 
-        "\u2710" : "\u2710",
 		" " : "\u2710"
     };
     return replaceLetters(arg, symbols, initialCommand);
@@ -1835,7 +1848,6 @@ const text = (arg, initialCommand) => {
         "{" : "{",
         "}" : "}",
 
-        "\u2710" : "\u2710",
 		" " : "\u2710"
     };
     return replaceLetters(arg, symbols, initialCommand);
@@ -1849,7 +1861,7 @@ const hspace = (arg, initialCommand) => {
     if (num * 0 !== 0) {
         spaces = mistakes(initialCommand + "{" + num + "}", undefined, "argument must be a number");
     } else {
-        for (let i=0; i<parseInt(arg); i++) {
+        for (let i=0; i<parseInt(num); i++) {
             spaces += "\u2710";
         };
     };
@@ -2894,7 +2906,7 @@ const mathDictionary = {
     "\\femalefemale" : "\u26A2",
     "\\femalemale" : "\u26A4",
     "\\" : "\\",
-    "\\:" : "\u2710",  // Space (internally represented with \u2710 ✐, but switched to a real space before output)
+    "\\:" : "\u2710",  // Space (internally represented with \u2710 (✐), but switched to a real space before output)
     "\\;" : "\u2710\u2710",  // Double space
     "\\quad" : "\u2710\u2710\u2710",
     "\\qquad" : "\u2710\u2710\u2710\u2710",
@@ -3346,7 +3358,7 @@ function clear() {
 
 function spaceCommand(text) {
     // Add spaces ("\:" command)
-    // Internally, spaces that are kept even if 'Adjust space' is on are represented as \u2710
+    // Internally, spaces that are kept even if 'Adjust spaces' is on are represented as \u2710
     // this commands changes them back to spaces
     text = text.replace(/\u2710/g, " ");
     return text;
@@ -3422,7 +3434,7 @@ function adjustSpaces(input) {
                 "\u2269", "\u2A89", "\u2A8A", "\u22E6", "\u22E7", "\u226A", "\u22D8", "\u226B", "\u22D9", "\u227A", "\u227B", "\u2280",
                 "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
                 "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u2971", "\u2972", "\u2974", "\u2250",
-                "\u2A66"];
+                "\u2A66", "\u00D7", "\u22CA", "\u22C9"];
     const conditionalSpaces = ["+", "-", "\u002B", "\u2212", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
     return adjustSpacesCommon(input, symbolSpaced, conditionalSpaces);
 };
@@ -3438,14 +3450,15 @@ function adjustSpaceChem(input) {
             "\u2260", "\u226E", "\u226F", "\u2264", "\u2A7D", "\u2265", "\u2A7E", "\u2270", "\u2271", "\u2A87", "\u2268", "\u2A88",
             "\u2269", "\u2A89", "\u2A8A", "\u22E6", "\u22E7", "\u226A", "\u22D8", "\u226B", "\u22D9", "\u227A", "\u227B", "\u2280",
             "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
-            "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u2971", "\u2972", "\u2974"];
+            "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u2971", "\u2972", "\u2974", "\u00D7", 
+            "\u22CA", "\u22C9"];
     const conditionalSpaces = ["+", "\u002B", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
     return adjustSpacesCommon(input, symbolSpaced, conditionalSpaces);
 };
 
 function replaceText(fullText, plainTextConverter) {
     // Main function, loops on letters and convert the input into characters
-    // TODO: Clean it up, and perhaps restructure it completely, a more 'object oriented' way to do it is perhaps better
+    // TODO: Clean it up, and maybe restructure it completely, a more 'object oriented' way to do it is perhaps better
     let newText = "";
     let temporaryBox = [];  // Stores characters that are in command (e.g. \int -> ['\', 'i', 'n', 't'])
     let temporaryArg = [];  // Stores characters that are in command arguments (e.g. \text{ok} -> ['o', 'k'])
@@ -3894,9 +3907,18 @@ function mistakes(textInput, textOutput, letter="") {
     const text = "\u{1D404}\u{1D42B}\u{1D42B}\u{1D428}\u{1D42B}\u{1D42C}: \r\n";  // "Errors" in bold
     if (textOutput === undefined) {
         if (letter != "") {
-            if (letter !== "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}") {
-                // Only add to errorsList once
-                errorsList += textInput + " \u2192 " + '"' + letter + '" \r\n';
+            if (letter !== "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}") {  // Only add to errorsList once
+                if (letter.includes("\u2710")) {  // i.e. Spaces
+                    if (textInput.substring(0,5) == "\\text") {
+                        errorsList += spaceCommand(textInput + " \u2192 Spaces are kept inside '" + textInput.replace(/{.*}/g, "") + "{}', no need for a spacing command");
+                    } else if ((textInput[0] === "^") || (textInput[0] === "_")) {
+                        errorsList += spaceCommand(textInput + " \u2192 Use '\\hspace{" + letter.length + "}' instead for spaces");
+                    } else {
+                        errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
+                    };
+                } else {
+                    errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
+                };
             };
         } else {
             if ((textInput[0] === "^") || (textInput[0] === "_")) {
