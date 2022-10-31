@@ -1276,6 +1276,7 @@ const textbf = (arg, initialCommand) => {
         "{" : "{",
         "}" : "}",
 
+        "\u2710" : "\u2710",
 		" " : "\u2710"
 	};
 	return replaceLetters(arg, symbols, initialCommand);
@@ -1504,6 +1505,7 @@ const textit = (arg, initialCommand) => {
         "8" : "8",
         "9" : "9",
 
+        "\u2710" : "\u2710",
 		" " : "\u2710"
 	};
 	return replaceLetters(arg, symbols, initialCommand);
@@ -1669,6 +1671,7 @@ const texttt = (arg, initialCommand) => {
         "{" : "{",
         "}" : "}",
 
+        "\u2710" : "\u2710",
 		" " : "\u2710"
     };
     return replaceLetters(arg, symbols, initialCommand);
@@ -1848,6 +1851,7 @@ const text = (arg, initialCommand) => {
         "{" : "{",
         "}" : "}",
 
+        "\u2710" : "\u2710",
 		" " : "\u2710"
     };
     return replaceLetters(arg, symbols, initialCommand);
@@ -3910,9 +3914,9 @@ function mistakes(textInput, textOutput, letter="") {
             if (letter !== "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}") {  // Only add to errorsList once
                 if (letter.includes("\u2710")) {  // i.e. Spaces
                     if (textInput.substring(0,5) == "\\text") {
-                        errorsList += spaceCommand(textInput + " \u2192 Spaces are kept inside '" + textInput.replace(/{.*}/g, "") + "{}', no need for a spacing command");
+                        errorsList += spaceCommand(textInput + " \u2192 Spaces are kept inside '" + textInput.replace(/{.*}/g, "") + "{}', no need for a spacing command") + "\r\n";
                     } else if ((textInput[0] === "^") || (textInput[0] === "_")) {
-                        errorsList += spaceCommand(textInput + " \u2192 Use '\\hspace{" + letter.length + "}' instead for spaces");
+                        errorsList += spaceCommand(textInput + " \u2192 Use '\\hspace{" + letter.length + "}' instead for spaces") + "\r\n";
                     } else {
                         errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
                     };
