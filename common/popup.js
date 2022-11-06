@@ -1994,6 +1994,12 @@ const frac = (arg, initialCommand) => {
     if (output.indexOf("\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}") === -1) {
         return output;
     } else {
+        if (arg.join("").includes("\u2710")) {
+            const spaces = arg.filter(c => {return c.includes("\u2710")});
+            for (let i in spaces) {
+                mistakes(initialCommand + "{" + arg.join("") + "}", undefined, spaces[i]);
+            };
+        };
         output = "";
         numerator = true;
         nume = [];
@@ -3907,7 +3913,6 @@ function prohibitedType(command, type="function") {
 function mistakes(textInput, textOutput, letter="") {
     // Writes every errors in a box, so it's easier for the user to find them
     const popup = document.getElementById("mistakes");
-    popup.setAttribute("style", "white-space: pre;");
     const text = "\u{1D404}\u{1D42B}\u{1D42B}\u{1D428}\u{1D42B}\u{1D42C}: \r\n";  // "Errors" in bold
     if (textOutput === undefined) {
         if (letter != "") {
@@ -3915,8 +3920,9 @@ function mistakes(textInput, textOutput, letter="") {
                 if (letter.includes("\u2710")) {  // i.e. Spaces
                     if (textInput.substring(0,5) == "\\text") {
                         errorsList += spaceCommand(textInput + " \u2192 Spaces are kept inside '" + textInput.replace(/{.*}/g, "") + "{}', no need for a spacing command") + "\r\n";
-                    } else if ((textInput[0] === "^") || (textInput[0] === "_")) {
-                        errorsList += spaceCommand(textInput + " \u2192 Use '\\hspace{" + letter.length + "}' instead for spaces") + "\r\n";
+                    } else if ((textInput[0] === "^") || (textInput[0] === "_") || (textInput.substring(0,5) == "\\frac")) {
+                        const initialSpaceCommand = ["\\:", "\\;", "\\quad", "\\qquad"];
+                        errorsList += spaceCommand(textInput + " \u2192 Use '\\hspace{" + letter.length + "}' instead of '" + initialSpaceCommand[letter.length-1] + "' for spaces") + "\r\n";
                     } else {
                         errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
                     };

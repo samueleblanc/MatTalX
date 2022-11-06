@@ -42,8 +42,8 @@ window.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("keydown", (keyPressed) => {
     // Listens for Alt+C to show suggestions, Alt+I to copy text of the first box (input) and Alt+O to copy text in the second box (output)
     const textIn = document.getElementById("text_in");
-    // Alt+S to shows suggestions but closes the popup if the suggestion box is already opened
     if ((keyPressed.key === "c") && keyPressed.altKey && (textIn == document.activeElement)) {
+        // Alt+C to shows suggestions but closes the popup if the suggestion box is already opened
         if (suggestionsPopup.style.display !== "inline-block") { 
             suggestionsPopup.textContent = "";
             let word = findWord(textIn.value, (textIn.selectionEnd - 1));
@@ -52,8 +52,6 @@ document.addEventListener("keydown", (keyPressed) => {
         } else {
             closeSuggestions();
         };
-    } else if (((keyPressed.code === "Space") || (keyPressed.code === "Tab")) && (suggestionsPopup.style.display === "inline-block")) {
-        closeSuggestions();
     } else if ((keyPressed.key === "i") && keyPressed.altKey) {
         copyTextIn();
     } else if ((keyPressed.key === "o") && keyPressed.altKey) {
@@ -75,6 +73,8 @@ document.addEventListener("keydown", (keyPressed) => {
                 const arrows = {"ArrowUp": 0, "ArrowRight": 1, "ArrowLeft": -1, "ArrowDown": 0};
                 let word = findWord(textIn.value, (textIn.selectionEnd - 1 + arrows[keyPressed.key]));  // Only adjusts the cursor position for right and left arrows
                 suggestions(word);
+            } else if ((keyPressed.code === "Space") || (keyPressed.code === "Tab")) {
+                closeSuggestions();
             };
         };
     };

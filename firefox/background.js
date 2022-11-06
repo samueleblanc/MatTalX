@@ -3,20 +3,15 @@
     Stores it in storage if any of these happens
 */
 
-// Tells the user if it's a new version of MatTalX, or some info if they are first time users
 browser.runtime.onInstalled.addListener((details) => {
-    if (details.reason == "install") {
-        browser.storage.local.set({"reason": "install"});
-    } else if (details.reason == "update") {
-        browser.storage.local.set({"reason": "update"});
-    } else {
-        browser.storage.local.set({"reason": "default"});
-    };
+    // Stores "install", "update" or other depending on the reason of onIntalled's message
+    // MatTalX uses it to tell the user the new version's details or other info
+    browser.storage.local.set({"reason": details.reason});
 }
 );
 
-// Seems to work fine for Chrome, but require that for Firefox
 browser.runtime.onUpdateAvailable.addListener((details) => {
+    // Seems to work fine for Chrome, but requires that for Firefox
     console.log("Updating to version " + details + ". Delete MatTalX and redownload it if it doesn't work.");
     browser.runtime.reload();
 }

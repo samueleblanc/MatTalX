@@ -83,6 +83,9 @@ header {
 #remove {
     cursor: pointer;
 }
+#mistakes {
+    white-space: pre-wrap;
+}
 .info {
     width: 17px;
     height: 17px;
@@ -102,13 +105,17 @@ header {
     background-color: whitesmoke;
     border-radius: 7px;
 }
-.dropdownInfo a{
+.dropdownInfo a, #adjustSpaces{
     display: block;
     padding: 5px;
     color: black;
     font-size: 15x;
     font-family: 'Times New Roman';
     text-decoration: none;
+}
+#docs:hover, #git:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }
 .infoDiv:hover .dropdownInfo {
     text-align: center;
