@@ -3377,6 +3377,11 @@ function spaceCommand(text) {
 function adjustSpacesCommon(input, symbolSpaced, conditionalSpaces) {
     // Removes spaces and add some depending on surrounding symbols
     // Used if 'Adjust space' is on
+
+    /* 
+        TODO: Spacing around symbols like '+' should depend of context
+        For instance f(y+2) should return f(y+2), but 3x²+4y should return 3x² + 4y 
+    */
     input = input.slice(0, input.length - 1)
     if ((spacesButton.checked == true) && (input.length > 2)) {
         const noSpaceSymbols = Object.values(Superscript).concat(Object.values(Subscript), Object.values(Above), Object.values(Below)).filter(x => {return x !== "\u2710";});
