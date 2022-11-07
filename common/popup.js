@@ -1506,7 +1506,7 @@ const textit = (arg, initialCommand) => {
         "9" : "9",
 
         "\u2710" : "\u2710",
-		" " : "\u2710"
+        " " : "\u2710"
 	};
 	return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1672,7 +1672,7 @@ const texttt = (arg, initialCommand) => {
         "}" : "}",
 
         "\u2710" : "\u2710",
-		" " : "\u2710"
+        " " : "\u2710"
     };
     return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1852,7 +1852,7 @@ const text = (arg, initialCommand) => {
         "}" : "}",
 
         "\u2710" : "\u2710",
-		" " : "\u2710"
+        " " : "\u2710"
     };
     return replaceLetters(arg, symbols, initialCommand);
 };
@@ -3385,6 +3385,7 @@ function adjustSpacesCommon(input, symbolSpaced, conditionalSpaces) {
     input = input.slice(0, input.length - 1)
     if ((spacesButton.checked == true) && (input.length > 2)) {
         const noSpaceSymbols = Object.values(Superscript).concat(Object.values(Subscript), Object.values(Above), Object.values(Below)).filter(x => {return x !== "\u2710";});
+        const parenthesespp = ["(", ")", "[", "]", "{", "}", "⦅", "⦆", "⦃", "⦄", "⟦", "⟧", "\u27E8", "\u27E9", "\u27EA", "\u27EB", "|", ","];
         let output = "";
         input = input.replace(/ /g, "");
         let delayedSpace = false;
@@ -3408,7 +3409,7 @@ function adjustSpacesCommon(input, symbolSpaced, conditionalSpaces) {
                     };
                 };
             } else if (conditionalSpaces.includes(input[i])) {
-                if ((output[output.length - 1] !== " ") && (output[output.length - 1] !== undefined)) {
+                if ((output[output.length - 1] !== " ") && (output[output.length - 1] !== undefined) && !(parenthesespp.includes(output[output.length - 1]))) {
                     if (delayedSpace) {
                         output += " " + input[i];
                     } else {
@@ -3927,12 +3928,19 @@ function mistakes(textInput, textOutput, letter="") {
                         errorsList += spaceCommand(textInput + " \u2192 Spaces are kept inside '" + textInput.replace(/{.*}/g, "") + "{}', no need for a spacing command") + "\r\n";
                     } else if ((textInput[0] === "^") || (textInput[0] === "_") || (textInput.substring(0,5) == "\\frac")) {
                         const initialSpaceCommand = ["\\:", "\\;", "\\quad", "\\qquad"];
-                        errorsList += spaceCommand(textInput + " \u2192 Use '\\hspace{" + letter.length + "}' instead of '" + initialSpaceCommand[letter.length-1] + "' for spaces") + "\r\n";
+                        errorsList += spaceCommand(textInput + " \u2192 Replace '" + initialSpaceCommand[letter.length-1] + "' by '\\hspace{" + letter.length + "}'") + "\r\n";
                     } else {
                         errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
                     };
                 } else {
-                    errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
+                    const subSupChar = Object.values(Superscript).concat(Object.values(Subscript)).filter(x => {return x !== "\u2710";});  // Makes sure that there are no spaces that sneaks in
+                    if (subSupChar.includes(letter)) {
+                        let argPos = Object.values(Superscript).includes(letter) ? "superscript" : "subscript";
+                        let commandPos = (textInput[0] === "^") ? "superscript" : "subscript";
+                        errorsList += spaceCommand(textInput + " \u2192 Can't put a " + argPos + " (" + letter + ") in a " + commandPos + " position") + "\r\n";
+                    } else {
+                        errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
+                    };
                 };
             };
         } else {
@@ -3951,9 +3959,6 @@ function mistakes(textInput, textOutput, letter="") {
     };
     if (errorsList.length > 0) {
         popup.textContent = text + errorsList;
-        
-        popup.style.fontFamily = "Times New Roman";
-        popup.style.fontSize = "15px";
     };
     return "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}"; // bold "err" with two "x" under it
 };

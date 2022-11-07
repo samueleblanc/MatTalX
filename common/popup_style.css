@@ -89,6 +89,8 @@ header {
 }
 #mistakes {
     white-space: pre-wrap;
+    font-size: 15x;
+    font-family: 'Times New Roman';
 }
 .info {
     width: 15px;

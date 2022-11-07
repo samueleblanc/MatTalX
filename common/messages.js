@@ -22,8 +22,8 @@ function updateMessage(version) {
     // To be changed by hand every version
     let majorChanges = "Welcome to MatTalX version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
-    " 1) More specific error message (for spacing mistakes)\r\n" + 
-    " 2) Fixed bug in long error output message\r\n" + 
+    " 1) Better error messages\r\n" + 
+    " 2) Improved 'Adjust spaces'\r\n" + 
     " 3) Better looking info box";
     document.text_input.text_out.value = majorChanges;
 };
