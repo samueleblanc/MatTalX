@@ -2,7 +2,7 @@
 <script>
 document.text_input.text_in.value = "Tests:\\\\ \\mathcal{S}_{1} = \\{x^{2} + y^{2} \\leq 1 | (x,y) \\in \\mathbb{R}^{2}\\}\\\\" + 
 "f\\circ f^{-1} = f^{-1} \\circ f = \\mathbb{1}\\vskip{1} x\\equiv_{m1} y,\\: m_{1} \\in \\mathbb{Z}\\\\ " + 
-"f(x)=f(-x) \neq f(x+2), \: \forall x\in \mathbb{R}\setminus\{-2\}\\\\" + 
+"f(x)=f(-x) \\neq f(x+2), \\: \\forall x\\in \\mathbb{R}\\setminus\\{-2\\}\\\\" + 
 "\\text{Embedded fonts: } \\mathbf{\\mathfrak{allo}} \\: \\textit{\\textbf{ca va}}\\\\ " + 
 "\\textit{Let's make some errors: } \\ok, \\sqrt26, x\\below{G}, \\mathbf{#}\\vskip{1} " + 
 "\\text{Combining: } k\\below{\\rightharpoondown},\\hspace{2}\\ddot{\\nu}\\vskip{2} " +
