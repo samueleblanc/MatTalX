@@ -64,7 +64,9 @@ document.addEventListener("keydown", (keyPressed) => {
                 suggestionsPopup.textContent = "";
                 let word = findWord(textIn.value, textIn.selectionEnd - 1, "Backspace");
                 suggestions(word);
-            } else if (keyPressed.key.length === 1) {
+            } else if ((keyPressed.code === "Space") || (keyPressed.code === "Tab")) {
+                closeSuggestions();
+            } else if (keyPressed.key.length === 1) {  // i.e. A letter
                 suggestionsPopup.textContent = "";
                 let word = findWord(textIn.value, textIn.selectionEnd - 1, keyPressed.key);
                 suggestions(word);
@@ -73,8 +75,6 @@ document.addEventListener("keydown", (keyPressed) => {
                 const arrows = {"ArrowUp": 0, "ArrowRight": 1, "ArrowLeft": -1, "ArrowDown": 0};
                 let word = findWord(textIn.value, (textIn.selectionEnd - 1 + arrows[keyPressed.key]));  // Only adjusts the cursor position for right and left arrows
                 suggestions(word);
-            } else if ((keyPressed.code === "Space") || (keyPressed.code === "Tab")) {
-                closeSuggestions();
             };
         };
     };

@@ -35,8 +35,6 @@ window.addEventListener("keydown", (keyPressed) => {
         } else {
             closeSuggestions();
         };
-    } else if (((keyPressed.code === "Space") || (keyPressed.code === "Tab")) && (suggestionsPopup.style.display === "inline-block")) {
-        closeSuggestions();
     } else if ((keyPressed.key === "i") && keyPressed.altKey) {
         copyTextIn();
     } else if ((keyPressed.key === "o") && keyPressed.altKey) {
@@ -49,7 +47,9 @@ window.addEventListener("keydown", (keyPressed) => {
                 suggestionsPopup.textContent = "";
                 let word = findWord(textIn.value, textIn.selectionEnd - 1, "Backspace");
                 suggestions(word);
-            } else if (keyPressed.key.length === 1) {
+            } else if ((keyPressed.code === "Space") || (keyPressed.code === "Tab")) {
+                closeSuggestions();
+            } else if (keyPressed.key.length === 1) {  // i.e. A letter
                 suggestionsPopup.textContent = "";
                 let word = findWord(textIn.value, textIn.selectionEnd - 1, keyPressed.key);
                 suggestions(word);
