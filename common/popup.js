@@ -956,6 +956,7 @@ const Superscript = {
     "$" : "ᙚ",
     "∞" : "\u2710\u1AB2\u2710",  // Only works on certain website/apps
     "∅" : "\u{1D1A9}",
+    "*" : "*",
 
     "\u2710" : "\u2710",
     " " : " "
@@ -3374,7 +3375,7 @@ function spaceCommand(text) {
     return text;
 };
 
-// Used in adjustSpacesCommon to chose which symbols to surround with spaces
+// Used in adjustSpacesCommon to chose which symbols to surround with spaces (if touched by a specific symbol like '=')
 const characters = "AÀÂBCÇDEÉÈËÊFGHIJKLMNOÔPQRSTUÙVWXYZaàâbcçdeéèêëfghijklmnoôpqrstuùvwxyz0123456789"+
                    "𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧"+
                    "𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"+
@@ -3470,7 +3471,7 @@ function adjustSpaces(input) {
                 "\u2269", "\u2A89", "\u2A8A", "\u22E6", "\u22E7", "\u226A", "\u22D8", "\u226B", "\u22D9", "\u227A", "\u227B", "\u2280",
                 "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
                 "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u2971", "\u2972", "\u2974", "\u2250",
-                "\u2A66", "\u00D7", "\u22CA", "\u22C9"];
+                "\u2A66", "\u00D7", "\u22CA", "\u22C9", "\u225D"];
     const conditionalSpaces = ["+", "-", "\u002B", "\u2212", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
     return adjustSpacesCommon(input, symbolSpaced, conditionalSpaces);
 };
@@ -3487,7 +3488,7 @@ function adjustSpaceChem(input) {
             "\u2269", "\u2A89", "\u2A8A", "\u22E6", "\u22E7", "\u226A", "\u22D8", "\u226B", "\u22D9", "\u227A", "\u227B", "\u2280",
             "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
             "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u2971", "\u2972", "\u2974", "\u00D7", 
-            "\u22CA", "\u22C9"];
+            "\u22CA", "\u22C9", "\u225D"];
     const conditionalSpaces = ["+", "\u002B", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
     return adjustSpacesCommon(input, symbolSpaced, conditionalSpaces);
 };
@@ -3938,6 +3939,9 @@ function prohibitedType(command, type="function") {
 
 function mistakes(textInput, textOutput, letter="") {
     // Writes every errors in a box, so it's easier for the user to find them
+
+    // TODO: x^{\error} outputs: x^{} -> try: 'x^{{}}' which is obviously a bad error message
+
     const popup = document.getElementById("mistakes");
     const text = "\u{1D404}\u{1D42B}\u{1D42B}\u{1D428}\u{1D42B}\u{1D42C}: \r\n";  // "Errors" in bold
     if (textOutput === undefined) {

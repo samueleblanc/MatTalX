@@ -23,7 +23,6 @@ function updateMessage(version) {
     let majorChanges = "Welcome to MatTalX version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
     " 1) Better error messages\r\n" + 
-    " 2) Improved 'Adjust spaces'\r\n" + 
-    " 3) Better looking info box";
+    " 2) Improved 'Adjust spaces'";
     document.text_input.text_out.value = majorChanges;
 };
