@@ -21,7 +21,7 @@ function spaceCommand(text: string): string {
     return text;
 };
 
-function addSymbol(command: string[] | string, keepArray=false): string | string[] {
+function addSymbol(command: string[] | string | undefined, keepArray=false): string | string[] {
     // Return the command if it's defined, if not it returns a bold "err" with two "x" under it
     if ((typeof command == "object") && !(keepArray)) {
         // Changes an array of characters into a string

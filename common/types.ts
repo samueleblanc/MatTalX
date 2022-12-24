@@ -1,9 +1,11 @@
 interface dict {
-    [index: string]: string;
+    [key: string]: string;
 };
 
 interface dictwF {
-    [index: string]: Function | string;
+    [key: string]: string | ((arg: string[], initialCommand: string) => (string | string[])[] | string);
 };
 
-export { dict, dictwF };
+const specific = <T>() => <U extends T>(argument: U) => argument;  // https://stackoverflow.com/questions/62823059/typescript-interface-not-all-constituents-of-type-string-string-are
+
+export { dict, dictwF, specific};

@@ -1,6 +1,8 @@
 
 // Functions specific to Firefox
 
+document.getElementsByClassName("shortcuts").style.display = "none";
+
 const textIn = document.getElementById("text_in");
 
 window.addEventListener("blur", () => {

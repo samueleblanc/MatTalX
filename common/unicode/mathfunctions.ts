@@ -4,7 +4,7 @@ import { mathDictionary } from "./mathsymbols";
 import { dict } from "../types";
 
 
-const superscript = (arg: string[], initialCommand: string, forFrac=false): string | string[] => {
+const superscript = (arg: string[], initialCommand: string, forFrac=false): any => {
     // Sends input to be converted by replaceLetters
     // This function is by default not called by the frac function
     let output = replaceLetters(arg, Superscript, initialCommand, !forFrac);
@@ -15,7 +15,7 @@ const superscript = (arg: string[], initialCommand: string, forFrac=false): stri
     };
 };
 
-const subscript = (arg: string[], initialCommand: string, forFrac=false): string | string[] => {
+const subscript = (arg: string[], initialCommand: string, forFrac=false): any => {
     // Sends input to be converted by replaceLetters
     // This function is by default not called by the frac function
     let output = replaceLetters(arg, Subscript, initialCommand, !forFrac);
@@ -58,10 +58,10 @@ const vskip = (arg: string[], initialCommand: string): string => {
     return skips;
 };
 
-const sqrt = (arg: string[], initialCommand: string): string => {
+const sqrt = (arg: string[], initialCommand: string): any => {
     // sqrt stands for square root
-    const numStart = parseInt(initialCommand.indexOf("["));
-    const numEnd = parseInt(initialCommand.indexOf("]"));
+    const numStart: number = initialCommand.indexOf("[");
+    const numEnd: number = initialCommand.indexOf("]");
     let rootNum;
     if ((numStart === -1) || (numEnd === -1)) {
         if ((numStart === -1) && (numEnd === -1)) {
@@ -73,7 +73,7 @@ const sqrt = (arg: string[], initialCommand: string): string => {
     } else {
         rootNum = initialCommand.substring(numStart + 1, numEnd);
     };
-    let output = "";
+    let output: string = "";
     switch (rootNum) {
         // There's already a unicode symbol for square root, cube root and 4th root
         // If rootNum is different than those, the symbol is built
@@ -98,15 +98,15 @@ const sqrt = (arg: string[], initialCommand: string): string => {
 };
 
 
-const sqrtNoArg = (arg: string[], initialCommand: string): string => {
+const sqrtNoArg = (arg: string[], initialCommand: string): any => {
     // Compared with sqrt, this function only takes the root as parameter, not the argument
     // For instance the 'cube root of two' would be in sqrt, but simply the 'cube root' would be parsed here 
     if (arg !== undefined) {
         mistakes(initialCommand + " does not take in arguments and should take the form \\sqrt[n]*", undefined, "ⁿ√  (use \\sqrt[n]{x} to get ⁿ√𝑥)");
         return addSymbol(undefined);
     };
-    const numStart = parseInt(initialCommand.indexOf("["));
-    const numEnd = parseInt(initialCommand.indexOf("]"));
+    const numStart: number = initialCommand.indexOf("[");
+    const numEnd: number = initialCommand.indexOf("]");
     let rootNum;
     if ((numStart === -1) || (numEnd === -1)) {
         if ((numStart === -1) && (numEnd === -1)) {
@@ -138,11 +138,12 @@ const sqrtNoArg = (arg: string[], initialCommand: string): string => {
 const frac = (arg: string[], initialCommand: string) => {
     // Used to make a fraction
     // If a character doesn't exist in superscript or subscript, it outputs the fraction in the format f(x)/g(x)
-    let output = "";
-    let nume = [];
-    let deno = [];
-    let numerator = true;
-    for (let i in arg) {
+    let output: string = "";
+    let nume: string[] = [];
+    let deno: string[] = [];
+    let numerator: boolean = true;
+    let i: number;
+    for (i=0; i<arg.length; i++) {
         if (numerator) {
             if (arg[i] === "}") {
                 numerator = false;
@@ -175,7 +176,7 @@ const frac = (arg: string[], initialCommand: string) => {
         numerator = true;
         nume = [];
         deno = [];
-        for (let i in arg) {
+        for (i=0; i<arg.length; i++) {
             if (numerator) {
                 if (arg[i] === "}") {
                     numerator = false;
@@ -201,7 +202,7 @@ const frac = (arg: string[], initialCommand: string) => {
 
 const singleCharFrac = (arg: string[], initialCommand: string): string => {
     // Some fractions already exists as unicode symbols they can be accessed via this function
-    let noSpaceArg = arg.join("").replace(/ /g, "");
+    let noSpaceArg: string = arg.join("").replace(/ /g, "");
     const fractions: dict = {
         "1}{2" : "\u00BD",
         "1}{7" : "⅐",
@@ -228,20 +229,21 @@ const singleCharFrac = (arg: string[], initialCommand: string): string => {
     return (output !== undefined) ? output : frac(arg, initialCommand);
 };
 
-const combineSymbols = (arg: string[], initialCommand: string, symbol: string, forTwo=undefined): string[] => {
+const combineSymbols = (arg: string | string[], initialCommand: string, symbol: string, forTwo: undefined | string): string[] => {
     // Appends a 'combining symbol' to a regular symbol to create a new one (e.g. 'e' + '´' -> é)
     // N.B. "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}"  ->  error symbol
-    let textComb = [];
+    let textComb: string[] = [];
     if ((arg.length === 2) && (forTwo !== undefined)) {
         textComb.push(arg[0] + forTwo + arg[1]);
         mistakes(initialCommand + "{\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}" + arg[1] + "}", arg[0], "Argument doesn't exist");
         mistakes(initialCommand + "{" + arg[0] + "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}}", arg[1], "Argument doesn't exist");
     } else {
-        let err = [];
-        for (let c in arg) {
-            if (arg[c] !== undefined) {
-                textComb.push(arg[c] + symbol);
-                err.push(arg[c]);
+        let err: string[] = [];
+        let i: number;
+        for (i=0; i<arg.length; i++) {
+            if (arg[i] !== undefined) {
+                textComb.push(arg[i] + symbol);
+                err.push(arg[i]);
             } else {
                 textComb.push("\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}");
                 err.push("\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}");
@@ -256,13 +258,13 @@ const combineSymbols = (arg: string[], initialCommand: string, symbol: string, f
 
 // These functions call combineSymbols with a predetermined symbol
 
-const overline = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u0305")};
+const overline = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u0305", undefined)};
 
-const underline = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u0332")};
+const underline = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u0332", undefined)};
 
-const vec = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u20D7")};
+const vec = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u20D7", undefined)};
 
-const hvec = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u20D1")};
+const hvec = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u20D1", undefined)};
 
 const overfrown = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u0361", "\u0361")};
 
@@ -270,23 +272,23 @@ const oversmile = (arg: string[], initialCommand: string): string[] => {return c
 
 const undersmile = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u035C", "\u035C")};
 
-const hat = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u0302")};
+const hat = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u0302", undefined)};
 
-const not = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u0338")};
+const not = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u0338", undefined)};
 
-const tilde = (arg: string[], initialCommand: string): string[] => {if ((arg == "\u27F6") || (arg == "\u2192")) {return ["\u2972"]} else {return combineSymbols(arg, initialCommand, "\u0303", "\u0360")}};
+const tilde = (arg: string | string[], initialCommand: string): string[] => {if ((arg == "\u27F6") || (arg == "\u2192")) {return ["\u2972"]} else {return combineSymbols(arg, initialCommand, "\u0303", "\u0360")}};
 
-const dot = (arg: string[], initialCommand: string): string[] => {if ((arg == "=") || (arg == "\u003D")) {return ["\u2250"]} else if (arg == "\u2261") {return ["\u2A67"]} else {return combineSymbols(arg, initialCommand, "\u0307")}};
+const dot = (arg: string | string[], initialCommand: string): string[] => {if ((arg == "=") || (arg == "\u003D")) {return ["\u2250"]} else if (arg == "\u2261") {return ["\u2A67"]} else {return combineSymbols(arg, initialCommand, "\u0307", undefined)}};
 
-const ddot = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u0308")};
+const ddot = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u0308", undefined)};
 
 const underarrow = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u0362", "\u0362")};
 
-const underharpoon = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u20EC")};
+const underharpoon = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u20EC", undefined)};
 
-const acute = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u0301")};
+const acute = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u0301", undefined)};
 
-const grave = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u0300")};
+const grave = (arg: string[], initialCommand: string): string[] => {return combineSymbols(arg, initialCommand, "\u0300", undefined)};
 
 // Dict with characters and their corresponding symbol that can be combined and put above another symbol
 const Above: dict = {
@@ -361,7 +363,7 @@ const Above: dict = {
     " " : " "
 };
 
-const above = (arg, initialCommand) => {
+const above = (arg: string[], initialCommand: string): string => {
     // Returns the symbol to be put above the preceding character in the input text
     if (arg.length > 1) {
         return mistakes(initialCommand + "{" + arg.join("") + "}", undefined, "Only one argument accepted");
@@ -371,7 +373,7 @@ const above = (arg, initialCommand) => {
 };
 
 // Dict with characters and their corresponding symbol that can be combined and put below another symbol
-const Below = {
+const Below: dict = {
     "." : "\u0323",
     ":" : "\u0324",
     "\u2236" : "\u0324",
@@ -392,7 +394,7 @@ const Below = {
     " " : " "
 };
 
-const below = (arg, initialCommand) => {
+const below = (arg: string[], initialCommand: string): string => {
     // Returns the symbol to be put below the preceding character in the input text
     if (arg.length > 1) {
         return mistakes(initialCommand + "{" + arg.join("") + "}", undefined, "Only one argument accepted");
@@ -404,6 +406,6 @@ const below = (arg, initialCommand) => {
 
 export { superscript, subscript, Superscript, Subscript, hspace, vskip, sqrt, sqrtNoArg, 
     frac, singleCharFrac, overline, underline, vec, hvec, dot, ddot, 
-    overfrown, oversmile, undersmile, underarrow, underharpoon, underline,
+    overfrown, oversmile, undersmile, underarrow, underharpoon,
     hat, not, tilde, acute, grave, above, below
 }

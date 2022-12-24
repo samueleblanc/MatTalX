@@ -1,6 +1,13 @@
 
 // Functions specific to Firefox
 
+document.getElementById("short_open_mattalx").textContent = "Alt+M : Open/Close MatTalX";
+document.getElementById("short_copy_input").textContent = "Alt+I : Copy input (first box)";
+document.getElementById("short_copy_output").textContent = "Alt+O : Copy ouput (second box)";
+document.getElementById("short_open_suggestions").textContent = "Alt+C : Open/Close completion";
+
+document.getElementById("suggestionsBtn").style.display = "none";
+
 window.addEventListener("blur", () => {
     // Saves the text in the first box so it doesn't disappear if you change page or close MatTalX
     browser.storage.local.set({

@@ -1,6 +1,6 @@
 // mathDictionary is the main dict for converting commands into symbols
 
-import { dictwF } from "../types";
+import { dictwF, specific } from "../types";
 import { mathbb, mathbf, mathfrak, mathcal } from "./mathfonts";
 import { text, textbf, textit, texttt } from "./textfonts";
 import { superscript, subscript, hspace, vskip, sqrt, sqrtNoArg, 
@@ -9,7 +9,7 @@ import { superscript, subscript, hspace, vskip, sqrt, sqrtNoArg,
     hat, not, tilde, acute, grave, above, below } from "./mathfunctions";
 
 
-const mathDictionary: dictwF = {
+const mathDictionary = specific<dictwF>()({
     // Math operators
     "\\times" : "\u00D7",
     "\\rtimes" : "\u22CA",
@@ -580,7 +580,7 @@ const mathDictionary: dictwF = {
     "\\linebreak" : "\u000A",
     "\\newline" : "\u000A",
     "\\tab" : "\u0009"
-};
+});
 
 
 export { mathDictionary };
