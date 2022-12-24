@@ -3,6 +3,9 @@
 # Creates a directory and a zip file for either a chrome extension or firefox add-on
 # Can also test MatTalX, however, it's not a complete test
 
+
+## IMPORTANT: This file is currently useless, it needs a lot of changes due to the complete restructuring of MatTalX
+
 chrome_ext () {
     if [[ -e extension ]]; then
         echo "'extension' directory already exists"
@@ -41,6 +44,7 @@ firefox_addon () {
     fi
 }
 
+# Will soon be removed
 website () {
     echo "Creating directory..."
     mkdir webtest
