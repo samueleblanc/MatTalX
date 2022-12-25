@@ -25,10 +25,19 @@ function parseInput(fullText: string, plainTextConverter: dict): string {
     const parentheses: string[] = ["(", ")"];
     const brackets: string[] = ["[", "]"];
     const commandStoppers: string[] = [" ", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];  // parentheses and brackets also stops commands (most of the time)
+    const needBackslash: string[] = ["$", "%", "#"];  // inside *and* outside of mathmode
 
     let i: number;
     for (i=0; i<fullText.length; i++) {
+        if (mathmode) {
+            if (fullText[i] === "\\") {
+                
+            };
+        } else {
+            if (fullText[i] === "\\") {
 
+            };
+        };
     };
 
     return "";
