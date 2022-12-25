@@ -15,7 +15,7 @@ interface Token {
     symbol: string;
 }
 
-function replaceText(fullText: string, plainTextConverter: dict): string {
+function parseInput(fullText: string, plainTextConverter: dict): string {
     let mathmode: boolean = false;
     let d: number = 0;  // depth
     let numberCurly: number = 0;
@@ -31,10 +31,12 @@ function replaceText(fullText: string, plainTextConverter: dict): string {
 
     };
 
-    let final: string = "";
-    return final;
+    return "";
 };
 
 
 // SETTINGS
 
+function parseSettings(fullText: string): string {
+    return "";
+};

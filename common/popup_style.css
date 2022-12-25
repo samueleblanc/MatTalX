@@ -31,6 +31,23 @@
         font-size: 15px;
         text-decoration: none;
     }
+    .infoButton_dark {
+        display: none;
+    }
+    .infoButton_light {
+        background-color: white;
+        border: none;
+        float: right;
+    }
+    .info_dark {
+        display: none;
+    }
+    .info_light {
+        width: 15px;
+        height: 15px;
+        cursor: default;
+        float: right;
+    }
 }
 @media (prefers-color-scheme: dark) {
     body {
@@ -65,15 +82,38 @@
         font-size: 15px;
         text-decoration: none;
     }
+    .infoButton_light {
+        display: none;
+    }
+    .infoButton_dark {
+        background-color: black;
+        border: none;
+        float: right;
+    }
+    .info_light {
+        display: none;
+    }
+    .info_dark {
+        width: 15px;
+        height: 15px;
+        cursor: default;
+        float: right;
+    }
 }
-#button {
+#convert,
+#reset,
+#suggestionsBtn,
+#settingBtn {
     font-size: 14px;
     font-family: 'Lucida Grande';
     border: 1px solid black;
     border-radius: 7px;
     transition-duration: 0.2s;
 }
-#button:hover {
+#convert:hover,
+#reset:hover,
+#suggestionsBtn:hover,
+#settingBtn:hover {
     font-size: 14px;
     font-family: 'Lucida Grande';
     border: 1px solid black;
@@ -99,21 +139,6 @@
     min-width: 70px;
     width: fit-content;
     height: auto;
-    cursor: pointer;
-    background-color: lightgrey;
-}
-#reset {
-    font-size: 14px;
-    font-family: 'Lucida Grande';
-    border: 1px solid black;
-    border-radius: 7px;
-    transition-duration: 0.2s;
-}
-#reset:hover {
-    font-size: 14px;
-    font-family: 'Lucida Grande';
-    border: 1px solid black;
-    border-radius: 7px;
     cursor: pointer;
     background-color: lightgrey;
 }
@@ -147,12 +172,6 @@ header {
     font-size: 15x;
     font-family: 'Times New Roman';
 }
-.info {
-    width: 15px;
-    height: 15px;
-    cursor: default;
-    float: right;
-}
 .infoDiv {
     position: relative;
     float: right;
@@ -182,11 +201,6 @@ header {
     text-align: center;
     display: block;
     padding: 8px;
-}
-.infoButton {
-    background-color: white;
-    border: none;
-    float: right;
 }
 .shortcutTitle {
     padding-top: 6px;
