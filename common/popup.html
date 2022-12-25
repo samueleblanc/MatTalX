@@ -10,7 +10,9 @@
 </head>
 <body>
     <header>
-        <div class="infoDiv"><button class="infoButton"><img class="info" alt="Info" src="images/question_mark.png"></button><br>
+        <div class="infoDiv">
+            <button class="infoButton_light"><img class="info_light" alt="Info" src="images/question_mark_nobg_light.png"></button>
+            <button class="infoButton_dark"><img class="info_dark" alt="Info" src="images/question_mark_nobg_dark.png"></button><br>
         <div class="dropdownInfo">
             <a target="_blank" href="https://samueleblanc.com/mattalx/documentation.html" id="docs">Documentation</a>
             <a target="_blank" href="https://github.com/samueleblanc/MatTalX" id="git">Code (GitHub)</a>
@@ -37,7 +39,7 @@
     <form name="text_input">
         <textarea type="text" name="text_in" id="text_in" spellcheck="false"></textarea>
         <div class="suggestion"><table id="suggestions"></table></div><br>
-        <input type="button" value="Convert" id="button">
+        <input type="button" value="Convert" id="convert">
         <input type="button" value="Suggestions" id="suggestionsBtn">  <!--suggestionsBtn is used with the android version-->
         <input type="reset" value="Clear" id="reset"><br><br>
         <textarea type="text" name="text_out" id="text_out" spellcheck="false" disabled></textarea><br><br>
