@@ -1,25 +1,10 @@
 import { replaceLetters } from "../convert";
+import { dict } from "../types";
 
-interface text {
-    [index: string]: string;
-};
-
-interface textit {
-    [index: string]: string;
-};
-
-interface textbf {
-    [index: string]: string;
-};
-
-interface texttt {
-    [index: string]: string;
-};
-
-const textbf = (arg: string[], initialCommand: string) => {
+const textbf = (arg: string[], initialCommand: string): string[] => {
     // textbf stands for text bold font
     // This function converts the list of characters to the corresponding (text) bold font character
-	const symbols = {
+	const symbols: dict = {
         "A" : "\u{1D5D4}",
         "a" : "\u{1D5EE}",
         "B" : "\u{1D5D5}",
@@ -235,10 +220,10 @@ const textbf = (arg: string[], initialCommand: string) => {
 	return replaceLetters(arg, symbols, initialCommand);
 };
 
-const textit = (arg: string[], initialCommand: string) => {
+const textit = (arg: string[], initialCommand: string): string[] => {
     // textit stands for text italic
     // This function converts the list of characters to the corresponding italic character
-    const symbols = {
+    const symbols: dict = {
         "A" : "\u{1D608}",
         "a" : "\u{1D622}",
         "B" : "\u{1D609}",
@@ -464,10 +449,10 @@ const textit = (arg: string[], initialCommand: string) => {
 	return replaceLetters(arg, symbols, initialCommand);
 };
 
-const texttt = (arg: string[], initialCommand: string) => {
+const texttt = (arg: string[], initialCommand: string): string[] => {
     // texttt stands for text typewriter
     // This function converts the list of characters to the corresponding typewriter character
-    const symbols = {
+    const symbols: dict = {
         "A" : "\u{1D670}",
         "a" : "\u{1D68A}",
         "B" : "\u{1D671}",
@@ -630,9 +615,9 @@ const texttt = (arg: string[], initialCommand: string) => {
     return replaceLetters(arg, symbols, initialCommand);
 };
 
-const text = (arg: string[], initialCommand: string) => {
+const text = (arg: string[], initialCommand: string): string[] => {
     // This function doesn't change the output (i.e. "abc" -> "abc")
-    const symbols = {
+    const symbols: dict = {
         "A" : "A",
         "À" : "À",
         "à" : "à",

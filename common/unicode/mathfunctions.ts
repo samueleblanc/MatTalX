@@ -87,7 +87,9 @@ const sqrt = (arg: string[], initialCommand: string): any => {
             output += "\u221A";
             break;
         default:
-            output += addSymbol(mathDictionary["^"](rootNum.toString().split(""), initialCommand)) + "\u221A";
+            if (typeof mathDictionary["^"] === "function") {
+                output += addSymbol(mathDictionary["^"](rootNum.toString().split(""), initialCommand)) + "\u221A";
+            }
     };
     if (arg.length >= 2) {
         output += "(" + addSymbolArray(arg, initialCommand + "{" + arg.join("") + "}") + ")";
@@ -130,8 +132,10 @@ const sqrtNoArg = (arg: string[], initialCommand: string): any => {
             output += "\u221A";
             break;
         default:
-            output += addSymbol(mathDictionary["^"](rootNum.toString().split(""), initialCommand)) + "\u221A";
-    };
+            if (typeof mathDictionary["^"] === "function") {
+                output += addSymbol(mathDictionary["^"](rootNum.toString().split(""), initialCommand)) + "\u221A";
+            };
+        };
     return output;
 };
 
@@ -153,7 +157,9 @@ const frac = (arg: string[], initialCommand: string) => {
         } else {
             if (arg[i] === "{") {
                 if (arg[i - 1] === "}") {
-                    output += addSymbol(mathDictionary["^"](nume, initialCommand, true)) + "\u2215";
+                    if (typeof mathDictionary["^"] === "function") {
+                        output += addSymbol(mathDictionary["^"](nume, initialCommand, true)) + "\u2215";
+                    };
                 } else {
                     deno.push(arg[i]);
                 };
@@ -162,7 +168,9 @@ const frac = (arg: string[], initialCommand: string) => {
             };
         };
     };
-    output += addSymbol(mathDictionary["_"](deno, initialCommand, true));
+    if (typeof mathDictionary["_"] === "function") {
+        output += addSymbol(mathDictionary["_"](deno, initialCommand, true));
+    };
     if (output.indexOf("\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}") === -1) {
         return output;
     } else {
