@@ -1,5 +1,9 @@
-
-// Functions specific to Firefox
+/*
+    Functions specific to Firefox (Android version)
+    
+    This file is copy-pasted in popup.ts (popup.js after compilation).
+    Therefore, a special attention to variable names is needed.
+*/
 
 document.getElementsByClassName("shortcuts").style.display = "none";
 

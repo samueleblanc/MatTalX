@@ -1,5 +1,9 @@
-
-// Functions specific to Firefox
+/*
+    Functions specific to Firefox (computer version)
+    
+    This file is copy-pasted in popup.ts (popup.js after compilation).
+    Therefore, a special attention to variable names is needed.
+*/
 
 document.getElementById("short_open_mattalx").textContent = "Alt+M : Open/Close MatTalX";
 document.getElementById("short_copy_input").textContent = "Alt+I : Copy input (first box)";

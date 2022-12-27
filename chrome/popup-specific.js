@@ -1,5 +1,9 @@
+/*
+    Functions specific to Chrome
 
-// Functions specific to Chrome
+    This file is copy-pasted in popup.ts (popup.js after compilation).
+    Therefore, a special attention to variable names is needed.
+*/
 
 const textIn = document.getElementById("text_in");
 
