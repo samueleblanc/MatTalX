@@ -7,4 +7,4 @@
 
 #### TO(maybe)DO
 - New packages are welcomed! However, please submit packages that might benefit multiple users.
-- Cleaning up the code (including HTML and CSS) or simply adding comments is always appreciated!
+- Cleaning up the code (including HTML and CSS) or simply adding comments that helps with code readability is always appreciated!
