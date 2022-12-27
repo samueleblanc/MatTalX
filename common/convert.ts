@@ -1,5 +1,5 @@
 import { Superscript, Subscript } from "./unicode/sub_super"
-import { dict } from "./types";
+import { dict, Str } from "./types";
 
 function replaceLetters(letters: string[], dict: dict, initialCommand: string, checkMistakes=true): string[] {
     // Used by a lot of functions to convert every letter in a string of characters
@@ -8,14 +8,9 @@ function replaceLetters(letters: string[], dict: dict, initialCommand: string, c
     let i: number;
     for (i=0; i<letters.length; i++) {
         // TODO: Push symbol if it's a combining symbol
-        if ((typeof dict[letters[i]] === "string")) {
-            symbol = addSymbol(dict[letters[i]]);
-            if (typeof symbol === "string") {
-                newtext.push(symbol);
-            };
-            if (checkMistakes) {
-                mistakes(initialCommand + "{" + letters.join("") + "}", dict[letters[i]], letters[i]);
-            };
+        newtext.push(Str(addSymbol(dict[letters[i]])));
+        if (checkMistakes) {
+            mistakes(initialCommand + "{" + letters.join("") + "}", dict[letters[i]], letters[i]);
         };
     };
     return newtext;
@@ -51,6 +46,7 @@ function addSymbolArray(args: string[], command: string, checkMistakes=true): st
     return output;
 };
 
+// TODO: Make this function useless with more proper type checking
 function prohibitedType(command: string, type="function"): string {
     // Make sure the command is of the right type. Most of the time "function" is the one to watch
     return (typeof command !== type) ? command : "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}";

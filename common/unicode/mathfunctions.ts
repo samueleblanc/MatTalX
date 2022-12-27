@@ -1,7 +1,7 @@
 import { Subscript, Superscript } from "./sub_super";
 import { replaceLetters, mistakes, addSymbol, addSymbolArray } from "../convert";
 import { mathDictionary } from "./mathsymbols";
-import { dict } from "../types";
+import { dict, Fct } from "../types";
 
 
 const superscript = (arg: string[], initialCommand: string, forFrac=false): any => {
@@ -87,9 +87,7 @@ const sqrt = (arg: string[], initialCommand: string): any => {
             output += "\u221A";
             break;
         default:
-            if (typeof mathDictionary["^"] === "function") {
-                output += addSymbol(mathDictionary["^"](rootNum.toString().split(""), initialCommand)) + "\u221A";
-            }
+            output += addSymbol(Fct(mathDictionary["^"])(rootNum.toString().split(""), initialCommand)) + "\u221A";
     };
     if (arg.length >= 2) {
         output += "(" + addSymbolArray(arg, initialCommand + "{" + arg.join("") + "}") + ")";
@@ -132,9 +130,7 @@ const sqrtNoArg = (arg: string[], initialCommand: string): any => {
             output += "\u221A";
             break;
         default:
-            if (typeof mathDictionary["^"] === "function") {
-                output += addSymbol(mathDictionary["^"](rootNum.toString().split(""), initialCommand)) + "\u221A";
-            };
+            output += addSymbol(Fct(mathDictionary["^"])(rootNum.toString().split(""), initialCommand)) + "\u221A";
         };
     return output;
 };
@@ -157,9 +153,7 @@ const frac = (arg: string[], initialCommand: string) => {
         } else {
             if (arg[i] === "{") {
                 if (arg[i - 1] === "}") {
-                    if (typeof mathDictionary["^"] === "function") {
-                        output += addSymbol(mathDictionary["^"](nume, initialCommand, true)) + "\u2215";
-                    };
+                    output += addSymbol(Fct(mathDictionary["^"])(nume, initialCommand, true)) + "\u2215";
                 } else {
                     deno.push(arg[i]);
                 };
@@ -168,9 +162,7 @@ const frac = (arg: string[], initialCommand: string) => {
             };
         };
     };
-    if (typeof mathDictionary["_"] === "function") {
-        output += addSymbol(mathDictionary["_"](deno, initialCommand, true));
-    };
+    output += addSymbol(Fct(mathDictionary["_"])(deno, initialCommand, true));
     if (output.indexOf("\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}") === -1) {
         return output;
     } else {
