@@ -533,7 +533,6 @@ const mathDictionary: dictwF = {
     "\\angstrom" : "\u212B",
     "\\emdash" : "\u2014",
     "\\bullet" : "\u2219",
-    "\\textbullet" : "\u2022",
     "\\bigbullet" : "\u25CF",
     "\\langle" : "\u27E8",
     "\\rangle" : "\u27E9",
