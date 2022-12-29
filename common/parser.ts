@@ -3,9 +3,6 @@
 */
 
 
-import { dict } from "./types";
-
-
 // MAIN
 
 interface Token {
@@ -19,7 +16,7 @@ interface Token {
     */
 };
 
-function parseInput(fullText: string, plainTextConverter: dict): [Token[], number, boolean] {
+function parseInput(fullText: string): [Token[], number, boolean] {
     // Loops on letters and convert the input into characters
     let mm: boolean = false;  // mathmode
     let d: number = 0;  // depth
@@ -30,7 +27,6 @@ function parseInput(fullText: string, plainTextConverter: dict): [Token[], numbe
     const parentheses: string[] = ["(", ")"];
     const brackets: string[] = ["[", "]"];
     const commandStoppers: string[] = [" ", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];  // parentheses and brackets also stops commands (most of the time)
-    const needBackslash: string[] = ["$", "%", "#"];  // inside *and* outside of mathmode
     
     let t: Token;
 
