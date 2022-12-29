@@ -2,9 +2,11 @@
     Front-end stuff
 */
 
-import { Str } from "./types";
-import { mathDictionary } from "./unicode/mathsymbols";
-import { findWord, showCommand, toReplaceCommand, semiAutoCompletion } from "./suggestions";
+import { Str } from "common/types";
+import { mathDictionary } from "common/unicode/mathsymbols";
+import { findWord, showCommand, toReplaceCommand, semiAutoCompletion } from "common/suggestions";
+import { output } from "common/convert";
+import { standardGreek, lettersMath } from "common/packages/std"
 
 
 // GLOBAL VARIABLES
@@ -36,7 +38,7 @@ const mistakesBox: HTMLElement = <HTMLElement>document.getElementById("mistakes"
 
 const settingBtn: HTMLInputElement = <HTMLInputElement>document.getElementById("settingBtn");
 const settingBox: HTMLElement = <HTMLElement>document.getElementById("settingBox");
-const settingText: HTMLElement = <HTMLElement>document.getElementById("settingText");
+const settingText: HTMLTextAreaElement = <HTMLTextAreaElement>document.getElementById("settingText");
 
 
 // FUNCTIONS
@@ -145,8 +147,9 @@ function main(): void {
 
     let fullText: string = textIn.value;
     fullText = fullText.replace(/\u000A/g, " "); // Cancels the line skipped by pressing "enter", use "\\" instead
+    
+    output(fullText, mathDictionary, lettersMath, [standardGreek]);
 
-    // fullText = convert(fullText + " ");
     textOut.value = fullText;
     textOut.disabled = false;
 };
