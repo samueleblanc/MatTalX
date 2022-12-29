@@ -53,37 +53,40 @@ function parseInput(fullText: string, plainTextConverter: dict): [Token[], numbe
                     if (fullText[i-1] === "\\") {
                         t = {command: fullText[i], mathmode: mm, depth: d};
                         outputBox.push(t);
-                        temporaryBox = [];
-                        trigger = false;
                     } else {
                         t = {command: temporaryBox.join(""), mathmode: mm, depth: d};
                         outputBox.push(t);
-                        temporaryBox = [];
                         t = {command: fullText[i], mathmode: mm, depth: d};
                         outputBox.push(t);
-                        trigger = false;
                     };
+                    temporaryBox = [];
+                    trigger = false;
                 } else if (brackets.includes(fullText[i])) {
                     if (temporaryBox.join("").slice(0,5) === "\\sqrt") {
                         temporaryBox.push(fullText[i]);
                     } else {
                         if (fullText[i-1] === "\\") {
                             if (fullText[i] === "]") {
-
+                                if (mathmodeStarter === "\\[") {
+                                    t = {command: "\\\\", mathmode: mm, depth: d};
+                                    outputBox.push(t);
+                                    mm = false;
+                                } else {
+                                    t = {command: fullText[i], mathmode: mm, depth: d};
+                                    outputBox.push(t);
+                                };
                             } else {
                                 t = {command: fullText[i], mathmode: mm, depth: d};
                                 outputBox.push(t);
-                                temporaryBox = [];
                             };
-                            trigger = false;
                         } else {
                             t = {command: temporaryBox.join(""), mathmode: mm, depth: d};
                             outputBox.push(t);
-                            temporaryBox = [];
                             t = {command: fullText[i], mathmode: mm, depth: d};
                             outputBox.push(t);
-                            trigger = false;
                         };
+                        temporaryBox = [];
+                        trigger = false;
                     };
                 } else if (fullText[i] === "{") {
                     if (temporaryBox.join("").slice(0,5) === "\\frac") {
@@ -120,15 +123,13 @@ function parseInput(fullText: string, plainTextConverter: dict): [Token[], numbe
                         if (fullText[i-1] === "\\") {
                             t = {command: fullText[i], mathmode: mm, depth: d};
                             outputBox.push(t);
-                            temporaryBox = [];
-                            trigger = false;
                         } else {
                             t = {command: temporaryBox.join(""), mathmode: mm, depth: d};
                             outputBox.push(t);
-                            temporaryBox = [];
-                            trigger = false;
                             d -= 1;
                         };
+                        temporaryBox = [];
+                        trigger = false;
                     };
                 } else {
                     temporaryBox.push(fullText[i]);
@@ -178,13 +179,13 @@ function parseInput(fullText: string, plainTextConverter: dict): [Token[], numbe
                     if (fullText[i-1] === "\\") {
                         t = {command: fullText[i], mathmode: mm, depth: d};
                         outputBox.push(t);
-                        temporaryBox = [];
                     } else {
                         t = {command: temporaryBox.join(""), mathmode: mm, depth: d};
                         outputBox.push(t);
                         t = {command: fullText[i], mathmode: mm, depth: d};
                         outputBox.push(t);
                     };
+                    temporaryBox = [];
                     trigger = false;
                 } else if (commandStoppers.includes(fullText[i]) || parentheses.includes(fullText[i]) || (fullText[i] === "]")) {
                     t = {command: temporaryBox.join(""), mathmode: mm, depth: d};
