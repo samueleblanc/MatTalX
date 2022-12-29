@@ -5,15 +5,15 @@
 
 compile_common () {
     for file in common/*.ts; do
-        tsc common/$file  # TypeScript compiler
+        tsc $file  # TypeScript compiler
         echo "$file compiled"
     done
     for file in common/packages/*.ts; do
-        tsc common/packages/$file
+        tsc $file
         echo "Packages compiled"
     done
     for file in common/unicode/*.ts; do
-        tsc common/unicode/$file
+        tsc $file
         echo "Unicode files compiled"
     done
 }
@@ -22,10 +22,10 @@ copy_common () {
     for file in common; do
         case $file in
             *.js)
-            mv common/$file $1  # Parameter is the name of the directory (e.g. 'extension', 'firefox_add_on', etc.)
+            mv $file $1  # Parameter is the name of the directory (e.g. 'extension', 'firefox_add_on', etc.)
             ;;
             *.html | *.css)
-            cp common/$file $1
+            cp $file $1
             ;;
             *)
             continue  # i.e. don't copy .ts (or other) files
@@ -33,13 +33,13 @@ copy_common () {
         esac
     done
     for file in common/packages/*.js; do
-        mv common/packages/$file $1
+        mv $file $1
     done
     for file in common/unicode/*.js; do
-        cp common/unicode/$file $1
+        cp $file $1
     done
     for file in common/images; do
-        cp common/images/$file $1
+        cp $file $1
     done
     echo "Files from 'common' transfered"
 }
@@ -55,7 +55,9 @@ chrome_ext () {
         mkdir extension
         copy_common extension
         cp -RT chrome extension
+        cat extension/messages.js >> extension/popup.js
         cat extension/popup-specific.js >> extension/popup.js
+        rm extension/messages.js
         rm extension/popup-specific.js
         echo "Directory made"
         echo "Compressing..."
@@ -75,7 +77,9 @@ firefox_addon () {
         mkdir firefox_add_on
         copy_common firefox_add_on
         cp -RT firefox/main firefox_add_on
+        cat firefox_add_on/messages.js >> firefox_add_on/popup.js
         cat firefox_add_on/popup-specific.js >> firefox_add_on/popup.js
+        rm firefox_add_on/messages.js
         rm firefox_add_on/popup-specific.js
         echo "Directory made"
         echo "Compressing..."
@@ -95,7 +99,9 @@ android_addon () {
         mkdir android_add_on
         copy_common andoid_add_on
         cp -RT firefox/android andoid_add_on
+        cat andoid_add_on/messages.js >> andoid_add_on/popup.js
         cat andoid_add_on/popup-specific.js >> andoid_add_on/popup.js
+        rm andoid_add_on/messages.js
         rm andoid_add_on/popup-specific.js
         echo "Directory made"
         echo "Compressing..."
