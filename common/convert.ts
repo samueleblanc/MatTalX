@@ -1,5 +1,10 @@
 import { Superscript, Subscript } from "./unicode/sub_super"
 import { dict, Str } from "./types";
+import { parseInput } from "./parser";
+
+function convert() {
+    
+};
 
 function replaceLetters(letters: string[], dict: dict, initialCommand: string, checkMistakes=true): string[] {
     // Used by a lot of functions to convert every letter in a string of characters
@@ -53,7 +58,7 @@ function prohibitedType(command: string, type="function"): string {
 };
 
 
-let errorsList: string = "";
+let errorsList: string = "";  // Make sure it starts empty
 
 function mistakes(textInput: string, textOutput: string | undefined, letter=""): string {
     // Writes every errors in a box, so it's easier for the user to find them
