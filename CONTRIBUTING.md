@@ -6,5 +6,6 @@
 - Make modifying keyboard shortcuts possible
 
 #### TO(maybe)DO
+- Adding new environment like *proof*, *theorem*, etc. with their corresponding style and font.
 - New packages are welcomed! However, please submit packages that might benefit multiple users.
 - Cleaning up the code (including HTML and CSS) or simply adding comments that helps with code readability is always appreciated!
