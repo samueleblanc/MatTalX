@@ -64,13 +64,9 @@ const mathDictionary: dictwF = {
     "\\arccsc" : "arccsc",
     "\\arcsec" : "arcsec",
     "\\*" : "*",
-    "\\det" : "det",
-    "\\rank" : "rank",
     "\\log" : "log",
     "\\ln" : "ln",
     "\\lim" : "lim",
-    "\\mod" : "mod",
-    "\\Mod" : "Mod",
     "\\cup" : "\u222A",
     "\\Cup" : "\u22D3",
     "\\sqcup" : "\u2294",
@@ -163,8 +159,6 @@ const mathDictionary: dictwF = {
     "\\equiv" : "\u2261",
     "\\dotequiv" : "\u2A67",
     "\\superequiv" : "\u2263",
-    "\\tbond" : "\u2261",
-    "\\qbond" : "\u2263",
     "\\doteq" : "\u2250",
     "\\eqdot" : "\u2A66",
     "\\neq" : "\u2260",
@@ -250,10 +244,6 @@ const mathDictionary: dictwF = {
     "\\because" : "\u2235",
     "\\squaredots" : "\u2237",
     "\\dotminus" : "\u2238",
-    "\\max" : "max",
-    "\\min" : "min",
-    "\\grad" : "grad",
-    "\\curl" : "curl",
     "\\ratio" : "\u2236",  // Same as ":", except with "$chem"
 
     // Arrows
@@ -385,11 +375,8 @@ const mathDictionary: dictwF = {
     "\\acute" : acute,
     "\\grave" : grave,
 
-    // For Lewis Notation
-    "\\above" : above,
+    "\\above" : above,  // TODO: Change for stackrel
     "\\below" : below,
-    "\\mid." : "\u2E31",
-    "\\mid:" : "\u003A",
 
     // Chess
     "\\wking" : "\u2654",
