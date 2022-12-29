@@ -1,4 +1,4 @@
-![MatTalX logo](common/Images/mattalx_logo.png)
+![MatTalX logo](common/images/mattalx_logo.png)
 
 # Important
 MatTalX is currently being restructured. The Firefox add-on and Chrome extension are still working, but the code here does not reflect what is publicly available in the chrome webstore of firefox add-on marketplace.
