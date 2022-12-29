@@ -1,4 +1,5 @@
 import { dict } from "../types";
+import { lettersMath } from "../unicode/letters";
 
 
 const standardShortcuts: dict = {
@@ -74,9 +75,5 @@ const standardGreek: dict = {
     "\\omega" : "\u{1D714}",
 };
 
-const standardFonts: dict = {
 
-};
-
-
-export { standardShortcuts, standardFonts, standardGreek };
+export { standardShortcuts, lettersMath, standardGreek };

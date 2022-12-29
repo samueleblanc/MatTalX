@@ -1,4 +1,5 @@
 import { dict } from "../types";
+import { lettersNoFont } from "../unicode/letters";
 
 const noStyleGreek: dict = {
     // Greek alphabet
@@ -60,4 +61,4 @@ const noStyleGreek: dict = {
 };
 
 
-export { noStyleGreek };
+export { noStyleGreek, lettersNoFont };
