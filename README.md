@@ -51,7 +51,7 @@ Versions:
 ## Contributing
 Thank you for considering to help out! Pull requests and issues are welcomed!
 
-Please add comments to your code.
+More info [here](CONTRIBUTING.md).
 
 ## Testing
 A basic test can be ran with `bash build.sh test`
