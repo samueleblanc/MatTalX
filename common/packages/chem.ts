@@ -1,6 +1,11 @@
-import { dict } from "../types";
+/*
+    Used in \documentclass{chem}
+*/
+
+import { dict } from "common/types";
 
 const chemShortcuts: dict = {
+    // Can be used with \usepackage{chem} *and* \documentclass{chem}
     "\\midp" : "\u2E31",  // mid point
     "\\middp" : "\u003A",  // mid double point
     "\\tbond" : "\u2261",

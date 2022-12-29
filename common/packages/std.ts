@@ -1,5 +1,5 @@
-import { dict } from "../types";
-import { lettersMath } from "../unicode/letters";
+import { dict } from "common/types";
+import { lettersMath } from "common/unicode/letters";
 
 
 const standardShortcuts: dict = {

@@ -1,9 +1,11 @@
-import { Superscript, Subscript } from "./unicode/sub_super"
-import { dict, Str } from "./types";
-import { parseInput } from "./parser";
+import { Superscript, Subscript } from "common/unicode/sub_super"
+import { dict, dictwF, Str } from "common/types";
+import { parseInput } from "common/parser";
 
-function convert() {
-    
+function output(inputText: string, mathDictionary: dictwF, plainTextConverter: dict, packages: dict[], renewCommand?: dict): string {
+    const parsedText = parseInput(inputText);
+    alert(parsedText[0]);
+    return '';
 };
 
 function replaceLetters(letters: string[], dict: dict, initialCommand: string, checkMistakes=true): string[] {
@@ -110,4 +112,4 @@ function mistakes(textInput: string, textOutput: string | undefined, letter=""):
     return "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}"; // bold "err" with two "x" under it
 };
 
-export { replaceLetters, spaceCommand, addSymbol, addSymbolArray, prohibitedType, mistakes };
+export { output, replaceLetters, spaceCommand, addSymbol, addSymbolArray, prohibitedType, mistakes };

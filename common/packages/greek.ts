@@ -1,6 +1,6 @@
-import { dict } from "../types";
+import { dict } from "common/types";
 
-const greekSkortcuts: dict = {
+const greekShortcuts: dict = {
     "\\A" : "\u{1D6E2}",
     "\\a" : "\u{1D6FC}",
     "\\B" : "\u{1D6E3}",
@@ -59,4 +59,4 @@ const greekSkortcuts: dict = {
 };
 
 
-export { greekSkortcuts };
+export { greekShortcuts };

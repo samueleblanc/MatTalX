@@ -1,12 +1,12 @@
 // mathDictionary is the main dict for converting commands into symbols
 
-import { dictwF } from "../types";
-import { mathbb, mathbf, mathfrak, mathcal } from "./mathfonts";
-import { text, textbf, textit, texttt } from "./textfonts";
+import { dictwF } from "common/types";
+import { mathbb, mathbf, mathfrak, mathcal } from "common/unicode//mathfonts";
+import { text, textbf, textit, texttt } from "common/unicode//textfonts";
 import { superscript, subscript, hspace, vskip, sqrt, sqrtNoArg, 
     frac, singleCharFrac, overline, vec, hvec, dot, ddot, 
     overfrown, oversmile, undersmile, underarrow, underharpoon, underline,
-    hat, not, tilde, acute, grave, above, below } from "./mathfunctions";
+    hat, not, tilde, acute, grave, above, below } from "common/unicode//mathfunctions";
 
 
 const mathDictionary: dictwF = {

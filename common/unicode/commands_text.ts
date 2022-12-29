@@ -3,9 +3,9 @@
 */
 
 
-import { dictwF } from "../types";
-import { text, textbf, textit, texttt } from "./textfonts";
-import { hspace, vskip } from "./mathfunctions";
+import { dictwF } from "common/types";
+import { text, textbf, textit, texttt } from "common/unicode/textfonts";
+import { hspace, vskip } from "common/unicode/mathfunctions";
 
 const textCommands: dictwF = {
     "\\^" : "^",

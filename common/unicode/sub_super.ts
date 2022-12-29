@@ -1,4 +1,4 @@
-import { dict } from "../types";
+import { dict } from "common/types";
 
 // Superscript is used (by the superscript function) to convert characters to the corresponding superscript character
 const Superscript: dict = {

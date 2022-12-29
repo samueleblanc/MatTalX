@@ -7,9 +7,11 @@ interface dict {
     [key: string]: string;
 };
 
+type fct = ((arg: string[], initialCommand: string, forFrac?: boolean) => string | string[]);
+
 // Used for mathDictionary, where some commands return function
 interface dictwF {
-    [key: string]: string | ((arg: string[], initialCommand: string, forFrac?: boolean) => string | string[]);
+    [key: string]: string | fct;
 };
 
 function Str(a: any): string {
