@@ -407,5 +407,5 @@ const below = (arg: string[], initialCommand: string): string => {
 export { superscript, subscript, Superscript, Subscript, hspace, vskip, sqrt, sqrtNoArg, 
     frac, singleCharFrac, overline, underline, vec, hvec, dot, ddot, 
     overfrown, oversmile, undersmile, underarrow, underharpoon,
-    hat, not, tilde, acute, grave, above, below
-}
+    hat, not, tilde, acute, grave, above, below, Above, Below
+};
