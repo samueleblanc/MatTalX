@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "ES2017",
-        "module": "CommonJS",
+        // "module": "CommonJS",
         "strict": true,
         "allowUnreachableCode": false,
         "noImplicitAny": true,
@@ -16,6 +16,6 @@
         "removeComments": false,
         "lib": ["ES2017", "ES2016.Array.Include", "ES2017.Object", "ES2017.TypedArrays", "ES2017.String", "DOM"]
       }//,
-      //"$schema": "https://json.schemastore.org/tsconfig",
-      //"display": "Recommended"
+      // "$schema": "https://json.schemastore.org/tsconfig",
+      // "display": "Recommended"
 }
