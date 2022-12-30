@@ -1,5 +1,5 @@
-import { replaceLetters } from "common/convert";
-import { dict } from "common/types";
+import { replaceLetters } from "convert";
+import { dict } from "types";
 
 const textbf = (arg: string[], initialCommand: string): string[] => {
     // textbf stands for text bold font

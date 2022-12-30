@@ -2,7 +2,7 @@
     Used in \documentclass{chem}
 */
 
-import { dict } from "common/types";
+import { dict } from "types";
 
 const chemShortcuts: dict = {
     // Can be used with \usepackage{chem} *and* \documentclass{chem}

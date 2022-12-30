@@ -1,4 +1,4 @@
-import { dict } from "common/types";
+import { dict } from "types";
 
 const greekShortcuts: dict = {
     "\\A" : "\u{1D6E2}",

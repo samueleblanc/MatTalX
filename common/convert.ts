@@ -1,6 +1,6 @@
-import { Superscript, Subscript } from "common/unicode/sub_super"
-import { dict, dictwF, Str } from "common/types";
-import { parseInput } from "common/parser";
+import { Superscript, Subscript } from "unicode/sub_super"
+import { dict, dictwF, Str } from "types";
+import { parseInput } from "parser";
 
 function output(inputText: string, mathDictionary: dictwF, plainTextConverter: dict, packages: dict[], renewCommand?: dict): string {
     const parsedText = parseInput(inputText);

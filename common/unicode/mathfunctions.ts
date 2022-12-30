@@ -1,7 +1,7 @@
-import { Subscript, Superscript } from "common/unicode/sub_super";
-import { replaceLetters, mistakes, addSymbol, addSymbolArray } from "common/convert";
-import { mathDictionary } from "common/unicode/mathsymbols";
-import { dict, Fct } from "common/types";
+import { Subscript, Superscript } from "unicode/sub_super";
+import { replaceLetters, mistakes, addSymbol, addSymbolArray } from "convert";
+import { mathDictionary } from "unicode/mathsymbols";
+import { dict, Fct } from "types";
 
 
 const superscript = (arg: string[], initialCommand: string, forFrac=false): any => {

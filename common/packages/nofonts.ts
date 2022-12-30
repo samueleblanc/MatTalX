@@ -1,5 +1,5 @@
-import { dict } from "common/types";
-import { lettersNoFont } from "common/unicode/letters";
+import { dict } from "types";
+import { lettersNoFont } from "unicode/letters";
 
 const noStyleGreek: dict = {
     // Greek alphabet

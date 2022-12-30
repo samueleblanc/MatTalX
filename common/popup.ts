@@ -2,11 +2,11 @@
     Front-end stuff
 */
 
-import { Str } from "common/types";
-import { mathDictionary } from "common/unicode/mathsymbols";
-import { findWord, showCommand, toReplaceCommand, semiAutoCompletion } from "common/suggestions";
-import { output } from "common/convert";
-import { standardGreek, lettersMath } from "common/packages/std"
+import { Str } from "types";
+import { mathDictionary } from "unicode/mathsymbols";
+import { findWord, showCommand, toReplaceCommand, semiAutoCompletion } from "suggestions";
+import { output } from "convert";
+import { standardGreek, lettersMath } from "packages/std"
 
 
 // GLOBAL VARIABLES

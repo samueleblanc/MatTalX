@@ -1,4 +1,4 @@
-import { dict } from "common/types";
+import { dict } from "types";
 
 // Regular dict used to convert characters in mathmode
 // Automatically convert text into a mathematical font

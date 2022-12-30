@@ -1,4 +1,4 @@
-import { mistakes } from "common/convert";
+import { mistakes } from "convert";
 
 function matrix(text: string): string {
     // Used in \documentclass{matrix}

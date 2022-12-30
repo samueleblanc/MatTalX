@@ -1,4 +1,4 @@
-import { dict } from "common/types";
+import { dict } from "types";
 
 const singleCharSymbols: dict = {
     // Non italic letters

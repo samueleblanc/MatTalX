@@ -1,6 +1,6 @@
-import { spaceCommand } from "./convert";
-import { Superscript, Subscript } from "./unicode/sub_super";
-import { Above, Below } from "./unicode/mathfunctions";
+import { spaceCommand } from "convert";
+import { Superscript, Subscript } from "unicode/sub_super";
+import { Above, Below } from "unicode/mathfunctions";
 
 
 // Used in adjustSpacesCommon, depending of package used and if the user wants the automatic space adjusting

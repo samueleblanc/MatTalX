@@ -2,8 +2,8 @@
     Functions used in suggestion (common/popup.ts)
 */
 
-import { dict, Fct, Str } from "common/types";
-import { mathDictionary } from "common/unicode/mathsymbols";
+import { dict, Fct, Str } from "types";
+import { mathDictionary } from "unicode/mathsymbols";
 
 const wordsDelimiters: string[] = [" ", "", "\u000A", "\\", "^", "_", "(", ")", "[", "]", "{", "}", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];
 const wordsDelimitersWOB: string[] = [" ", "", "\u000A", "^", "_", "(", ")", "[", "]", "{", "}", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"]; // Without backslash
