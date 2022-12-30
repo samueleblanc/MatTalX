@@ -1,16 +1,15 @@
 /*
     Functions specific to Chrome
 
-    This file is copy-pasted in popup.ts (popup.js after compilation).
+    This file is copy-pasted in popup.js (popup.ts before compilation).
     Therefore, a special attention to variable names is needed.
 */
-
-const textIn = document.getElementById("text_in");
 
 document.getElementById("short_open_mattalx").textContent = "Ctrl+M : Open/Close MatTalX";
 document.getElementById("short_copy_input").textContent = "Alt+I : Copy input (first box)";
 document.getElementById("short_copy_output").textContent = "Alt+O : Copy ouput (second box)";
 document.getElementById("short_open_suggestions").textContent = "Alt+S : Open/Close suggestions";
+document.getElementById("short_open_settings").textContent = "Alt+P : Open/Close parameters";
 
 document.getElementById("suggestionsBtn").style.display = "none";
 
@@ -65,6 +64,12 @@ document.addEventListener("keydown", (keyPressed) => {
         copyTextIn();
     } else if ((keyPressed.key === "o") && keyPressed.altKey) {
         copyTextOut();
+    } else if ((keyPressed.key === "p") && keyPressed.altKey) {
+        if (settingBox.style.display === "none") {
+            openSetting();
+        } else {
+            closeSetting();
+        };
     } else {
         // If any key is pressed while the suggestion popup is opened, it adjusts the suggestions
         // The word must be adjusted "by hand" because the eventListener is synchronous

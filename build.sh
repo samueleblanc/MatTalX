@@ -25,13 +25,9 @@ copy_common () {
     done
     cd $1
     mkdir packages
-    mkdir unicode
     cd ../
-    for file in common/packages/*.js; do
-        mv $file $1/packages
-    done
-    for file in common/unicode/*.js; do
-        mv $file $1/unicode
+    for file in common/packages/*.json; do
+        cp $file $1/packages
     done
     cp -r common/images $1
     echo "Files from 'common' transfered"
@@ -132,9 +128,10 @@ testing () {
     cat test_mattalx/popup-specific.js >> test_mattalx/popup.js
     rm test_mattalx/popup-specific.js
     mv test_mattalx/popup.html test_mattalx/index.html
-    sed '$d' test_mattalx/index.html  # [sed '$d'] doesn't work on Mac
+    sed '$d' test_mattalx/index.html
     sed '$d' test_mattalx/index.html
     # sed -i '' -e '$ d' test_mattalx/index.html  # For Mac users
+    # sed -i '' -e '$ d' test_mattalx/index.html
     cat test.txt >> test_mattalx/index.html
     echo "Directory made"
     echo "Opening MatTalX on localhost"

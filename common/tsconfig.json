@@ -15,7 +15,9 @@
         "baseUrl": "./",
         "removeComments": false,
         "lib": ["ES2017", "ES2016.Array.Include", "ES2017.Object", "ES2017.TypedArrays", "ES2017.String", "DOM"]
-      }//,
+      },
+      "files": ["popup.ts", "messages.ts"]
+      //,
       // "$schema": "https://json.schemastore.org/tsconfig",
       // "display": "Recommended"
 }

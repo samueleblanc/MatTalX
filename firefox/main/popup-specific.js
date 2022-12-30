@@ -1,7 +1,7 @@
 /*
     Functions specific to Firefox (computer version)
     
-    This file is copy-pasted in popup.ts (popup.js after compilation).
+    This file is copy-pasted in popup.js (popup.ts before compilation).
     Therefore, a special attention to variable names is needed.
 */
 
@@ -9,6 +9,7 @@ document.getElementById("short_open_mattalx").textContent = "Alt+M : Open/Close 
 document.getElementById("short_copy_input").textContent = "Alt+I : Copy input (first box)";
 document.getElementById("short_copy_output").textContent = "Alt+O : Copy ouput (second box)";
 document.getElementById("short_open_suggestions").textContent = "Alt+C : Open/Close completion";
+document.getElementById("short_open_settings").textContent = "Alt+P : Open/Close parameters";
 
 document.getElementById("suggestionsBtn").style.display = "none";
 
@@ -22,7 +23,6 @@ window.addEventListener("blur", () => {
 
 window.addEventListener("focus", () => {
     // Retreives the text when the popup reopens
-    const textIn = document.getElementById("text_in");
     browser.storage.local.get("box1", (text) => {
         if (text.box1 !== undefined) {
             textIn.value = text.box1;
@@ -52,7 +52,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("keydown", (keyPressed) => {
     // Listens for Alt+C to show suggestions, Alt+I to copy text of the first box (input) and Alt+O to copy text in the second box (output)
-    const textIn = document.getElementById("text_in");
     if ((keyPressed.key === "c") && keyPressed.altKey && (textIn == document.activeElement)) {
         // Alt+C to shows suggestions but closes the popup if the suggestion box is already opened
         if (suggestionsPopup.style.display !== "inline-block") { 
@@ -67,6 +66,12 @@ document.addEventListener("keydown", (keyPressed) => {
         copyTextIn();
     } else if ((keyPressed.key === "o") && keyPressed.altKey) {
         copyTextOut();
+    } else if ((keyPressed.key === "p") && keyPressed.altKey) {
+        if (settingBox.style.display === "none") {
+            openSetting();
+        } else {
+            closeSetting();
+        };
     } else {
         // If any key is pressed while the suggestion popup is opened, it adjusts the suggestions
         // The word must be adjusted "by hand" because the eventListener is synchronous

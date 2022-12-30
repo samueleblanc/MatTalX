@@ -1,8 +1,4 @@
-import { dict } from "types";
-import { lettersNoFont } from "unicode/letters";
-
-const noStyleGreek: dict = {
-    // Greek alphabet
+{
     "\\Alpha" : "\u0391",
     "\\alpha" : "\u03B1",
     "\\Beta" : "\u0392",
@@ -57,8 +53,5 @@ const noStyleGreek: dict = {
     "\\Psi" : "\u03A8",
     "\\psi" : "\u03C8",
     "\\Omega" : "\u03A9",
-    "\\omega" : "\u03C9",
-};
-
-
-export { noStyleGreek, lettersNoFont };
+    "\\omega" : "\u03C9"
+}

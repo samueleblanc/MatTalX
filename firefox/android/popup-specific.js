@@ -1,13 +1,11 @@
 /*
     Functions specific to Firefox (Android version)
     
-    This file is copy-pasted in popup.ts (popup.js after compilation).
+    This file is copy-pasted in popup.js (popup.ts before compilation).
     Therefore, a special attention to variable names is needed.
 */
 
 document.getElementsByClassName("shortcuts").style.display = "none";
-
-const textIn = document.getElementById("text_in");
 
 window.addEventListener("blur", () => {
     // Saves the text in the first box so it doesn't disappear if you change page or close MatTalX
@@ -64,7 +62,13 @@ suggestionsBtn.onclick = () => {
 window.addEventListener("keydown", (keyPressed) => {
     // If any key is pressed while the suggestion popup is opened, it adjusts the suggestions
     // The word must be adjusted "by hand" because the eventListener is synchronous
-    if (suggestionsPopup.style.display === "inline-block") {
+    if ((keyPressed.key === "p") && keyPressed.altKey) {
+        if (settingBox.style.display === "none") {
+            openSetting();
+        } else {
+            closeSetting();
+        };
+    } else if (suggestionsPopup.style.display === "inline-block") {
         if (keyPressed.key === "Backspace") {
             suggestionsPopup.textContent = "";
             let word = findWord(textIn.value, textIn.selectionEnd - 1, "Backspace");

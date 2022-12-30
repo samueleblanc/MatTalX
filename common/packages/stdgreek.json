@@ -1,23 +1,4 @@
-import { dict } from "types";
-import { lettersMath } from "unicode/letters";
-
-
-const standardShortcuts: dict = {
-    "\\max" : "max",
-    "\\min" : "min",
-    "\\grad" : "grad",
-    "\\curl" : "curl",
-    "\\det" : "det",
-    "\\rank" : "rank",
-    "\\mod" : "mod",
-    "\\Mod" : "Mod",
-    "\\Ker" : "Ker",
-    "\\Im" : "Im"
-};
-
-
-const standardGreek: dict = {
-    // Greek alphabet
+{
     "\\Alpha" : "\u{1D6E2}",
     "\\alpha" : "\u{1D6FC}",
     "\\Beta" : "\u{1D6E3}",
@@ -72,8 +53,5 @@ const standardGreek: dict = {
     "\\Psi" : "\u{1D6F9}",
     "\\psi" : "\u{1D713}",
     "\\Omega" : "\u2126",
-    "\\omega" : "\u{1D714}",
-};
-
-
-export { standardShortcuts, lettersMath, standardGreek };
+    "\\omega" : "\u{1D714}"
+}

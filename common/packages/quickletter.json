@@ -1,7 +1,4 @@
-import { dict } from "types";
-
-const singleCharSymbols: dict = {
-    // Non italic letters
+{
     "\\A" : "A",
     "\\À" : "À",
     "\\a" : "a",
@@ -63,8 +60,5 @@ const singleCharSymbols: dict = {
     "\\Y" : "Y",
     "\\y" : "y",
     "\\Z" : "Z",
-    "\\z" : "z",
-};
-
-
-export { singleCharSymbols };
+    "\\z" : "z"
+}

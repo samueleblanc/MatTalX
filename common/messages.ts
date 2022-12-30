@@ -1,3 +1,8 @@
+/*
+    Messages for first time user or after an update
+
+    This file will be pasted in popup.js (now popup.ts) after compilation
+*/
 
 // Message for first time users
 function firstMessage(version: string): void {
