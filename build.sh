@@ -4,22 +4,13 @@
 # Can also test MatTalX, however, it's not a complete test
 
 compile_common () {
-    for file in common/*.ts; do
-        tsc $file  # TypeScript compiler
-        echo "$file compiled"
-    done
-    for file in common/packages/*.ts; do
-        tsc $file
-        echo "Packages compiled"
-    done
-    for file in common/unicode/*.ts; do
-        tsc $file
-        echo "Unicode files compiled"
-    done
+    cd common
+    tsc  # TypeScript compiler
+    cd ../
 }
 
 copy_common () {
-    for file in common; do
+    for file in common/*; do
         case $file in
             *.js)
             mv $file $1  # Parameter is the name of the directory (e.g. 'extension', 'firefox_add_on', etc.)
@@ -32,15 +23,17 @@ copy_common () {
             ;;
         esac
     done
+    cd $1
+    mkdir packages
+    mkdir unicode
+    cd ../
     for file in common/packages/*.js; do
-        mv $file $1
+        mv $file $1/packages
     done
     for file in common/unicode/*.js; do
-        cp $file $1
+        mv $file $1/unicode
     done
-    for file in common/images; do
-        cp $file $1
-    done
+    cp -r common/images $1
     echo "Files from 'common' transfered"
 }
 
