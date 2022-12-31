@@ -50,9 +50,9 @@ interface dict {
     [key: string]: string;
 };
 
-type fct = ((arg: string[], initialCommand: string, forFrac?: boolean) => string | string[]);
+type fct = ((arg: string[], initialCommand: string, forFrac?: boolean) => string | string[]);  // For dictwF (dict with functions)
 
-// Used for mathDictionary, where some commands return function
+// Used for MATHDICTIONARY, where some commands return function
 interface dictwF {
     [key: string]: string | fct;
 };
@@ -2547,6 +2547,7 @@ const MATHDICTIONARY: dictwF = {
     "\\tab" : "\u0009"
 };
 
+// Standard dict for greek letters
 const STDGREEK: dict = {
     "\\Alpha" : "\u{1D6E2}",
     "\\alpha" : "\u{1D6FC}",
@@ -2605,6 +2606,7 @@ const STDGREEK: dict = {
     "\\omega" : "\u{1D714}"
 };
 
+// Greek letters if the user wants basic UTF-8 characters (nostyle)
 const NOSTYLEGREEK: dict = {
     "\\Alpha" : "\u0391",
     "\\alpha" : "\u03B1",
@@ -2663,6 +2665,7 @@ const NOSTYLEGREEK: dict = {
     "\\omega" : "\u03C9"
 };
 
+// Commmands that can be called from outside mathmode
 const TEXTCOMMANDS: dictwF = {
     "\\^" : "^",
     "\\_" : "_",
@@ -2691,6 +2694,7 @@ const TEXTCOMMANDS: dictwF = {
 
 // Regular dict used to convert characters that are not a command
 // Automatically convert text into a mathematical font
+// N.B. For outside mathmode
 const LETTERSMATH: dict = {
     "+" : "\u002B",
     "-" : "\u2212",
@@ -2792,7 +2796,8 @@ const LETTERSMATH: dict = {
     " " : " "
 };
 
-// Dict used to convert characters that are not a command if the keyword $chem is used as the fist word of the text input
+// Dict used to convert characters that are not a command if the user doesn't want styled characters (mathematical font)
+// N.B. For outside mathmode
 const LETTERSNOFONT: dict = {
     "+" : "\u002B",
     "-" : "\u2212",
@@ -3272,6 +3277,7 @@ const parametersText: HTMLTextAreaElement = <HTMLTextAreaElement>document.getEle
 
 /** Other **/
 
+// Used is the subsection 'Suggestion box (or completion)' to recognize on which word is the cursor
 const wordsDelimiters: string[] = [" ", "", "\u000A", "\\", "^", "_", "(", ")", "[", "]", "{", "}", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];
 const wordsDelimitersWOB: string[] = [" ", "", "\u000A", "^", "_", "(", ")", "[", "]", "{", "}", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"]; // Without backslash
 
@@ -3303,6 +3309,11 @@ let errorsList: string = "";
 
 /** Front-end **/
 
+function copyTextIn(): void {
+    // Copy first box (input) to clipboard
+    navigator.clipboard.writeText(textIn.value);
+};
+
 function copyTextOut(): void {
     // Copy second box (output) to clipboard
     if (textOut.disabled === false) {
@@ -3312,11 +3323,6 @@ function copyTextOut(): void {
             copyButton.value = "Copy text";
         }, 2500)  // Returns to initial copyButton
     };
-};
-
-function copyTextIn(): void {
-    // Copy first box (input) to clipboard
-    navigator.clipboard.writeText(textIn.value);
 };
 
 function clear(): void {
@@ -3563,7 +3569,7 @@ function parseInput(fullText: string): [Token[], number, boolean] {
                                     outputBox.push(t);
                                     mm = false;
                                 } else {
-                                    t = {command: fullText[i], mathmode: mm, depth: d};
+                                    t = {command: temporaryBox.join("") + fullText[i], mathmode: mm, depth: d};
                                     outputBox.push(t);
                                 };
                             } else {
@@ -3617,11 +3623,41 @@ function parseInput(fullText: string): [Token[], number, boolean] {
                         } else {
                             t = {command: temporaryBox.join(""), mathmode: mm, depth: d};
                             outputBox.push(t);
-                            d -= 1;
+                            t = {command: fullText[i], mathmode: mm, depth: d};
+                            outputBox.push(t);
                         };
                         temporaryBox = [];
                         trigger = false;
                     };
+                } else if (fullText[i] === "$") {
+                    if (fullText[i-1] === "\\") {
+                        t = {command: temporaryBox.join("") + fullText[i], mathmode: mm, depth: d};
+                        outputBox.push(t);
+                    } else {
+                        t = {command: temporaryBox.join(""), mathmode: mm, depth: d};
+                        outputBox.push(t);
+                        temporaryBox = [];
+                        if (mathmodeStarter === "$") {
+                            mm = false;
+                        } else if (mathmodeStarter === "$$") {
+                            if (fullText[i-1] === "$") {
+                                t = {command: "\\\\", mathmode: mm, depth: d};
+                                outputBox.push(t);
+                                mathmodeStarter = "";
+                                mm = false;
+                            } else if (fullText[i+1] === "$") {
+                                continue;
+                            } else {
+                                t = {command: fullText[i], mathmode: mm, depth: d};
+                                outputBox.push(t);
+                            };
+                        } else {
+                            t = {command: fullText[i], mathmode: mm, depth: d};
+                            outputBox.push(t);
+                        };
+                    };
+                    temporaryBox = [];
+                    trigger = false;
                 } else {
                     temporaryBox.push(fullText[i]);
                 };
@@ -3630,21 +3666,32 @@ function parseInput(fullText: string): [Token[], number, boolean] {
                     temporaryBox.push(fullText[i]);
                     trigger = true;
                 } else if (fullText[i] === "$") {
-                    if (fullText[i-1] === "$") {
-                        if (mathmodeStarter === "$") {
+                    if (mathmodeStarter === "$") {
+                        if (fullText[i-1] === "$") {
                             t = {command: "\\\\", mathmode: mm, depth: d};
                             outputBox.push(t);
                             mathmodeStarter = "$$";
-                        } else if (mathmodeStarter === "$$") {
+                        } else {
+                            mm = false;
+                        };
+                    } else if (mathmodeStarter === "$$") {
+                        if (fullText[i-1] === "$") {
                             t = {command: "\\\\", mathmode: mm, depth: d};
                             outputBox.push(t);
                             mathmodeStarter = "";
                             mm = false;
+                        } else if (fullText[i+1] === "$") {
+                            continue;
+                        } else {
+                            t = {command: fullText[i], mathmode: mm, depth: d};
+                            outputBox.push(t);
                         };
                     } else {
                         t = {command: fullText[i], mathmode: mm, depth: d};
                         outputBox.push(t);
                     };
+                } else if (fullText[i] === "}") {
+                    d -= 1;
                 } else {
                     t = {command: fullText[i], mathmode: mm, depth: d};
                     outputBox.push(t);
@@ -3796,8 +3843,14 @@ function parseSettings(fullText: string): [Token[], number] {
 
 function output(inputText: string, plainTextConverter: dict, packages: dict[], renewCommand?: dict): string {
     const parsedText = parseInput(inputText);
-    alert(parsedText[0]);
-    return '';
+    let strOut: string[] = [];
+
+    let i: number;
+    for (i=0; i<parsedText[0].length; i++) {
+        strOut.push("Command: " + parsedText[0][i].command + "\n" + "Depth: " + parsedText[0][i].depth + "\n" + "Mathmode: " + parsedText[0][i].mathmode + "\n");
+        strOut.push("\n");
+    };
+    return strOut.join("");
 };
 
 
@@ -4164,16 +4217,17 @@ function main(): void {
 
     let fullText: string = textIn.value;
     fullText = fullText.replace(/\u000A/g, " "); // Cancels the line skipped by pressing "enter", use "\\" instead
-    
+    fullText += " ";  // Usefull, since a space is a commandStopper
+
     /*
     fetch("/packages/quickletter.json")
     .then(file => file.json())
     .then(json => alert(json["\\A"]))
-
-    output(fullText, LETTERSMATH, [{}]);
     */
 
-    textOut.value = fullText;
+    let out = output(fullText, LETTERSMATH, [{}]);
+
+    textOut.value = out;
     textOut.disabled = false;
 };
 
