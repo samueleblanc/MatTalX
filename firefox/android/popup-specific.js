@@ -51,7 +51,8 @@ document.getElementById("suggestionsBtn").style.display = "inline-block";
 function openParameters() {
     const baseParams = "% Parameters \n" +
                        "\\documentclass{mathmode}\n" +
-                       "\\usepackage[style]{font}\n";
+                       "\\usepackage[style]{font}\n" + 
+                       "\\usepackage{stdshorts}\n";
     browser.storage.local.get("boxparam", (text) => {
         if (text.boxparam !== undefined) {
             parametersText.value = text.boxparam;
