@@ -3216,6 +3216,9 @@ copyButton.onclick = function() {copyTextOut()};
 const resetButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById("reset");
 resetButton.onclick = function() {clear()};
 
+const suggestionsBtn: HTMLButtonElement = <HTMLButtonElement>document.getElementById("suggestionsBtn");
+suggestionsBtn.onclick = function() {getSuggestion()};
+
 // Remove spaces button
 const spacesButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById("adjust");
 
@@ -3229,9 +3232,9 @@ const textOut: HTMLTextAreaElement = <HTMLTextAreaElement>document.getElementByI
 
 const mistakesBox: HTMLElement = <HTMLElement>document.getElementById("mistakes");
 
-const settingBtn: HTMLInputElement = <HTMLInputElement>document.getElementById("settingBtn");
-const settingBox: HTMLElement = <HTMLElement>document.getElementById("settingBox");
-const settingText: HTMLTextAreaElement = <HTMLTextAreaElement>document.getElementById("settingText");
+const parametersBtn: HTMLInputElement = <HTMLInputElement>document.getElementById("parametersBtn");
+const parametersBox: HTMLElement = <HTMLElement>document.getElementById("parametersBox");
+const parametersText: HTMLTextAreaElement = <HTMLTextAreaElement>document.getElementById("parametersText");
 
 const wordsDelimiters: string[] = [" ", "", "\u000A", "\\", "^", "_", "(", ")", "[", "]", "{", "}", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];
 const wordsDelimitersWOB: string[] = [" ", "", "\u000A", "^", "_", "(", ")", "[", "]", "{", "}", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"]; // Without backslash
@@ -3243,24 +3246,16 @@ let errorsList: string = "";
 
 /// FUNCTIONS ///
 
-function openSetting(): void {
-    settingBox.style.display = "block";
-    settingText.focus();
-};
-
-function closeSetting(): void {
-    settingBox.style.display = "none";
-    settingText.focus();
-};
-
-settingBtn.addEventListener("click", () => {
-    // Show settings if user clicks on the setting button
-    if (settingBox.style.display === "none") {
-        openSetting();
+function getSuggestion(): void {
+    if (suggestionsPopup.style.display !== "inline-block") { 
+        suggestionsPopup.textContent = "";
+        let word = findWord(textIn.value, textIn.value.length - 1);
+        suggestionsPopup.style.display = "inline-block";
+        suggestions(word);
     } else {
-        closeSetting();
+        closeSuggestions();
     };
-});
+};
 
 function findWord(text: string, cursorPosition: number, addedLetter=""): string {
     // Finds the word that is touched by the cursor

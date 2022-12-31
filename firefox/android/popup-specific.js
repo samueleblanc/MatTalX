@@ -10,8 +10,9 @@ document.getElementsByClassName("shortcuts").style.display = "none";
 window.addEventListener("blur", () => {
     // Saves the text in the first box so it doesn't disappear if you change page or close MatTalX
     browser.storage.local.set({
-        "box1" : document.getElementById("text_in").value,
-        "check" : spacesButton.checked
+        "box1" : textIn.value,
+        "check" : spacesButton.checked,
+        "boxparam" : parametersText.value
     });
 });
 
@@ -45,30 +46,54 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 // Only available if the device is screen only
-const suggestionsBtn = document.getElementById("suggestionsBtn");
-suggestionsBtn.style.display === "inline-block";
+document.getElementById("suggestionsBtn").style.display = "inline-block";
 
-suggestionsBtn.onclick = () => {
-    if (suggestionsPopup.style.display !== "inline-block") { 
-        suggestionsPopup.textContent = "";
-        let word = findWord(textIn.value, textIn.value.length - 1);
-        suggestionsPopup.style.display = "inline-block";
-        suggestions(word);
-    } else {
-        closeSuggestions();
-    };
+function openParameters() {
+    const baseParams = "% Parameters \n" +
+                       "\\documentclass{mathmode}\n" +
+                       "\\usepackage[style]{font}\n";
+    browser.storage.local.get("boxparam", (text) => {
+        if (text.boxparam !== undefined) {
+            parametersText.value = text.boxparam;
+        } else {
+            parametersText.value = baseParams;
+        };
+    });
+    parametersBox.style.display = "block";
+    parametersText.focus();
 };
+
+function closeParameters() {
+    browser.storage.local.set({
+        "boxparam" : parametersText.value
+    });
+    parametersBox.style.display = "none";
+    textIn.focus();
+};
+
+// parametersBtn is defined in popup.ts
+parametersBtn.addEventListener("click", () => {
+    // Show settings if user clicks on the setting button
+    if ((parametersBox.style.display === "none") || (parametersBox.style.display === "")) {
+        openParameters();
+    } else {
+        closeParameters();
+    };
+});
+
+window.addEventListener("click", (event) => {
+    // Closes the parameters popup if the user clicks outside the textarea
+    if (event.target == "[object HTMLDivElement]") {
+        if (parametersBox.style.display === "block") {
+            closeParameters();
+        };
+    };
+});
 
 window.addEventListener("keydown", (keyPressed) => {
     // If any key is pressed while the suggestion popup is opened, it adjusts the suggestions
     // The word must be adjusted "by hand" because the eventListener is synchronous
-    if ((keyPressed.key === "p") && keyPressed.altKey) {
-        if (settingBox.style.display === "none") {
-            openSetting();
-        } else {
-            closeSetting();
-        };
-    } else if (suggestionsPopup.style.display === "inline-block") {
+    if (suggestionsPopup.style.display === "inline-block") {
         if (keyPressed.key === "Backspace") {
             suggestionsPopup.textContent = "";
             let word = findWord(textIn.value, textIn.selectionEnd - 1, "Backspace");

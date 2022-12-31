@@ -9,15 +9,20 @@ document.getElementById("short_open_mattalx").textContent = "Alt+M : Open/Close 
 document.getElementById("short_copy_input").textContent = "Alt+I : Copy input (first box)";
 document.getElementById("short_copy_output").textContent = "Alt+O : Copy ouput (second box)";
 document.getElementById("short_open_suggestions").textContent = "Alt+C : Open/Close completion";
-document.getElementById("short_open_settings").textContent = "Alt+P : Open/Close parameters";
+document.getElementById("short_open_parameters").textContent = "Alt+P : Open/Close parameters";
 
-document.getElementById("suggestionsBtn").style.display = "none";
+// Recognize if the device is screen only
+const touchScreen = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+if (!touchScreen) {
+    document.getElementById("suggestionsBtn").style.display = "none";
+};
 
 window.addEventListener("blur", () => {
     // Saves the text in the first box so it doesn't disappear if you change page or close MatTalX
     browser.storage.local.set({
-        "box1" : document.getElementById("text_in").value,
-        "check" : spacesButton.checked
+        "box1" : textIn.value,
+        "check" : spacesButton.checked,
+        "boxparam" : parametersText.value
     });
 });
 
@@ -50,27 +55,62 @@ window.addEventListener("DOMContentLoaded", () => {
     browser.storage.local.remove("reason");
 });
 
+function openParameters() {
+    const baseParams = "% Parameters \n" +
+                       "\\documentclass{mathmode}\n" +
+                       "\\usepackage[style]{font}\n";
+    browser.storage.local.get("boxparam", (text) => {
+        if (text.boxparam !== undefined) {
+            parametersText.value = text.boxparam;
+        } else {
+            parametersText.value = baseParams;
+        };
+    });
+    parametersBox.style.display = "block";
+    parametersText.focus();
+};
+
+function closeParameters() {
+    browser.storage.local.set({
+        "boxparam" : parametersText.value
+    });
+    parametersBox.style.display = "none";
+    textIn.focus();
+};
+
+// parametersBtn is defined in popup.ts
+parametersBtn.addEventListener("click", () => {
+    // Show settings if user clicks on the setting button
+    if ((parametersBox.style.display === "none") || (parametersBox.style.display === "")) {
+        openParameters();
+    } else {
+        closeParameters();
+    };
+});
+
+window.addEventListener("click", (event) => {
+    // Closes the parameters popup if the user clicks outside the textarea
+    if (event.target == "[object HTMLDivElement]") {
+        if (parametersBox.style.display === "block") {
+            closeParameters();
+        };
+    };
+});
+
 document.addEventListener("keydown", (keyPressed) => {
     // Listens for Alt+C to show suggestions, Alt+I to copy text of the first box (input) and Alt+O to copy text in the second box (output)
     if ((keyPressed.key === "c") && keyPressed.altKey && (textIn == document.activeElement)) {
         // Alt+C to shows suggestions but closes the popup if the suggestion box is already opened
-        if (suggestionsPopup.style.display !== "inline-block") { 
-            suggestionsPopup.textContent = "";
-            let word = findWord(textIn.value, (textIn.selectionEnd - 1));
-            suggestionsPopup.style.display = "inline-block";
-            suggestions(word);
-        } else {
-            closeSuggestions();
-        };
+        getSuggestion();
     } else if ((keyPressed.key === "i") && keyPressed.altKey) {
         copyTextIn();
     } else if ((keyPressed.key === "o") && keyPressed.altKey) {
         copyTextOut();
     } else if ((keyPressed.key === "p") && keyPressed.altKey) {
-        if (settingBox.style.display === "none") {
-            openSetting();
+        if ((parametersBox.style.display === "none") || (parametersBox.style.display === "")) {
+            openParameters();
         } else {
-            closeSetting();
+            closeParameters();
         };
     } else {
         // If any key is pressed while the suggestion popup is opened, it adjusts the suggestions
