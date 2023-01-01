@@ -10,7 +10,7 @@ Thank you for considering to help out!
 - Make modifying keyboard shortcuts possible
 - Make sure `bash build.sh` works for Windows and Mac users
 - Write better tests to make sure MatTalX works properly and a test to keep a check on speed during MatTalX's development
-- Tight up the types, to make development more strict
+- Tight up the types (e.g. if there is a variable declared as type *any*, but only uses *string*, change the type to *string*)
 
 #### TO(maybe)DO
 - Adding new environment like *proof*, *theorem*, etc. with their corresponding style and font.
@@ -18,6 +18,7 @@ Thank you for considering to help out!
 - Cleaning up the code (including HTML and CSS) or simply adding comments that helps with code readability is always appreciated!
 - Improve the documentation
 - Improve the error messages
+- In the suggestion popup, include the packages in the list of commands, to have a more complete list of potential commands
 
 ### Important info
 
