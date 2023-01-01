@@ -45,16 +45,21 @@
 
 /// TYPES ///
 
-// Used for most dictionary
-interface dict {
+// Used for most object
+interface obj {
     [key: string]: string;
 };
 
-type fct = ((arg: string[], initialCommand: string, forFrac?: boolean) => string | string[]);  // For dictwF (dict with functions)
+type fct = ((arg: string[], initialCommand: string, forFrac?: boolean) => string | string[]);  // For objwF (object with functions)
 
 // Used for MATHDICTIONARY, where some commands return function
-interface dictwF {
+interface objwF {
     [key: string]: string | fct;
+};
+
+// Used by the parser
+interface objLA {
+    [key: number]: any[];  // object with loose array
 };
 
 function Str(a: any): string {
@@ -98,7 +103,7 @@ interface Token {
 const mathbb = (arg: string[], initialCommand: string): string => {
     // mathbb stands for math blackboard-bold
     // This function converts the list of characters to the corresponding blackboard-bold character
-    const symbols: dict = {
+    const symbols: obj = {
         "A" : "\u{1D538}",
         "B" : "\u{1D539}",
         "C" : "\u2102",
@@ -242,7 +247,7 @@ const mathbb = (arg: string[], initialCommand: string): string => {
 const mathbf = (arg: string[], initialCommand: string): string => {
     // mathbf stands for math bold font
     // This function converts the list of characters to the corresponding bold font character
-    const symbols: dict = {
+    const symbols: obj = {
         "A" : "\u{1D468}",
         "a" : "\u{1D482}",
         "B" : "\u{1D469}",
@@ -540,7 +545,7 @@ const mathbf = (arg: string[], initialCommand: string): string => {
 const mathcal = (arg: string[], initialCommand: string): string => {
     // mathcal stands for math calligraphic
     // This function converts the list of characters to the corresponding calligraphic character
-    const symbols: dict = {
+    const symbols: obj = {
         "A" : "\u{1D49C}",
         "a" : "\u{1D4B6}",
         "B" : "\u212C",
@@ -713,7 +718,7 @@ const mathcal = (arg: string[], initialCommand: string): string => {
 const mathfrak = (arg: string[], initialCommand: string): string => {
     // mathfrak stands for math fraktur
     // This function converts the list of characters to the corresponding fraktur character
-    const symbols: dict = {
+    const symbols: obj = {
         "A" : "\u{1D504}",
         "a" : "\u{1D51E}",
         "B" : "\u{1D505}",
@@ -908,7 +913,7 @@ const subscript = (arg: string[], initialCommand: string, forFrac=false): string
 const textbf = (arg: string[], initialCommand: string): string => {
     // textbf stands for text bold font
     // This function converts the list of characters to the corresponding (text) bold font character
-	const symbols: dict = {
+	const symbols: obj = {
         "A" : "\u{1D5D4}",
         "a" : "\u{1D5EE}",
         "B" : "\u{1D5D5}",
@@ -1127,7 +1132,7 @@ const textbf = (arg: string[], initialCommand: string): string => {
 const textit = (arg: string[], initialCommand: string): string => {
     // textit stands for text italic
     // This function converts the list of characters to the corresponding italic character
-    const symbols: dict = {
+    const symbols: obj = {
         "A" : "\u{1D608}",
         "a" : "\u{1D622}",
         "B" : "\u{1D609}",
@@ -1356,7 +1361,7 @@ const textit = (arg: string[], initialCommand: string): string => {
 const texttt = (arg: string[], initialCommand: string): string => {
     // texttt stands for text typewriter
     // This function converts the list of characters to the corresponding typewriter character
-    const symbols: dict = {
+    const symbols: obj = {
         "A" : "\u{1D670}",
         "a" : "\u{1D68A}",
         "B" : "\u{1D671}",
@@ -1521,7 +1526,7 @@ const texttt = (arg: string[], initialCommand: string): string => {
 
 const text = (arg: string[], initialCommand: string): string => {
     // This function doesn't change the output (i.e. "abc" -> "abc")
-    const symbols: dict = {
+    const symbols: obj = {
         "A" : "A",
         "À" : "À",
         "à" : "à",
@@ -1876,7 +1881,7 @@ const frac = (arg: string[], initialCommand: string) => {
 const singleCharFrac = (arg: string[], initialCommand: string): string => {
     // Some fractions already exists as unicode symbols they can be accessed via this function
     let noSpaceArg: string = arg.join("").replace(/ /g, "");
-    const fractions: dict = {
+    const fractions: obj = {
         "1}{2" : "\u00BD",
         "1}{7" : "⅐",
         "1}{9" : "⅑",
@@ -1987,8 +1992,8 @@ const below = (arg: string[], initialCommand: string): string => {
 
 /** Dictionaries **/
 
-// mathDictionary is the main dict for converting commands into symbols
-const MATHDICTIONARY: dictwF = {
+// mathDictionary is the main obj for converting commands into symbols
+const MATHDICTIONARY: objwF = {
     // Math operators
     "\\times" : "\u00D7",
     "\\rtimes" : "\u22CA",
@@ -2027,6 +2032,7 @@ const MATHDICTIONARY: dictwF = {
     "\\prod" : "\u220F",
     "\\cdot" : "\u00B7",
     "\\cdotp" : "\u22C5",
+    "\\middot" : "\u2E31",
     "\\pm" : "\u00B1",
     "\\mp" : "\u2213",
     "\\emptyset" : "\u2205",
@@ -2548,7 +2554,7 @@ const MATHDICTIONARY: dictwF = {
 };
 
 // Standard dict for greek letters
-const STDGREEK: dict = {
+const STDGREEK: obj = {
     "\\Alpha" : "\u{1D6E2}",
     "\\alpha" : "\u{1D6FC}",
     "\\Beta" : "\u{1D6E3}",
@@ -2607,7 +2613,7 @@ const STDGREEK: dict = {
 };
 
 // Greek letters if the user wants basic UTF-8 characters (nostyle)
-const NOSTYLEGREEK: dict = {
+const NOSTYLEGREEK: obj = {
     "\\Alpha" : "\u0391",
     "\\alpha" : "\u03B1",
     "\\Beta" : "\u0392",
@@ -2666,7 +2672,7 @@ const NOSTYLEGREEK: dict = {
 };
 
 // Commmands that can be called from outside mathmode
-const TEXTCOMMANDS: dictwF = {
+const TEXTCOMMANDS: objwF = {
     "\\^" : "^",
     "\\_" : "_",
     "\\LaTeX" : "𝐿ᴬ𝑇ᴇ𝑋",
@@ -2695,7 +2701,7 @@ const TEXTCOMMANDS: dictwF = {
 // Regular dict used to convert characters that are not a command
 // Automatically convert text into a mathematical font
 // N.B. For outside mathmode
-const LETTERSMATH: dict = {
+const LETTERSMATH: obj = {
     "+" : "\u002B",
     "-" : "\u2212",
     "=" : "\u003D",
@@ -2796,9 +2802,9 @@ const LETTERSMATH: dict = {
     " " : " "
 };
 
-// Dict used to convert characters that are not a command if the user doesn't want styled characters (mathematical font)
+// Obj used to convert characters that are not a command if the user doesn't want styled characters (mathematical font)
 // N.B. For outside mathmode
-const LETTERSNOFONT: dict = {
+const LETTERSNOFONT: obj = {
     "+" : "\u002B",
     "-" : "\u2212",
     "=" : "\u003D",
@@ -2909,8 +2915,8 @@ const LETTERSNOFONT: dict = {
     " " : " "
 };
 
-// Dict with characters and their corresponding symbol that can be combined and put above another symbol
-const ABOVE: dict = {
+// Obj with characters and their corresponding symbol that can be combined and put above another symbol
+const ABOVE: obj = {
     "." : "\u0307",
     ":" : "\u0308",
     "\u2236" : "\u0308",
@@ -2979,11 +2985,12 @@ const ABOVE: dict = {
     "∴" : "\u1AB4",
     "⋯" : "\u20DB",
     "…" : "\u20DB",
+    "\u2710" : " ",
     " " : " "
 };
 
-// Dict with characters and their corresponding symbol that can be combined and put below another symbol
-const BELOW: dict = {
+// Obj with characters and their corresponding symbol that can be combined and put below another symbol
+const BELOW: obj = {
     "." : "\u0323",
     ":" : "\u0324",
     "\u2236" : "\u0324",
@@ -3001,11 +3008,12 @@ const BELOW: dict = {
     "←" : "\u20EE",
     "→" : "\u20EF",
     "↔" : "\u034D",
+    "\u2710" : " ",
     " " : " "
 };
 
 // Superscript is used (by the superscript function) to convert characters to the corresponding superscript character
-const SUPERSCRIPT: dict = {
+const SUPERSCRIPT: obj = {
     "0" : "\u2070",
     "1" : "\u00B9",
     "2" : "\u00B2",
@@ -3478,7 +3486,7 @@ function showCommand(key: string): string {
         } else if ((key === "\\;") || ((key === "\\quad") || (key === "\\qquad"))) {
             return Str(MATHDICTIONARY[key]).length + " spaces";
         } else if ((key === "\\id2") || (key === "\\id3") || (key === "\\id4") || (key === "\\idn")) {
-            const M: dict = {
+            const M: obj = {
                 "\\id2": "⎡ 1 0 ⎤\u000A⎣ 0 1 ⎦",
                 "\\id3" : "⎡ 1 0 0 ⎤\u000A⎢ 0 1 0 ⎥\u000A⎣ 0 0 1 ⎦",
                 "\\id4" : "⎡ 1 0 0 0 ⎤\u000A⎢ 0 1 0 0 ⎥\u000A⎢ 0 0 1 0 ⎥\u000A⎣ 0 0 0 1 ⎦",
@@ -3517,7 +3525,7 @@ function toReplaceCommand(key: string): string {
 
 // For input
 
-function parseInput(fullText: string): [Token[], number, boolean] {
+function parseInput(fullText: string): [Token[], number, boolean, string] {
     // Loops on letters and convert the input into characters
     let mm: boolean = false;  // mathmode
     let d: number = 0;  // depth
@@ -3591,7 +3599,7 @@ function parseInput(fullText: string): [Token[], number, boolean] {
                         d += 1;
                     } else {
                         if (fullText[i-1] === "\\") {
-                            t = {command: fullText[i], mathmode: mm, depth: d};
+                            t = {command: temporaryBox.join("") + fullText[i], mathmode: mm, depth: d};
                             outputBox.push(t);
                             temporaryBox = [];
                             trigger = false;
@@ -3730,6 +3738,26 @@ function parseInput(fullText: string): [Token[], number, boolean] {
                     outputBox.push(t);
                     temporaryBox = [fullText[i]];
                     trigger = false;
+                } else if (fullText[i] === "{") {
+                    if (fullText[i-1] === "\\") {
+                        t = {command: temporaryBox.join("") + fullText[i], mathmode: mm, depth: d};
+                    } else {
+                        t = {command: temporaryBox.join(""), mathmode: mm, depth: d};
+                        d += 1;
+                    };
+                    outputBox.push(t);
+                    temporaryBox = [];
+                    trigger = false;
+                } else if (fullText[i] === "}") {
+                    if (fullText[i-1] === "\\") {
+                        t = {command: temporaryBox.join("") + fullText[i], mathmode: mm, depth: d};
+                    } else {
+                        t = {command: temporaryBox.join(""), mathmode: mm, depth: d};
+                        d -= 1;
+                    };
+                    outputBox.push(t);
+                    temporaryBox = [];
+                    trigger = false;
                 } else {
                     temporaryBox.push(fullText[i]);
                 };
@@ -3740,6 +3768,8 @@ function parseInput(fullText: string): [Token[], number, boolean] {
                 } else if (fullText[i] === "\\") {
                     temporaryBox.push(fullText[i]);
                     trigger = true;
+                } else if (fullText[i] === "}") {
+                    d -= 1;
                 } else {
                     t = {command: fullText[i], mathmode: mm, depth: d};
                     outputBox.push(t);
@@ -3747,13 +3777,15 @@ function parseInput(fullText: string): [Token[], number, boolean] {
             };
         };
     };
-    return [outputBox, d, mm];
+    return [outputBox, d, mm, mathmodeStarter];
 };
 
 
 // For parameters
 
 function parseSettings(fullText: string): [Token[], number] {
+    fullText = removeComments(fullText);
+    
     let d: number = 0;
     let temporaryBox: string[] = [];
     let outputBox: Token[] = [];
@@ -3808,14 +3840,6 @@ function parseSettings(fullText: string): [Token[], number] {
                     trigger = false;
                     d = 0;
                 };
-            } else if (fullText[i] === "%") {
-                if (fullText[i-1] === "\\") {
-                    t = {command: temporaryBox.join(""), mathmode: false, depth: d};
-                    outputBox.push(t);
-                    temporaryBox = [];
-                } else {
-                    break;
-                }
             } else {
                 temporaryBox.push(fullText[i]);
             };
@@ -3823,8 +3847,6 @@ function parseSettings(fullText: string): [Token[], number] {
             if (fullText[i] === "\\") {
                 temporaryBox.push(fullText[i]);
                 trigger = true;
-            } else if (fullText[i] === "%") {
-                break;
             } else {
                 t = {command: fullText[i], mathmode: false, depth: d};
                 outputBox.push(t);
@@ -3834,6 +3856,25 @@ function parseSettings(fullText: string): [Token[], number] {
     return [outputBox, d];
 };
 
+function removeComments(fullText: string): string {
+    // Used in parseSetting to get rid of comments before parsing
+    let arrText: string[] = fullText.split("\n");
+    let textNoComments: string[] = [];
+
+    let i: number, j: number;
+    for (i=0; i<arrText.length; i++) {
+        for (j=0; j<arrText[i].length; j++) {
+            if ((arrText[i][j] === "%") && (arrText[i][j-1] !== "\\")) {
+                break;
+            } else {
+                textNoComments.push(arrText[i][j]);
+            };
+        };
+    };
+
+    return textNoComments.join("");
+};
+
 
 //-----------------------------------------------------//
 
@@ -3841,22 +3882,113 @@ function parseSettings(fullText: string): [Token[], number] {
 
 // Main functions
 
-function output(inputText: string, plainTextConverter: dict, packages: dict[], renewCommand?: dict): string {
-    const parsedText = parseInput(inputText);
-    let strOut: string[] = [];
+function output(fullText: string, dict: objwF): string {
+    const [commands, lastDepth, lastMathmode, mathmodeOpener] = parseInput(fullText);
+
+    if (lastDepth !== 0) {
+        return mistakes("Missing curly bracket '{', '}'", undefined);
+    } else if (lastMathmode) {
+        const mathmodeCloser = (mathmodeOpener === "\\[") ? "\\]" : mathmodeOpener;
+        return mistakes("Math mode was not closed", undefined, "Missing '" + mathmodeCloser + "'");
+    } else {
+        let stack: any[] = [];
+        let out: string = "";
+
+        stack.push([commands[0].command]);
+
+        let i: number, j: number;
+        for (i=1; i<commands.length; i++) {
+            if (commands[i-1].depth === commands[i].depth) {
+                if (commands[i].depth === 0) {
+                    out += convert(stack[0], null, dict, commands[i].mathmode);
+                    stack = [[commands[i].command]];
+                } else {
+                    stack[stack.length-1].push(commands[i].command);
+                };
+            } else if (commands[i-1].depth < commands[i].depth) {
+                stack.push([commands[i].command]);
+            } else {  // if commands[i-1] > commands[i].depth
+                let arg: string[];  // TODO: check types
+                let com: string;
+                arg = stack.pop();
+                for (j=0; j<commands[i].depth-commands[i-1].depth; j++) {
+                    com = stack.pop()
+                    arg = [convert(com, arg, dict, commands[i].mathmode)];
+                };
+                stack.push(arg);
+            };
+        };
+        return out;
+    };
+};
+
+function convert(command: string, arg: string[] | null, dict: objwF, mathmode: boolean): string {
+    let s: string = "";
+    if (mathmode) {
+        if (arg === null) {
+            s += Str(dict[command]);
+        } else {
+            s += Fct(dict[command])(arg, command, false);
+        };
+    } else {
+        const outofMath: objwF = {...LETTERSNOFONT, ...TEXTCOMMANDS};
+        if (arg === null) {
+            s += outofMath[command];
+        } else {
+            s += outofMath[command];
+        };
+    };
+    return s;
+};
+
+function getSettings(fullText: string): [obj, string[], obj, string] {
+    // return: [plainTextConverter, [packages], renewCommand, documentclass]
+    let [settings, lastDepth] = parseSettings(fullText);
 
     let i: number;
-    for (i=0; i<parsedText[0].length; i++) {
-        strOut.push("Command: " + parsedText[0][i].command + "\n" + "Depth: " + parsedText[0][i].depth + "\n" + "Mathmode: " + parsedText[0][i].mathmode + "\n");
-        strOut.push("\n");
+    if (lastDepth !== 0) {
+        mistakes("Missing curly bracket, '{', '}' in parameters", undefined);
+        return [LETTERSMATH, [], {}, "text"];
+    } else {
+        let docClassNum: number = 0;
+
+        for (i=0; i<settings.length; i++) {
+            if ((settings[i].command === "\\documentclass") && (settings[i].depth === 0)) {
+                docClassNum += 1;
+            }
+        };
+        if (docClassNum !== 1) {
+            mistakes("Only 1 'documentclass' is permitted, not " + docClassNum, undefined);
+        };
+        return [{}, [""], {}, "documentclass"];
     };
-    return strOut.join("");
+};
+
+function makeDict(plainTextConverter: obj, packages: string[], renewCommand: obj): objwF {
+    let dict: objwF = {...MATHDICTIONARY, ...plainTextConverter, ...renewCommand};
+    const acceptedPackages: string[] = ["std", "quickletter", "quickgreek", "frenchtext", "chem"];
+    let i: number;
+    for (i=0; i<packages.length; i++) {
+        if (acceptedPackages.includes(packages[i])) {
+            fetch("packages/" + packages[i] + ".json").then(file => file.json()).then(
+                json => {
+                    for (let key in Object.keys(json)) {
+                        dict[key] = MATHDICTIONARY[json[key]];
+                    };
+                }
+            );
+        } else {
+            mistakes("\\usepackage{" + packages[i] + "}", undefined, packages[i] + "\n" +
+            "Accepted packages are: " + acceptedPackages.join(", "));
+        };
+    };
+    return dict;
 };
 
 
 // Used by main functions
 
-function replaceLetters(letters: string[], dict: dict, initialCommand: string, checkMistakes=true): string {
+function replaceLetters(letters: string[], dict: obj, initialCommand: string, checkMistakes=true): string {
     // Used by a lot of functions to convert every letter in a string of characters
     let newtext: string[] = [];
     let symbol: string | string[];
@@ -3871,7 +4003,7 @@ function replaceLetters(letters: string[], dict: dict, initialCommand: string, c
     return newtext.join("");
 };
 
-function addSymbol(command: string[] | string | undefined, keepArray=false): string | string[] {
+function addSymbol(command: any, keepArray=false): string | string[] {
     // Return the command if it's defined, if not it returns a bold "err" with two "x" under it
     if ((typeof command === "object") && !(keepArray)) {
         // Changes an array of characters into a string
@@ -4028,7 +4160,7 @@ function matrixCols(matrix: string): string {
     let matrixPos: number = 0;
     let realPositions: number[] = [];
     
-    let i,j: number;
+    let i: number, j: number;
     for (i=0; i<matrix.length; i++) {
         if (matrix[i] == ",") {
             matrixPositions.push(matrixPos);
@@ -4219,13 +4351,10 @@ function main(): void {
     fullText = fullText.replace(/\u000A/g, " "); // Cancels the line skipped by pressing "enter", use "\\" instead
     fullText += " ";  // Usefull, since a space is a commandStopper
 
-    /*
-    fetch("/packages/quickletter.json")
-    .then(file => file.json())
-    .then(json => alert(json["\\A"]))
-    */
+    const [plainTextConverter, packages, renewCommand] = getSettings(parametersText.value);
+    const dict = makeDict(plainTextConverter, packages, renewCommand);
 
-    let out = output(fullText, LETTERSMATH, [{}]);
+    let out = output(fullText, dict);
 
     textOut.value = out;
     textOut.disabled = false;
