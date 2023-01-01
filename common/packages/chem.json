@@ -1,6 +1,6 @@
 {
-    "\\midp" : "\u2E31",
-    "\\middp" : "\\colon",
+    "\\midp" : "\\middot",
+    "\\midpp" : "\\colon",
     "\\tbond" : "\\equiv",
     "\\qbond" : "\\superequiv"
 }
