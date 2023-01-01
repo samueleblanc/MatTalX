@@ -9,11 +9,15 @@ Thank you for considering to help out!
 - A nice text editor for the input (and settings) box. Like all LaTeX text editor, the color of symbols like '$' should be different than plain text, the color of \commands also, etc.
 - Make modifying keyboard shortcuts possible
 - Make sure `bash build.sh` works for Windows and Mac users
+- Write better tests to make sure MatTalX works properly and a test to keep a check on speed during MatTalX's development
+- Tight up the types, to make development more strict
 
 #### TO(maybe)DO
 - Adding new environment like *proof*, *theorem*, etc. with their corresponding style and font.
 - New packages are welcomed! However, please submit packages that might benefit multiple users.
 - Cleaning up the code (including HTML and CSS) or simply adding comments that helps with code readability is always appreciated!
+- Improve the documentation
+- Improve the error messages
 
 ### Important info
 
