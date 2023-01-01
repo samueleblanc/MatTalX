@@ -139,6 +139,30 @@
         text-decoration: none;
         background-color: white;
     }
+    #mistakes {
+        white-space: pre-wrap;
+        font-size: 15x;
+        color: black;
+        font-family: 'Times New Roman';
+    }
+    #suggestions {
+        display: none;
+        text-align: center;
+        width: fit-content;
+        min-width: 140px;
+        min-height: 20px;
+        height: fit-content;
+        border: 1px solid rgb(238, 238, 238);
+        border-radius: 5px;
+        background-color: rgb(238, 238, 238);
+        position: absolute;
+    }
+    tr, td {
+        border-collapse: collapse;
+        border: 1px solid rgb(238, 238, 238);
+        background-color: white;
+        width: 100%;
+    }
 }
 @media (prefers-color-scheme: dark) {
     body {
@@ -283,6 +307,30 @@
         text-decoration: none;
         background-color: rgb(53, 53, 53);
     }
+    #mistakes {
+        white-space: pre-wrap;
+        color: whitesmoke;
+        font-size: 15x;
+        font-family: 'Times New Roman';
+    }
+    #suggestions {
+        display: none;
+        text-align: center;
+        width: fit-content;
+        min-width: 140px;
+        min-height: 20px;
+        height: fit-content;
+        border: 1px solid rgb(31, 31, 31);
+        border-radius: 5px;
+        background-color: rgb(31, 31, 31);
+        position: absolute;
+    }
+    tr, td {
+        border-collapse: collapse;
+        border: 1px solid rgb(31, 31, 31);
+        background-color: rgb(39, 39, 39);
+        width: 100%;
+    }
 }
 #body {
     margin: auto;
@@ -295,11 +343,6 @@ header {
 }
 #remove {
     cursor: pointer;
-}
-#mistakes {
-    white-space: pre-wrap;
-    font-size: 15x;
-    font-family: 'Times New Roman';
 }
 .infoDiv {
     position: relative;
@@ -321,21 +364,4 @@ a {
 .suggestion {
     display: inline-block;
     position: relative;
-}
-#suggestions {
-    display: none;
-    text-align: center;
-    width: fit-content;
-    min-width: 140px;
-    min-height: 20px;
-    height: fit-content;
-    border: 1px solid gray;
-    border-radius: 5px;
-    background-color: whitesmoke;
-    position: absolute;
-}
-tr, td {
-    border-collapse: collapse;
-    border: 1px solid whitesmoke;
-    background-color: white;
 }
