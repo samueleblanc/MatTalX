@@ -84,9 +84,14 @@ parametersBtn.addEventListener("click", () => {
 
 window.addEventListener("click", (event) => {
     // Closes the parameters popup if the user clicks outside the textarea
-    if (event.target == "[object HTMLDivElement]") {
-        if (parametersBox.style.display === "block") {
+    if (parametersBox.style.display === "block") {
+        if (event.target == "[object HTMLDivElement]") {
             closeParameters();
+        };
+    // Closes the suggestion popup if the users clicks anywhere except on the suggestion popup itself or input box
+    } else if (suggestionsPopup.style.display === "inline-block") {
+        if (event.target != "[object HTMLTextAreaElement]") {
+            closeSuggestions();
         };
     };
 });
