@@ -3396,30 +3396,31 @@ function findWord(text: string, cursorPosition: number, addedLetter=""): string 
 
 function suggestions(command: string): void {
     // Outputs list of other commands that are similar to the one currently being written
-    let row: HTMLTableRowElement;
-    let cell: HTMLTableCellElement;
-    let btn: HTMLButtonElement;
     if (command === "") {
         closeSuggestions();
     } else if (command[0] !== "\\") {
-        row = suggestionsPopup.insertRow(-1);
-        cell = row.insertCell(0);
+        let row: HTMLTableRowElement = suggestionsPopup.insertRow(-1);
+        let cell: HTMLTableCellElement = row.insertCell(0);
         cell.textContent = "The first character of the command must be a backslash (\\). Superscript starts with ^ and subscript with _";
     } else {
+        const commandList: objwF = {...MATHDICTIONARY, ...STDGREEK};
         command = command.substring(1, command.length);  // Erases the backslash so that, for instance, \arrow will also show \rightarrow, etc.
         let keys: string;
-        for (keys in MATHDICTIONARY) {
+        for (keys in commandList) {
             // Puts commands in button form, so they can be clicked on to replace the command being written
             if (keys.toLowerCase().indexOf(command.toLowerCase()) !== -1) {
-                row = suggestionsPopup.insertRow(-1);
-                cell = row.insertCell(0);
-                btn = document.createElement("button");
+                let row: HTMLTableRowElement = suggestionsPopup.insertRow(-1);
+                let cell: HTMLTableCellElement = row.insertCell(0);
+                let btn: HTMLButtonElement = document.createElement("button");
                 btn.value = showCommand(keys);
                 btn.textContent = toReplaceCommand(keys);
                 btn.style.width = "145px";  // Would be cleaner with something like 'fit-content', but is way to slow
                 btn.style.height = "17px";
-                btn.style.backgroundColor = "white";
-                btn.style.border = "1px solid white";
+                const btnBackColor: string = getComputedStyle(document.body).backgroundColor;
+                const btnFontColor: string = (btnBackColor === "rgb(255, 255, 255)") ? "black" : "whitesmoke"; 
+                btn.style.backgroundColor = btnBackColor;
+                btn.style.border = "1px solid " + btnBackColor;
+                btn.style.color = btnFontColor;
                 btn.style.borderRadius = "3px";
                 btn.type = "button";
                 btn.addEventListener("click", () => {
@@ -3464,7 +3465,8 @@ function semiAutoCompletion(textIn: string, cursorPosition: number, command: str
 function showCommand(key: string): string {
     // Used in suggestions
     // Changes what's seen when the user hovers on a command in the suggestion popup
-    if (typeof MATHDICTIONARY[key] === "function") {
+    const commandList: objwF = {...MATHDICTIONARY, ...STDGREEK};
+    if (typeof commandList[key] === "function") {
         if (key === "\\sqrt") {
             return "\\sqrt[n]{x} \u2192 ⁿ√𝑥";
         } else if (key === "\\sqrt*") {
@@ -3476,15 +3478,15 @@ function showCommand(key: string): string {
         } else if ((key === "\\above") || (key === "\\below") || (key === "\\hspace") || (key === "\\vskip")) {
             return key + "{}";
         } else if ((key === "_") || (key === "^")) {
-            return "x" + key + "{a1} \u2192 𝑥" + (Fct(MATHDICTIONARY[key])(["a", "1"], MATHDICTIONARY[key])).join("");
+            return "x" + key + "{a1} \u2192 𝑥" + Fct(commandList[key])(["a", "1"], commandList[key]);
         } else {
-            return key + "{abc} \u2192 " + (Fct(MATHDICTIONARY[key])(["a", "b", "c"], MATHDICTIONARY[key])).join("");
+            return key + "{abc} \u2192 " + Fct(commandList[key])(["a", "b", "c"], commandList[key]);
         };
     } else {
         if (key === "\\:") {
             return "1 space";
         } else if ((key === "\\;") || ((key === "\\quad") || (key === "\\qquad"))) {
-            return Str(MATHDICTIONARY[key]).length + " spaces";
+            return Str(commandList[key]).length + " spaces";
         } else if ((key === "\\id2") || (key === "\\id3") || (key === "\\id4") || (key === "\\idn")) {
             const M: obj = {
                 "\\id2": "⎡ 1 0 ⎤\u000A⎣ 0 1 ⎦",
@@ -3494,7 +3496,7 @@ function showCommand(key: string): string {
             }
             return M[key];
         } else {
-            return Str(MATHDICTIONARY[key])
+            return Str(commandList[key])
         };
     };
 };
@@ -3502,7 +3504,8 @@ function showCommand(key: string): string {
 function toReplaceCommand(key: string): string {
     // Used in suggestions
     // Changes what the user sees when the suggestion popup is opened
-    if (typeof MATHDICTIONARY[key] === "function") {
+    const commandList: objwF = {...MATHDICTIONARY, ...STDGREEK};
+    if (typeof commandList[key] === "function") {
         if (key === "\\sqrt") {
             return "\\sqrt[]{}";
         } else if (key === "\\sqrt*") {
@@ -3979,7 +3982,7 @@ function makeDict(plainTextConverter: obj, packages: string[], renewCommand: obj
             );
         } else {
             mistakes("\\usepackage{" + packages[i] + "}", undefined, packages[i] + "\n" +
-            "Accepted packages are: " + acceptedPackages.join(", "));
+            "Accepted packages are: " + acceptedPackages.join(", "));  // TODO: Only output once *and* make sure the " " are placed correctly
         };
     };
     return dict;
@@ -3991,7 +3994,6 @@ function makeDict(plainTextConverter: obj, packages: string[], renewCommand: obj
 function replaceLetters(letters: string[], dict: obj, initialCommand: string, checkMistakes=true): string {
     // Used by a lot of functions to convert every letter in a string of characters
     let newtext: string[] = [];
-    let symbol: string | string[];
     let i: number;
     for (i=0; i<letters.length; i++) {
         // TODO: Push symbol if it's a combining symbol
@@ -4346,6 +4348,7 @@ function main(): void {
     // Takes the original text (input) and outputs the new one, with the converted symbols
 
     mistakesBox.textContent = "";  // Starts with an empty box for errors
+    errorsList = "";  // Starts with an empty list of errors
 
     let fullText: string = textIn.value;
     fullText = fullText.replace(/\u000A/g, " "); // Cancels the line skipped by pressing "enter", use "\\" instead
