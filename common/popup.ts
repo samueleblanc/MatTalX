@@ -62,6 +62,10 @@ interface objLA {
     [key: number]: any[];  // object with loose array
 };
 
+interface objA {
+    [key: string]: any  // object with any type
+}
+
 function Str(a: any): string {
     // Type checking
     if (typeof a === "string") {
@@ -210,11 +214,16 @@ const mathbb = (arg: string[], initialCommand: string): string => {
         "𝑦" : "\u{1D56A}",
         "𝑧" : "\u{1D56B}",
         
-        "𝜋" : "\u213C",
-        "Π" : "\u213F",
         "𝛾" : "\u213D",
         "𝛤" : "\u213E",
+        "𝛱" : "\u213F",
+        "𝜋" : "\u213C",
+        "𝛴" : "\u2140",
         "Σ" : "\u2140",
+        "Π" : "\u213F",
+        "π" : "\u213C",
+        "γ" : "\u213D",
+        "Γ" : "\u213E",
 
         "0" : "\u{1D7D8}",
         "1" : "\u{1D7D9}",
@@ -375,7 +384,8 @@ const mathbf = (arg: string[], initialCommand: string): string => {
         "𝛤" : "\u{1D71E}",
         "𝛾" : "\u{1D738}",
         "Δ" : "\u{1D6AB}",
-        "δ" : "\u{1D6C5}",
+        "𝛥" : "\u{1D71F}",
+        "𝛿" : "\u{1D739}",
         "𝛦" : "\u{1D720}",
         "ϵ" : "\u{1D6DC}",
         "ε" : "\u{1D6C6}",
@@ -385,14 +395,14 @@ const mathbf = (arg: string[], initialCommand: string): string => {
         "𝜂" : "\u{1D73C}",
         "Θ" : "\u{1D6BD}",
         "𝜃" : "\u{1D73D}",
-        "ϑ" : "\u{1D6DD}",
+        "𝜗" : "\u{1D751}",
         "𝛪" : "\u{1D724}",
         "𝜄" : "\u{1D73E}",
         "𝛫" : "\u{1D725}",
         "𝜅" : "\u{1D73F}",
         "𝜘" : "\u{1D752}",
-        "Λ" : "\u{1D6B2}",
-        "λ" : "\u{1D6CC}",
+        "𝛬" : "\u{1D726}",
+        "𝜆" : "\u{1D740}",
         "𝛭" : "\u{1D727}",
         "𝜇" : "\u{1D741}",
         "𝛮" : "\u{1D728}",
@@ -401,15 +411,15 @@ const mathbf = (arg: string[], initialCommand: string): string => {
         "𝜉" : "\u{1D743}",
         "𝛰" : "\u{1D72A}",
         "𝜊" : "\u{1D744}",
-        "Π" : "\u{1D6B7}",
+        "𝛱" : "\u{1D72B}",
         "𝜋" : "\u{1D745}",
         "𝜛" : "\u{1D755}",
         "𝛲" : "\u{1D72C}",
         "𝜌" : "\u{1D746}",
-        "ϱ" : "\u{1D6E0}",
-        "Σ" : "\u{1D6BA}",
-        "σ" : "\u{1D6D4}",
-        "ς" : "\u{1D6D3}",
+        "𝜚" : "\u{1D754}",
+        "𝛴" : "\u{1D72E}",
+        "𝜎" : "\u{1D748}",
+        "𝜍" : "\u{1D747}",
         "𝛵" : "\u{1D72F}",
         "𝜏" : "\u{1D749}",
         "𝛶" : "\u{1D730}",
@@ -423,6 +433,55 @@ const mathbf = (arg: string[], initialCommand: string): string => {
         "𝜓" : "\u{1D74D}",
         "Ω" : "\u{1D6C0}",
         "𝜔" : "\u{1D74E}",
+
+        "Α" : "\u{1D6A8}",
+        "α" : "\u{1D6C2}",
+        "Β" : "\u{1D6A9}",
+        "β" : "\u{1D6C3}",
+        "Γ" : "\u{1D758}",
+        "γ" : "\u{1D772}",
+        "δ" : "\u{1D6C5}",
+        "Ε" : "\u{1D75A}",
+        "Ζ" : "\u{1D75B}",
+        "ζ" : "\u{1D6C7}",
+        "Η" : "\u{1D75C}",
+        "η" : "\u{1D6C8}",
+        "θ" : "\u{1D6C9}",
+        "ϑ" : "\u{1D6DD}",
+        "Ι" : "\u{1D75E}",
+        "ι" : "\u{1D6CA}",
+        "Κ" : "\u{1D75F}",
+        "κ" : "\u{1D6CB}",
+        "Λ" : "\u{1D6B2}",
+        "λ" : "\u{1D6CC}",
+        "Μ" : "\u{1D761}",
+        "μ" : "\u{1D77B}",
+        "Ν" : "\u{1D762}",
+        "ν" : "\u{1D6CE}",
+        "ξ" : "\u{1D6CF}",
+        "Ο" : "\u{1D6B6}",
+        "ο" : "\u{1D6D0}",
+        "Π" : "\u{1D765}",
+        "π" : "\u{1D77F}",
+        "ϖ" : "\u{1D78F}",
+        "Ρ" : "\u{1D766}",
+        "ρ" : "\u{1D6D2}",
+        "ϱ" : "\u{1D6E0}",
+        "Σ" : "\u{1D768}",
+        "σ" : "\u{1D6D4}",
+        "ς" : "\u{1D6D3}",
+        "Τ" : "\u{1D769}",
+        "τ" : "\u{1D6D5}",
+        "Υ" : "\u{1D76A}",
+        "υ" : "\u{1D6D6}",
+        "ϕ" : "\u{1D6DF}",
+        "φ" : "\u{1D6D7}",
+        "Χ" : "\u{1D76C}",
+        "χ" : "\u{1D6D8}",
+        "Ψ" : "\u{1D76D}",
+        "ψ" : "\u{1D787}",
+        "Ω" : "\u{1D76E}",
+        "ω" : "\u{1D6DA}",
 
         // mathcal
         "𝒜" : "\u{1D4D0}",
@@ -2562,7 +2621,8 @@ const STDGREEK: obj = {
     "\\Gamma" : "\u{1D6E4}",
     "\\gamma" : "\u{1D6FE}",
     "\\Delta" : "\u0394",
-    "\\delta" : "\u03B4",
+    "\\varDelta" : "\u{1D6E5}",
+    "\\delta" : "\u{1D6FF}",
     "\\Epsilon" : "\u{1D6E6}",
     "\\epsilon" : "\u03F5",
     "\\varepsilon" : "\u03B5",
@@ -2572,14 +2632,14 @@ const STDGREEK: obj = {
     "\\eta" : "\u{1D702}",
     "\\Theta" : "\u0398",
     "\\theta" : "\u{1D703}",
-    "\\vartheta" : "\u03D1",
+    "\\vartheta" : "\u{1D717}",
     "\\Iota" : "\u{1D6EA}",
     "\\iota" : "\u{1D704}",
     "\\Kappa" : "\u{1D6EB}",
     "\\kappa" : "\u{1D705}",
     "\\varkappa" : "\u{1D718}",
-    "\\Lambda" : "\u039B",
-    "\\lambda" : "\u03BB",
+    "\\Lambda" : "\u{1D6EC}",
+    "\\lambda" : "\u{1D706}",
     "\\Mu" : "\u{1D6ED}",
     "\\mu" : "\u{1D707}",
     "\\Nu" : "\u{1D6EE}",
@@ -2588,15 +2648,15 @@ const STDGREEK: obj = {
     "\\xi" : "\u{1D709}",
     "\\Omicron" : "\u{1D6F0}",
     "\\omicron" : "\u{1D70A}",
-    "\\Pi" : "\u03A0",
+    "\\Pi" : "\u{1D6F1}",
     "\\pi" : "\u{1D70B}",
     "\\varpi" : "\u{1D71B}",
     "\\Rho" : "\u{1D6F2}",
     "\\rho" : "\u{1D70C}",
-    "\\varrho" : "\u03F1",
+    "\\varrho" : "\u{1D71A}",
     "\\Sigma" : "\u{1D6F4}",
     "\\sigma" : "\u{1D70E}",
-    "\\varsigma" : "\u03C2",
+    "\\varsigma" : "\u{1D70D}",
     "\\Tau" : "\u{1D6F5}",
     "\\tau" : "\u{1D70F}",
     "\\Upsilon" : "\u{1D6F6}",
@@ -2621,6 +2681,7 @@ const NOSTYLEGREEK: obj = {
     "\\Gamma" : "\u0393",
     "\\gamma" : "\u03B3",
     "\\Delta" : "\u0394",
+    "\\varDelta" : "\u{1D6E5}",
     "\\delta" : "\u03B4",
     "\\Epsilon" : "\u0395",
     "\\epsilon" : "\u03F5",
@@ -3149,6 +3210,20 @@ const SUPERSCRIPT: obj = {
     "𝜑" : "\u1D60",
     "𝜌" : "ᣖ",
     "𝜒" : "\u1D61",
+    "β" : "\u1D5D",
+    "Γ" : "ᣘ",
+    "γ" : "\u1D5E",
+    "𝛥" : "ᐞ",
+    "𝛿" : "\u1D5F",
+    "𝛬" : "ᣔ",
+    "θ" : "\u1DBF",
+    "ι" : "ᶥ",
+    "ν" : "ᶹ",
+    "𝜎" : "ᣙ",
+    "ϕ" : "ᶲ",
+    "φ" : "\u1D60",
+    "ρ" : "ᣖ",
+    "χ" : "\u1D61",
 
     "∫" : "ᶴ",
     "≠" : "ᙾ",
@@ -3234,6 +3309,12 @@ const SUBSCRIPT = {
     "𝜑" : "\u1D69",
     "𝜙" : "\u1D69",
     "𝜒" : "\u1D6A",
+    "β" : "\u1D66",
+    "γ" : "\u1D67",
+    "ρ" : "\u1D68",
+    "φ" : "\u1D69",
+    "ϕ" : "\u1D69",
+    "χ" : "\u1D6A",
 
     "→" : "\u2710\u2710\u0362\u2710\u2710",
     "∞" : "\u2710\u035A\u2710",
@@ -3528,7 +3609,7 @@ function toReplaceCommand(key: string): string {
 
 // For input
 
-function parseInput(fullText: string): [Token[], number, boolean, string] {
+function parseInput(fullText: string): [Token[], number, string] {
     // Loops on letters and convert the input into characters
     let mm: boolean = false;  // mathmode
     let d: number = 0;  // depth
@@ -3780,7 +3861,7 @@ function parseInput(fullText: string): [Token[], number, boolean, string] {
             };
         };
     };
-    return [outputBox, d, mm, mathmodeStarter];
+    return [outputBox, d, mathmodeStarter];
 };
 
 
@@ -3886,11 +3967,11 @@ function removeComments(fullText: string): string {
 // Main functions
 
 function output(fullText: string, dict: objwF): string {
-    const [commands, lastDepth, lastMathmode, mathmodeOpener] = parseInput(fullText);
+    const [commands, lastDepth, mathmodeOpener] = parseInput(fullText);
 
     if (lastDepth !== 0) {
         return mistakes("Missing curly bracket '{', '}'", undefined);
-    } else if (lastMathmode) {
+    } else if (mathmodeOpener !== "") {
         const mathmodeCloser = (mathmodeOpener === "\\[") ? "\\]" : mathmodeOpener;
         return mistakes("Math mode was not closed", undefined, "Missing '" + mathmodeCloser + "'");
     } else {
@@ -3918,7 +3999,7 @@ function output(fullText: string, dict: objwF): string {
                     com = stack.pop()
                     arg = [convert(com, arg, dict, commands[i].mathmode)];
                 };
-                stack.push(arg);
+                stack[stack.length-1].push(arg);
             };
         };
         return out;
@@ -3946,24 +4027,88 @@ function convert(command: string, arg: string[] | null, dict: objwF, mathmode: b
 
 function getSettings(fullText: string): [obj, string[], obj, string] {
     // return: [plainTextConverter, [packages], renewCommand, documentclass]
-    let [settings, lastDepth] = parseSettings(fullText);
 
+    /*
+        List of all possible options
+
+        \documentclass[style, nostyle]{text, mathmode, chem}
+        \documentclass{matrix}
+
+        \usepackage{}   ->  Packages are in the packages directory
+
+        \renewcommand{}{}
+    */
+
+    // TODO: Will obviously have to rewrite this as the number of document classes and options grow
+
+    let [settings, lastDepth] = parseSettings(fullText);
+    const docClasses: string[] = ["text", "mathmode", "chem", "matrix"];
+    
     let i: number;
     if (lastDepth !== 0) {
-        mistakes("Missing curly bracket, '{', '}' in parameters", undefined);
+        let br: string = (lastDepth === 1) ? "square" : "curly";
+        let brSymbol: string = (lastDepth === 1) ? "'[', ']'" : "'{', '}'"
+        mistakes("Missing " + br + " brackets: " + brSymbol + " in parameters", undefined);
         return [LETTERSMATH, [], {}, "text"];
     } else {
-        let docClassNum: number = 0;
-
+        let docClassNum: number = 0
+        let documentClass: string = "";
+        let packages: string[] = [];
+        let renewCommand: obj = {};
+        let plainTextConverter: obj = LETTERSMATH;  // Default
+        let doc: boolean = false;
+        let usepack: boolean = false;
+        let renewcom: boolean = false;
         for (i=0; i<settings.length; i++) {
-            if ((settings[i].command === "\\documentclass") && (settings[i].depth === 0)) {
-                docClassNum += 1;
-            }
+            if (settings[i].depth === 0) {
+                if (settings[i].command === "\\documentclass") {
+                    doc = true;
+                    usepack = false;
+                    renewcom = false;
+                    docClassNum += 1;
+                } else if (settings[i].command === "\\usepackage") {
+                    doc = false;
+                    usepack = true;
+                    renewcom = false;
+                } else if (settings[i].command === "\\renewcommand") {
+                    doc = false;
+                    usepack = false;
+                    renewcom = true;
+                } else if ((settings[i].command === " ") || (settings[i].command === "\n")) {
+                    doc = false;
+                    usepack = false;
+                    renewcom = false;
+                } else {
+                    mistakes(settings[i].command + '" is not a command \n Accepted commands are: "\\documentclass", "\\usepackage", "\\renewcommand', undefined);
+                };
+            } else if (settings[i].depth === 1) {
+                if (doc) {
+                    if (settings[i].command === "style") {
+                        plainTextConverter = LETTERSMATH;
+                    } else if (settings[i].command === "nostyle") {
+                        plainTextConverter = LETTERSNOFONT;
+                    } else {
+                        mistakes("\\documentclass[" + settings[i].command + "]{}", undefined, settings[i].command + "\n Accepted options are: style, nostyle");
+                    };
+                } else {
+                    mistakes(settings[i].command, undefined, "Options are only available for document classes. Try \\documentclass[" + settings[i].command + "]{}");
+                };
+            } else {  // settings[i].depth === 2
+                if (doc) {
+                    documentClass = settings[i].command;
+                } else if (usepack) {
+                    packages.push(settings[i].command);
+                } else if (renewcom) {
+                    alert(settings[i].command);
+                };
+            };
         };
-        if (docClassNum !== 1) {
+        if (docClassNum > 1) {
             mistakes("Only 1 'documentclass' is permitted, not " + docClassNum, undefined);
+        } else if (docClassNum === 0) {
+            mistakes('Missing a \\documentclass"\n Accepted document classes are: "' + docClasses.join('", "'), undefined);
         };
-        return [{}, [""], {}, "documentclass"];
+        return [plainTextConverter, packages, renewCommand, documentClass];
     };
 };
 
@@ -3981,8 +4126,8 @@ function makeDict(plainTextConverter: obj, packages: string[], renewCommand: obj
                 }
             );
         } else {
-            mistakes("\\usepackage{" + packages[i] + "}", undefined, packages[i] + "\n" +
-            "Accepted packages are: " + acceptedPackages.join(", "));  // TODO: Only output once *and* make sure the " " are placed correctly
+            mistakes('\\usepackage{' + packages[i] + '}', undefined, packages[i] + '"\n' +
+            'Accepted packages are: ' + acceptedPackages.join('", "'));  // TODO: Only output once
         };
     };
     return dict;
