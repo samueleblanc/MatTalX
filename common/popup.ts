@@ -4159,8 +4159,12 @@ function replaceLetters(letters: string[], dict: obj, initialCommand: string, ch
     let newtext: string[] = [];
     let i: number;
     for (i=0; i<letters.length; i++) {
-        // TODO: Push symbol if it's a combining symbol
-        newtext.push(Str(addSymbol(dict[letters[i]])));
+        if (Object.values(ABOVE).concat(Object.values(BELOW)).filter(x => {return x !== "\u2710";}).includes(letters[i])) {  // Make sure it doesn't take spaces into consideration
+            // If the letter is a combining symbol, it won't be converted into any other font, so simply push it to the last characte
+            newtext[newtext.length-1] += letters[i];
+        } else {
+            newtext.push(Str(addSymbol(dict[letters[i]])));
+        };
         if (checkMistakes) {
             mistakes(initialCommand + "{" + letters.join("") + "}", dict[letters[i]], letters[i]);
         };
