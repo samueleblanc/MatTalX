@@ -3895,13 +3895,15 @@ function parseSettings(fullText: string): [Token[], number] {
                 d = 0;
             } else if (fullText[i] === "{") {
                 if (temporaryBox.join("").slice(0,13) === "\\renewcommand") {
-                    if (d === 2) {
+                    if (d >= 2) {
                         temporaryBox.push(fullText[i]);
                         d += 1;
                     } else {
-                        t = {command: temporaryBox.join(""), mathmode: false, depth: d};
-                        outputBox.push(t);
-                        temporaryBox = [];
+                        if (temporaryBox.indexOf("%") === temporaryBox.length-1) {
+                            temporaryBox.push("%");
+                        } else {
+                            temporaryBox.push(fullText[i]);
+                        };
                         d = 2;
                     };
                 } else {
@@ -3912,12 +3914,19 @@ function parseSettings(fullText: string): [Token[], number] {
                 };
             } else if (fullText[i] === "}") {
                 if (temporaryBox.join("").slice(0,13) === "\\renewcommand") {
-                    if (temporaryBox.indexOf("}") === -1) {
-                        temporaryBox.push(fullText[i]);
-                        d -= 1;
+                    if (temporaryBox.indexOf("%") === -1) {
+                        if (fullText[i-1] === "\\") {
+                            temporaryBox[temporaryBox.length-1] += fullText[i];
+                        } else {
+                            temporaryBox.push("%");  // Used to separate the two command (\renewcommand{1}{2})
+                            // '%' is used because it's impossible at this point to have a '%' not preceded by a '\'
+                            d -= 1;
+                        };
                     } else {
                         if (d === 2) {
-                            t = {command: temporaryBox.join(""), mathmode: false, depth: d};
+                            t = {command: "\\renewcommand", mathmode: false, depth: 0};
+                            outputBox.push(t);
+                            t = {command: temporaryBox.join("").slice(14), mathmode: false, depth: d};
                             outputBox.push(t);
                             temporaryBox = [];
                             trigger = false;
@@ -4056,9 +4065,7 @@ function getSettings(fullText: string): [obj, string[], obj, string] {
     
     let i: number;
     if (lastDepth !== 0) {
-        let br: string = (lastDepth === 1) ? "square" : "curly";
-        let brSymbol: string = (lastDepth === 1) ? "'[', ']'" : "'{', '}'"
-        mistakes("Missing " + br + " brackets: " + brSymbol + " in parameters", undefined);
+        mistakes("Unbalanced brackets in parameters. Missing", undefined, '{", "}", "[", or "]');
         return [LETTERSMATH, [], {}, "text"];
     } else {
         let docClassNum: number = 0
@@ -4084,7 +4091,7 @@ function getSettings(fullText: string): [obj, string[], obj, string] {
                     doc = false;
                     usepack = false;
                     renewcom = true;
-                } else if ((settings[i].command === " ") || (settings[i].command === "\n")) {
+                } else if ((settings[i].command === " ") || (settings[i].command === "\n") || (settings[i].command === "")) {
                     doc = false;
                     usepack = false;
                     renewcom = false;
@@ -4109,7 +4116,8 @@ function getSettings(fullText: string): [obj, string[], obj, string] {
                 } else if (usepack) {
                     packages.push(settings[i].command);
                 } else if (renewcom) {
-                    alert(settings[i].command);
+                    let twoCommands: string[] = settings[i].command.split("%%");
+                    renewCommand[twoCommands[0]] = twoCommands[1];
                 };
             };
         };
