@@ -57,8 +57,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 function openParameters() {
     const baseParams = "% Parameters \n" +
-                       "\\documentclass{mathmode}\n" +
-                       "\\usepackage[style]{font}\n" + 
+                       "\\documentclass[style]{mathmode}\n" +
                        "\\usepackage{stdshorts}\n";
     browser.storage.local.get("boxparam", (text) => {
         if (text.boxparam !== undefined) {
