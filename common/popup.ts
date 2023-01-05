@@ -3346,7 +3346,7 @@ const suggestionsBtn: HTMLButtonElement = <HTMLButtonElement>document.getElement
 suggestionsBtn.onclick = function() {getSuggestion()};
 
 // Remove spaces button
-const spacesButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById("adjust");
+const spacesButton: HTMLInputElement = <HTMLInputElement>document.getElementById("adjust");
 
 // Originally hidden
 // Can be accessed with a keyboard shortcut (Alt+S or Alt+C on chrome or firefox respectively) or by clicking the button (android)
@@ -3662,6 +3662,7 @@ function parseInput(fullText: string): [Token[], number, string] {
                                 if (mathmodeStarter === "\\[") {
                                     t = {command: "\\\\", mathmode: mm, depth: d};
                                     outputBox.push(t);
+                                    mathmodeStarter = "";
                                     mm = false;
                                 } else {
                                     t = {command: temporaryBox.join("") + fullText[i], mathmode: mm, depth: d};
@@ -3731,8 +3732,8 @@ function parseInput(fullText: string): [Token[], number, string] {
                     } else {
                         t = {command: temporaryBox.join(""), mathmode: mm, depth: d};
                         outputBox.push(t);
-                        temporaryBox = [];
                         if (mathmodeStarter === "$") {
+                            mathmodeStarter = "";
                             mm = false;
                         } else if (mathmodeStarter === "$$") {
                             if (fullText[i-1] === "$") {
@@ -3767,6 +3768,7 @@ function parseInput(fullText: string): [Token[], number, string] {
                             outputBox.push(t);
                             mathmodeStarter = "$$";
                         } else {
+                            mathmodeStarter = "";
                             mm = false;
                         };
                     } else if (mathmodeStarter === "$$") {
@@ -3987,12 +3989,11 @@ function removeComments(fullText: string): string {
 
 function output(fullText: string, dict: objwF): string {
     const [commands, lastDepth, mathmodeOpener] = parseInput(fullText);
-
     if (lastDepth !== 0) {
         return mistakes("Missing curly bracket '{', '}'", undefined);
     } else if (mathmodeOpener !== "") {
         const mathmodeCloser = (mathmodeOpener === "\\[") ? "\\]" : mathmodeOpener;
-        return mistakes("Math mode was not closed", undefined, "Missing '" + mathmodeCloser + "'");
+        return mistakes("Math mode was not closed", undefined, " Missing '" + mathmodeCloser + "' ");
     } else {
         let stack: any[] = [];
         let out: string = "";
@@ -4021,6 +4022,7 @@ function output(fullText: string, dict: objwF): string {
                 stack[stack.length-1].push(arg);
             };
         };
+        out += convert(stack.join(""), null, dict, commands[commands.length-1].mathmode);  // TODO: Verify is mathmode is always right
         return out;
     };
 };
@@ -4036,9 +4038,9 @@ function convert(command: string, arg: string[] | null, dict: objwF, mathmode: b
     } else {
         const outofMath: objwF = {...LETTERSNOFONT, ...TEXTCOMMANDS};
         if (arg === null) {
-            s += outofMath[command];
+            s += Str(outofMath[command]);
         } else {
-            s += outofMath[command];
+            s += Fct(outofMath[command])(arg, command, false);
         };
     };
     return s;
@@ -4145,7 +4147,7 @@ function makeDict(plainTextConverter: obj, packages: string[], renewCommand: obj
             );
         } else {
             mistakes('\\usepackage{' + packages[i] + '}', undefined, packages[i] + '"\n' +
-            'Accepted packages are: ' + acceptedPackages.join('", "'));  // TODO: Only output once
+            'Accepted packages are: "' + acceptedPackages.join('", "'));  // TODO: Only output once
         };
     };
     return dict;
@@ -4489,28 +4491,6 @@ function adjustSpaceChem(input: string): string {
 
 /** Main **/
 
-/*
-function convert(fullText) {
-    // Takes text and convert word by word in the dictionary or in function replaceLetters
-    const firstWord = fullText.split(" ")[0];
-    if (firstWord === "$chem") {
-        // Chemistry package, differs in the automatic conversion of letters and spacing adjustments
-        fullText = fullText.replace("$chem", "");
-        fullText = replaceText(fullText, lettersChem);
-        fullText = adjustSpaceChem(fullText);
-    } else if (firstWord === "$matrix") {
-        // Matrix package, the input should be of the form [a,b,c][d,e,f]
-        fullText = fullText.replace("$matrix", "");
-        fullText = matrix(fullText);
-    } else {
-        // Default package
-        fullText = replaceText(fullText, lettersSymbols);
-        fullText = adjustSpaces(fullText);
-    };
-    return fullText;
-};
-*/
-
 function main(): void {
     // Takes the original text (input) and outputs the new one, with the converted symbols
 
@@ -4521,10 +4501,24 @@ function main(): void {
     fullText = fullText.replace(/\u000A/g, " "); // Cancels the line skipped by pressing "enter", use "\\" instead
     fullText += " ";  // Usefull, since a space is a commandStopper
 
-    const [plainTextConverter, packages, renewCommand] = getSettings(parametersText.value);
+    const [plainTextConverter, packages, renewCommand, documentClass] = getSettings(parametersText.value);
     const dict = makeDict(plainTextConverter, packages, renewCommand);
 
-    let out = output(fullText, dict);
+    let out: string;
+    if (documentClass === "chem") {
+        out = output(fullText, dict);
+        if (spacesButton.checked) {
+            out = adjustSpaceChem(out);
+        };
+    } else if (documentClass === "matrix") {
+        out = matrix(fullText);
+    } else {
+        out = output(fullText, dict);
+        if (spacesButton.checked) {  // TODO: Need to adjust spaces only in mathmode
+            out = adjustSpaces(out);
+        };
+        // TODO: Verify in \: is converted to space without adjustSpaces
+    };
 
     textOut.value = out;
     textOut.disabled = false;
