@@ -28,7 +28,19 @@ window.addEventListener("focus", () => {
         if (button.check === false) {
             spacesButton.checked = false;
         };
-    })
+    });
+    browser.storage.local.get("boxparams", (text) => {
+        // Retreive the parameters as soon as MatTalX opens
+        if (text.boxparams !== undefined) {
+            parametersText.value = text.boxparam;
+        } else {
+            // Default parameters if undefined
+            const baseParams = "% Parameters \n" +
+                       "\\documentclass[style]{mathmode}\n" +
+                       "\\usepackage{std}\n";
+            parametersText.value = baseParams;
+        };
+    });
     textIn.focus();
 });
 
@@ -49,13 +61,15 @@ window.addEventListener("DOMContentLoaded", () => {
 document.getElementById("suggestionsBtn").style.display = "inline-block";
 
 function openParameters() {
-    const baseParams = "% Parameters \n" +
-                       "\\documentclass[style]{mathmode}\n" +
-                       "\\usepackage{stdshorts}\n";
+    // Open the parameter box
     browser.storage.local.get("boxparam", (text) => {
         if (text.boxparam !== undefined) {
             parametersText.value = text.boxparam;
         } else {
+            // Default parameters if undefined
+            const baseParams = "% Parameters \n" +
+                       "\\documentclass[style]{mathmode}\n" +
+                       "\\usepackage{std}\n";
             parametersText.value = baseParams;
         };
     });
@@ -64,6 +78,7 @@ function openParameters() {
 };
 
 function closeParameters() {
+    // Close the parameter box
     browser.storage.local.set({
         "boxparam" : parametersText.value
     });
