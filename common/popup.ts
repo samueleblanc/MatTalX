@@ -1828,9 +1828,9 @@ const sqrt = (arg: string[], initialCommand: string): any => {
             output += addSymbol(Fct(MATHDICTIONARY["^"])(rootNum.toString().split(""), initialCommand)) + "\u221A";
     };
     if (arg.length >= 2) {
-        output += "(" + addSymbolArray(arg, initialCommand + "{" + arg.join("") + "}") + ")";
+        output += "(" + addSymbolArray(arg, initialCommand + "{" + arg.join("") + "}").join("") + ")";
     } else {
-        output += addSymbolArray(arg, initialCommand + "{" + arg.join("") + "}");
+        output += addSymbolArray(arg, initialCommand + "{" + arg.join("") + "}").join("");
     };
     return output;
 };
@@ -1924,7 +1924,7 @@ const frac = (arg: string[], initialCommand: string) => {
             } else {
                 if (arg[i] === "{") {
                     if (arg[i - 1] === "}") {
-                        output += "(" + addSymbolArray(nume, "\\frac{" + arg.join("") + "}") + "/";
+                        output += "(" + addSymbolArray(nume, "\\frac{" + arg.join("") + "}").join("") + "/";
                     } else {
                         deno.push(arg[i]);
                     };
@@ -1933,7 +1933,7 @@ const frac = (arg: string[], initialCommand: string) => {
                 };
             };
         };
-        output += addSymbolArray(deno, "\\frac{" + arg.join("") + "}") + ")";
+        output += addSymbolArray(deno, "\\frac{" + arg.join("") + "}").join("") + ")";
         return output;
     };
 };
@@ -2783,14 +2783,10 @@ const LETTERSMATH: obj = {
     "&" : "&",
     "(" : "(",
     ")" : ")",
-    "{" : "{",
-    "}" : "}",
     "[" : "[",
     "]" : "]",
     "<" : "\u003C",
     ">" : "\u003E",
-    "^" : "^",
-    "_" : "_",
     "%" : "%",
     "#" : "#",
     "~" : "~",
@@ -2883,14 +2879,10 @@ const LETTERSNOFONT: obj = {
     "&" : "&",
     "(" : "(",
     ")" : ")",
-    "{" : "{",
-    "}" : "}",
     "[" : "[",
     "]" : "]",
     "<" : "\u003C",
     ">" : "\u003E",
-    "^" : "^",
-    "_" : "_",
     "%" : "%",
     "$" : "$",
     "*" : "*",
@@ -3659,7 +3651,7 @@ function parseInput(fullText: string): [Token[], number, string] {
                     } else {
                         if (fullText[i-1] === "\\") {
                             if (fullText[i] === "]") {
-                                if (mathmodeStarter === "\\[") {
+                                if ((mathmodeStarter === "\\[") && (d === 0)) {
                                     t = {command: "\\\\", mathmode: mm, depth: d};
                                     outputBox.push(t);
                                     mathmodeStarter = "";
@@ -3688,16 +3680,13 @@ function parseInput(fullText: string): [Token[], number, string] {
                     } else {
                         if (fullText[i-1] === "\\") {
                             t = {command: temporaryBox.join("") + fullText[i], mathmode: mm, depth: d};
-                            outputBox.push(t);
-                            temporaryBox = [];
-                            trigger = false;
                         } else {
                             t = {command: temporaryBox.join(""), mathmode: mm, depth: d};
-                            outputBox.push(t);
-                            temporaryBox = [];
-                            trigger = false;
                             d += 1;
                         };
+                        outputBox.push(t);
+                        temporaryBox = [];
+                        trigger = false;
                     };
                 } else if (fullText[i] === "}") {
                     if (temporaryBox.join("").slice(0,5) === "\\frac") {
@@ -3714,13 +3703,12 @@ function parseInput(fullText: string): [Token[], number, string] {
                         d -= 1;
                     } else {
                         if (fullText[i-1] === "\\") {
-                            t = {command: fullText[i], mathmode: mm, depth: d};
+                            t = {command: temporaryBox.join("") + fullText[i], mathmode: mm, depth: d};
                             outputBox.push(t);
                         } else {
                             t = {command: temporaryBox.join(""), mathmode: mm, depth: d};
                             outputBox.push(t);
-                            t = {command: fullText[i], mathmode: mm, depth: d};
-                            outputBox.push(t);
+                            d -= 1;
                         };
                         temporaryBox = [];
                         trigger = false;
@@ -3732,10 +3720,10 @@ function parseInput(fullText: string): [Token[], number, string] {
                     } else {
                         t = {command: temporaryBox.join(""), mathmode: mm, depth: d};
                         outputBox.push(t);
-                        if (mathmodeStarter === "$") {
+                        if ((mathmodeStarter === "$") && (d === 0)) {
                             mathmodeStarter = "";
                             mm = false;
-                        } else if (mathmodeStarter === "$$") {
+                        } else if ((mathmodeStarter === "$$") && (d === 0)) {
                             if (fullText[i-1] === "$") {
                                 t = {command: "\\\\", mathmode: mm, depth: d};
                                 outputBox.push(t);
@@ -3761,7 +3749,7 @@ function parseInput(fullText: string): [Token[], number, string] {
                 if ((fullText[i] === "\\") || (fullText[i] === "^") || (fullText[i] === "_")) {
                     temporaryBox.push(fullText[i]);
                     trigger = true;
-                } else if (fullText[i] === "$") {
+                } else if ((fullText[i] === "$") && (d === 0)) {
                     if (mathmodeStarter === "$") {
                         if (fullText[i-1] === "$") {
                             t = {command: "\\\\", mathmode: mm, depth: d};
@@ -3797,7 +3785,7 @@ function parseInput(fullText: string): [Token[], number, string] {
         } else {
             if (trigger) {
                 if (fullText[i] === "[") {
-                    if (fullText[i-1] === "\\") {
+                    if ((fullText[i-1] === "\\") && (d === 0)) {
                         t = {command: "\\\\", mathmode: mm, depth: d};
                         outputBox.push(t);
                         temporaryBox = [];
@@ -3851,7 +3839,7 @@ function parseInput(fullText: string): [Token[], number, string] {
                     temporaryBox.push(fullText[i]);
                 };
             } else {
-                if (fullText[i] === "$") {
+                if ((fullText[i] === "$") && (d === 0)) {
                     mathmodeStarter = fullText[i];
                     mm = true;
                 } else if (fullText[i] === "\\") {
@@ -3987,42 +3975,61 @@ function removeComments(fullText: string): string {
 
 // Main functions
 
-function output(fullText: string, dict: objwF): string {
+function output(fullText: string, dict: objwF, documentClass: string): string {
     const [commands, lastDepth, mathmodeOpener] = parseInput(fullText);
     if (lastDepth !== 0) {
-        return mistakes("Missing curly bracket '{', '}'", undefined);
+        return mistakes("Missing curly brackets ('{', '}')", undefined, " Do this to output one: '\\{', '\\}' ");
     } else if (mathmodeOpener !== "") {
         const mathmodeCloser = (mathmodeOpener === "\\[") ? "\\]" : mathmodeOpener;
         return mistakes("Math mode was not closed", undefined, " Missing '" + mathmodeCloser + "' ");
     } else {
         let stack: any[] = [];
         let out: string = "";
+        let temporaryOut: string = "";
 
         stack.push([commands[0].command]);
 
         let i: number, j: number;
         for (i=1; i<commands.length; i++) {
-            if (commands[i-1].depth === commands[i].depth) {
-                if (commands[i].depth === 0) {
-                    out += convert(stack[0], null, dict, commands[i].mathmode);
-                    stack = [[commands[i].command]];
-                } else {
-                    stack[stack.length-1].push(commands[i].command);
+            if (commands[i-1].mathmode !== commands[i].mathmode) {
+                if (commands[i-1].depth > commands[i].depth) {
+                    let arg: string[];  // TODO: check types
+                    let com: string;
+                    arg = replaceLettersArray(stack.pop(), dict, stack[0]);
+                    for (j=0; j<commands[i].depth-commands[i-1].depth; j++) {
+                        com = stack.pop()
+                        arg = [convert(com, arg, dict, commands[i-1].mathmode)];
+                    };
+                    stack[stack.length-1].push(arg);
                 };
-            } else if (commands[i-1].depth < commands[i].depth) {
-                stack.push([commands[i].command]);
-            } else {  // if commands[i-1] > commands[i].depth
-                let arg: string[];  // TODO: check types
-                let com: string;
-                arg = stack.pop();
-                for (j=0; j<commands[i].depth-commands[i-1].depth; j++) {
-                    com = stack.pop()
-                    arg = [convert(com, arg, dict, commands[i].mathmode)];
+                temporaryOut += emptyStack(stack[0], dict, commands[i-1].mathmode);
+                stack = [[commands[i].command]];
+                out += adjustSpaces(temporaryOut, documentClass, commands[i-1].mathmode);
+                temporaryOut = "";
+            } else {
+                if (commands[i-1].depth === commands[i].depth) {
+                    if (commands[i].depth === 0) {
+                        temporaryOut += convert(stack[0], null, dict, commands[i].mathmode);  // TODO: Verify if it's always stack[0]
+                        stack = [[commands[i].command]];
+                    } else {
+                        stack[stack.length-1].push(commands[i].command);
+                    };
+                } else if (commands[i-1].depth < commands[i].depth) {
+                    stack.push([commands[i].command]);
+                } else {  // if commands[i-1] > commands[i].depth
+                    let arg: string[];  // TODO: check types
+                    let com: string;
+                    arg = replaceLettersArray(stack.pop(), dict, stack[0]);
+                    for (j=0; j<commands[i].depth-commands[i-1].depth; j++) {
+                        com = stack.pop()
+                        arg = [convert(com, arg, dict, commands[i].mathmode)];
+                    };
+                    stack[stack.length-1].push(arg);
                 };
-                stack[stack.length-1].push(arg);
             };
         };
-        out += convert(stack.join(""), null, dict, commands[commands.length-1].mathmode);  // TODO: Verify is mathmode is always right
+        temporaryOut += emptyStack(stack[0], dict, commands[commands.length-1].mathmode);
+        out += adjustSpaces(temporaryOut, documentClass, commands[commands.length-1].mathmode);
         return out;
     };
 };
@@ -4047,7 +4054,7 @@ function convert(command: string, arg: string[] | null, dict: objwF, mathmode: b
 };
 
 function getSettings(fullText: string): [obj, string[], obj, string] {
-    // return: [plainTextConverter, [packages], renewCommand, documentclass]
+    // return: [fontChoice, [packages], renewCommand, documentclass]
 
     /*
         List of all possible options
@@ -4074,7 +4081,7 @@ function getSettings(fullText: string): [obj, string[], obj, string] {
         let documentClass: string = "";
         let packages: string[] = [];
         let renewCommand: obj = {};
-        let plainTextConverter: obj = LETTERSMATH;  // Default
+        let fontChoice: obj = {...LETTERSMATH, ...STDGREEK};  // Default
         let doc: boolean = false;
         let usepack: boolean = false;
         let renewcom: boolean = false;
@@ -4103,9 +4110,9 @@ function getSettings(fullText: string): [obj, string[], obj, string] {
             } else if (settings[i].depth === 1) {
                 if (doc) {
                     if (settings[i].command === "style") {
-                        plainTextConverter = LETTERSMATH;
+                        fontChoice = {...LETTERSMATH, ...STDGREEK};
                     } else if (settings[i].command === "nostyle") {
-                        plainTextConverter = LETTERSNOFONT;
+                        fontChoice = {...LETTERSNOFONT, ...NOSTYLEGREEK};
                     } else {
                         mistakes("\\documentclass[" + settings[i].command + "]{}", undefined, settings[i].command + "\n Accepted options are: style, nostyle");
                     };
@@ -4128,12 +4135,12 @@ function getSettings(fullText: string): [obj, string[], obj, string] {
         } else if (docClassNum === 0) {
             mistakes('Missing a \\documentclass"\n Accepted document classes are: "' + docClasses.join('", "'), undefined);
         };
-        return [plainTextConverter, packages, renewCommand, documentClass];
+        return [fontChoice, packages, renewCommand, documentClass];
     };
 };
 
-function makeDict(plainTextConverter: obj, packages: string[], renewCommand: obj): objwF {
-    let dict: objwF = {...MATHDICTIONARY, ...plainTextConverter, ...renewCommand};
+function makeDict(fontChoice: obj, packages: string[], renewCommand: obj): objwF {
+    let dict: objwF = {...MATHDICTIONARY, ...fontChoice, ...renewCommand};
     const acceptedPackages: string[] = ["std", "quickletter", "quickgreek", "frenchtext", "chem"];
     let i: number;
     for (i=0; i<packages.length; i++) {
@@ -4156,7 +4163,11 @@ function makeDict(plainTextConverter: obj, packages: string[], renewCommand: obj
 
 // Used by main functions
 
-function replaceLetters(letters: string[], dict: obj, initialCommand: string, checkMistakes=true): string {
+function replaceLetters(letters: string[], dict: objwF, initialCommand: string, checkMistakes=true): string {
+    return replaceLettersArray(letters, dict, initialCommand, checkMistakes).join("");
+};
+
+function replaceLettersArray(letters: string[], dict: objwF, initialCommand: string, checkMistakes=true): string[] {
     // Used by a lot of functions to convert every letter in a string of characters
     let newtext: string[] = [];
     let i: number;
@@ -4167,11 +4178,11 @@ function replaceLetters(letters: string[], dict: obj, initialCommand: string, ch
         } else {
             newtext.push(Str(addSymbol(dict[letters[i]])));
         };
-        if (checkMistakes) {
-            mistakes(initialCommand + "{" + letters.join("") + "}", dict[letters[i]], letters[i]);
+        if (checkMistakes && (dict[letters[i]] === undefined)) {
+            mistakes(initialCommand + "{" + letters.join("") + "}", undefined, letters[i]);
         };
     };
-    return newtext.join("");
+    return newtext;
 };
 
 function addSymbol(command: any, keepArray=false): string | string[] {
@@ -4183,17 +4194,32 @@ function addSymbol(command: any, keepArray=false): string | string[] {
     return (command !== undefined) ? command : "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}";
 };
 
-function addSymbolArray(args: string[], command: string, checkMistakes=true): string {
+function addSymbolArray(args: string[], command: string, checkMistakes=true): string[] {
     // Differs from the function above as it returns an array instead of a string
-    let output: string = "";
+    let output: string[] = [];
     let i: number;
     for (i=0; i<args.length; i++) {
-        output += (args[i] !== undefined) ? args[i] : "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}";
+        output.push((args[i] !== undefined) ? args[i] : "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}");
         if (checkMistakes) {
             mistakes(command, args[i], "A symbol does not exist or can't be shown");
         };
     };
     return output;
+};
+
+function emptyStack(stack: any[], dict: objwF, mathmode: boolean): string {
+    let out;
+    while (stack.length > 1) {
+
+    };
+    if (stack.length > 1) {
+        // TODO: Can it be over 2?
+        let arg = stack.pop();
+        out = convert(stack[0], arg, dict, mathmode);
+    } else {
+        out = convert(stack[0], null, dict, mathmode);
+    };
+    return out;
 };
 
 
@@ -4383,6 +4409,20 @@ function spaceCommand(text: string): string {
     return text;
 };
 
+function adjustSpaces(text: string, documentClass: string, mathmode: boolean) : string {
+    let out: string = "";
+    if (spacesButton.checked && mathmode) {
+        if (documentClass === "chem") {
+            out = adjustSpaceChem(text);
+        } else {
+            out = adjustSpacesDefault(text);
+        };
+    } else {
+        out = text;
+    };
+    return out;
+};
+
 function adjustSpacesCommon(input: string, symbolSpaced: string[], conditionalSpaces: string[]): string {
     // Removes spaces and add some depending on surrounding symbols
     // Used if 'Adjust space' is on
@@ -4394,7 +4434,6 @@ function adjustSpacesCommon(input: string, symbolSpaced: string[], conditionalSp
         Also, a_{i}-x should return a_{i} - x, but \sum_{i}-x should return \sum_{i}-x (as in \sum_{i}(-x) or -\sum_{i}x)
         Again, it should take the context in consideration
     */
-    input = input.slice(0, input.length - 1)  // Since the last char is a space
     if (input.length > 2) {
         const noSpaceSymbols: string[] = Object.values(SUPERSCRIPT).concat(Object.values(SUBSCRIPT), Object.values(ABOVE), Object.values(BELOW)).filter(x => {return x !== "\u2710";});
         const spacedChar: string = characters.concat(...noSpaceSymbols);  // Add space around 'conditionalSpaces' if the previous symbol is in spacedChar
@@ -4452,7 +4491,7 @@ function adjustSpacesCommon(input: string, symbolSpaced: string[], conditionalSp
     };
 };
 
-function adjustSpaces(input: string): string {
+function adjustSpacesDefault(input: string): string {
     // Calls adjustSpacesCommon with specific symbols where spaces around them should be added
     const symbolSpaced: string[] = ["=", "\u003D", "\u21D2", "\u21D0", "\u21CD", "\u21CF", "\u21CE", "\u2192", "\u27F6", "\u2190", "\u27F5", 
                 "\u2194", "\u21AE", "\u219A", "\u219B", "\u27F8", "\u27F9", "\u27F9", "\u21D4", "\u27FA", "\u27FC", "\u21CC", "\u21CB", 
@@ -4501,23 +4540,14 @@ function main(): void {
     fullText = fullText.replace(/\u000A/g, " "); // Cancels the line skipped by pressing "enter", use "\\" instead
     fullText += " ";  // Usefull, since a space is a commandStopper
 
-    const [plainTextConverter, packages, renewCommand, documentClass] = getSettings(parametersText.value);
-    const dict = makeDict(plainTextConverter, packages, renewCommand);
+    const [fontChoice, packages, renewCommand, documentClass] = getSettings(parametersText.value);
+    const dict = makeDict(fontChoice, packages, renewCommand);
 
     let out: string;
-    if (documentClass === "chem") {
-        out = output(fullText, dict);
-        if (spacesButton.checked) {
-            out = adjustSpaceChem(out);
-        };
-    } else if (documentClass === "matrix") {
+    if (documentClass === "matrix") {
         out = matrix(fullText);
     } else {
-        out = output(fullText, dict);
-        if (spacesButton.checked) {  // TODO: Need to adjust spaces only in mathmode
-            out = adjustSpaces(out);
-        };
-        // TODO: Verify in \: is converted to space without adjustSpaces
+        out = output(fullText, dict, documentClass);
     };
 
     textOut.value = out;
