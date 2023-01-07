@@ -1,4 +1,4 @@
-![MatTalX logo](common/images/mattalx_logo.png)
+![MatTalX logo](v3/common/images/mattalx_logo.png)
 
 ## Versions
 
