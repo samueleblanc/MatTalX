@@ -1,5 +1,16 @@
 ![MatTalX logo](common/images/mattalx_logo.png)
 
+## Versions
+
+MatTalX v3 is under development (current version is v2)
+
+Major improvements/changes:
+- Implementation in TypeScript instead of JavaScript
+- Parameter popup where you can include a basic header with \documentclass, \usepackage and \renewcommand
+- Adequate parser to be able to have more freedom as to what is possible in MatTalX
+- Integrated text editor
+- And more! (see Contributing)
+
 ## Documentation
 
 <a href="https://samueleblanc.com/mattalx/documentation.html" target="_blank">Full documentation</a>
