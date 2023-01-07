@@ -1,0 +1,311 @@
+@media (prefers-color-scheme: light) {
+    body {
+        min-width: 500px;
+        height: auto;
+        background-color: white;
+    }
+    #title_light {
+        width: 25%;
+        height: 25%;
+        margin-right: 37%;
+        margin-left: 37%;
+    }
+    #title_dark {
+        display: none;
+    }
+    #text_in {
+        color: black;
+        border: 2px solid whitesmoke;
+        background-color: whitesmoke;
+        border-radius: 4px;
+        width: 100%;
+        height: 100px;
+        font-size: 14px;
+        text-decoration: none;
+    }
+    #text_out {
+        color: black;
+        border: 2px solid whitesmoke;
+        background-color: whitesmoke;
+        border-radius: 4px;
+        width: 100%;
+        height: 100px;
+        font-size: 15px;
+        text-decoration: none;
+    }
+    .infoButton_dark {
+        display: none;
+    }
+    .infoButton_light {
+        background-color: white;
+        border: none;
+        float: right;
+    }
+    .info_dark {
+        display: none;
+    }
+    .info_light {
+        width: 15px;
+        height: 15px;
+        cursor: default;
+        float: right;
+    }
+    .shortcuts {
+        color: black;
+        font-size: 15x;
+        font-family: 'Times New Roman';
+        text-decoration: none;
+        cursor: default;
+    }
+    .dropdownInfo {
+        display: none;
+        position: absolute;
+        z-index: 1;
+        width: max-content;
+        overflow: auto;
+        right: 0;
+        background-color: whitesmoke;
+        border-radius: 7px;
+    }
+    #docs, 
+    #git, 
+    #adjustSpaces {
+        display: block;
+        width: 100%;
+        color: black;
+        font-size: 15px;
+        font-family: 'Times New Roman';
+        text-decoration: none;
+        background-color: whitesmoke;
+        border: none;
+    }
+    #docs:hover, #git:hover {
+        background-color: lightgrey;
+    }
+    #convert,
+    #reset,
+    #suggestionsBtn {
+        font-size: 14px;
+        color: black;
+        font-family: 'Lucida Grande';
+        border: none;
+        background-color: rgb(230, 229, 229);
+        padding: 8px;
+    }
+    #convert:hover,
+    #reset:hover,
+    #suggestionsBtn:hover {
+        background-color: lightgrey;
+    }
+    #copy {
+        font-size: 14px;
+        color: black;
+        font-family: 'Lucida Grande';
+        border: none;
+        background-color: rgb(230, 229, 229);
+        padding: 8px;
+        min-width: 70px;
+        width: fit-content;
+        height: auto;
+    }
+    #copy:hover {
+        background-color: lightgrey;
+    }
+    #mistakes {
+        white-space: pre-wrap;
+        font-size: 15x;
+        color: black;
+        font-family: 'Times New Roman';
+    }
+    #suggestions {
+        display: none;
+        text-align: center;
+        width: fit-content;
+        min-width: 140px;
+        min-height: 20px;
+        height: fit-content;
+        border: 1px solid rgb(238, 238, 238);
+        border-radius: 5px;
+        background-color: rgb(238, 238, 238);
+        position: absolute;
+    }
+    tr, td {
+        border-collapse: collapse;
+        border: 1px solid rgb(238, 238, 238);
+        background-color: white;
+        width: 100%;
+    }
+}
+@media (prefers-color-scheme: dark) {
+    body {
+        min-width: 500px;
+        height: auto;
+        background-color: rgb(39, 39, 39);
+    }
+    #title_light {
+        display: none;
+    }
+    #title_dark {
+        width: 25%;
+        height: 25%;
+        margin-right: 37%;
+        margin-left: 37%;
+        opacity: 85%;
+    }
+    #text_in {
+        color: whitesmoke;
+        border: 2px solid rgb(83, 83, 83);
+        background-color: rgb(83, 83, 83);
+        border-radius: 4px;
+        width: 100%;
+        height: 100px;
+        font-size: 14px;
+        text-decoration: none;
+    }
+    #text_out {
+        color: whitesmoke;
+        border: 2px solid rgb(83, 83, 83);
+        background-color: rgb(83, 83, 83);
+        border-radius: 4px;
+        width: 100%;
+        height: 100px;
+        font-size: 15px;
+        text-decoration: none;
+    }
+    .infoButton_light {
+        display: none;
+    }
+    .infoButton_dark {
+        background-color: rgb(39, 39, 39);
+        border: none;
+        float: right;
+    }
+    .info_light {
+        display: none;
+    }
+    .info_dark {
+        width: 15px;
+        height: 15px;
+        cursor: default;
+        float: right;
+    }
+    .shortcuts {
+        color: whitesmoke;
+        font-size: 15x;
+        font-family: 'Times New Roman';
+        text-decoration: none;
+        cursor: default;
+    }
+    .dropdownInfo {
+        display: none;
+        position: absolute;
+        z-index: 1;
+        width: max-content;
+        overflow: auto;
+        right: 0;
+        background-color: rgb(31, 31, 31);
+        border-radius: 7px;
+    }
+    #docs, 
+    #git, 
+    #adjustSpaces {
+        display: block;
+        width: 100%;
+        color: whitesmoke;
+        font-size: 15px;
+        font-family: 'Times New Roman';
+        border: none;
+        text-decoration: none;
+        background-color: rgb(31, 31, 31);
+        border: none;
+    }
+    #docs:hover, #git:hover {
+        background-color: rgb(41, 41, 41);
+    }
+    #convert,
+    #reset,
+    #suggestionsBtn {
+        font-size: 14px;
+        color: whitesmoke;
+        font-family: 'Lucida Grande';
+        border: none;
+        background-color: rgb(53, 53, 53);
+        padding: 8px;
+    }
+    #convert:hover,
+    #reset:hover,
+    #suggestionsBtn:hover {
+        background-color: rgb(61, 61, 61);
+    }
+    #copy {
+        font-size: 14px;
+        color: whitesmoke;
+        font-family: 'Lucida Grande';
+        border: none;
+        background-color: rgb(53, 53, 53);
+        padding: 8px;
+        min-width: 70px;
+        width: fit-content;
+        height: auto;
+    }
+    #copy:hover {
+        background-color: rgb(61, 61, 61);
+    }
+    #mistakes {
+        white-space: pre-wrap;
+        color: whitesmoke;
+        font-size: 15x;
+        font-family: 'Times New Roman';
+    }
+    #suggestions {
+        display: none;
+        text-align: center;
+        width: fit-content;
+        min-width: 140px;
+        min-height: 20px;
+        height: fit-content;
+        border: 1px solid rgb(31, 31, 31);
+        border-radius: 5px;
+        background-color: rgb(31, 31, 31);
+        position: absolute;
+    }
+    tr, td {
+        border-collapse: collapse;
+        border: 1px solid rgb(31, 31, 31);
+        background-color: rgb(39, 39, 39);
+        width: 100%;
+    }
+}
+#body {
+    margin: auto;
+    width: 80%;
+    padding: 1%;
+}
+header {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+#remove {
+    cursor: pointer;
+}
+.infoDiv {
+    position: relative;
+    float: right;
+}
+a {
+    text-decoration: none;
+}
+.infoDiv:hover .dropdownInfo {
+    text-align: center;
+    display: block;
+    padding: 8px;
+}
+.shortcutTitle {
+    padding-top: 6px;
+    padding-bottom: 0px;
+    cursor: default;
+}
+.suggestion {
+    display: inline-block;
+    position: relative;
+}

@@ -99,19 +99,6 @@ android_addon () {
     fi
 }
 
-# Will soon be removed
-website () {
-    echo "Creating 'webtest' directory..."
-    mkdir webtest
-    cp -r common/images webtest
-    cp common/popup.js webtest
-    cat web_version/web-specific.js >> webtest/popup.js
-    mv webtest/popup.js webtest/convert-text.js
-    cp web_version/web-version.css webtest
-    cp web_version/web-version.html webtest
-    echo "--Done--"
-}
-
 testing () {
     # Might use this in the future
     #   https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/
@@ -146,8 +133,6 @@ elif  [[ $1 == "android" ]]; then
     android_addon
 elif [[ $1 == "chrome" ]]; then
     chrome_ext
-elif [[ $1 == "website" ]]; then
-    website
 elif [[ $1 == "b-all" ]]; then
     firefox_addon
     android_addon
@@ -155,5 +140,5 @@ elif [[ $1 == "b-all" ]]; then
 elif [[ $1 == "test" ]]; then
     testing
 else
-    echo "Accepted arguments: 'firefox', 'android', 'chrome', 'website', 'b-all' or 'test'." # b-all stands for build all
+    echo "Accepted arguments: 'firefox', 'android', 'chrome', 'b-all' or 'test'." # b-all stands for build all
 fi
