@@ -1,6 +1,5 @@
 /*
     Messages for first time user or after an update
-
     This file will be pasted in popup.js
 */
 
@@ -17,8 +16,8 @@ function firstMessage(version) {
     "As a last tip, if you get an error and the command seems right, the character that you want might not exist in unicode:\r\n" + 
     " x^{y} → 𝑥ʸ | x^{Y} → 𝑥^(𝑌) (ie y exists in superscript but not Y)\r\n \r\n" +
     "But, before jumping to conclusion, please look at the documentation! The command, for various reason, might be different than in LaTeX!";
-    document.getElementById("text_in").value = text;  // In "text_input" form
-    document.getElementById("text_out").value = tutorial;  // In "text_input" form
+    textIn.value = text;  // In "text_input" form
+    textOut.value = tutorial;  // In "text_input" form
 };
 
 // Message after an update
@@ -29,5 +28,5 @@ function updateMessage(version) {
     "Major changes: \r\n" +
     " 1) Better error messages\r\n" + 
     " 2) Improved 'Adjust spaces'";
-    document.getElementById("text_out").value = majorChanges;  // In "text_input" form
+    textOut.value = majorChanges;  // In "text_input" form
 };

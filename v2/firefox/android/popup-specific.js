@@ -1,7 +1,7 @@
 /*
     Functions specific to Firefox (Android version)
     
-    This file is copy-pasted in popup.js (popup.ts before compilation).
+    This file is copy-pasted in popup.js
     Therefore, a special attention to variable names is needed.
 */
 
@@ -45,7 +45,7 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 // Only available if the device is screen only
-document.getElementById("suggestionsBtn").style.display = "inline-block";
+suggestionsBtn.style.display = "inline-block";
 
 window.addEventListener("click", (event) => {
     // Closes the suggestion popup if the users clicks anywhere except on the suggestion popup itself or input box

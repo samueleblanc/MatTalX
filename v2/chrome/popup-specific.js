@@ -1,7 +1,7 @@
 /*
     Functions specific to Chrome
 
-    This file is copy-pasted in popup.js (popup.ts before compilation).
+    This file is copy-pasted in popup.js
     Therefore, a special attention to variable names is needed.
 */
 
@@ -13,7 +13,7 @@ document.getElementById("short_open_suggestions").textContent = "Alt+S : Open/Cl
 // Recognize if the device is screen only
 const touchScreen = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 if (!touchScreen) {
-    document.getElementById("suggestionsBtn").style.display = "none";
+    suggestionsBtn.style.display = "none";
 };
 
 window.addEventListener("blur", () => {
