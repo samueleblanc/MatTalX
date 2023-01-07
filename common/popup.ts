@@ -71,7 +71,7 @@ function Str(a: any): string {
     if (typeof a === "string") {
         return a;
     } else {
-        throw "Parameter is not a string"
+        return mistakes(a, undefined);
     };
 };
 
@@ -80,7 +80,7 @@ function Fct(a: any): Function {
     if (typeof a === "function") {
         return a;
     } else {
-        throw "Parameter is not a function"
+        return (arg: string[], initialCommand: string, forFrac?: boolean) => mistakes(initialCommand + "{" + arg.join("") + "}", undefined);
     };
 };
 
@@ -952,7 +952,7 @@ const superscript = (arg: string[], initialCommand: string, forFrac=false): stri
     // Sends input to be converted by replaceLetters
     // This function is by default not called by the frac function
     let output = replaceLetters(arg, SUPERSCRIPT, initialCommand, !forFrac);
-    if ((output.indexOf("\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}") === -1) || (forFrac)) {
+    if ((output.indexOf(errSymbol) === -1) || (forFrac)) {
         return output;
     } else {
         return "^(" + arg.join("") + ")";
@@ -963,7 +963,7 @@ const subscript = (arg: string[], initialCommand: string, forFrac=false): string
     // Sends input to be converted by replaceLetters
     // This function is by default not called by the frac function
     let output = replaceLetters(arg, SUBSCRIPT, initialCommand, !forFrac);
-    if ((output.indexOf("\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}") === -1) || (forFrac)) {
+    if ((output.indexOf(errSymbol) === -1) || (forFrac)) {
         return output;
     } else {
         return "_(" + arg.join("") + ")";
@@ -1901,7 +1901,7 @@ const frac = (arg: string[], initialCommand: string) => {
         };
     };
     output += addSymbol(Fct(MATHDICTIONARY["_"])(deno, initialCommand, true));
-    if (output.indexOf("\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}") === -1) {
+    if (output.indexOf(errSymbol) === -1) {
         return output;
     } else {
         if (arg.join("").includes("\u2710")) {
@@ -1969,12 +1969,11 @@ const singleCharFrac = (arg: string[], initialCommand: string): string => {
 
 const combineSymbols = (arg: string | string[], initialCommand: string, symbol: string, forTwo: undefined | string): string[] => {
     // Appends a 'combining symbol' to a regular symbol to create a new one (e.g. 'e' + '´' -> é)
-    // N.B. "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}"  ->  error symbol
     let textComb: string[] = [];
     if ((arg.length === 2) && (forTwo !== undefined)) {
         textComb.push(arg[0] + forTwo + arg[1]);
-        mistakes(initialCommand + "{\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}" + arg[1] + "}", arg[0], "Argument doesn't exist");
-        mistakes(initialCommand + "{" + arg[0] + "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}}", arg[1], "Argument doesn't exist");
+        mistakes(initialCommand + "{" + errSymbol + arg[1] + "}", arg[0], "Argument doesn't exist");
+        mistakes(initialCommand + "{" + arg[0] + errSymbol + "}", arg[1], "Argument doesn't exist");
     } else {
         let err: string[] = [];
         let i: number;
@@ -1983,11 +1982,11 @@ const combineSymbols = (arg: string | string[], initialCommand: string, symbol: 
                 textComb.push(arg[i] + symbol);
                 err.push(arg[i]);
             } else {
-                textComb.push("\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}");
-                err.push("\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}");
+                textComb.push(errSymbol);
+                err.push(errSymbol);
             };
         };
-        if (err.includes("\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}")) {
+        if (err.includes(errSymbol)) {
             mistakes(initialCommand + "{" + err.join("") + "}", undefined, "Argument doesn't exist")
         };
     };
@@ -2752,7 +2751,6 @@ const TEXTCOMMANDS: objwF = {
     "\\linebreak" : "\u000A",
     "\\newline" : "\u000A",
     "\\tab" : "\u0009",
-    "\\text" : text,
     "\\textbf" : textbf,
     "\\textit" : textit,
     "\\texttt" : texttt,
@@ -3381,6 +3379,9 @@ const characters: string = "AÀÂBCÇDEÉÈËÊFGHIJKLMNOÔPQRSTUÙVWXYZaàâbc�
                    "ΑαΒβΓγδΖζΗηθϑΙιΚκϰΛλΜμΝνξΟοΠπϖΡρϱΣσςΤτΥυϕφΧχΨψΩω" + 
                    "𝝖𝝰𝝗𝝱𝝘𝝲𝛅𝝛𝝵𝝜𝝶𝛉𝛝𝝞𝛊𝝟𝝹𝞌𝝠𝝺𝝡𝝻𝝢𝝼𝝽𝝤𝝾𝝥𝝿𝞏𝝦𝞀𝞎𝝨𝞂𝞁𝝩𝞃𝝪𝞄𝞍𝞅𝝬𝞆𝝭𝞇𝝮𝞈" +
                    "ℾℽℿℼ⅀";
+
+// Symbol for an error
+const errSymbol: string = "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}";
 
 // Every undefined commands
 let errorsList: string = "";
@@ -4038,16 +4039,17 @@ function convert(command: string, arg: string[] | null, dict: objwF, mathmode: b
     let s: string = "";
     if (mathmode) {
         if (arg === null) {
-            s += Str(dict[command]);
+            s += Str(addSymbol(dict[command]));
+
         } else {
-            s += Fct(dict[command])(arg, command, false);
+            s += Fct(addSymbol(dict[command]))(arg, command, false);
         };
     } else {
         const outofMath: objwF = {...LETTERSNOFONT, ...TEXTCOMMANDS};
         if (arg === null) {
-            s += Str(outofMath[command]);
+            s += Str(addSymbol(outofMath[command]));
         } else {
-            s += Fct(outofMath[command])(arg, command, false);
+            s += Fct(addSymbol(outofMath[command]))(arg, command, false);
         };
     };
     return s;
@@ -4140,7 +4142,7 @@ function getSettings(fullText: string): [obj, string[], obj, string] {
 };
 
 function makeDict(fontChoice: obj, packages: string[], renewCommand: obj): objwF {
-    let dict: objwF = {...MATHDICTIONARY, ...fontChoice, ...renewCommand};
+    let dict: objwF = {...MATHDICTIONARY, ...fontChoice};
     const acceptedPackages: string[] = ["std", "quickletter", "quickgreek", "frenchtext", "chem"];
     let i: number;
     for (i=0; i<packages.length; i++) {
@@ -4156,6 +4158,10 @@ function makeDict(fontChoice: obj, packages: string[], renewCommand: obj): objwF
             mistakes('\\usepackage{' + packages[i] + '}', undefined, packages[i] + '"\n' +
             'Accepted packages are: "' + acceptedPackages.join('", "'));  // TODO: Only output once
         };
+    };
+    let key: string;
+    for (key in renewCommand) {
+        dict[key] = dict[renewCommand[key]];
     };
     return dict;
 };
@@ -4191,7 +4197,7 @@ function addSymbol(command: any, keepArray=false): string | string[] {
         // Changes an array of characters into a string
         command = command.join("");
     };
-    return (command !== undefined) ? command : "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}";
+    return (command !== undefined) ? command : errSymbol;
 };
 
 function addSymbolArray(args: string[], command: string, checkMistakes=true): string[] {
@@ -4199,7 +4205,7 @@ function addSymbolArray(args: string[], command: string, checkMistakes=true): st
     let output: string[] = [];
     let i: number;
     for (i=0; i<args.length; i++) {
-        output.push((args[i] !== undefined) ? args[i] : "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}");
+        output.push((args[i] !== undefined) ? args[i] : errSymbol);
         if (checkMistakes) {
             mistakes(command, args[i], "A symbol does not exist or can't be shown");
         };
@@ -4208,16 +4214,16 @@ function addSymbolArray(args: string[], command: string, checkMistakes=true): st
 };
 
 function emptyStack(stack: any[], dict: objwF, mathmode: boolean): string {
-    let out;
-    while (stack.length > 1) {
-
-    };
-    if (stack.length > 1) {
-        // TODO: Can it be over 2?
-        let arg = stack.pop();
-        out = convert(stack[0], arg, dict, mathmode);
-    } else {
+    let out: string;
+    let arg: string[];
+    if (stack.length === 1) {
         out = convert(stack[0], null, dict, mathmode);
+    } else {
+        while (stack.length > 1) {
+            arg = stack.pop();
+            stack[stack.length-1] = convert(stack[stack.length-1], arg, dict, mathmode);
+        };
+        out = stack.join("");
     };
     return out;
 };
@@ -4236,7 +4242,7 @@ function mistakes(textInput: string, textOutput: string | undefined, letter=""):
     const text: string = "\u{1D404}\u{1D42B}\u{1D42B}\u{1D428}\u{1D42B}\u{1D42C}: \r\n";  // "Errors" in bold
     if (textOutput === undefined) {
         if (letter != "") {
-            if (letter !== "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}") {  // Only add to errorsList once
+            if (letter !== errSymbol) {  // Only add to errorsList once
                 if (letter.includes("\u2710")) {  // i.e. Spaces
                     if (textInput.substring(0,5) == "\\text") {
                         errorsList += spaceCommand(textInput + " \u2192 Spaces are kept inside '" + textInput.replace(/{.*}/g, "") + "{}', no need for a spacing command") + "\r\n";
@@ -4274,7 +4280,7 @@ function mistakes(textInput: string, textOutput: string | undefined, letter=""):
     if (errorsList.length > 0) {
         popup.textContent = text + errorsList;
     };
-    return "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}"; // bold "err" with two "x" under it
+    return errSymbol; // bold "err" with two "x" under it
 };
 
 
