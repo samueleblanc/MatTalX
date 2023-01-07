@@ -4,26 +4,8 @@
 # Can also test MatTalX, however, it's not a complete test
 
 copy_common () {
-    for file in common/*; do
-        case $file in
-            *.js)
-            mv $file $1  # Parameter is the name of the directory (e.g. 'extension', 'firefox_add_on', etc.)
-            ;;
-            *.html | *.css)
-            cp $file $1
-            ;;
-            *)
-            continue  # i.e. don't copy .ts (or other) files
-            ;;
-        esac
-    done
-    cd $1
-    mkdir packages
-    cd ../
-    for file in common/packages/*.json; do
-        cp $file $1/packages
-    done
-    cp -r common/images $1
+    cp -RT common $1  # Parameter is the name of the directory (e.g. 'extension', 'firefox_add_on', etc.)
+    # cp -r common/images $1
     echo "Files from 'common' transfered"
 }
 
