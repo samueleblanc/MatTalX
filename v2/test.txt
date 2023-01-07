@@ -9,7 +9,7 @@ document.text_input.text_in.value = "Tests:\\\\ \\mathcal{S}_{1} = \\{x^{2} + y^
 "\\boxh DONE \\boxh";
 window.onload = (event) => {
     console.log("window loaded properly");
-    document.getElementById("button").click();
+    document.getElementById("convert").click();
 }
 </script>
 </body>
