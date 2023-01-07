@@ -1537,7 +1537,9 @@ const text = (arg, initialCommand) => {
         "z" : "z",
 
         "𝐴" : "A",
+        "𝐴̀" : "À",
         "𝑎" : "a",
+        "𝑎̀" : "à",
         "𝐵" : "B",
         "𝑏" : "b",
         "𝐶" : "C",
@@ -1545,6 +1547,14 @@ const text = (arg, initialCommand) => {
         "𝐷" : "D",
         "𝑑" : "d",
         "𝐸" : "E",
+        "𝐸̀" : "È",
+        "𝐸̈" : "Ë",
+        "𝐸́" : "É",
+        "𝐸̂" : "Ê",
+        "𝑒̂" : "ê",
+        "𝑒́" : "é",
+        "𝑒̈" : "ë",
+        "𝑒̀" : "è",
         "𝑒" : "e",
         "𝐹" : "F",
         "𝑓" : "f",
@@ -1578,6 +1588,7 @@ const text = (arg, initialCommand) => {
         "𝑡" : "t",
         "𝑈" : "U",
         "𝑢" : "u",
+        "𝑢̀" : "ù",
         "𝑉" : "V",
         "𝑣" : "v",
         "𝑊" : "W",
@@ -2969,9 +2980,11 @@ const lettersSymbols = {
     "6" : "6",
     "7" : "7",
     "8" : "8",
-    "9" : "9", 
+    "9" : "9",
     "A" : "\u{1D434}",
+    "À" : "\u{1D434}\u0300",
     "a" : "\u{1D44E}",
+    "à" : "\u{1D44E}\u0300",
     "B" : "\u{1D435}",
     "b" : "\u{1D44F}",
     "C" : "\u{1D436}",
@@ -2979,7 +2992,9 @@ const lettersSymbols = {
     "D" : "\u{1D437}",
     "d" : "\u{1D451}",
     "E" : "\u{1D438}",
+    "É" : "\u{1D438}\u0301",
     "e" : "\u{1D452}",
+    "é" : "\u{1D452}\u0301",
     "F" : "\u{1D439}",
     "f" : "\u{1D453}",
     "G" : "\u{1D43A}",
@@ -3011,7 +3026,9 @@ const lettersSymbols = {
     "T" : "\u{1D447}",
     "t" : "\u{1D461}",
     "U" : "\u{1D448}",
+    "Ù" : "\u{1D448}\u0300",
     "u" : "\u{1D462}",
+    "ù" : "\u{1D462}\u0300",
     "V" : "\u{1D449}",
     "v" : "\u{1D463}",
     "W" : "\u{1D44A}",
@@ -3457,8 +3474,6 @@ function replaceText(fullText, plainTextConverter) {
                     } else if (fullText[char] === "}") {
                         if (fullText[char - 1] === "\\") {
                             temporaryArg.push(fullText[char]);
-                            triggerInArg = false;
-                            commandInArg = [];
                         } else {
                             if (temporaryBox.join("").slice(0, 5) === "\\sqrt") {
                                 temporaryArg.push(prohibitedType(mathDictionary[commandInArg.join("")]));
@@ -3466,71 +3481,56 @@ function replaceText(fullText, plainTextConverter) {
                                 mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", mathDictionary["\\sqrt"], temporaryBox.join(""));
                                 temporaryBox = [];
                                 temporaryArg = [];
-                                commandInArg = [];
-                                triggerInArg = false;
                                 arg = false;
                                 trigger = false;
-                                    numberCurly += 1;
+                                numberCurly += 1;
                             } else if ((temporaryBox.join("") === "\\frac") || (temporaryBox.join("") === "\\frac*")) {
                                 if (temporaryArg.indexOf("}") === -1) {
                                     temporaryArg.push(prohibitedType(mathDictionary[commandInArg.join("")]));
                                     temporaryArg.push(fullText[char]);
-                                    commandInArg = [];
-                                    triggerInArg = false;
                                 } else {
                                     if ((temporaryArg.join("") === "\\frac") || (temporaryArg.join("") === "\\frac*")) {
                                         temporaryArg.push(prohibitedType(mathDictionary[commandInArg.join("")]));
                                         newText += addSymbol(mathDictionary[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
                                         mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", undefined, "Embedded \\frac are currently not accepted");
-                                        temporaryBox = [];
-                                        temporaryArg = [];
-                                        commandInArg = [];
-                                        triggerInArg = false;
-                                        arg = false;
-                                        trigger = false;
-                                        numberCurly += 1;
                                     } else {
                                         temporaryArg.push(prohibitedType(mathDictionary[commandInArg.join("")]));
                                         newText += addSymbol(mathDictionary[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
                                         mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", mathDictionary[temporaryBox.join("")], temporaryBox.join(""));
-                                        temporaryBox = [];
-                                        temporaryArg = [];
-                                        commandInArg = [];
-                                        triggerInArg = false;
-                                        arg = false;
-                                        trigger = false;
-                                        numberCurly += 1;
                                     };
-                                }
+                                    temporaryBox = [];
+                                    temporaryArg = [];
+                                    arg = false;
+                                    trigger = false;
+                                    numberCurly += 1;
+                                };
                             } else {
                                 temporaryArg.push(prohibitedType(mathDictionary[commandInArg.join("")]));
                                 newText += addSymbol(mathDictionary[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
                                 mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", mathDictionary[temporaryBox.join("")], temporaryBox.join(""));
                                 temporaryBox = [];
                                 temporaryArg = [];
-                                commandInArg = [];
-                                triggerInArg = false;
                                 arg = false;
                                 trigger = false;
                                 numberCurly += 1;
                             };
+                            commandInArg = [];
+                            triggerInArg = false;
                         };
                     } else if (parentheses.includes(fullText[char])) {
                         if (fullText[char - 1] === "\\") {
                             temporaryArg.push(fullText[char]);
-                            triggerInArg = false;
-                            commandInArg = [];
                         } else {
                             temporaryArg.push(prohibitedType(mathDictionary[commandInArg.join("")]));
                             temporaryArg.push(fullText[char]);
-                            commandInArg = [];
-                            triggerInArg = false;
                         };
+                        commandInArg = [];
+                        triggerInArg = false;
                     } else if (brackets.includes(fullText[char])) {
                         if (fullText[char - 1] === "\\") {
                             temporaryArg.push(fullText[char]);
-                            triggerInArg = false;
                             commandInArg = [];
+                            triggerInArg = false;
                         } else {
                             if (commandInArg.join("").slice(0, 5) === "\\sqrt") {
                                 commandInArg.push(fullText[char]);
@@ -3629,29 +3629,25 @@ function replaceText(fullText, plainTextConverter) {
                 } else if (fullText[char] == "}") {
                     if (fullText[char - 1] === "\\") {
                         newText += addSymbol(plainTextConverter[fullText[char]]);
-                        trigger = false;
-                        temporaryBox = [];
                     } else {
                         newText += addSymbol(mathDictionary[temporaryBox.join("")]);
                         newText += addSymbol(undefined);
                         mistakes(temporaryBox.join("") + "}", undefined, " '" + temporaryBox.join("") + "\\}' and " + "'" + temporaryBox.join("") + " }' ⇒ '" + temporaryBox.join("") + "}' ");
-                        temporaryBox = [];
-                        trigger = false;
-                    }
+                    };
+                    temporaryBox = [];
+                    trigger = false;
                 } else if (commandStoppers.includes(fullText[char])) {
                     if (temporaryBox.join("").replace(/\[.*\]/g, "") === "\\sqrt*") {
                         newText += addSymbol(mathDictionary["\\sqrt*"](undefined, temporaryBox.join("")));
                         mistakes(temporaryBox.join(""), mathDictionary["\\sqrt*"]);
                         newText += addSymbol(plainTextConverter[fullText[char]]);
-                        temporaryBox = [];
-                        trigger = false;
                     } else {
                         newText += !(typeof mathDictionary[temporaryBox.join("")] == "function") ? 
                         addSymbol(mathDictionary[temporaryBox.join("")]) + plainTextConverter[fullText[char]] : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
                         mistakes(temporaryBox.join(""), mathDictionary[temporaryBox.join("")]);
-                        temporaryBox = [];
-                        trigger = false;
                     };
+                    temporaryBox = [];
+                    trigger = false;
                 } else if ((fullText[char] === "\\") || (fullText[char] === "^") || fullText[char] === "_") {
                     if (fullText[char - 1] === "\\") {
                         temporaryBox.push(fullText[char]);
@@ -3675,16 +3671,14 @@ function replaceText(fullText, plainTextConverter) {
                         newText += addSymbol(mathDictionary["\\sqrt*"](undefined, temporaryBox.join("")));
                         mistakes(temporaryBox.join(""), mathDictionary["\\sqrt*"]);
                         newText += addSymbol(plainTextConverter[fullText[char]]);
-                        temporaryBox = [];
-                        trigger = false;
                     } else {
                         newText += !(typeof mathDictionary[temporaryBox.join("")] == "function") ? 
                         addSymbol(mathDictionary[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
                         mistakes(temporaryBox.join(""), mathDictionary[temporaryBox.join("")]);
                         newText += addSymbol(plainTextConverter[fullText[char]]);
-                        temporaryBox = [];
-                        trigger = false;
                     };
+                    temporaryBox = [];
+                    trigger = false;
                 } else if (brackets.includes(fullText[char])) {
                     if (temporaryBox.join("").slice(0,5) === "\\sqrt") {
                         temporaryBox.push(fullText[char]);
@@ -3737,8 +3731,8 @@ const combineSymbols = (arg, initialCommand, symbol, forTwo=undefined) => {
     let textComb = [];
     if ((arg.length === 2) && (forTwo !== undefined)) {
         textComb.push(arg[0] + forTwo + arg[1]);
-        mistakes(initialCommand + "{\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}" + arg[1] + "}", arg[0], "Argument doesn't exist");
-        mistakes(initialCommand + "{" + arg[0] + "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}}", arg[1], "Argument doesn't exist");
+        mistakes(initialCommand + "{" + errSymbol + arg[1] + "}", arg[0], "Argument doesn't exist");
+        mistakes(initialCommand + "{" + arg[0] + errSymbol + "}", arg[1], "Argument doesn't exist");
     } else {
         let err = [];
         for (let c in arg) {
@@ -3770,6 +3764,11 @@ function embeddedCommand(command, endOfText, plainTextConverter) {
                 if (command.slice(0, 5) === "\\sqrt") {
                     mistakes("Embedded \\sqrt are not best practice, use '\\sqrt[n]* (\\sqrt[k]* x)' instead of '\\sqrt[n]{\\sqrt[k]{x}}'", undefined, "ⁿ√(ᵏ√𝑥)");
                     return [addSymbol(mathDictionary["\\sqrt"](args, command), true), parseInt(c)];
+                } else if ((command[0] === "^") || command[0] === "_") {
+                    let commandPos = (command[0] === "^") ? "superscript" : "subscript";
+                    mistakes("Embedded " + commandPos + " (" + command[0] + "{}) is not accepted", undefined, "Since \\" + command[0] + " \u2192 " + command[0] + 
+                    ", you can write x" + command[0] + "(x" + command[0] + "(...)) with x\\"+ command[0] +" (x\\" + command[0] + " (...))");
+                    return [addSymbol(mathDictionary[command](args, command), true), parseInt(c)];
                 } else {
                     return [addSymbol(mathDictionary[command](args, command), true), parseInt(c)];
                 };
@@ -3814,9 +3813,6 @@ function prohibitedType(command, type="function") {
 function mistakes(textInput, textOutput, letter="") {
     // Writes every errors in a box, so it's easier for the user to find them
 
-    // TODO: x^{\error} outputs: x^{} -> try: 'x^{{}}' which is obviously a bad error message
-
-    const popup = document.getElementById("mistakes");
     const text = "\u{1D404}\u{1D42B}\u{1D42B}\u{1D428}\u{1D42B}\u{1D42C}: \r\n";  // "Errors" in bold
     if (textOutput === undefined) {
         if (letter != "") {
@@ -3831,14 +3827,7 @@ function mistakes(textInput, textOutput, letter="") {
                         errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
                     };
                 } else {
-                    const subSupChar = Object.values(Superscript).concat(Object.values(Subscript)).filter(x => {return x !== "\u2710";});  // Makes sure that there are no spaces that sneaks in
-                    if (subSupChar.includes(letter)) {
-                        let argPos = Object.values(Superscript).includes(letter) ? "superscript" : "subscript";
-                        let commandPos = (textInput[0] === "^") ? "superscript" : "subscript";
-                        errorsList += spaceCommand(textInput + " \u2192 Can't put a " + argPos + " (" + letter + ") in a " + commandPos + " position") + "\r\n";
-                    } else {
-                        errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
-                    };
+                    errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
                 };
             };
         } else {
@@ -3848,7 +3837,11 @@ function mistakes(textInput, textOutput, letter="") {
                     errorsList += "For '" + textInput[0] + "' alone: \\" + textInput[0] + " \u2192 " + textInput[0] + 
                     "  |  To use '" + textInput[0] + "' as a command: " + textInput[0] + "{1} \u2192 " + example + "\r\n";
                 } else {
-                    errorsList += '"' + textInput + '" \u2192 ' + "try: " + textInput[0] + "{" + textInput.slice(1) + "}" + '\r\n';
+                    if (textInput[1] === "{") {
+                        errorsList += '"' + textInput + '" \u2192 ' + "Argument does not exists" + '\r\n';
+                    } else {
+                        errorsList += '"' + textInput + '" \u2192 ' + "try: " + textInput[0] + "{" + textInput.slice(1) + "}" + '\r\n';
+                    };
                 };
             } else {
                 errorsList += '"' + textInput + '" \r\n';
@@ -3856,7 +3849,7 @@ function mistakes(textInput, textOutput, letter="") {
         };
     };
     if (errorsList.length > 0) {
-        popup.textContent = text + errorsList;
+        mistakesBox.textContent = text + errorsList;
     };
     return errSymbol;
 };
