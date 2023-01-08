@@ -53,8 +53,8 @@ web-ext run
 ```
 or on Firefox (android version) with
 ``` 
-bash build.sh android
-cd andoid_add_on
+bash build.sh firefox
+cd firefox_add_on
 web-ext run --target=firefox-android
 ``` 
 with your cellphone connected to your computer
