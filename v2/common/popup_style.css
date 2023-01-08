@@ -64,7 +64,9 @@ body {
 }
 #docs, 
 #git, 
-#adjustSpaces {
+#adjustSpaces,
+#changeFont,
+#changeMode {
     display: block;
     width: 100%;
     font-size: 15px;
@@ -73,8 +75,14 @@ body {
     border: none;
 }
 #convert,
-#reset,
+#reset {
+    font-size: 14px;
+    font-family: 'Lucida Grande';
+    border: none;
+    padding: 8px;
+}
 #suggestionsBtn {
+    display: none;
     font-size: 14px;
     font-family: 'Lucida Grande';
     border: none;
@@ -154,11 +162,17 @@ tr, td {
     }
     #docs, 
     #git, 
-    #adjustSpaces {
+    #adjustSpaces,
+    #changeFont,
+    #changeMode {
         color: black;
         background-color: whitesmoke;
     }
-    #docs:hover, #git:hover {
+    #docs:hover,
+    #git:hover,
+    #adjustSpaces:hover,
+    #changeFont:hover,
+    #changeMode:hover {
         background-color: lightgrey;
     }
     #convert,
@@ -236,11 +250,17 @@ tr, td {
     }
     #docs, 
     #git, 
-    #adjustSpaces {
+    #adjustSpaces,
+    #changeFont,
+    #changeMode {
         color: whitesmoke;
         background-color: rgb(31, 31, 31);
     }
-    #docs:hover, #git:hover {
+    #docs:hover,
+    #git:hover,
+    #adjustSpaces:hover,
+    #changeFont:hover,
+    #changeMode:hover  {
         background-color: rgb(41, 41, 41);
     }
     #convert,
