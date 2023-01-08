@@ -2346,10 +2346,10 @@ const mathDictionary = {
     "\\ddot" : ddot,
     "\\acute" : acute,
     "\\grave" : grave,
-
-    // For Lewis Notation
     "\\above" : above,
     "\\below" : below,
+
+    // For Lewis Notation
     "\\mid." : "\u2E31",
     "\\mid:" : "\u003A",
 
@@ -3181,8 +3181,14 @@ suggestionsBtn.onclick = function() {getSuggestion()};
 // Can be accessed with a keyboard shortcut (Alt+S or Alt+C on chrome or firefox respectively) or by clicking the button (android)
 const suggestionsPopup = document.getElementById("suggestions");
 
-// Remove spaces button
+// Adjust spaces button
 const spacesButton = document.getElementById("adjust");
+
+// Mathematical font button
+const changeFontButton = document.getElementById("mathFont");
+
+// Math mode button
+const changeModeButton = document.getElementById("mathMode");
 
 // First and second text box
 const textIn = document.getElementById("text_in");
@@ -3223,6 +3229,9 @@ const errSymbol = "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}";  // bold "err" with
 // Every undefined commands
 let errorsList = "";
 
+// Recognize if the device is screen only
+const touchScreen = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
 
 /**************************************************************************************/
 
@@ -3254,6 +3263,12 @@ function clear() {
     textOut.disabled = true;
     suggestionsPopup.style.display = "none";
     suggestionsPopup.textContent = "";
+};
+
+// Show suggestion button and hide shortcuts if the device is screen only
+if (touchScreen) {
+    suggestionsBtn.style.display = "inline-block";
+    document.getElementsByClassName("shortcuts").style.display = "none";
 };
 
 
