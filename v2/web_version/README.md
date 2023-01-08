@@ -1,1 +1,0 @@
-<b>Is deprecated and will soon be removed from GitHub</b>
