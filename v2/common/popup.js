@@ -150,11 +150,16 @@ const mathbb = (arg, initialCommand) => {
         "𝑦" : "\u{1D56A}",
         "𝑧" : "\u{1D56B}",
         
-        "𝜋" : "\u213C",
-        "Π" : "\u213F",
         "𝛾" : "\u213D",
         "𝛤" : "\u213E",
+        "𝛱" : "\u213F",
+        "𝜋" : "\u213C",
+        "𝛴" : "\u2140",
         "Σ" : "\u2140",
+        "Π" : "\u213F",
+        "π" : "\u213C",
+        "γ" : "\u213D",
+        "Γ" : "\u213E",
 
         "0" : "\u{1D7D8}",
         "1" : "\u{1D7D9}",
@@ -307,7 +312,7 @@ const mathbf = (arg, initialCommand) => {
 
         "∂" : "\u{1D789}",
 
-	    // Greek
+        // Greek
         "𝛢" : "\u{1D71C}",
         "𝛼" : "\u{1D736}",
         "𝛣" : "\u{1D71D}",
@@ -315,7 +320,8 @@ const mathbf = (arg, initialCommand) => {
         "𝛤" : "\u{1D71E}",
         "𝛾" : "\u{1D738}",
         "Δ" : "\u{1D6AB}",
-        "δ" : "\u{1D6C5}",
+        "𝛥" : "\u{1D71F}",
+        "𝛿" : "\u{1D739}",
         "𝛦" : "\u{1D720}",
         "ϵ" : "\u{1D6DC}",
         "ε" : "\u{1D6C6}",
@@ -325,14 +331,14 @@ const mathbf = (arg, initialCommand) => {
         "𝜂" : "\u{1D73C}",
         "Θ" : "\u{1D6BD}",
         "𝜃" : "\u{1D73D}",
-        "ϑ" : "\u{1D6DD}",
+        "𝜗" : "\u{1D751}",
         "𝛪" : "\u{1D724}",
         "𝜄" : "\u{1D73E}",
         "𝛫" : "\u{1D725}",
         "𝜅" : "\u{1D73F}",
         "𝜘" : "\u{1D752}",
-        "Λ" : "\u{1D6B2}",
-        "λ" : "\u{1D6CC}",
+        "𝛬" : "\u{1D726}",
+        "𝜆" : "\u{1D740}",
         "𝛭" : "\u{1D727}",
         "𝜇" : "\u{1D741}",
         "𝛮" : "\u{1D728}",
@@ -341,15 +347,15 @@ const mathbf = (arg, initialCommand) => {
         "𝜉" : "\u{1D743}",
         "𝛰" : "\u{1D72A}",
         "𝜊" : "\u{1D744}",
-        "Π" : "\u{1D6B7}",
+        "𝛱" : "\u{1D72B}",
         "𝜋" : "\u{1D745}",
         "𝜛" : "\u{1D755}",
         "𝛲" : "\u{1D72C}",
         "𝜌" : "\u{1D746}",
-        "ϱ" : "\u{1D6E0}",
-        "Σ" : "\u{1D6BA}",
-        "σ" : "\u{1D6D4}",
-        "ς" : "\u{1D6D3}",
+        "𝜚" : "\u{1D754}",
+        "𝛴" : "\u{1D72E}",
+        "𝜎" : "\u{1D748}",
+        "𝜍" : "\u{1D747}",
         "𝛵" : "\u{1D72F}",
         "𝜏" : "\u{1D749}",
         "𝛶" : "\u{1D730}",
@@ -363,6 +369,56 @@ const mathbf = (arg, initialCommand) => {
         "𝜓" : "\u{1D74D}",
         "Ω" : "\u{1D6C0}",
         "𝜔" : "\u{1D74E}",
+
+        "Α" : "\u{1D756}",
+        "α" : "\u{1D770}",
+        "Β" : "\u{1D757}",
+        "β" : "\u{1D771}",
+        "Γ" : "\u{1D758}",
+        "γ" : "\u{1D772}",
+        "δ" : "\u{1D6C5}",
+        "Ε" : "\u{1D75A}",
+        "Ζ" : "\u{1D75B}",
+        "ζ" : "\u{1D775}",
+        "Η" : "\u{1D75C}",
+        "η" : "\u{1D776}",
+        "θ" : "\u{1D6C9}",
+        "ϑ" : "\u{1D6DD}",
+        "Ι" : "\u{1D75E}",
+        "ι" : "\u{1D6CA}",
+        "Κ" : "\u{1D75F}",
+        "κ" : "\u{1D779}",
+        "ϰ" : "\u{1D78C}",
+        "Λ" : "\u{1D760}",
+        "λ" : "\u{1D77A}",
+        "Μ" : "\u{1D761}",
+        "μ" : "\u{1D77B}",
+        "Ν" : "\u{1D762}",
+        "ν" : "\u{1D77C}",
+        "ξ" : "\u{1D77D}",
+        "Ο" : "\u{1D764}",
+        "ο" : "\u{1D77E}",
+        "Π" : "\u{1D765}",
+        "π" : "\u{1D77F}",
+        "ϖ" : "\u{1D78F}",
+        "Ρ" : "\u{1D766}",
+        "ρ" : "\u{1D780}",
+        "ϱ" : "\u{1D78E}",
+        "Σ" : "\u{1D768}",
+        "σ" : "\u{1D782}",
+        "ς" : "\u{1D781}",
+        "Τ" : "\u{1D769}",
+        "τ" : "\u{1D783}",
+        "Υ" : "\u{1D76A}",
+        "υ" : "\u{1D784}",
+        "ϕ" : "\u{1D78D}",
+        "φ" : "\u{1D785}",
+        "Χ" : "\u{1D76C}",
+        "χ" : "\u{1D786}",
+        "Ψ" : "\u{1D76D}",
+        "ψ" : "\u{1D787}",
+        "Ω" : "\u{1D76E}",
+        "ω" : "\u{1D788}",
 
         // mathcal
         "𝒜" : "\u{1D4D0}",
@@ -2159,7 +2215,7 @@ const mathDictionary = {
     "\\min" : "min",
     "\\grad" : "grad",
     "\\curl" : "curl",
-    "\\ratio" : "\u2236",  // Same as ":", except with "$chem"
+    "\\ratio" : "\u2236",  // Same as ":", except with "!chem"
 
     // Arrows
     "\\Rightarrow" : "\u21D2",
@@ -2243,63 +2299,6 @@ const mathDictionary = {
     "\\tildeabovearrow" : "\u2972",
     "\\tildebelowarrow" : "\u2974",
     "\\equalabovearrow" : "\u2971",
-
-    // Greek alphabet
-    "\\Alpha" : "\u{1D6E2}",
-    "\\alpha" : "\u{1D6FC}",
-    "\\Beta" : "\u{1D6E3}",
-    "\\beta" : "\u{1D6FD}",
-    "\\Gamma" : "\u{1D6E4}",
-    "\\gamma" : "\u{1D6FE}",
-    "\\Delta" : "\u0394",
-    "\\delta" : "\u03B4",
-    "\\Epsilon" : "\u{1D6E6}",
-    "\\epsilon" : "\u03F5",
-    "\\varepsilon" : "\u03B5",
-    "\\Zeta" : "\u{1D6E7}",
-    "\\zeta" : "\u{1D701}",
-    "\\Eta" : "\u{1D6E8}",
-    "\\eta" : "\u{1D702}",
-    "\\Theta" : "\u0398",
-    "\\theta" : "\u{1D703}",
-    "\\vartheta" : "\u03D1",
-    "\\Iota" : "\u{1D6EA}",
-    "\\iota" : "\u{1D704}",
-    "\\Kappa" : "\u{1D6EB}",
-    "\\kappa" : "\u{1D705}",
-    "\\varkappa" : "\u{1D718}",
-    "\\Lambda" : "\u039B",
-    "\\lambda" : "\u03BB",
-    "\\Mu" : "\u{1D6ED}",
-    "\\mu" : "\u{1D707}",
-    "\\Nu" : "\u{1D6EE}",
-    "\\nu" : "\u{1D708}",
-    "\\Xi" : "\u039E",
-    "\\xi" : "\u{1D709}",
-    "\\Omicron" : "\u{1D6F0}",
-    "\\omicron" : "\u{1D70A}",
-    "\\Pi" : "\u03A0",
-    "\\pi" : "\u{1D70B}",
-    "\\varpi" : "\u{1D71B}",
-    "\\Rho" : "\u{1D6F2}",
-    "\\rho" : "\u{1D70C}",
-    "\\varrho" : "\u03F1",
-    "\\Sigma" : "\u03A3",
-    "\\sigma" : "\u03C3",
-    "\\varsigma" : "\u03C2",
-    "\\Tau" : "\u{1D6F5}",
-    "\\tau" : "\u{1D70F}",
-    "\\Upsilon" : "\u{1D6F6}",
-    "\\upsilon" : "\u{1D710}",
-    "\\Phi" : "\u03A6",
-    "\\phi" : "\u{1D719}",
-    "\\varphi" : "\u{1D711}",
-    "\\Chi" : "\u{1D6F8}",
-    "\\chi" : "\u{1D712}",
-    "\\Psi" : "\u{1D6F9}",
-    "\\psi" : "\u{1D713}",
-    "\\Omega" : "\u2126",
-    "\\omega" : "\u{1D714}",
 
     // Hebrew alphabet
     "\\aleph" : "\u2135",
@@ -2576,8 +2575,7 @@ const mathDictionary = {
     "\\}" : "}",
     "\\(" : "(",
     "\\)" : ")",
-    "\\[" : "[",
-    "\\]" : "]",
+    "\\$" : "$",
     "\\backslash" : "\\",
     "\\llbracket" : "\u27E6",
     "\\rrbracket" : "\u27E7",
@@ -2606,6 +2604,156 @@ const mathDictionary = {
     "\\linebreak" : "\u000A",
     "\\newline" : "\u000A",
     "\\tab" : "\u0009"
+};
+
+// Standard dict for greek letters
+const stdGreek = {
+    "\\Alpha" : "\u{1D6E2}",
+    "\\alpha" : "\u{1D6FC}",
+    "\\Beta" : "\u{1D6E3}",
+    "\\beta" : "\u{1D6FD}",
+    "\\Gamma" : "\u{1D6E4}",
+    "\\gamma" : "\u{1D6FE}",
+    "\\Delta" : "\u0394",
+    "\\varDelta" : "\u{1D6E5}",
+    "\\delta" : "\u{1D6FF}",
+    "\\Epsilon" : "\u{1D6E6}",
+    "\\epsilon" : "\u03F5",
+    "\\varepsilon" : "\u03B5",
+    "\\Zeta" : "\u{1D6E7}",
+    "\\zeta" : "\u{1D701}",
+    "\\Eta" : "\u{1D6E8}",
+    "\\eta" : "\u{1D702}",
+    "\\Theta" : "\u0398",
+    "\\theta" : "\u{1D703}",
+    "\\vartheta" : "\u{1D717}",
+    "\\Iota" : "\u{1D6EA}",
+    "\\iota" : "\u{1D704}",
+    "\\Kappa" : "\u{1D6EB}",
+    "\\kappa" : "\u{1D705}",
+    "\\varkappa" : "\u{1D718}",
+    "\\Lambda" : "\u{1D6EC}",
+    "\\lambda" : "\u{1D706}",
+    "\\Mu" : "\u{1D6ED}",
+    "\\mu" : "\u{1D707}",
+    "\\Nu" : "\u{1D6EE}",
+    "\\nu" : "\u{1D708}",
+    "\\Xi" : "\u039E",
+    "\\xi" : "\u{1D709}",
+    "\\Omicron" : "\u{1D6F0}",
+    "\\omicron" : "\u{1D70A}",
+    "\\Pi" : "\u{1D6F1}",
+    "\\pi" : "\u{1D70B}",
+    "\\varpi" : "\u{1D71B}",
+    "\\Rho" : "\u{1D6F2}",
+    "\\rho" : "\u{1D70C}",
+    "\\varrho" : "\u{1D71A}",
+    "\\Sigma" : "\u{1D6F4}",
+    "\\sigma" : "\u{1D70E}",
+    "\\varsigma" : "\u{1D70D}",
+    "\\Tau" : "\u{1D6F5}",
+    "\\tau" : "\u{1D70F}",
+    "\\Upsilon" : "\u{1D6F6}",
+    "\\upsilon" : "\u{1D710}",
+    "\\Phi" : "\u03A6",
+    "\\phi" : "\u{1D719}",
+    "\\varphi" : "\u{1D711}",
+    "\\Chi" : "\u{1D6F8}",
+    "\\chi" : "\u{1D712}",
+    "\\Psi" : "\u{1D6F9}",
+    "\\psi" : "\u{1D713}",
+    "\\Omega" : "\u2126",
+    "\\omega" : "\u{1D714}"
+};
+
+// Greek letters if the user wants basic UTF-8 characters (nostyle)
+const noStyleGreek = {
+    "\\Alpha" : "\u0391",
+    "\\alpha" : "\u03B1",
+    "\\Beta" : "\u0392",
+    "\\beta" : "\u03B2",
+    "\\Gamma" : "\u0393",
+    "\\gamma" : "\u03B3",
+    "\\Delta" : "\u0394",
+    "\\varDelta" : "\u{1D6E5}",
+    "\\delta" : "\u03B4",
+    "\\Epsilon" : "\u0395",
+    "\\epsilon" : "\u03F5",
+    "\\varepsilon" : "\u03B5",
+    "\\Zeta" : "\u0396",
+    "\\zeta" : "\u03B6",
+    "\\Eta" : "\u0397",
+    "\\eta" : "\u03B7",
+    "\\Theta" : "\u0398",
+    "\\theta" : "\u03B8",
+    "\\vartheta" : "\u03D1",
+    "\\Iota" : "\u0399",
+    "\\iota" : "\u03B9",
+    "\\Kappa" : "\u039A",
+    "\\kappa" : "\u03BA",
+    "\\varkappa" : "\u03F0",
+    "\\Lambda" : "\u039B",
+    "\\lambda" : "\u03BB",
+    "\\Mu" : "\u039C",
+    "\\mu" : "\u03BC",
+    "\\Nu" : "\u039D",
+    "\\nu" : "\u03BD",
+    "\\Xi" : "\u039E",
+    "\\xi" : "\u03BE",
+    "\\Omicron" : "\u039F",
+    "\\omicron" : "\u03BF",
+    "\\Pi" : "\u03A0",
+    "\\pi" : "\u03C0",
+    "\\varpi" : "\u03D6",
+    "\\Rho" : "\u03A1",
+    "\\rho" : "\u03C1",
+    "\\varrho" : "\u03F1",
+    "\\Sigma" : "\u03A3",
+    "\\sigma" : "\u03C3",
+    "\\varsigma" : "\u03C2",
+    "\\Tau" : "\u03A4",
+    "\\tau" : "\u03C4",
+    "\\Upsilon" : "\u03A5",
+    "\\upsilon" : "\u03C5",
+    "\\Phi" : "\u03A6",
+    "\\phi" : "\u03D5",
+    "\\varphi" : "\u03C6",
+    "\\Chi" : "\u03A7",
+    "\\chi" : "\u03C7",
+    "\\Psi" : "\u03A8",
+    "\\psi" : "\u03C8",
+    "\\Omega" : "\u03A9",
+    "\\omega" : "\u03C9"
+};
+
+// Default dict (in math mode), used in the suggestion popup
+const defaultDict = {...mathDictionary, ...stdGreek};
+
+// Commmands that can be called from outside mathmode
+const textCommands = {
+    "\\^" : "^",
+    "\\_" : "_",
+    "\\LaTeX" : "𝐿ᴬ𝑇ᴇ𝑋",
+    "\\TeX" : "𝑇ᴇ𝑋",
+    "\\MatTalX" : "𝑀ᴀᴛ𝑇ᴀʟ𝑋",
+    "\\CaMuS" : "𝐶ᴬ𝑀ᴜ𝑆",  // http://camus.math.usherbrooke.ca/index.html
+    "\\textbullet" : "\u2022",
+    "\\%" : "%",
+    "\\#" : "#",
+    "\\{" : "{",
+    "\\}" : "}",
+    "\\$" : "$",
+    "\\backslash" : "\\",
+    "\\textbackslash" : "\\",
+    "\\\\" : "\u000A",
+    "\\linebreak" : "\u000A",
+    "\\newline" : "\u000A",
+    "\\tab" : "\u0009",
+    "\\textbf" : textbf,
+    "\\textit" : textit,
+    "\\texttt" : texttt,
+    "\\hspace" : hspace,
+    "\\vskip" : vskip
 };
 
 // Superscript is used (by the superscript function) to convert characters to the corresponding superscript character
@@ -2936,7 +3084,7 @@ const Below = {
 
 // Regular dict used to convert characters that are not a command
 // Automatically convert text into a mathematical font
-const lettersSymbols = {
+const lettersMath = {
     "+" : "\u002B",
     "-" : "\u2212",
     "=" : "\u003D",
@@ -2950,7 +3098,6 @@ const lettersSymbols = {
     "|" : "|",
     "!" : "!",
     "?" : "?",
-    "$" : "$",
     "*" : "*",
     "@" : "@",
     "&" : "&",
@@ -3043,8 +3190,8 @@ const lettersSymbols = {
     " " : " "
 };
 
-// Dict used to convert characters that are not a command if the keyword $chem is used as the fist word of the text input
-const lettersChem = {
+// Dict used to convert characters that are not a command if the keyword !chem is used as the fist word of the text input
+const lettersNoFont = {
     "+" : "\u002B",
     "-" : "\u2212",
     "=" : "\u003D",
@@ -3070,7 +3217,6 @@ const lettersChem = {
     "^" : "^",
     "_" : "_",
     "%" : "%",
-    "$" : "$",
     "*" : "*",
     "@" : "@",
     "#" : "#",
@@ -3219,8 +3365,10 @@ const characters = "AÀÂBCÇDEÉÈËÊFGHIJKLMNOÔPQRSTUÙVWXYZaàâbcçdeéè�
                    "𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡𝘢𝘣𝘤𝘥𝘦𝘧𝘨𝘩𝘪𝘫𝘬𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻"+
                    "𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿"+
                    "𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯"+
-                   "𝛢𝛼𝛣𝛽𝛤𝛾Δδ𝛦ϵε𝛧𝜁𝛨𝜂Θ𝜃ϑ𝛪𝜄𝛫𝜅𝜘Λλ𝛭𝜇𝛮𝜈Φ𝜙𝜑Ξ𝜉𝛰𝜊Π𝜋𝜛𝛲𝜌ϱΣσ𝛵𝜏𝛶𝜐𝛸𝜒𝛹𝜓Ω𝜔"+
-                   "𝜜𝜶𝜝𝜷𝜞𝜸𝚫𝛅𝜠𝛜𝛆𝜡𝜻𝜢𝜼𝚽𝜽𝛝𝜤𝜾𝜥𝜿𝝒𝚲𝛌𝜧𝝁𝜨𝝂𝚽𝝓𝝋𝚵𝝃𝜪𝝄𝚷𝝅𝝕𝜬𝝆𝛠𝚺𝛔𝜯𝝉𝜰𝝊𝜲𝝌𝜳𝝍𝛀𝝎"+
+                   "𝛢𝛼𝛣𝛽𝛤𝛾Δ𝛥𝛿𝛦ϵε𝛧𝜁𝛨𝜂Θ𝜃𝜗𝛪𝜄𝛫𝜅𝜘𝛬𝜆𝛭𝜇𝛮𝜈Φ𝜙𝜑Ξ𝜉𝛰𝜊𝛱𝜋𝜛𝛲𝜌ϱ𝛴𝜎𝜍𝛵𝜏𝛶𝜐𝛸𝜒𝛹𝜓Ω𝜔"+
+                   "𝜜𝜶𝜝𝜷𝜞𝜸𝚫𝜟𝜹𝜠𝛜𝛆𝜡𝜻𝜢𝜼𝚽𝜽𝝑𝜤𝜾𝜥𝜿𝝒𝜦𝝀𝜧𝝁𝜨𝝂𝚽𝝓𝝋𝚵𝝃𝜪𝝄𝜫𝝅𝝕𝜬𝝆𝛠𝜮𝛔𝝇𝜯𝝉𝜰𝝊𝜲𝝌𝜳𝝍𝛀𝝎"+ 
+                   "ΑαΒβΓγδΖζΗηθϑΙιΚκϰΛλΜμΝνξΟοΠπϖΡρϱΣσςΤτΥυϕφΧχΨψΩω" + 
+                   "𝝖𝝰𝝗𝝱𝝘𝝲𝛅𝝛𝝵𝝜𝝶𝛉𝛝𝝞𝛊𝝟𝝹𝞌𝝠𝝺𝝡𝝻𝝢𝝼𝝽𝝤𝝾𝝥𝝿𝞏𝝦𝞀𝞎𝝨𝞂𝞁𝝩𝞃𝝪𝞄𝞍𝞅𝝬𝞆𝝭𝞇𝝮𝞈" +
                    "ℾℽℿℼ⅀";
 
 // Symbol for an error
@@ -3334,7 +3482,7 @@ function suggestions(command) {
         cell.textContent = "The first character of the command must be a backslash (\\). Superscript starts with ^ and subscript with _";
     } else {
         command = command.substring(1, command.length);  // Erases the backslash so that, for instance, \arrow will also show \rightarrow, etc.
-        for (let keys in mathDictionary) {
+        for (let keys in defaultDict) {
             // Puts commands in button form, so they can be clicked on to replace the command being written
             if (keys.toLowerCase().indexOf(command.toLowerCase()) !== -1) {
                 let row = suggestionsPopup.insertRow(-1);
@@ -3398,7 +3546,7 @@ function semiAutoCompletion(textIn, cursorPosition, command) {
 function showCommand(key) {
     // Used in suggestions
     // Changes what's seen when the user hovers on a command in the suggestion popup
-    if (typeof mathDictionary[key] == "function") {
+    if (typeof defaultDict[key] == "function") {
         if (key == "\\sqrt") {
             return "\\sqrt[n]{x} \u2192 ⁿ√𝑥";
         } else if (key == "\\sqrt*") {
@@ -3410,15 +3558,15 @@ function showCommand(key) {
         } else if ((key == "\\above") || (key == "\\below") || (key == "\\hspace") || (key == "\\vskip")) {
             return key + "{}";
         } else if ((key == "_") || (key == "^")) {
-            return "x" + key + "{a1} \u2192 𝑥" + (mathDictionary[key](["a", "1"], mathDictionary[key])).join("");
+            return "x" + key + "{a1} \u2192 𝑥" + (defaultDict[key](["a", "1"], defaultDict[key])).join("");
         } else {
-            return key + "{abc} \u2192 " + (mathDictionary[key](["a", "b", "c"], mathDictionary[key])).join("");
+            return key + "{abc} \u2192 " + (defaultDict[key](["a", "b", "c"], defaultDict[key])).join("");
         };
     } else {
         if (key == "\\:") {
             return "1 space";
         } else if ((key == "\\;") || ((key == "\\quad") || (key == "\\qquad"))) {
-            return mathDictionary[key].length + " spaces";
+            return defaultDict[key].length + " spaces";
         } else if ((key == "\\id2") || (key == "\\id3") || (key == "\\id4") || (key == "\\idn")) {
             const M = {
                 "\\id2": "⎡ 1 0 ⎤\u000A⎣ 0 1 ⎦",
@@ -3428,7 +3576,7 @@ function showCommand(key) {
             }
             return M[key];
         } else {
-            return mathDictionary[key]
+            return defaultDict[key]
         };
     };
 };
@@ -3436,7 +3584,7 @@ function showCommand(key) {
 function toReplaceCommand(key) {
     // Used in suggestions
     // Changes what the user sees when the suggestion popup is opened
-    if (typeof mathDictionary[key] == "function") {
+    if (typeof defaultDict[key] == "function") {
         if (key == "\\sqrt") {
             return "\\sqrt[]{}";
         } else if (key == "\\sqrt*") {
@@ -3462,7 +3610,7 @@ function toReplaceCommand(key) {
 
 // Main functions
 
-function replaceText(fullText, plainTextConverter) {
+function replaceText(fullText, fullDict, mathmode) {
     // Main function, loops on letters and convert the input into characters
     // TODO: Clean it up, and maybe restructure it completely, a more 'object oriented' way to do it is perhaps better
     let newText = "";
@@ -3473,27 +3621,127 @@ function replaceText(fullText, plainTextConverter) {
     let arg = false;  // true if there's an argument at the end of a command (e.g. \mathbf + '{' -> true)
     let triggerInArg = false;  // true if there's a command in an argument (e.g. \overline{ + '\' -> true)
     let numberCurly = 0;  // Counts the number of curly brackets (except those used in the text like in 'S = {1,2,3}')
+    let mathmodeStarter = "";  // e.g. if mathmode is started with $$, then "$$" will be mathmodeStarter
     const parentheses = ["(", ")"];
     const brackets = ["[", "]"];
     const commandStoppers = [" ", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];  // parentheses and brackets also stops commands (most of the time)
+    const dictOutMathmode = {...lettersNoFont, ...textCommands, " " : "\u2710"};  // dict used if outside of mathmode
 
     for (let char=0; char<fullText.length; char++) {
-        if (trigger) {
-            if (arg) {
-                if (triggerInArg) {
-                    if (commandStoppers.includes(fullText[char])) {
-                        temporaryArg.push(prohibitedType(mathDictionary[commandInArg.join("")]));
-                        temporaryArg.push(plainTextConverter[fullText[char]]);
-                        commandInArg = [];
-                        triggerInArg = false;
-                    } else if (fullText[char] === "}") {
-                        if (fullText[char - 1] === "\\") {
-                            temporaryArg.push(fullText[char]);
+        if (mathmode) {
+    //---- ENTER MATH MODE ----//
+            if (trigger) {
+    //---- START OF A COMMAND ----//
+                if (arg) {
+    //---- ENTER COMMAND ARGUMENT ----//
+                    if (triggerInArg) {
+    //---- ENTER COMMAND IN A COMMAND ARGUMENT ----//
+                        if (commandStoppers.includes(fullText[char])) {
+                            temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                            temporaryArg.push(fullDict[fullText[char]]);
+                            commandInArg = [];
+                            triggerInArg = false;
+                        } else if (fullText[char] === "}") {
+                            if (fullText[char - 1] === "\\") {
+                                temporaryArg.push(fullText[char]);
+                            } else {
+                                if (temporaryBox.join("").slice(0, 5) === "\\sqrt") {
+                                    temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                                    newText += addSymbol(fullDict["\\sqrt"](temporaryArg, temporaryBox.join("")));
+                                    mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", fullDict["\\sqrt"], temporaryBox.join(""));
+                                    temporaryBox = [];
+                                    temporaryArg = [];
+                                    arg = false;
+                                    trigger = false;
+                                    numberCurly += 1;
+                                } else if ((temporaryBox.join("") === "\\frac") || (temporaryBox.join("") === "\\frac*")) {
+                                    if (temporaryArg.indexOf("}") === -1) {
+                                        temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                                        temporaryArg.push(fullText[char]);
+                                    } else {
+                                        if ((temporaryArg.join("") === "\\frac") || (temporaryArg.join("") === "\\frac*")) {
+                                            temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                                            newText += addSymbol(fullDict[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
+                                            mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", undefined, "Embedded \\frac are currently not accepted");
+                                        } else {
+                                            temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                                            newText += addSymbol(fullDict[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
+                                            mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", fullDict[temporaryBox.join("")], temporaryBox.join(""));
+                                        };
+                                        temporaryBox = [];
+                                        temporaryArg = [];
+                                        arg = false;
+                                        trigger = false;
+                                        numberCurly += 1;
+                                    };
+                                } else {
+                                    temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                                    newText += addSymbol(fullDict[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
+                                    mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", fullDict[temporaryBox.join("")], temporaryBox.join(""));
+                                    temporaryBox = [];
+                                    temporaryArg = [];
+                                    arg = false;
+                                    trigger = false;
+                                    numberCurly += 1;
+                                };
+                                commandInArg = [];
+                                triggerInArg = false;
+                            };
+                        } else if (parentheses.includes(fullText[char])) {
+                            if (fullText[char - 1] === "\\") {
+                                temporaryArg.push(fullText[char]);
+                            } else {
+                                temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                                temporaryArg.push(fullText[char]);
+                            };
+                            commandInArg = [];
+                            triggerInArg = false;
+                        } else if (brackets.includes(fullText[char])) {
+                            if (fullText[char - 1] === "\\") {
+                                temporaryArg.push(fullText[char]);
+                                commandInArg = [];
+                                triggerInArg = false;
+                            } else {
+                                if (commandInArg.join("").slice(0, 5) === "\\sqrt") {
+                                    commandInArg.push(fullText[char]);
+                                } else {
+                                    temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                                    temporaryArg.push(fullText[char]);
+                                    commandInArg = [];
+                                    triggerInArg = false;
+                                };
+                            };
+                        } else if (fullText[char] === "{") {
+                            if (fullText[char - 1] === "\\") {
+                                temporaryArg.push(fullText[char]);
+                                triggerInArg = false;
+                                commandInArg = [];
+                            } else {
+                                if ((commandInArg.join("") === "\\frac") || commandInArg.join("") === "\\frac*") {
+                                    mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", undefined, "Embedded \\frac are currently not accepted. Try: ^{(y/z)}/_{x} ⇒ ⁽ʸᐟᶻ⁾/ₓ"); 
+                                } else {
+                                    let embCommand = embeddedCommand(commandInArg.join(""), fullText.substring(char), fullDict);
+                                    for (let i in embCommand[0]) {
+                                        temporaryArg.push(embCommand[0][i]);
+                                    };
+                                    char += embCommand[1] + 1;
+                                    triggerInArg = false;
+                                    commandInArg = [];
+                                };
+                            };
+                        } else if ((fullText[char] === "\\") || (fullText[char] === "^") || (fullText[char] === "_")) {
+                            temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                            commandInArg = [fullText[char]];
                         } else {
+                            commandInArg.push(fullText[char]);
+                        };
+    //---- EXIT COMMAND IN A COMMAND ARGUMENT ----//
+                    } else {
+    //---- SILL IN A COMMAND ARGUMENT ----//
+                        if (fullText[char] === "}") {
                             if (temporaryBox.join("").slice(0, 5) === "\\sqrt") {
-                                temporaryArg.push(prohibitedType(mathDictionary[commandInArg.join("")]));
-                                newText += addSymbol(mathDictionary["\\sqrt"](temporaryArg, temporaryBox.join("")));
-                                mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", mathDictionary["\\sqrt"], temporaryBox.join(""));
+                                mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", fullDict["\\sqrt"], temporaryBox.join(""));
+                                newText += addSymbol(fullDict["\\sqrt"](temporaryArg, temporaryBox.join("")));
                                 temporaryBox = [];
                                 temporaryArg = [];
                                 arg = false;
@@ -3501,18 +3749,10 @@ function replaceText(fullText, plainTextConverter) {
                                 numberCurly += 1;
                             } else if ((temporaryBox.join("") === "\\frac") || (temporaryBox.join("") === "\\frac*")) {
                                 if (temporaryArg.indexOf("}") === -1) {
-                                    temporaryArg.push(prohibitedType(mathDictionary[commandInArg.join("")]));
                                     temporaryArg.push(fullText[char]);
                                 } else {
-                                    if ((temporaryArg.join("") === "\\frac") || (temporaryArg.join("") === "\\frac*")) {
-                                        temporaryArg.push(prohibitedType(mathDictionary[commandInArg.join("")]));
-                                        newText += addSymbol(mathDictionary[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
-                                        mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", undefined, "Embedded \\frac are currently not accepted");
-                                    } else {
-                                        temporaryArg.push(prohibitedType(mathDictionary[commandInArg.join("")]));
-                                        newText += addSymbol(mathDictionary[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
-                                        mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", mathDictionary[temporaryBox.join("")], temporaryBox.join(""));
-                                    };
+                                    mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", fullDict[temporaryBox.join("")], temporaryBox.join(""));
+                                    newText += addSymbol(fullDict[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
                                     temporaryBox = [];
                                     temporaryArg = [];
                                     arg = false;
@@ -3520,203 +3760,283 @@ function replaceText(fullText, plainTextConverter) {
                                     numberCurly += 1;
                                 };
                             } else {
-                                temporaryArg.push(prohibitedType(mathDictionary[commandInArg.join("")]));
-                                newText += addSymbol(mathDictionary[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
-                                mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", mathDictionary[temporaryBox.join("")], temporaryBox.join(""));
+                                mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", fullDict[temporaryBox.join("")], temporaryBox.join(""));
+                                newText += addSymbol(fullDict[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
                                 temporaryBox = [];
                                 temporaryArg = [];
                                 arg = false;
                                 trigger = false;
                                 numberCurly += 1;
                             };
-                            commandInArg = [];
-                            triggerInArg = false;
-                        };
-                    } else if (parentheses.includes(fullText[char])) {
-                        if (fullText[char - 1] === "\\") {
-                            temporaryArg.push(fullText[char]);
+                        } else if ((fullText[char] === "\\") || (fullText[char] === "^") || (fullText[char] === "_")) {
+                            triggerInArg = true;
+                            commandInArg.push(fullText[char]);
                         } else {
-                            temporaryArg.push(prohibitedType(mathDictionary[commandInArg.join("")]));
-                            temporaryArg.push(fullText[char]);
+                            temporaryArg.push(fullDict[fullText[char]]);
                         };
-                        commandInArg = [];
-                        triggerInArg = false;
-                    } else if (brackets.includes(fullText[char])) {
-                        if (fullText[char - 1] === "\\") {
-                            temporaryArg.push(fullText[char]);
-                            commandInArg = [];
-                            triggerInArg = false;
-                        } else {
-                            if (commandInArg.join("").slice(0, 5) === "\\sqrt") {
-                                commandInArg.push(fullText[char]);
-                            } else {
-                                temporaryArg.push(prohibitedType(mathDictionary[commandInArg.join("")]));
-                                temporaryArg.push(fullText[char]);
-                                commandInArg = [];
-                                triggerInArg = false;
-                            };
-                        };
-                    } else if (fullText[char] === "{") {
-                        if (fullText[char - 1] === "\\") {
-                            temporaryArg.push(fullText[char]);
-                            triggerInArg = false;
-                            commandInArg = [];
-                        } else {
-                            if ((commandInArg.join("") === "\\frac") || commandInArg.join("") === "\\frac*") {
-                                mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", undefined, "Embedded \\frac are currently not accepted. Try: ^{(y/z)}/_{x} ⇒ ⁽ʸᐟᶻ⁾/ₓ"); 
-                            } else {
-                                let embCommand = embeddedCommand(commandInArg.join(""), fullText.substring(char), plainTextConverter);
-                                for (let i in embCommand[0]) {
-                                    temporaryArg.push(embCommand[0][i]);
-                                };
-                                char += embCommand[1] + 1;
-                                triggerInArg = false;
-                                commandInArg = [];
-                            };
-                        };
-                    } else if ((fullText[char] === "\\") || (fullText[char] === "^") || (fullText[char] === "_")) {
-                        temporaryArg.push(prohibitedType(mathDictionary[commandInArg.join("")]));
-                        commandInArg = [fullText[char]];
-                    } else {
-                        commandInArg.push(fullText[char]);
                     };
+    //---- EXIT ARGUMENT ----//
                 } else {
-                    if (fullText[char] === "}") {
-                        if (temporaryBox.join("").slice(0, 5) === "\\sqrt") {
-                            mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", mathDictionary["\\sqrt"], temporaryBox.join(""));
-                            newText += addSymbol(mathDictionary["\\sqrt"](temporaryArg, temporaryBox.join("")));
-                            temporaryBox = [];
-                            temporaryArg = [];
-                            arg = false;
+    //---- STILL IN A COMMAND (trigger) ----//
+                    if (fullText[char] == "{") {
+                        if (fullText[char - 1] === "\\") {
+                            newText += addSymbol(fullDict[fullText[char]]);
                             trigger = false;
-                            numberCurly += 1;
-                        } else if ((temporaryBox.join("") === "\\frac") || (temporaryBox.join("") === "\\frac*")) {
-                            if (temporaryArg.indexOf("}") === -1) {
-                                temporaryArg.push(fullText[char]);
-                            } else {
-                                mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", mathDictionary[temporaryBox.join("")], temporaryBox.join(""));
-                                newText += addSymbol(mathDictionary[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
-                                temporaryBox = [];
-                                temporaryArg = [];
-                                arg = false;
-                                trigger = false;
-                                numberCurly += 1;
-                            };
-                        } else {
-                            mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", mathDictionary[temporaryBox.join("")], temporaryBox.join(""));
-                            newText += addSymbol(mathDictionary[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
                             temporaryBox = [];
-                            temporaryArg = [];
-                            arg = false;
-                            trigger = false;
-                            numberCurly += 1;
-                        };
-                    } else if ((fullText[char] === "\\") || (fullText[char] === "^") || (fullText[char] === "_")) {
-                        triggerInArg = true;
-                        commandInArg.push(fullText[char]);
-                    } else {
-                        temporaryArg.push(plainTextConverter[fullText[char]]);
-                    };
-                };
-            } else {
-                if (fullText[char] == "{") {
-                    if (fullText[char - 1] === "\\") {
-                        newText += addSymbol(plainTextConverter[fullText[char]]);
-                        trigger = false;
-                        temporaryBox = [];
-                    } else {
-                        if ((typeof mathDictionary[temporaryBox.join("")] == "function") || (temporaryBox.join("").slice(0, 5) === "\\sqrt")) {
-                            arg = true;
-                            numberCurly += 1;
                         } else {
-                            if ((typeof mathDictionary[temporaryBox.join("")] == "function") || (temporaryBox.join("").slice(0, 5) === "\\sqrt")) {
+                            if ((typeof fullDict[temporaryBox.join("")] == "function") || (temporaryBox.join("").slice(0, 5) === "\\sqrt")) {
                                 arg = true;
                                 numberCurly += 1;
                             } else {
-                                newText += addSymbol(mathDictionary[temporaryBox.join("")]);
-                                mistakes(temporaryBox.join(""), mathDictionary[temporaryBox.join("")]);
-                                newText += "{";
-                                temporaryBox = [];
-                                trigger = false;
+                                if ((typeof fullDict[temporaryBox.join("")] == "function") || (temporaryBox.join("").slice(0, 5) === "\\sqrt")) {
+                                    arg = true;
+                                    numberCurly += 1;
+                                } else {
+                                    newText += addSymbol(fullDict[temporaryBox.join("")]);
+                                    mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
+                                    newText += "{";
+                                    temporaryBox = [];
+                                    trigger = false;
+                                };
                             };
                         };
-                    };
-                } else if (fullText[char] == "}") {
-                    if (fullText[char - 1] === "\\") {
-                        newText += addSymbol(plainTextConverter[fullText[char]]);
-                    } else {
-                        newText += addSymbol(mathDictionary[temporaryBox.join("")]);
-                        newText += addSymbol(undefined);
-                        mistakes(temporaryBox.join("") + "}", undefined, " '" + temporaryBox.join("") + "\\}' and " + "'" + temporaryBox.join("") + " }' ⇒ '" + temporaryBox.join("") + "}' ");
-                    };
-                    temporaryBox = [];
-                    trigger = false;
-                } else if (commandStoppers.includes(fullText[char])) {
-                    if (temporaryBox.join("").replace(/\[.*\]/g, "") === "\\sqrt*") {
-                        newText += addSymbol(mathDictionary["\\sqrt*"](undefined, temporaryBox.join("")));
-                        mistakes(temporaryBox.join(""), mathDictionary["\\sqrt*"]);
-                        newText += addSymbol(plainTextConverter[fullText[char]]);
-                    } else {
-                        newText += !(typeof mathDictionary[temporaryBox.join("")] == "function") ? 
-                        addSymbol(mathDictionary[temporaryBox.join("")]) + plainTextConverter[fullText[char]] : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                        mistakes(temporaryBox.join(""), mathDictionary[temporaryBox.join("")]);
-                    };
-                    temporaryBox = [];
-                    trigger = false;
-                } else if ((fullText[char] === "\\") || (fullText[char] === "^") || fullText[char] === "_") {
-                    if (fullText[char - 1] === "\\") {
-                        temporaryBox.push(fullText[char]);
-                        newText += addSymbol(mathDictionary[temporaryBox.join("")]);
-                        trigger = false;
-                        temporaryBox = [];
-                    } else {
-                        if (temporaryBox.join("").replace(/\[.*\]/g, "") === "\\sqrt*") {
-                            newText += addSymbol(mathDictionary["\\sqrt*"](undefined, temporaryBox.join("")));
-                            mistakes(temporaryBox.join(""), mathDictionary["\\sqrt*"]);
-                            temporaryBox = [fullText[char]];
+                    } else if (fullText[char] == "}") {
+                        if (fullText[char - 1] === "\\") {
+                            newText += addSymbol(fullDict[fullText[char]]);
                         } else {
-                            newText += !(typeof mathDictionary[temporaryBox.join("")] == "function") ? 
-                            addSymbol(mathDictionary[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                            mistakes(temporaryBox.join(""), mathDictionary[temporaryBox.join("")]);
-                            temporaryBox = [fullText[char]];
+                            newText += addSymbol(fullDict[temporaryBox.join("")]);
+                            newText += addSymbol(undefined);
+                            mistakes(temporaryBox.join("") + "}", undefined, " '" + temporaryBox.join("") + "\\}' and " + "'" + temporaryBox.join("") + " }' ⇒ '" + temporaryBox.join("") + "}' ");
                         };
-                    };
-                } else if (parentheses.includes(fullText[char])) {
-                    if (temporaryBox.join("").replace(/\[.*\]/g, "") === "\\sqrt*") {
-                        newText += addSymbol(mathDictionary["\\sqrt*"](undefined, temporaryBox.join("")));
-                        mistakes(temporaryBox.join(""), mathDictionary["\\sqrt*"]);
-                        newText += addSymbol(plainTextConverter[fullText[char]]);
-                    } else {
-                        newText += !(typeof mathDictionary[temporaryBox.join("")] == "function") ? 
-                        addSymbol(mathDictionary[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                        mistakes(temporaryBox.join(""), mathDictionary[temporaryBox.join("")]);
-                        newText += addSymbol(plainTextConverter[fullText[char]]);
-                    };
-                    temporaryBox = [];
-                    trigger = false;
-                } else if (brackets.includes(fullText[char])) {
-                    if (temporaryBox.join("").slice(0,5) === "\\sqrt") {
-                        temporaryBox.push(fullText[char]);
-                    } else {
-                        newText += !(typeof mathDictionary[temporaryBox.join("")] == "function") ? 
-                        addSymbol(mathDictionary[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                        mistakes(temporaryBox.join(""), mathDictionary[temporaryBox.join("")]);
-                        newText += addSymbol(plainTextConverter[fullText[char]]);
                         temporaryBox = [];
                         trigger = false;
+                    } else if (commandStoppers.includes(fullText[char])) {
+                        if (temporaryBox.join("").replace(/\[.*\]/g, "") === "\\sqrt*") {
+                            newText += addSymbol(fullDict["\\sqrt*"](undefined, temporaryBox.join("")));
+                            mistakes(temporaryBox.join(""), fullDict["\\sqrt*"]);
+                            newText += addSymbol(fullDict[fullText[char]]);
+                        } else {
+                            newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
+                            addSymbol(fullDict[temporaryBox.join("")]) + fullDict[fullText[char]] : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
+                            mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
+                        };
+                        temporaryBox = [];
+                        trigger = false;
+                    } else if ((fullText[char] === "\\") || (fullText[char] === "^") || fullText[char] === "_") {
+                        if (fullText[char - 1] === "\\") {
+                            temporaryBox.push(fullText[char]);
+                            newText += addSymbol(fullDict[temporaryBox.join("")]);
+                            trigger = false;
+                            temporaryBox = [];
+                        } else {
+                            if (temporaryBox.join("").replace(/\[.*\]/g, "") === "\\sqrt*") {
+                                newText += addSymbol(fullDict["\\sqrt*"](undefined, temporaryBox.join("")));
+                                mistakes(temporaryBox.join(""), fullDict["\\sqrt*"]);
+                                temporaryBox = [fullText[char]];
+                            } else {
+                                newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
+                                addSymbol(fullDict[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
+                                mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
+                                temporaryBox = [fullText[char]];
+                            };
+                        };
+                    } else if (parentheses.includes(fullText[char])) {
+                        if (temporaryBox.join("").replace(/\[.*\]/g, "") === "\\sqrt*") {
+                            newText += addSymbol(fullDict["\\sqrt*"](undefined, temporaryBox.join("")));
+                            mistakes(temporaryBox.join(""), fullDict["\\sqrt*"]);
+                            newText += addSymbol(fullDict[fullText[char]]);
+                        } else {
+                            newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
+                            addSymbol(fullDict[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
+                            mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
+                            newText += addSymbol(fullDict[fullText[char]]);
+                        };
+                        temporaryBox = [];
+                        trigger = false;
+                    } else if (brackets.includes(fullText[char])) {
+                        if (temporaryBox.join("").slice(0,5) === "\\sqrt") {
+                            temporaryBox.push(fullText[char]);
+                        } else {
+                            if (fullText[char-1] === "\\") {
+                                if ((fullText[char] === "]") && (mathmodeStarter === "\\[")) {
+                                    newText += addSymbol(fullDict["\\\\"]);
+                                    mathmodeStarter = "";
+                                    mathmode = false;
+                                } else {
+                                    newText += addSymbol(fullDict[temporaryBox.join("") + fullText[char]]);
+                                };
+                            } else {
+                                newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
+                                addSymbol(fullDict[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
+                                mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
+                                newText += addSymbol(fullDict[fullText[char]]);
+                            };
+                            temporaryBox = [];
+                            trigger = false;
+                        };
+                    } else if (fullText[char] === "$") {
+                        if (fullText[char-1] === "\\") {
+                            newText += addSymbol(fullDict[temporaryBox.join("") + fullText[char]]);
+                            mistakes(temporaryBox.join("") + fullText[char], fullDict[temporaryBox.join("") + fullText[char]]);
+                        } else {
+                            if (mathmodeStarter === "$") {
+                                if (fullText[char-1] === "$") {
+                                    newText += addSymbol(fullDict["\\\\"]);
+                                    mathmodeStarter = "$$";
+                                } else {
+                                    newText += addSymbol(fullDict[temporaryBox.join("")]);
+                                    mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
+                                    mathmodeStarter = "";
+                                    mathmode = false;
+                                };
+                            } else if (mathmodeStarter === "$$") {
+                                if (fullText[char-1] === "$") {
+                                    newText += addSymbol(fullDict["\\\\"]);
+                                    mathmodeStarter = "";
+                                    mathmode = false;
+                                } else if (fullText[char+1] === "$") {
+                                    continue;
+                                } else {
+                                    newText += addSymbol(fullDict[temporaryBox.join("")]);
+                                    mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
+                                    newText += addSymbol(fullDict[fullText[char]]);
+                                    mistakes(fullText[char], fullDict[fullText[char]]);
+                                };
+                            } else {
+                                newText += addSymbol(fullDict[temporaryBox.join("")]);
+                                mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
+                                newText += addSymbol(fullDict[fullText[char]]);
+                                mistakes(fullText[char], fullDict[fullText[char]]);
+                            };
+                        };
+                        temporaryBox = [];
+                        trigger = false;
+                    } else {
+                        temporaryBox.push(fullText[char]);
+                    };
+                };
+    //---- EXIT COMMAND (trigger) ----//
+            } else {
+    //---- STILL IN MATH MODE ----//
+                if ((fullText[char] === "\\") || (fullText[char] === "^") || (fullText[char] === "_")) {
+                    temporaryBox.push(fullText[char]);
+                    trigger = true;
+                } else if (fullText[char] === "$") {
+                    if (mathmodeStarter === "$") {
+                        if (fullText[char-1] === "$") {
+                            newText += addSymbol(fullDict["\\\\"]);
+                            mathmodeStarter = "$$";
+                        } else {
+                            mathmodeStarter = "";
+                            mathmode = false;
+                        };
+                    } else if (mathmodeStarter === "$$") {
+                        if (fullText[char-1] === "$") {
+                            newText += addSymbol(fullDict["\\\\"]);
+                            mathmodeStarter = "";
+                            mathmode = false;
+                        } else if (fullText[char+1] === "$") {
+                            continue;
+                        } else {
+                            newText += addSymbol(fullDict[fullText[char]]);
+                            mistakes(fullText[char], fullDict[fullText[char]]);
+                        };
+                    } else {
+                        newText += addSymbol(fullDict[fullText[char]]);
+                        mistakes(fullText[char], fullDict[fullText[char]]);
                     };
                 } else {
-                    temporaryBox.push(fullText[char]);
+                    newText += addSymbol(fullDict[fullText[char]]);
+                    mistakes(fullText[char], fullDict[fullText[char]]);
                 };
             };
+    //---- EXIT MATH MODE ----//
         } else {
-            if ((fullText[char] === "\\") || (fullText[char] === "^") || (fullText[char] === "_")) {
-                temporaryBox.push(fullText[char]);
-                trigger = true;
+    //---- OUT OF MATH MODE ----//
+            if (trigger) {
+    //---- START OF A COMMAND ----//
+                if (arg) {
+    //---- ENTER COMMAND ARGUMENT ----//
+                    if (fullText[char] === "}") {
+                        if (fullText[char-1] === "\\") {
+                            temporaryArg.push(fullText[char]);
+                        } else {
+                            mistakes("Out of math mode: " + temporaryBox.join("") + "{" + temporaryArg.join("") + "}", dictOutMathmode[temporaryBox.join("")], temporaryBox.join(""));
+                            newText += addSymbol(dictOutMathmode[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
+                            temporaryBox = [];
+                            temporaryArg = [];
+                            arg = false;
+                            trigger = false;
+                            numberCurly += 1;
+                        };
+                    } else {
+                        temporaryArg.push(fullText[char]);
+                    };
+    //---- EXIT COMMAND ARGUMENT ----//
+                } else {
+    //---- STILL IN A COMMAND (trigger) ----//
+                    if (fullText[char] === "[") {
+                        if (fullText[char-1] === "\\") {
+                            newText += addSymbol(dictOutMathmode["\\\\"]);
+                            mathmodeStarter = "\\[";
+                            mathmode = true;
+                        } else {
+                            newText += addSymbol(dictOutMathmode[temporaryBox.join("")]);
+                            mistakes("Out of math mode: " + temporaryBox.join(""), dictOutMathmode[temporaryBox.join("")]);
+                        };
+                        temporaryBox = [];
+                        trigger = false;
+                    } else if (fullText[char] === "$") {
+                        if (fullText[char-1] === "\\") {
+                            newText += addSymbol(dictOutMathmode[temporaryBox.join("") + fullText[char]]);
+                            mistakes("Out of math mode: " + temporaryBox.join("") + fullText[char], dictOutMathmode[temporaryBox.join("") + fullText[char]]);
+                        } else {
+                            newText += addSymbol(dictOutMathmode[temporaryBox.join("")]);
+                            mistakes("Out of math mode: " + temporaryBox.join(""), dictOutMathmode[temporaryBox.join("")]);
+                            mathmodeStarter = "$";
+                            mathmode = true;
+                        };
+                        temporaryBox = [];
+                        trigger = false;
+                    } else if (commandStoppers.includes(fullText[char]) || parentheses.includes(fullText[char]) || (fullText[char] === "]") || (fullText[char] === "}")) {
+                        if (fullText[char-1] === "\\") {
+                            newText += addSymbol(dictOutMathmode[temporaryBox.join("") + fullText[char]]);
+                            mistakes("Out of math mode: " + temporaryBox.join("") + fullText[char], dictOutMathmode[temporaryBox.join("") + fullText[char]]);
+                        } else {
+                            newText += addSymbol(dictOutMathmode[temporaryBox.join("")]);
+                            mistakes("Out of math mode: " + temporaryBox.join(""), dictOutMathmode[temporaryBox.join("")]);
+                            newText += addSymbol(dictOutMathmode[fullText[char]]);
+                            mistakes("Out of math mode: " + fullText[char], dictOutMathmode[fullText[char]]);
+                        };
+                        temporaryBox = [];
+                        trigger = false;
+                    } else if (fullText[char] === "{") {
+                        if (fullText[char-1] === "\\") {
+                            newText += addSymbol(dictOutMathmode[temporaryBox.join("") + fullText[char]]);
+                            mistakes(temporaryBox.join("") + fullText[char], dictOutMathmode[temporaryBox.join("") + fullText[char]]);
+                            trigger = false;
+                        } else {
+                            arg = true;
+                            numberCurly += 1;
+                        };
+                    } else {
+                        temporaryBox.push(fullText[char]);
+                    };
+                };
+    //---- EXIT COMMAND (trigger) ----//
             } else {
-                newText += addSymbol(plainTextConverter[fullText[char]]);
-                mistakes(fullText[char], plainTextConverter[fullText[char]]);
-            }
+    //---- NO MATH MODE, NO COMMAND ----//
+                if (fullText[char] === "$") {
+                    mathmodeStarter = "$";
+                    mathmode = true;
+                } else if (fullText[char] === "\\") {
+                    temporaryBox.push(fullText[char]);
+                    trigger = true;
+                } else {
+                    newText += addSymbol(dictOutMathmode[fullText[char]]);
+                    mistakes("Out of math mode: " + fullText[char], dictOutMathmode[fullText[char]]);
+                };
+            };
         };
     };
     if (numberCurly % 2 !== 0) {
@@ -3766,7 +4086,7 @@ const combineSymbols = (arg, initialCommand, symbol, forTwo=undefined) => {
     return textComb;
 };
 
-function embeddedCommand(command, endOfText, plainTextConverter) {
+function embeddedCommand(command, endOfText, fullDict) {
     // Is called if there is a command as an argument of a command
     let args = [];
     endOfText = endOfText.substring(1);
@@ -3778,18 +4098,18 @@ function embeddedCommand(command, endOfText, plainTextConverter) {
             } else {
                 if (command.slice(0, 5) === "\\sqrt") {
                     mistakes("Embedded \\sqrt are not best practice, use '\\sqrt[n]* (\\sqrt[k]* x)' instead of '\\sqrt[n]{\\sqrt[k]{x}}'", undefined, "ⁿ√(ᵏ√𝑥)");
-                    return [addSymbol(mathDictionary["\\sqrt"](args, command), true), parseInt(c)];
+                    return [addSymbol(fullDict["\\sqrt"](args, command), true), parseInt(c)];
                 } else if ((command[0] === "^") || command[0] === "_") {
                     let commandPos = (command[0] === "^") ? "superscript" : "subscript";
                     mistakes("Embedded " + commandPos + " (" + command[0] + "{}) is not accepted", undefined, "Since \\" + command[0] + " \u2192 " + command[0] + 
                     ", you can write x" + command[0] + "(x" + command[0] + "(...)) with x\\"+ command[0] +" (x\\" + command[0] + " (...))");
-                    return [addSymbol(mathDictionary[command](args, command), true), parseInt(c)];
+                    return [addSymbol(fullDict[command](args, command), true), parseInt(c)];
                 } else {
-                    return [addSymbol(mathDictionary[command](args, command), true), parseInt(c)];
+                    return [addSymbol(fullDict[command](args, command), true), parseInt(c)];
                 };
             };
         } else {
-            args.push(plainTextConverter[endOfText[c]]);
+            args.push(fullDict[endOfText[c]]);
         };
     };
 };
@@ -3875,8 +4195,8 @@ function mistakes(textInput, textOutput, letter="") {
 /** Matrix document class **/
 
 function matrix(text) {
-    // If the keyword $matrix is used as the first word of the input text, this function is called
-    // Converts arrays into a matrix (i.e. $matrix [a,b,c][1,2,3] will be converted to a matrix 2x3)
+    // If the keyword !matrix is used as the first word of the input text, this function is called
+    // Converts arrays into a matrix (i.e. !matrix [a,b,c][1,2,3] will be converted to a matrix 2x3)
     text = text.replace(/ /g, "");
     let matrixText = "";
     let i, x;
@@ -3933,13 +4253,13 @@ function matrix(text) {
     matrixText = matrixText.replace(/,/g, " ");  // Add spaces between characters
     if ((cpt % 2 != 0) || (cpt == 0)) {
         matrixText = "";
-        mistakes('Wrong arguments given" \r\n \r\nExample: "$matrix [a,b,c] [d,e,f] [1,2,3]', undefined);
+        mistakes('Wrong arguments given" \r\n \r\nExample: "!matrix [a,b,c] [d,e,f] [1,2,3]', undefined);
     };
     return matrixText;
 };
 
 function matrixCols(matrix) {
-    // Adjusts columns length for $matrix package
+    // Adjusts columns length for !matrix package
     // So, if the input is [100,10,1][0,0,0], the output should still be a 2x3 matrix with the elements aligned
     let positionLength = 0;
     let posLengths = [];
@@ -4102,23 +4422,45 @@ function adjustSpaceChem(input) {
 /** Main **/
 
 function convert(fullText) {
-    // Takes text and convert word by word in the dictionary or in function replaceLetters
+    // Takes text and convert it based on the documentclass (or package)
     const firstWord = fullText.split(" ")[0];
-    if (firstWord === "$chem") {
+    let fullDict;
+    if (firstWord === "!chem") {
         // Chemistry package, differs in the automatic conversion of letters and spacing adjustments
-        fullText = fullText.replace("$chem", "");
-        fullText = replaceText(fullText, lettersChem);
+        fullDict = makeDict(firstWord);
+        fullText = fullText.replace("!chem", "");
+        fullText = replaceText(fullText, fullDict, changeModeButton.checked);
         fullText = adjustSpaceChem(fullText);
-    } else if (firstWord === "$matrix") {
+    } else if (firstWord === "!matrix") {
         // Matrix package, the input should be of the form [a,b,c][d,e,f]
-        fullText = fullText.replace("$matrix", "");
+        fullDict = makeDict(firstWord);
+        fullText = fullText.replace("!matrix", "");
+        fullText = replaceText(fullText, fullDict, true);
         fullText = matrix(fullText);
+        if (changeFontButton) {
+            mistakes("!matrix", undefined, "Works better with 'Mathematical font' unchecked");
+        };
     } else {
         // Default package
-        fullText = replaceText(fullText, lettersSymbols);
+        fullDict = makeDict("default");
+        fullText = replaceText(fullText, fullDict, changeModeButton.checked);
         fullText = adjustSpaces(fullText);
     };
     return fullText;
+};
+
+function makeDict(documentClass) {
+    // Returns the full dictionary (in mathmode) with all the commands, letters, etc. based on documentclass and font choice
+    const greek = (changeFontButton.checked) ? stdGreek : noStyleGreek;
+    let letters;  // lettersMath or lettersNoFont
+    if (documentClass === "!chem") {
+        letters = lettersNoFont;  // Works better to "draw" molecules with lewis notation
+    } else if (documentClass === "!matrix") {
+        letters = (changeFontButton.checked) ? lettersMath : lettersNoFont;
+    } else {  // documentClass === "default"
+        letters = (changeFontButton.checked) ? lettersMath : lettersNoFont;
+    };
+    return {...mathDictionary, ...greek, ...letters};
 };
 
 function main() {
