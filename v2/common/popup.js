@@ -2599,6 +2599,7 @@ const mathDictionary = {
     "\\;" : "\u2710\u2710",  // Double space
     "\\quad" : "\u2710\u2710\u2710",
     "\\qquad" : "\u2710\u2710\u2710\u2710",
+    "\\!" : "\u270E",  // Remove space (if there's one surrounding \!) \u270E (✎) will be removed before the output
     "\\colon" : "\u003A",
     "\\\\" : "\u000A",
     "\\linebreak" : "\u000A",
@@ -3109,8 +3110,6 @@ const lettersMath = {
     "]" : "]",
     "<" : "\u003C",
     ">" : "\u003E",
-    "^" : "^",
-    "_" : "_",
     "%" : "%",
     "#" : "#",
     "~" : "~",
@@ -3214,8 +3213,6 @@ const lettersNoFont = {
     "]" : "]",
     "<" : "\u003C",
     ">" : "\u003E",
-    "^" : "^",
-    "_" : "_",
     "%" : "%",
     "*" : "*",
     "@" : "@",
@@ -3567,6 +3564,8 @@ function showCommand(key) {
             return "1 space";
         } else if ((key == "\\;") || ((key == "\\quad") || (key == "\\qquad"))) {
             return defaultDict[key].length + " spaces";
+        } else if (key === "\\!") {
+            return "Remove a space";
         } else if ((key == "\\id2") || (key == "\\id3") || (key == "\\id4") || (key == "\\idn")) {
             const M = {
                 "\\id2": "⎡ 1 0 ⎤\u000A⎣ 0 1 ⎦",
@@ -3637,7 +3636,7 @@ function replaceText(fullText, fullDict, mathmode) {
                     if (triggerInArg) {
     //---- ENTER COMMAND IN A COMMAND ARGUMENT ----//
                         if (commandStoppers.includes(fullText[char])) {
-                            temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                            temporaryArg.push(str(fullDict[commandInArg.join("")]));
                             temporaryArg.push(fullDict[fullText[char]]);
                             commandInArg = [];
                             triggerInArg = false;
@@ -3646,7 +3645,7 @@ function replaceText(fullText, fullDict, mathmode) {
                                 temporaryArg.push(fullText[char]);
                             } else {
                                 if (temporaryBox.join("").slice(0, 5) === "\\sqrt") {
-                                    temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                                    temporaryArg.push(str(fullDict[commandInArg.join("")]));
                                     newText += addSymbol(fullDict["\\sqrt"](temporaryArg, temporaryBox.join("")));
                                     mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", fullDict["\\sqrt"], temporaryBox.join(""));
                                     temporaryBox = [];
@@ -3656,15 +3655,15 @@ function replaceText(fullText, fullDict, mathmode) {
                                     numberCurly += 1;
                                 } else if ((temporaryBox.join("") === "\\frac") || (temporaryBox.join("") === "\\frac*")) {
                                     if (temporaryArg.indexOf("}") === -1) {
-                                        temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                                        temporaryArg.push(str(fullDict[commandInArg.join("")]));
                                         temporaryArg.push(fullText[char]);
                                     } else {
                                         if ((temporaryArg.join("") === "\\frac") || (temporaryArg.join("") === "\\frac*")) {
-                                            temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                                            temporaryArg.push(str(fullDict[commandInArg.join("")]));
                                             newText += addSymbol(fullDict[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
                                             mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", undefined, "Embedded \\frac are currently not accepted");
                                         } else {
-                                            temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                                            temporaryArg.push(str(fullDict[commandInArg.join("")]));
                                             newText += addSymbol(fullDict[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
                                             mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", fullDict[temporaryBox.join("")], temporaryBox.join(""));
                                         };
@@ -3675,7 +3674,7 @@ function replaceText(fullText, fullDict, mathmode) {
                                         numberCurly += 1;
                                     };
                                 } else {
-                                    temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                                    temporaryArg.push(str(fullDict[commandInArg.join("")]));
                                     newText += addSymbol(fullDict[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
                                     mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", fullDict[temporaryBox.join("")], temporaryBox.join(""));
                                     temporaryBox = [];
@@ -3691,7 +3690,7 @@ function replaceText(fullText, fullDict, mathmode) {
                             if (fullText[char - 1] === "\\") {
                                 temporaryArg.push(fullText[char]);
                             } else {
-                                temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                                temporaryArg.push(str(fullDict[commandInArg.join("")]));
                                 temporaryArg.push(fullText[char]);
                             };
                             commandInArg = [];
@@ -3705,7 +3704,7 @@ function replaceText(fullText, fullDict, mathmode) {
                                 if (commandInArg.join("").slice(0, 5) === "\\sqrt") {
                                     commandInArg.push(fullText[char]);
                                 } else {
-                                    temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                                    temporaryArg.push(str(fullDict[commandInArg.join("")]));
                                     temporaryArg.push(fullText[char]);
                                     commandInArg = [];
                                     triggerInArg = false;
@@ -3730,7 +3729,7 @@ function replaceText(fullText, fullDict, mathmode) {
                                 };
                             };
                         } else if ((fullText[char] === "\\") || (fullText[char] === "^") || (fullText[char] === "_")) {
-                            temporaryArg.push(prohibitedType(fullDict[commandInArg.join("")]));
+                            temporaryArg.push(str(fullDict[commandInArg.join("")]));
                             commandInArg = [fullText[char]];
                         } else {
                             commandInArg.push(fullText[char]);
@@ -3788,25 +3787,20 @@ function replaceText(fullText, fullDict, mathmode) {
                                 arg = true;
                                 numberCurly += 1;
                             } else {
-                                if ((typeof fullDict[temporaryBox.join("")] == "function") || (temporaryBox.join("").slice(0, 5) === "\\sqrt")) {
-                                    arg = true;
-                                    numberCurly += 1;
-                                } else {
-                                    newText += addSymbol(fullDict[temporaryBox.join("")]);
-                                    mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
-                                    newText += "{";
-                                    temporaryBox = [];
-                                    trigger = false;
-                                };
+                                newText += addSymbol(str(fullDict[temporaryBox.join("")]));
+                                mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
+                                newText += "{";
+                                temporaryBox = [];
+                                trigger = false;
                             };
                         };
                     } else if (fullText[char] == "}") {
                         if (fullText[char - 1] === "\\") {
                             newText += addSymbol(fullDict[fullText[char]]);
                         } else {
-                            newText += addSymbol(fullDict[temporaryBox.join("")]);
-                            newText += addSymbol(undefined);
-                            mistakes(temporaryBox.join("") + "}", undefined, " '" + temporaryBox.join("") + "\\}' and " + "'" + temporaryBox.join("") + " }' ⇒ '" + temporaryBox.join("") + "}' ");
+                            newText += addSymbol(str(fullDict[temporaryBox.join("")]));
+                            mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
+                            newText += "}"
                         };
                         temporaryBox = [];
                         trigger = false;
@@ -3815,6 +3809,14 @@ function replaceText(fullText, fullDict, mathmode) {
                             newText += addSymbol(fullDict["\\sqrt*"](undefined, temporaryBox.join("")));
                             mistakes(temporaryBox.join(""), fullDict["\\sqrt*"]);
                             newText += addSymbol(fullDict[fullText[char]]);
+                        } else if (fullText[char] === "!") {
+                            if (fullText[char-1] === "\\") {
+                                newText += addSymbol(fullDict["\\!"]);
+                            } else {
+                                newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
+                                addSymbol(fullDict[temporaryBox.join("")]) + fullDict[fullText[char]] : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
+                                mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
+                            };
                         } else {
                             newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
                             addSymbol(fullDict[temporaryBox.join("")]) + fullDict[fullText[char]] : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
@@ -3825,7 +3827,7 @@ function replaceText(fullText, fullDict, mathmode) {
                     } else if ((fullText[char] === "\\") || (fullText[char] === "^") || fullText[char] === "_") {
                         if (fullText[char - 1] === "\\") {
                             temporaryBox.push(fullText[char]);
-                            newText += addSymbol(fullDict[temporaryBox.join("")]);
+                            newText += addSymbol(str(fullDict[temporaryBox.join("")]));
                             trigger = false;
                             temporaryBox = [];
                         } else {
@@ -3863,7 +3865,7 @@ function replaceText(fullText, fullDict, mathmode) {
                                     mathmodeStarter = "";
                                     mathmode = false;
                                 } else {
-                                    newText += addSymbol(fullDict[temporaryBox.join("") + fullText[char]]);
+                                    newText += addSymbol(str(fullDict[temporaryBox.join("") + fullText[char]]));
                                 };
                             } else {
                                 newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
@@ -3876,7 +3878,7 @@ function replaceText(fullText, fullDict, mathmode) {
                         };
                     } else if (fullText[char] === "$") {
                         if (fullText[char-1] === "\\") {
-                            newText += addSymbol(fullDict[temporaryBox.join("") + fullText[char]]);
+                            newText += addSymbol(str(fullDict[temporaryBox.join("") + fullText[char]]));
                             mistakes(temporaryBox.join("") + fullText[char], fullDict[temporaryBox.join("") + fullText[char]]);
                         } else {
                             if (mathmodeStarter === "$") {
@@ -3884,26 +3886,32 @@ function replaceText(fullText, fullDict, mathmode) {
                                     newText += addSymbol(fullDict["\\\\"]);
                                     mathmodeStarter = "$$";
                                 } else {
-                                    newText += addSymbol(fullDict[temporaryBox.join("")]);
+                                    newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
+                                    addSymbol(fullDict[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
                                     mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
                                     mathmodeStarter = "";
                                     mathmode = false;
                                 };
                             } else if (mathmodeStarter === "$$") {
                                 if (fullText[char-1] === "$") {
+                                    newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
+                                    addSymbol(fullDict[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
+                                    mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
                                     newText += addSymbol(fullDict["\\\\"]);
                                     mathmodeStarter = "";
                                     mathmode = false;
                                 } else if (fullText[char+1] === "$") {
                                     continue;
                                 } else {
-                                    newText += addSymbol(fullDict[temporaryBox.join("")]);
+                                    newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
+                                    addSymbol(fullDict[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
                                     mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
-                                    newText += addSymbol(fullDict[fullText[char]]);
+                                    newText += addSymbol(str(fullDict[fullText[char]]));
                                     mistakes(fullText[char], fullDict[fullText[char]]);
                                 };
                             } else {
-                                newText += addSymbol(fullDict[temporaryBox.join("")]);
+                                newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
+                                addSymbol(fullDict[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
                                 mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
                                 newText += addSymbol(fullDict[fullText[char]]);
                                 mistakes(fullText[char], fullDict[fullText[char]]);
@@ -3981,17 +3989,19 @@ function replaceText(fullText, fullDict, mathmode) {
                             mathmodeStarter = "\\[";
                             mathmode = true;
                         } else {
-                            newText += addSymbol(dictOutMathmode[temporaryBox.join("")]);
+                            newText += !(typeof dictOutMathmode[temporaryBox.join("")] == "function") ? 
+                            addSymbol(dictOutMathmode[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
                             mistakes("Out of math mode: " + temporaryBox.join(""), dictOutMathmode[temporaryBox.join("")]);
                         };
                         temporaryBox = [];
                         trigger = false;
                     } else if (fullText[char] === "$") {
                         if (fullText[char-1] === "\\") {
-                            newText += addSymbol(dictOutMathmode[temporaryBox.join("") + fullText[char]]);
+                            newText += addSymbol(str(dictOutMathmode[temporaryBox.join("") + fullText[char]]));
                             mistakes("Out of math mode: " + temporaryBox.join("") + fullText[char], dictOutMathmode[temporaryBox.join("") + fullText[char]]);
                         } else {
-                            newText += addSymbol(dictOutMathmode[temporaryBox.join("")]);
+                            newText += !(typeof dictOutMathmode[temporaryBox.join("")] == "function") ? 
+                            addSymbol(dictOutMathmode[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
                             mistakes("Out of math mode: " + temporaryBox.join(""), dictOutMathmode[temporaryBox.join("")]);
                             mathmodeStarter = "$";
                             mathmode = true;
@@ -4003,7 +4013,8 @@ function replaceText(fullText, fullDict, mathmode) {
                             newText += addSymbol(dictOutMathmode[temporaryBox.join("") + fullText[char]]);
                             mistakes("Out of math mode: " + temporaryBox.join("") + fullText[char], dictOutMathmode[temporaryBox.join("") + fullText[char]]);
                         } else {
-                            newText += addSymbol(dictOutMathmode[temporaryBox.join("")]);
+                            newText += !(typeof dictOutMathmode[temporaryBox.join("")] == "function") ? 
+                            addSymbol(dictOutMathmode[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
                             mistakes("Out of math mode: " + temporaryBox.join(""), dictOutMathmode[temporaryBox.join("")]);
                             newText += addSymbol(dictOutMathmode[fullText[char]]);
                             mistakes("Out of math mode: " + fullText[char], dictOutMathmode[fullText[char]]);
@@ -4012,7 +4023,7 @@ function replaceText(fullText, fullDict, mathmode) {
                         trigger = false;
                     } else if (fullText[char] === "{") {
                         if (fullText[char-1] === "\\") {
-                            newText += addSymbol(dictOutMathmode[temporaryBox.join("") + fullText[char]]);
+                            newText += addSymbol(str(dictOutMathmode[temporaryBox.join("") + fullText[char]]));
                             mistakes(temporaryBox.join("") + fullText[char], dictOutMathmode[temporaryBox.join("") + fullText[char]]);
                             trigger = false;
                         } else {
@@ -4135,9 +4146,9 @@ function addSymbolArray(args, command, checkMistakes=true) {
     return output;
 };
 
-function prohibitedType(command, type="function") {
-    // Make sure the command is of the right type. Most of the time "function" is the one to watch
-    return (typeof command != type) ? command : errSymbol;
+function str(command) {
+    // Make sure the command is a string
+    return (typeof command === "string") ? command : errSymbol;
 };
 
 
@@ -4255,7 +4266,7 @@ function matrix(text) {
         matrixText = "";
         mistakes('Wrong arguments given" \r\n \r\nExample: "!matrix [a,b,c] [d,e,f] [1,2,3]', undefined);
     };
-    return matrixText;
+    return spaceCommand(matrixText);
 };
 
 function matrixCols(matrix) {
@@ -4311,8 +4322,13 @@ function matrixCols(matrix) {
 function spaceCommand(text) {
     // Add spaces ("\:" command)
     // Internally, spaces that are kept even if 'Adjust spaces' is on are represented as \u2710
-    // this commands changes them back to spaces
+    // this function changes them back to spaces
     text = text.replace(/\u2710/g, " ");
+
+    // Also, it removes a space around the command \! (and the command itself)
+    text = text.replace(/\u270E /g, "");
+    text = text.replace(/ \u270E/g, "");
+    text = text.replace(/\u270E /g, "");
     return text;
 };
 
