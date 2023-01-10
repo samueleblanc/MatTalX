@@ -1911,6 +1911,11 @@ const singleCharFrac = (arg, initialCommand) => {
     return (output !== undefined) ? output : frac(arg, initialCommand);
 };
 
+const pmod = (arg, initialCommand) => {
+    // returns ' (mod arg)'
+    return "\u2710(mod\u2710" + arg.join("") + ")";
+};
+
 // These functions call combineSymbols with a predetermined symbol
 
 const overline = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u0305")};
@@ -2030,8 +2035,9 @@ const mathDictionary = {
     "\\log" : "log",
     "\\ln" : "ln",
     "\\lim" : "lim",
-    "\\mod" : "mod",
-    "\\Mod" : "Mod",
+    "\\mod" : "\u2710\u2710mod\u2710",  // 2 spaces + 'mod' + 1 space
+    "\\bmod" : "\u2710mod\u2710",  // 1 space + 'mod' + 1 space
+    "\\pmod" : pmod,  // 1 space + '(mod' + 1 space + arg + ')'
     "\\cup" : "\u222A",
     "\\Cup" : "\u22D3",
     "\\sqcup" : "\u2294",
@@ -3556,6 +3562,8 @@ function showCommand(key) {
             return key + "{}";
         } else if ((key == "_") || (key == "^")) {
             return "x" + key + "{a1} \u2192 𝑥" + (defaultDict[key](["a", "1"], defaultDict[key])).join("");
+        } else if (key == "\\pmod") {
+            return key + "{n} \u2192 " + spaceCommand((defaultDict[key](["n"], defaultDict[key])).join(""));
         } else {
             return key + "{abc} \u2192 " + (defaultDict[key](["a", "b", "c"], defaultDict[key])).join("");
         };
@@ -3575,7 +3583,7 @@ function showCommand(key) {
             }
             return M[key];
         } else {
-            return defaultDict[key]
+            return spaceCommand(defaultDict[key]);
         };
     };
 };
@@ -3611,7 +3619,13 @@ function toReplaceCommand(key) {
 
 function replaceText(fullText, fullDict, mathmode) {
     // Main function, loops on letters and convert the input into characters
+
     // TODO: Clean it up, and maybe restructure it completely, a more 'object oriented' way to do it is perhaps better
+    // Currently, the depth (\command{\command{\command{...}}}) is limited since it's hand coded. Going from this method 
+    // to a basic stack that stores commands as the depth increases and convert them as the depth decreases would be much better 
+    // and would finaly allow things like \sqrt{\mathbf{\mathfrak{x}}} to be possible
+    // (although one could simply write \sqrt*\mathbf{\mathfrak{x}} for the same output)
+
     let newText = "";
     let temporaryBox = [];  // Stores characters that are in command (e.g. \int -> ['\', 'i', 'n', 't'])
     let temporaryArg = [];  // Stores characters that are in command arguments (e.g. \text{ok} -> ['o', 'k'])
@@ -3626,6 +3640,9 @@ function replaceText(fullText, fullDict, mathmode) {
     const commandStoppers = [" ", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];  // parentheses and brackets also stops commands (most of the time)
     const dictOutMathmode = {...lettersNoFont, ...textCommands, " " : "\u2710"};  // dict used if outside of mathmode
 
+    // The basic 'algorithm' here is to loop on all characters of input and add them to one of the array described above based on the context.
+    // Some characters stop a command to be built (like a space) and it's at this moment that the arrays are being emptied and their content 
+    // will be converted by the dictionary to then be added to 'newText'
     for (let char=0; char<fullText.length; char++) {
         if (mathmode) {
     //---- ENTER MATH MODE ----//
@@ -4344,8 +4361,11 @@ function adjustSpacesCommon(input, symbolSpaced, conditionalSpaces) {
     */
     input = input.slice(0, input.length - 1)  // Since the last char is a space
     if ((spacesButton.checked == true) && (input.length > 2)) {
-        const noSpaceSymbols = Object.values(Superscript).concat(Object.values(Subscript), Object.values(Above), Object.values(Below)).filter(x => {return x !== "\u2710";});
-        const spacedChar = characters.concat(noSpaceSymbols);  // Add space around 'conditionalSpaces' if the previous symbol is in spacedChar
+        const noSpaceSymbols = Object.values(Subscript).concat(Object.values(Above), Object.values(Below)).filter(x => {return x !== "\u2710";});
+        // noSpaceSymbols is a list of all the symbols (subscript and combined symbol, without spaces) that delay a space to be added.
+        // For instance, the spaces in 'x \equiv_{2} 0 \def x \equiv 0 (mod 2)' should be kept the same and therefore 'delay' the space
+        // to be added from \equiv because of the subscript.
+        const spacedChar = characters.concat(noSpaceSymbols, Object.values(Superscript));  // Add space around 'conditionalSpaces' if the previous symbol is in spacedChar
         let output = "";
         input = input.replace(/ /g, "");
         let delayedSpace = false;
