@@ -4,31 +4,19 @@ Thank you for considering to help out!
 
 ## Ways to contribute
 
-### v2
-
 - Improve the error messages
 - Write better tests to make sure MatTalX works properly and a test to keep a check on speed during MatTalX's development
 - Make sure `bash build.sh` works for Windows and Mac users
 - Improve the documentation
 - Cleaning up the code (including HTML and CSS) or simply adding comments that helps with code readability is always appreciated!
-- Fix bugs
-- Improve automatic spacing
-
-
-### v3
-
-#### TODO
+- Improve the function 'replaceText' so that it can accept commands of arbitrary depth (i.e. \command{\command{\command{...}}} should work)
+- Improve automatic spacing (see below for a specific case)
 - Spacing around symbols like '+' should depend of context. For instance, f(y+2) should return f(y+2), but 3x²+4y should return 3x² + 4y (notice the spaces). Also, a_{i}-x should return a_{i} - x, but \sum_{i}-x should return \sum_{i}-x (as in \sum_{i}(-x) or -\sum_{i}x). Again, it should take the context in consideration.
 - A nice text editor for the input (and settings) box. Like all LaTeX text editor, the color of symbols like '$' should be different than plain text, the color of \commands also, etc.
 - Make modifying keyboard shortcuts possible
-- Tight up the types (e.g. if there is a variable declared as type *any*, but only uses *string*, change the type to *string*)
-- Fix bugs
-
-#### TO(maybe)DO
-- Adding new environment like *proof*, *theorem*, etc. with their corresponding style and font.
-- New packages are welcomed! However, please submit packages that might benefit multiple users.
-- Cleaning up the code (including HTML and CSS) or simply adding comments that helps with code readability is always appreciated!
-- In the suggestion popup, include the packages in the list of commands, to have a more complete list of potential commands
+- Rewrite popup.js in TypeScript
+- Adding new environment (aka packages) like *proof*, *theorem*, etc. with their corresponding style and font.
+- Add the possibility to include *\renewcommand*s
 
 ## Important info
 
