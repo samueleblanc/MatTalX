@@ -1,15 +1,4 @@
-![MatTalX logo](v3/common/images/mattalx_logo.png)
-
-## Versions
-
-MatTalX v3 is under development (current version is v2)
-
-Major improvements/changes:
-- Implementation in TypeScript instead of JavaScript
-- Parameter popup where you can include a basic header with \documentclass, \usepackage and \renewcommand
-- Adequate parser to be able to have more freedom as to what is possible in MatTalX
-- Integrated text editor
-- And more! (see Contributing)
+![MatTalX logo](common/images/mattalx_logo.png)
 
 ## Documentation
 
@@ -52,7 +41,6 @@ Full and comprehensive documentation is available if you put your mouse above th
 
 ## Use MatTalX
 Versions:
-* <a href="https://samueleblanc.com/mattalx/web-version.html" target="_blank">Web</a>
 * <a href="https://chrome.google.com/webstore/detail/mattalx-write-math-symbol/jllceliamggkpffccbefpefgmcigaglb" target="_blank">Chrome</a>
 * <a href="https://addons.mozilla.org/firefox/addon/mattalx-write-math-symbols/" target="_blank">Firefox</a>
 
