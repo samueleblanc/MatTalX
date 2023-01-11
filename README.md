@@ -4,6 +4,8 @@
 
 <a href="https://samueleblanc.com/mattalx/documentation.html" target="_blank">Full documentation</a>
 
+The documentation (PDF and text file) is also [here](docs)
+
 ## Presentation from the Chrome webstore and Firefox Add-ons marketplace
 
 Write mathematical expression in UTF format - Convert LaTeX command to text!
