@@ -134,7 +134,7 @@ tr, td {
     #text_in, 
     #text_out {
         color: black;
-        border: 2px solid whitesmoke;
+        border: 2px solid rgb(231, 231, 231);
         background-color: whitesmoke;
     }
     .infoButton_dark {
