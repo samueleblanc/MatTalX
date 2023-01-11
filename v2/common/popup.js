@@ -2756,6 +2756,7 @@ const textCommands = {
     "\\linebreak" : "\u000A",
     "\\newline" : "\u000A",
     "\\tab" : "\u0009",
+    "\\!" : "\u270E",
     "\\textbf" : textbf,
     "\\textit" : textit,
     "\\texttt" : texttt,
@@ -3563,7 +3564,7 @@ function showCommand(key) {
         } else if ((key == "_") || (key == "^")) {
             return "x" + key + "{a1} \u2192 𝑥" + (defaultDict[key](["a", "1"], defaultDict[key])).join("");
         } else if (key == "\\pmod") {
-            return key + "{n} \u2192 " + spaceCommand((defaultDict[key](["n"], defaultDict[key])).join(""));
+            return key + "{n} \u2192 " + spaceCommand(defaultDict[key](["n"], defaultDict[key]));
         } else {
             return key + "{abc} \u2192 " + (defaultDict[key](["a", "b", "c"], defaultDict[key])).join("");
         };
@@ -3639,6 +3640,7 @@ function replaceText(fullText, fullDict, mathmode) {
     const brackets = ["[", "]"];
     const commandStoppers = [" ", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];  // parentheses and brackets also stops commands (most of the time)
     const dictOutMathmode = {...lettersNoFont, ...textCommands, " " : "\u2710"};  // dict used if outside of mathmode
+    const startMathmode = mathmode;
 
     // The basic 'algorithm' here is to loop on all characters of input and add them to one of the array described above based on the context.
     // Some characters stop a command to be built (like a space) and it's at this moment that the arrays are being emptied and their content 
@@ -3845,6 +3847,7 @@ function replaceText(fullText, fullDict, mathmode) {
                         if (fullText[char - 1] === "\\") {
                             temporaryBox.push(fullText[char]);
                             newText += addSymbol(str(fullDict[temporaryBox.join("")]));
+                            mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
                             trigger = false;
                             temporaryBox = [];
                         } else {
@@ -3883,6 +3886,7 @@ function replaceText(fullText, fullDict, mathmode) {
                                     mathmode = false;
                                 } else {
                                     newText += addSymbol(str(fullDict[temporaryBox.join("") + fullText[char]]));
+                                    mistakes(temporaryBox.join("") + fullText[char], fullDict[temporaryBox.join("") + fullText[char]]);
                                 };
                             } else {
                                 newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
@@ -4041,11 +4045,23 @@ function replaceText(fullText, fullDict, mathmode) {
                     } else if (fullText[char] === "{") {
                         if (fullText[char-1] === "\\") {
                             newText += addSymbol(str(dictOutMathmode[temporaryBox.join("") + fullText[char]]));
-                            mistakes(temporaryBox.join("") + fullText[char], dictOutMathmode[temporaryBox.join("") + fullText[char]]);
+                            mistakes("Out of math mode: " + temporaryBox.join("") + fullText[char], dictOutMathmode[temporaryBox.join("") + fullText[char]]);
+                            temporaryBox = [];
                             trigger = false;
                         } else {
                             arg = true;
                             numberCurly += 1;
+                        };
+                    } else if (fullText[char] === "\\") {
+                        if (fullText[char-1] === "\\") {
+                            newText += addSymbol(str(dictOutMathmode["\\\\"]));
+                            mistakes("Out of math mode: " + "\\\\", dictOutMathmode["\\\\"]);
+                            temporaryBox = [];
+                            trigger = false;
+                        } else {
+                            newText += addSymbol(str(dictOutMathmode[temporaryBox.join("")]));
+                            mistakes("Out of math mode: " + temporaryBox.join(""), dictOutMathmode[temporaryBox.join("")]);
+                            temporaryBox = ["\\"];
                         };
                     } else {
                         temporaryBox.push(fullText[char]);
@@ -4070,6 +4086,10 @@ function replaceText(fullText, fullDict, mathmode) {
     if (numberCurly % 2 !== 0) {
         mistakes("Missing curly brackets { }", undefined);
     };
+    if (!startMathmode && mathmode) {
+        const comToStop = (mathmodeStarter === "\\[") ? "\\]" : mathmodeStarter;
+        mistakes("Math mode wasn't closed", undefined, "Missing '" + comToStop + "' ");
+    };
     return newText;
 };
 
@@ -4079,7 +4099,7 @@ function replaceLetters(letters, dict, initialCommand, checkMistakes=true) {
     for (let c in letters) {
         newtext.push(addSymbol(dict[letters[c]]));
         if (checkMistakes) {
-            mistakes(initialCommand + "{" + letters.join("") + "}", dict[letters[c]], letters[c]);
+            mistakes(initialCommand + "{" + letters.join("") + "}", dict[letters[c]], (letters[c] !== errSymbol) ? letters[c] : "A symbol does not exist or can't be shown");
         };
     };
     return newtext;
@@ -4116,6 +4136,8 @@ const combineSymbols = (arg, initialCommand, symbol, forTwo=undefined) => {
 
 function embeddedCommand(command, endOfText, fullDict) {
     // Is called if there is a command as an argument of a command
+
+    // TODO: Should be rewritten to be much more flexible, there's no reason to not be able to have embedded \sqrt, for instance
     let args = [];
     endOfText = endOfText.substring(1);
     for (let c in endOfText) {
@@ -4127,14 +4149,17 @@ function embeddedCommand(command, endOfText, fullDict) {
                 if (command.slice(0, 5) === "\\sqrt") {
                     mistakes("Embedded \\sqrt are not best practice, use '\\sqrt[n]* (\\sqrt[k]* x)' instead of '\\sqrt[n]{\\sqrt[k]{x}}'", undefined, "ⁿ√(ᵏ√𝑥)");
                     return [addSymbol(fullDict["\\sqrt"](args, command), true), parseInt(c)];
-                } else if ((command[0] === "^") || command[0] === "_") {
-                    let commandPos = (command[0] === "^") ? "superscript" : "subscript";
-                    mistakes("Embedded " + commandPos + " (" + command[0] + "{}) is not accepted", undefined, "Since \\" + command[0] + " \u2192 " + command[0] + 
-                    ", you can write x" + command[0] + "(x" + command[0] + "(...)) with x\\"+ command[0] +" (x\\" + command[0] + " (...))");
-                    return [addSymbol(fullDict[command](args, command), true), parseInt(c)];
                 } else {
+                    mistakes(command + "{" + args.join("") + "}", fullDict[command](args, command));
                     return [addSymbol(fullDict[command](args, command), true), parseInt(c)];
                 };
+            };
+        } else if (endOfText[c] === "{") {
+            if (endOfText[c-1] !== "\\") {
+                mistakes("Embedded commands (depth exceeded)", undefined);
+                return [addSymbol(fullDict[command](args, command), true), parseInt(c)];
+            } else {
+                args.push(fullDict[endOfText[c]]);
             };
         } else {
             args.push(fullDict[endOfText[c]]);
@@ -4157,7 +4182,7 @@ function addSymbolArray(args, command, checkMistakes=true) {
     for (let i in args) {
         output += (args[i] !== undefined) ? args[i] : errSymbol;
         if (checkMistakes) {
-            mistakes(command, args[i], "A symbol does not exist or can't be shown");
+            mistakes(command, ((args[i] === errSymbol) || (args[i] === undefined)) ? undefined : args[i], "A symbol does not exist or can't be shown");
         };
     };
     return output;
@@ -4190,7 +4215,14 @@ function mistakes(textInput, textOutput, letter="") {
                         errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
                     };
                 } else {
-                    errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
+                    const subSupChar = Object.values(Superscript).concat(Object.values(Subscript)).filter(x => {return x !== "\u2710";});  // Makes sure that there are no spaces that sneaks in
+                    if (subSupChar.includes(letter)) {
+                        const argPos = Object.values(Superscript).includes(letter) ? "superscript" : "subscript";
+                        const commandPos = (textInput[0] === "^") ? "superscript" : "subscript";
+                        errorsList += spaceCommand(textInput + " \u2192 Can't put a " + argPos + " (" + letter + ") in a " + commandPos + " position") + "\r\n";
+                    } else {
+                        errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
+                    };
                 };
             };
         } else {
