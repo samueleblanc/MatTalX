@@ -65,7 +65,7 @@ testing () {
     echo "Directory made"
     echo "Opening MatTalX on localhost"
     cd test_mattalx
-    http-server -s -o
+    http-server -s -o &
     echo "--Done--"
 }
 
