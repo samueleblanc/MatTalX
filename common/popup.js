@@ -3448,8 +3448,6 @@ function getSuggestion() {
 };
 
 function findWord(text, cursorPosition, addedLetter="") {
-    alert(text);
-    alert(cursorPosition);
     // Used in the suggestion / completion popup
     // Finds the word that is touched by the cursor
     if (addedLetter.length === 1) {  // ie a letter
@@ -3467,7 +3465,6 @@ function findWord(text, cursorPosition, addedLetter="") {
         cursorPosition += 1;
     };
     while (!(wordsDelimitersWOB.includes(text.charAt(cursorPosition)))) {
-        alert(word);
         if (text.charAt(cursorPosition) === "\\") {
             word = text.charAt(cursorPosition) + word;
             break;
@@ -3476,7 +3473,6 @@ function findWord(text, cursorPosition, addedLetter="") {
             cursorPosition -= 1;
         }
     };
-    alert("Out: " + word);
     return word;
 };
 
