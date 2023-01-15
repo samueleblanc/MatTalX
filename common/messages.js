@@ -28,12 +28,6 @@ function updateMessage(version) {
     // To be changed by hand every version
     const majorChanges = "Welcome to MatTalX version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
-    " 1) Colors automatically change based on the user's prefered color scheme (light or dark)\r\n" + 
-    " 2) It is now possible to convert (or not) characters in a mathematical font\r\n" + 
-    " 3) By unchecking 'Math mode', you can now work outside of the math environement. Use '$', '$$' or '\\[' to enter " + 
-    "math mode and '$', '$$' and '\\]' respectively to exit\r\n" + 
-    " 4) If the suggestion popup is open, you can now close it by clicking outside of the box\r\n" + 
-    " 5) MatTalX is now supported on android (Firefox)\r\n" + 
-    " 6) Added commands like \\!, \\pmod, \\bmod, and more!";
+    " 1) Bug fixes";
     textOut.value = majorChanges;  // In "text_input" form
 };
