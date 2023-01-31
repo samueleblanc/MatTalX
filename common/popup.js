@@ -34,6 +34,7 @@
 
 /**************************************************************************************/
 
+"use strict";
 
 /// GLOBALS ///
 
@@ -3226,7 +3227,7 @@ const lettersNoFont = {
     "#" : "#",
     "~" : "~",
     "¬" : "¬",
-    ":" : ":",  // Same as "\colon", use "\ratio" instead to get the same as without "$chem"
+    ":" : ":",  // Same as "\colon", use "\ratio" instead to get the same as without "!chem"
     ";" : ";",
     "…" : "…",
     "0" : "0",
@@ -3277,6 +3278,126 @@ const lettersNoFont = {
     "n" : "n",
     "O" : "O",
     "o" : "o",
+    "P" : "P",
+    "p" : "p",
+    "Q" : "Q",
+    "q" : "q",
+    "R" : "R",
+    "r" : "r",
+    "S" : "S",
+    "s" : "s",
+    "T" : "T",
+    "t" : "t",
+    "U" : "U",
+    "u" : "u",
+    "Ù" : "Ù",
+    "ù" : "ù",
+    "V" : "V",
+    "v" : "v",
+    "W" : "W",
+    "w" : "w",
+    "X" : "X",
+    "x" : "x",
+    "Y" : "Y",
+    "y" : "y",
+    "Z" : "Z",
+    "z" : "z",
+    "\u2710" : " ",
+    " " : " "
+};
+
+const lettersOutMathMode = {
+    "+" : "+",
+    "-" : "-",
+    "=" : "=",
+    "'" : "'",
+    '"' : '"',
+    "/" : "/",
+    "\\" : "\\",
+    "," : ",",
+    "." : ".",
+    "°" : "°",
+    "|" : "|",
+    "!" : "!",
+    "?" : "?",
+    "&" : "&",
+    "(" : "(",
+    ")" : ")",
+    "{" : "{",
+    "}" : "}",
+    "[" : "[",
+    "]" : "]",
+    "<" : "<",
+    ">" : ">",
+    "%" : "%",
+    "*" : "*",
+    "@" : "@",
+    "#" : "#",
+    "~" : "~",
+    "¬" : "¬",
+    ":" : ":",
+    ";" : ";",
+    "…" : "…",
+    "0" : "0",
+    "1" : "1",
+    "2" : "2",
+    "3" : "3",
+    "4" : "4",
+    "5" : "5",
+    "6" : "6",
+    "7" : "7",
+    "8" : "8",
+    "9" : "9", 
+    "A" : "A",
+    "À" : "À",
+    "Â" : "Â",
+    "a" : "a",
+    "à" : "à",
+    "â" : "â",
+    "B" : "B",
+    "b" : "b",
+    "C" : "C",
+    "Ç" : "Ç",
+    "c" : "c",
+    "ç" : "ç",
+    "D" : "D",
+    "d" : "d",
+    "E" : "E",
+    "É" : "É",
+    "È" : "È",
+    "Ê" : "Ê",
+    "Ë" : "Ë",
+    "e" : "e",
+    "é" : "é",
+    "è" : "è",
+    "ê" : "ê",
+    "ë" : "ë",
+    "F" : "F",
+    "f" : "f",
+    "G" : "G",
+    "g" : "g",
+    "H" : "H",
+    "h" : "h",
+    "I" : "I",
+    "Ï" : "Ï",
+    "i" : "i",
+    "ï" : "ï",
+    "J" : "J",
+    "j" : "j",
+    "K" : "K",
+    "k" : "k",
+    "L" : "L",
+    "l" : "l",
+    "M" : "M",
+    "m" : "m",
+    "N" : "N",
+    "n" : "n",
+    "O" : "O",
+    "Ö" : "Ö",
+    "Ô" : "Ô",
+    "o" : "o",
+    "ö" : "ö",
+    "ô" : "ô",
     "P" : "P",
     "p" : "p",
     "Q" : "Q",
@@ -3639,7 +3760,7 @@ function replaceText(fullText, fullDict, mathmode) {
     const parentheses = ["(", ")"];
     const brackets = ["[", "]"];
     const commandStoppers = [" ", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];  // parentheses and brackets also stops commands (most of the time)
-    const dictOutMathmode = {...lettersNoFont, ...textCommands, " " : "\u2710"};  // dict used if outside of mathmode
+    const dictOutMathmode = {...lettersOutMathMode, ...textCommands, " " : "\u2710"};  // dict used if outside of mathmode
     const startMathmode = mathmode;
 
     // The basic 'algorithm' here is to loop on all characters of input and add them to one of the array described above based on the context.
@@ -4463,7 +4584,7 @@ function adjustSpaces(input) {
                 "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
                 "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u2971", "\u2972", "\u2974", "\u2250",
                 "\u2A66", "\u00D7", "\u22CA", "\u22C9", "\u225D"];
-    const conditionalSpaces = ["+", "-", "\u002B", "\u2212", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
+    const conditionalSpaces = ["\u002B", "\u2212", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
     return adjustSpacesCommon(input, symbolSpaced, conditionalSpaces);
 };
 
@@ -4480,7 +4601,7 @@ function adjustSpaceChem(input) {
             "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
             "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u2971", "\u2972", "\u2974", "\u00D7", 
             "\u22CA", "\u22C9", "\u225D"];
-    const conditionalSpaces = ["+", "\u002B", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
+    const conditionalSpaces = ["\u002B", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
     return adjustSpacesCommon(input, symbolSpaced, conditionalSpaces);
 };
 

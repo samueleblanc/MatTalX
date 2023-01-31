@@ -28,6 +28,7 @@ function updateMessage(version) {
     // To be changed by hand every version
     const majorChanges = "Welcome to MatTalX version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
-    " 1) Bug fixes";
+    " 1) Better spacing out of math mode" + 
+    " 2) More special characters added for outside math mode (e.g. ö, ê, etc.)";
     textOut.value = majorChanges;  // In "text_input" form
 };
