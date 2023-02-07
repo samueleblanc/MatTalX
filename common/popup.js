@@ -2049,6 +2049,8 @@ const mathDictionary = {
     "\\sqCap" : "\u2A4E",
     "\\uplus" : "\u228E",
     "\\def" : "\u225D",
+    "\\coloneqq" : "\u2254",
+    "\\eqqcolon" : "\u2255",
     "\\vee" : "\u2228",
     "\\doublevee" : "\u2A56",
     "\\wedge" : "\u2227",
@@ -2201,6 +2203,8 @@ const mathDictionary = {
     "\\ntriangleright" : "\u22EB",
     "\\ntrianglelefteq" : "\u22EC",
     "\\ntrianglerighteq" : "\u22ED",
+    "\\trianglelefteq" : "\u22B4",
+    "\\trianglerighteq" : "\u22B5",
     "\\triangleq" : "\u225C",
     "\\equest" : "\u225F",
     "\\lquest" : "\u2A7B",
@@ -4398,7 +4402,7 @@ function matrix(text) {
         matrixText = matrixText.replace(/\[/g, "[ ");
         matrixText = matrixText.replace(/\]/g, " ]");
         matrixText = matrixText.replace(/,/g, "\u2710");
-        return matrixText;
+        return spaceCommand(matrixText);
     } else {
         for (i in text) {
             if (text[i] == "[" && rceil == 0) {
@@ -4583,7 +4587,7 @@ function adjustSpaces(input) {
                 "\u2269", "\u2A89", "\u2A8A", "\u22E6", "\u22E7", "\u226A", "\u22D8", "\u226B", "\u22D9", "\u227A", "\u227B", "\u2280",
                 "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
                 "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u2971", "\u2972", "\u2974", "\u2250",
-                "\u2A66", "\u00D7", "\u22CA", "\u22C9", "\u225D"];
+                "\u2A66", "\u00D7", "\u22CA", "\u22C9", "\u225D", "\u2254", "\u2255"];
     const conditionalSpaces = ["\u002B", "\u2212", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
     return adjustSpacesCommon(input, symbolSpaced, conditionalSpaces);
 };
@@ -4600,7 +4604,7 @@ function adjustSpaceChem(input) {
             "\u2269", "\u2A89", "\u2A8A", "\u22E6", "\u22E7", "\u226A", "\u22D8", "\u226B", "\u22D9", "\u227A", "\u227B", "\u2280",
             "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
             "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u2971", "\u2972", "\u2974", "\u00D7", 
-            "\u22CA", "\u22C9", "\u225D"];
+            "\u22CA", "\u22C9", "\u225D", "\u2254", "\u2255"];
     const conditionalSpaces = ["\u002B", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
     return adjustSpacesCommon(input, symbolSpaced, conditionalSpaces);
 };
@@ -4626,7 +4630,7 @@ function convert(fullText) {
         fullText = fullText.replace("!matrix", "");
         fullText = replaceText(fullText, fullDict, true);
         fullText = matrix(fullText);
-        if (changeFontButton) {
+        if (changeFontButton.checked) {
             mistakes("!matrix", undefined, "Works better with 'Mathematical font' unchecked");
         };
     } else {
