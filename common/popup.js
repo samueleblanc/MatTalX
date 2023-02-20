@@ -1718,7 +1718,7 @@ const hspace = (arg, initialCommand) => {
     let spaces = "";
     const num = arg.join("");
     if (num * 0 !== 0) {
-        spaces = mistakes(initialCommand + "{" + num + "}", undefined, "argument must be a number");
+        spaces = mistakes(initialCommand + "{" + num + "}", undefined, "Argument must be a number");
     } else {
         for (let i=0; i<parseInt(num); i++) {
             spaces += "\u2710";
@@ -1733,13 +1733,24 @@ const vskip = (arg, initialCommand) => {
     let skips = "";
     const num = arg.join("");
     if (num * 0 !== 0) {
-        skips = mistakes(initialCommand + "{" + num + "}", undefined, "argument must be a number");
+        skips = mistakes(initialCommand + "{" + num + "}", undefined, "Argument must be a number");
     } else {
         for (let i=0; i<parseInt(num); i++) {
             skips += "\u000A";
         };
     };
     return skips;
+};
+
+const phantom = (arg, initialCommand) => {
+    let spaces = "";
+    for (let i=0; i<arg.length; i++) {
+        spaces += "\u2710";
+    };
+    if (arg.includes(errSymbol)) {
+        mistakes(initialCommand + "{" + arg.join("") + "}", undefined, "Undefined argument");
+    };
+    return spaces;
 };
 
 const sqrt = (arg, initialCommand) => {
@@ -2332,6 +2343,7 @@ const mathDictionary = {
     // Spaces
     "\\hspace" : hspace,
     "\\vskip" : vskip,
+    "\\phantom" : phantom,
 
     // Square root and fractions
     "\\sqrt" : sqrt,
@@ -3416,6 +3428,8 @@ const lettersOutMathMode = {
     "u" : "u",
     "Ù" : "Ù",
     "ù" : "ù",
+    "Û" : "Û",
+    "û" : "û",
     "V" : "V",
     "v" : "v",
     "W" : "W",
