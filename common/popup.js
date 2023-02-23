@@ -2372,8 +2372,8 @@ const mathDictionary = {
     "\\below" : below,
 
     // For Lewis Notation
-    "\\mid." : "\u2E31",
-    "\\mid:" : "\u003A",
+    "\\mdot" : "\u2E31",
+    "\\mddot" : "\u003A",
 
     // Chess
     "\\wking" : "\u2654",
@@ -3491,12 +3491,12 @@ const mistakesBox = document.getElementById("mistakes");
 
 /** Other **/
 
-// Used is the subsection 'Suggestion box (or completion)' to recognize on which word is the cursor
-const wordsDelimiters = [" ", "", "\u000A", "\\", "^", "_", "(", ")", "[", "]", "{", "}", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];
-const wordsDelimitersWOB = [" ", "", "\u000A", "^", "_", "(", ")", "[", "]", "{", "}", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"]; // Without backslash
+// Used in the subsection 'Suggestion box (or completion)' to recognize on which word is the cursor
+const wordsDelimiters = [" ", "", "\u000A", "\\", "^", "_", "(", ")", "[", "]", "{", "}", ".", ":", ";", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];
+const wordsDelimitersWOB = [" ", "", "\u000A", "^", "_", "(", ")", "[", "]", "{", "}", ".", ":", ";", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"]; // Without backslash
 
 // Used in adjustSpacesCommon to chose which symbols to surround with spaces (if touched by a specific symbol like '=')
-const characters = "AÀÂBCÇDEÉÈËÊFGHIJKLMNOÔPQRSTUÙVWXYZaàâbcçdeéèêëfghijklmnoôpqrstuùvwxyz0123456789"+
+const characters = "AÀÂBCÇDEÉÈËÊFGHIJKLMNOÔÖPQRSTUÙÛVWXYZaàâbcçdeéèêëfghijklmnoôöpqrstuùûvwxyz0123456789"+
                    "𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧"+
                    "𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"+
                    "𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛"+
@@ -3512,7 +3512,8 @@ const characters = "AÀÂBCÇDEÉÈËÊFGHIJKLMNOÔPQRSTUÙVWXYZaàâbcçdeéè�
                    "𝜜𝜶𝜝𝜷𝜞𝜸𝚫𝜟𝜹𝜠𝛜𝛆𝜡𝜻𝜢𝜼𝚽𝜽𝝑𝜤𝜾𝜥𝜿𝝒𝜦𝝀𝜧𝝁𝜨𝝂𝚽𝝓𝝋𝚵𝝃𝜪𝝄𝜫𝝅𝝕𝜬𝝆𝛠𝜮𝛔𝝇𝜯𝝉𝜰𝝊𝜲𝝌𝜳𝝍𝛀𝝎"+ 
                    "ΑαΒβΓγδΖζΗηθϑΙιΚκϰΛλΜμΝνξΟοΠπϖΡρϱΣσςΤτΥυϕφΧχΨψΩω" + 
                    "𝝖𝝰𝝗𝝱𝝘𝝲𝛅𝝛𝝵𝝜𝝶𝛉𝛝𝝞𝛊𝝟𝝹𝞌𝝠𝝺𝝡𝝻𝝢𝝼𝝽𝝤𝝾𝝥𝝿𝞏𝝦𝞀𝞎𝝨𝞂𝞁𝝩𝞃𝝪𝞄𝞍𝞅𝝬𝞆𝝭𝞇𝝮𝞈" +
-                   "ℾℽℿℼ⅀";
+                   "ℾℽℿℼ⅀" + 
+                   "()[]{}⦅⦆⟦⟧⦃⦄";
 
 // Symbol for an error
 const errSymbol = "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}";  // bold "err" with two "x" under it
@@ -3777,7 +3778,7 @@ function replaceText(fullText, fullDict, mathmode) {
     let mathmodeStarter = "";  // e.g. if mathmode is started with $$, then "$$" will be mathmodeStarter
     const parentheses = ["(", ")"];
     const brackets = ["[", "]"];
-    const commandStoppers = [" ", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];  // parentheses and brackets also stops commands (most of the time)
+    const commandStoppers = [" ", ".", ":", ";", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];  // parentheses and brackets also stops commands (most of the time)
     const dictOutMathmode = {...lettersOutMathMode, ...textCommands, " " : "\u2710"};  // dict used if outside of mathmode
     const startMathmode = mathmode;
 
