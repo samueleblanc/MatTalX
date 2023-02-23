@@ -3492,8 +3492,8 @@ const mistakesBox = document.getElementById("mistakes");
 /** Other **/
 
 // Used in the subsection 'Suggestion box (or completion)' to recognize on which word is the cursor
-const wordsDelimiters = [" ", "", "\u000A", "\\", "^", "_", "(", ")", "[", "]", "{", "}", ".", ":", ";", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];
-const wordsDelimitersWOB = [" ", "", "\u000A", "^", "_", "(", ")", "[", "]", "{", "}", ".", ":", ";", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"]; // Without backslash
+const wordsDelimiters = [" ", "", "\u000A", "\\", "^", "_", "(", ")", "[", "]", "{", "}", ".", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];
+const wordsDelimitersWOB = [" ", "", "\u000A", "^", "_", "(", ")", "[", "]", "{", "}", ".", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"]; // Without backslash
 
 // Used in adjustSpacesCommon to chose which symbols to surround with spaces (if touched by a specific symbol like '=')
 const characters = "AÀÂBCÇDEÉÈËÊFGHIJKLMNOÔÖPQRSTUÙÛVWXYZaàâbcçdeéèêëfghijklmnoôöpqrstuùûvwxyz0123456789"+
@@ -3778,7 +3778,7 @@ function replaceText(fullText, fullDict, mathmode) {
     let mathmodeStarter = "";  // e.g. if mathmode is started with $$, then "$$" will be mathmodeStarter
     const parentheses = ["(", ")"];
     const brackets = ["[", "]"];
-    const commandStoppers = [" ", ".", ":", ";", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];  // parentheses and brackets also stops commands (most of the time)
+    const commandStoppers = [" ", ".", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];  // parentheses and brackets also stops commands (most of the time)
     const dictOutMathmode = {...lettersOutMathMode, ...textCommands, " " : "\u2710"};  // dict used if outside of mathmode
     const startMathmode = mathmode;
 
