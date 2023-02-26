@@ -31,7 +31,7 @@ function updateMessage(version) {
     " 1) Added the function \\phantom{}, which outputs as many spaces as there are characters in the argument. \r\n" + 
     "    For instance, \\phantom{abc} -> 3 spaces and \\phantom{\\int} -> 1 space \r\n" + 
     " 2) Improved automatic spaces \r\n" + 
-    " 3) Included 'Û' and 'û' as characters out of math mode \r\n" + 
+    " 3) Included accents for out of math mode (\\^{}, \\~{}, \\c{}, etc.) \r\n" + 
     " 4) Minor bug fixes";
     textOut.value = majorChanges;  // In "text_input" form
 };
