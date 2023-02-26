@@ -1,7 +1,6 @@
 #!/usr/bin/bash
 
 # Creates a directory and a zip file for either a chrome extension or firefox add-on
-# Can also test MatTalX, however, it's not a complete test
 
 copy_common () {
     cp -RT common $1  # Parameter is the name of the directory (e.g. 'extension', 'firefox_add_on', etc.)
@@ -46,29 +45,6 @@ firefox_addon () {
     fi
 }
 
-testing () {
-    if [[ -e test_mattalx ]]; then
-        rm -r test_mattalx
-    fi
-    echo "Creating 'test_mattalx' directory..."
-    mkdir test_mattalx
-    copy_common test_mattalx
-    cp -RT firefox test_mattalx
-    cat test_mattalx/popup-specific.js >> test_mattalx/popup.js
-    rm test_mattalx/popup-specific.js
-    mv test_mattalx/popup.html test_mattalx/index.html
-    sed '$d' test_mattalx/index.html
-    sed '$d' test_mattalx/index.html
-    # sed -i '' -e '$ d' test_mattalx/index.html  # For Mac users
-    # sed -i '' -e '$ d' test_mattalx/index.html
-    cat test.txt >> test_mattalx/index.html
-    echo "Directory made"
-    echo "Opening MatTalX on localhost"
-    cd test_mattalx
-    http-server -s -o &
-    echo "--Done--"
-}
-
 if  [[ $1 == "firefox" ]]; then
     firefox_addon
 elif [[ $1 == "chrome" ]]; then
@@ -76,8 +52,6 @@ elif [[ $1 == "chrome" ]]; then
 elif [[ $1 == "b-all" ]]; then
     firefox_addon
     chrome_ext
-elif [[ $1 == "test" ]]; then
-    testing
 else
-    echo "Accepted arguments: 'firefox', 'chrome', 'b-all' or 'test'." # b-all stands for build all
+    echo "Accepted arguments: 'firefox', 'chrome' or 'b-all'." # b-all stands for build all
 fi

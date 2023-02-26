@@ -4231,18 +4231,18 @@ function replaceText(fullText, fullDict, mathmode) {
                         } else {
                             newText += !(typeof dictOutMathmode[temporaryBox.join("")] == "function") ? 
                             addSymbol(dictOutMathmode[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                            mistakes("Out of math mode: " + temporaryBox.join(""), dictOutMathmode[temporaryBox.join("")]);
+                            mistakes("Out of math mode", dictOutMathmode[temporaryBox.join("")], temporaryBox.join(""));
                         };
                         temporaryBox = [];
                         trigger = false;
                     } else if (fullText[char] === "$") {
                         if (fullText[char-1] === "\\") {
                             newText += addSymbol(str(dictOutMathmode[temporaryBox.join("") + fullText[char]]));
-                            mistakes("Out of math mode: " + temporaryBox.join("") + fullText[char], dictOutMathmode[temporaryBox.join("") + fullText[char]]);
+                            mistakes("Out of math mode", dictOutMathmode[temporaryBox.join("") + fullText[char]], temporaryBox.join("") + fullText[char]);
                         } else {
                             newText += !(typeof dictOutMathmode[temporaryBox.join("")] == "function") ? 
                             addSymbol(dictOutMathmode[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                            mistakes("Out of math mode: " + temporaryBox.join(""), dictOutMathmode[temporaryBox.join("")]);
+                            mistakes("Out of math mode", dictOutMathmode[temporaryBox.join("")], temporaryBox.join(""));
                             mathmodeStarter = "$";
                             mathmode = true;
                         };
@@ -4251,13 +4251,13 @@ function replaceText(fullText, fullDict, mathmode) {
                     } else if (commandStoppers.includes(fullText[char]) || parentheses.includes(fullText[char]) || (fullText[char] === "]") || (fullText[char] === "}")) {
                         if (fullText[char-1] === "\\") {
                             newText += addSymbol(dictOutMathmode[temporaryBox.join("") + fullText[char]]);
-                            mistakes("Out of math mode: " + temporaryBox.join("") + fullText[char], dictOutMathmode[temporaryBox.join("") + fullText[char]]);
+                            mistakes("Out of math mode", dictOutMathmode[temporaryBox.join("") + fullText[char]], temporaryBox.join("") + fullText[char]);
                         } else {
                             newText += !(typeof dictOutMathmode[temporaryBox.join("")] == "function") ? 
                             addSymbol(dictOutMathmode[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                            mistakes("Out of math mode: " + temporaryBox.join(""), dictOutMathmode[temporaryBox.join("")]);
+                            mistakes("Out of math mode", dictOutMathmode[temporaryBox.join("")], temporaryBox.join(""));
                             newText += addSymbol(dictOutMathmode[fullText[char]]);
-                            mistakes("Out of math mode: " + fullText[char], dictOutMathmode[fullText[char]]);
+                            mistakes("Out of math mode", dictOutMathmode[fullText[char]], fullText[char]);
                         };
                         temporaryBox = [];
                         trigger = false;
@@ -4267,16 +4267,16 @@ function replaceText(fullText, fullDict, mathmode) {
                         } else {
                             newText += !(typeof dictOutMathmode[temporaryBox.join("")] == "function") ? 
                             addSymbol(dictOutMathmode[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                            mistakes("Out of math mode: " + temporaryBox.join(""), dictOutMathmode[temporaryBox.join("")]);
+                            mistakes("Out of math mode", dictOutMathmode[temporaryBox.join("")], temporaryBox.join(""));
                             newText += addSymbol(dictOutMathmode[fullText[char]]);
-                            mistakes("Out of math mode: " + fullText[char], dictOutMathmode[fullText[char]]);
+                            mistakes("Out of math mode", dictOutMathmode[fullText[char]], fullText[char]);
                             temporaryBox = [];
                             trigger = false;
                         };
                     } else if (fullText[char] === "{") {
                         if (fullText[char-1] === "\\") {
                             newText += addSymbol(str(dictOutMathmode[temporaryBox.join("") + fullText[char]]));
-                            mistakes("Out of math mode: " + temporaryBox.join("") + fullText[char], dictOutMathmode[temporaryBox.join("") + fullText[char]]);
+                            mistakes("Out of math mode", dictOutMathmode[temporaryBox.join("") + fullText[char]], temporaryBox.join("") + fullText[char]);
                             temporaryBox = [];
                             trigger = false;
                         } else {
@@ -4286,12 +4286,12 @@ function replaceText(fullText, fullDict, mathmode) {
                     } else if (fullText[char] === "\\") {
                         if (fullText[char-1] === "\\") {
                             newText += addSymbol(str(dictOutMathmode["\\\\"]));
-                            mistakes("Out of math mode: " + "\\\\", dictOutMathmode["\\\\"]);
+                            mistakes("Out of math mode", dictOutMathmode["\\\\"], "\\\\");
                             temporaryBox = [];
                             trigger = false;
                         } else {
                             newText += addSymbol(str(dictOutMathmode[temporaryBox.join("")]));
-                            mistakes("Out of math mode: " + temporaryBox.join(""), dictOutMathmode[temporaryBox.join("")]);
+                            mistakes("Out of math mode", dictOutMathmode[temporaryBox.join("")], temporaryBox.join(""));
                             temporaryBox = ["\\"];
                         };
                     } else {
@@ -4309,7 +4309,7 @@ function replaceText(fullText, fullDict, mathmode) {
                     trigger = true;
                 } else {
                     newText += addSymbol(dictOutMathmode[fullText[char]]);
-                    mistakes("Out of math mode: " + fullText[char], dictOutMathmode[fullText[char]]);
+                    mistakes("Out of math mode", dictOutMathmode[fullText[char]], fullText[char]);
                 };
             };
         };
