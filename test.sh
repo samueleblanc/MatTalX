@@ -42,6 +42,7 @@ test_parser () {
     cat test/parser_test.js >> test_mattalx/popup.js
     echo "Directory made"
     cd test_mattalx
+    echo ""
     echo "--Start--"
     echo ""
     node popup.js
