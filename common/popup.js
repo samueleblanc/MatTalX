@@ -3582,6 +3582,9 @@ let errorsList = "";
 // Recognize if the device is screen only
 const touchScreen = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
+// Used by tokenizer() and tokensToText()
+const specialTokens = {startMathmode: "STARTMM", endMathmode: "ENDMM", startArgument: "STARTARG", endArgument: "ENDARG"};
+
 
 /**************************************************************************************/
 
@@ -3816,513 +3819,232 @@ function toReplaceCommand(key) {
 
 // Main functions
 
-function replaceText(fullText, fullDict, mathmode) {
-    // Main function, loops on letters and convert the input into characters
-
-    // TODO: Clean it up, and maybe restructure it completely, a more 'object oriented' way to do it is perhaps better
-    // Currently, the depth (\command{\command{\command{...}}}) is limited since it's hand coded. Going from this method 
-    // to a basic stack that stores commands as the depth increases and convert them as the depth decreases would be much better 
-    // and would finaly allow things like \sqrt{\mathbf{\mathfrak{x}}} to be possible
-    // (although one could simply write \sqrt*\mathbf{\mathfrak{x}} for the same output)
-
-    let newText = "";
+function tokenize(fullText, mathmode) {
+    // This function takes the text as entered by the user, and outputs a list of tokens
+    // For instance "curl written as $\nabla \times \mathbf{F}$" will output
+    //  [c,u,r,l, ,w,r,i,t,t,e,n, ,a,s, ,STARTMM,\nabla, ,\times, ,\mathbf,STARTARG,F,ENDARG,ENDMM]
+    let outTokens = [];
     let temporaryBox = [];  // Stores characters that are in command (e.g. \int -> ['\', 'i', 'n', 't'])
-    let temporaryArg = [];  // Stores characters that are in command arguments (e.g. \text{ok} -> ['o', 'k'])
-    let commandInArg = [];  // Stores characters that are a command inside arguments (e.g. \dot{\equiv} -> ['\','e','q','u','i','v'])
     let trigger = false;  // true if a command has begun (e.g. input: '\' -> true)
-    let arg = false;  // true if there's an argument at the end of a command (e.g. \mathbf + '{' -> true)
-    let triggerInArg = false;  // true if there's a command in an argument (e.g. \overline{ + '\' -> true)
-    let numberCurly = 0;  // Counts the number of curly brackets (except those used in the text like in 'S = {1,2,3}')
     let mathmodeStarter = "";  // e.g. if mathmode is started with $$, then "$$" will be mathmodeStarter
-    const parentheses = ["(", ")"];
     const brackets = ["[", "]"];
-    const commandStoppers = [" ", ",", "/", "-", "+", "<", ">", "|", "?"];  // parentheses and brackets also stops commands (most of the time)
+    const commandStoppers = [" ", ",", "/", "-", "+", "<", ">", "|", "?", "(", ")"];  // brackets also stops commands (most of the time)
     const potentialCommandStoppers = [":" , ";" , "~", ".", "!", "'", '"', "=", "%", "#"];
-    const dictOutMathmode = {...lettersOutMathMode, ...textCommands, " " : "\u2710"};  // dict used if outside of mathmode
     const startMathmode = mathmode;
 
-    // The basic 'algorithm' here is to loop on all characters of input and add them to one of the array described above based on the context.
-    // Some characters stop a command to be built (like a space) and it's at this moment that the arrays are being emptied and their content 
-    // will be converted by the dictionary to then be added to 'newText'
-    for (let char=0; char<fullText.length; char++) {
-        if (mathmode) {
-    //---- ENTER MATH MODE ----//
-            if (trigger) {
-    //---- START OF A COMMAND ----//
-                if (arg) {
-    //---- ENTER COMMAND ARGUMENT ----//
-                    if (triggerInArg) {
-    //---- ENTER COMMAND IN A COMMAND ARGUMENT ----//
-                        if (commandStoppers.includes(fullText[char])) {
-                            temporaryArg.push(str(fullDict[commandInArg.join("")]));
-                            temporaryArg.push(fullDict[fullText[char]]);
-                            commandInArg = [];
-                            triggerInArg = false;
-                        } else if (potentialCommandStoppers.includes(fullText[char])) {
-                            if (fullText[char-1] === "\\") {
-                                temporaryArg.push(str(fullDict[commandInArg.join("") +fullText[char]]));
-                            } else {
-                                temporaryArg.push(str(fullDict[commandInArg.join("")]));
-                                temporaryArg.push(fullDict[fullText[char]]);
-                            };
-                            commandInArg = [];
-                            triggerInArg = false;
-                        } else if (fullText[char] === "}") {
-                            if (fullText[char - 1] === "\\") {
-                                temporaryArg.push(fullText[char]);
-                            } else {
-                                if (temporaryBox.join("").slice(0, 5) === "\\sqrt") {
-                                    temporaryArg.push(str(fullDict[commandInArg.join("")]));
-                                    newText += addSymbol(fullDict["\\sqrt"](temporaryArg, temporaryBox.join("")));
-                                    mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", fullDict["\\sqrt"], temporaryBox.join(""));
-                                    temporaryBox = [];
-                                    temporaryArg = [];
-                                    arg = false;
-                                    trigger = false;
-                                    numberCurly += 1;
-                                } else if ((temporaryBox.join("") === "\\frac") || (temporaryBox.join("") === "\\frac*")) {
-                                    if (temporaryArg.indexOf("}") === -1) {
-                                        temporaryArg.push(str(fullDict[commandInArg.join("")]));
-                                        temporaryArg.push(fullText[char]);
-                                    } else {
-                                        if ((temporaryArg.join("") === "\\frac") || (temporaryArg.join("") === "\\frac*")) {
-                                            temporaryArg.push(str(fullDict[commandInArg.join("")]));
-                                            newText += addSymbol(fullDict[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
-                                            mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", undefined, "Embedded \\frac are currently not accepted");
-                                        } else {
-                                            temporaryArg.push(str(fullDict[commandInArg.join("")]));
-                                            newText += addSymbol(fullDict[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
-                                            mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", fullDict[temporaryBox.join("")], temporaryBox.join(""));
-                                        };
-                                        temporaryBox = [];
-                                        temporaryArg = [];
-                                        arg = false;
-                                        trigger = false;
-                                        numberCurly += 1;
-                                    };
-                                } else {
-                                    temporaryArg.push(str(fullDict[commandInArg.join("")]));
-                                    newText += addSymbol(fullDict[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
-                                    mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", fullDict[temporaryBox.join("")], temporaryBox.join(""));
-                                    temporaryBox = [];
-                                    temporaryArg = [];
-                                    arg = false;
-                                    trigger = false;
-                                    numberCurly += 1;
-                                };
-                                commandInArg = [];
-                                triggerInArg = false;
-                            };
-                        } else if (parentheses.includes(fullText[char])) {
-                            if (fullText[char - 1] === "\\") {
-                                temporaryArg.push(fullText[char]);
-                            } else {
-                                temporaryArg.push(str(fullDict[commandInArg.join("")]));
-                                temporaryArg.push(fullText[char]);
-                            };
-                            commandInArg = [];
-                            triggerInArg = false;
-                        } else if (brackets.includes(fullText[char])) {
-                            if (fullText[char - 1] === "\\") {
-                                temporaryArg.push(fullText[char]);
-                                commandInArg = [];
-                                triggerInArg = false;
-                            } else {
-                                if (commandInArg.join("").slice(0, 5) === "\\sqrt") {
-                                    commandInArg.push(fullText[char]);
-                                } else {
-                                    temporaryArg.push(str(fullDict[commandInArg.join("")]));
-                                    temporaryArg.push(fullText[char]);
-                                    commandInArg = [];
-                                    triggerInArg = false;
-                                };
-                            };
-                        } else if (fullText[char] === "{") {
-                            if (fullText[char - 1] === "\\") {
-                                temporaryArg.push(fullText[char]);
-                                triggerInArg = false;
-                                commandInArg = [];
-                            } else {
-                                if ((commandInArg.join("") === "\\frac") || commandInArg.join("") === "\\frac*") {
-                                    mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", undefined, "Embedded \\frac are currently not accepted. Try: ^{(y/z)}/_{x} ⇒ ⁽ʸᐟᶻ⁾/ₓ"); 
-                                } else {
-                                    let embCommand = embeddedCommand(commandInArg.join(""), fullText.substring(char), fullDict);
-                                    for (let i in embCommand[0]) {
-                                        temporaryArg.push(embCommand[0][i]);
-                                    };
-                                    char += embCommand[1] + 1;
-                                    triggerInArg = false;
-                                    commandInArg = [];
-                                };
-                            };
-                        } else if ((fullText[char] === "\\") || (fullText[char] === "^") || (fullText[char] === "_")) {
-                            temporaryArg.push(str(fullDict[commandInArg.join("")]));
-                            commandInArg = [fullText[char]];
-                        } else {
-                            commandInArg.push(fullText[char]);
-                        };
-    //---- EXIT COMMAND IN A COMMAND ARGUMENT ----//
-                    } else {
-    //---- SILL IN A COMMAND ARGUMENT ----//
-                        if (fullText[char] === "}") {
-                            if (temporaryBox.join("").slice(0, 5) === "\\sqrt") {
-                                mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", fullDict["\\sqrt"], temporaryBox.join(""));
-                                newText += addSymbol(fullDict["\\sqrt"](temporaryArg, temporaryBox.join("")));
-                                temporaryBox = [];
-                                temporaryArg = [];
-                                arg = false;
-                                trigger = false;
-                                numberCurly += 1;
-                            } else if ((temporaryBox.join("") === "\\frac") || (temporaryBox.join("") === "\\frac*")) {
-                                if (temporaryArg.indexOf("}") === -1) {
-                                    temporaryArg.push(fullText[char]);
-                                } else {
-                                    mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", fullDict[temporaryBox.join("")], temporaryBox.join(""));
-                                    newText += addSymbol(fullDict[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
-                                    temporaryBox = [];
-                                    temporaryArg = [];
-                                    arg = false;
-                                    trigger = false;
-                                    numberCurly += 1;
-                                };
-                            } else {
-                                mistakes(temporaryBox.join("") + "{" + temporaryArg.join("") + "}", fullDict[temporaryBox.join("")], temporaryBox.join(""));
-                                newText += addSymbol(fullDict[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
-                                temporaryBox = [];
-                                temporaryArg = [];
-                                arg = false;
-                                trigger = false;
-                                numberCurly += 1;
-                            };
-                        } else if ((fullText[char] === "\\") || (fullText[char] === "^") || (fullText[char] === "_")) {
-                            triggerInArg = true;
-                            commandInArg.push(fullText[char]);
-                        } else {
-                            temporaryArg.push(fullDict[fullText[char]]);
-                        };
-                    };
-    //---- EXIT ARGUMENT ----//
+    if (startMathmode) {
+        outTokens.push(specialTokens.startMathmode);
+    };
+    
+    for (let i=0; i<fullText.length; i++) {
+        if (trigger) {
+            if (commandStoppers.includes(fullText[i])) {
+                outTokens.push(temporaryBox.join(""));
+                outTokens.push(fullText[i]);
+                trigger = false;
+                temporaryBox = [];
+            } else if (potentialCommandStoppers.includes(fullText[i])) {
+                if (fullText[i-1] === "\\") {
+                    outTokens.push(temporaryBox.join("") + fullText[i]);
                 } else {
-    //---- STILL IN A COMMAND (trigger) ----//
-                    if (fullText[char] == "{") {
-                        if (fullText[char - 1] === "\\") {
-                            newText += addSymbol(fullDict[fullText[char]]);
-                            trigger = false;
-                            temporaryBox = [];
-                        } else {
-                            if ((typeof fullDict[temporaryBox.join("")] == "function") || (temporaryBox.join("").slice(0, 5) === "\\sqrt")) {
-                                arg = true;
-                                numberCurly += 1;
-                            } else {
-                                newText += addSymbol(str(fullDict[temporaryBox.join("")]));
-                                mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
-                                newText += "{";
-                                temporaryBox = [];
-                                trigger = false;
-                            };
-                        };
-                    } else if (fullText[char] == "}") {
-                        if (fullText[char - 1] === "\\") {
-                            newText += addSymbol(fullDict[fullText[char]]);
-                        } else {
-                            newText += addSymbol(str(fullDict[temporaryBox.join("")]));
-                            mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
-                            newText += "}"
-                        };
-                        temporaryBox = [];
-                        trigger = false;
-                    } else if (commandStoppers.includes(fullText[char])) {
-                        if (temporaryBox.join("").replace(/\[.*\]/g, "") === "\\sqrt*") {
-                            newText += addSymbol(fullDict["\\sqrt*"](undefined, temporaryBox.join("")));
-                            mistakes(temporaryBox.join(""), fullDict["\\sqrt*"]);
-                            newText += addSymbol(fullDict[fullText[char]]);
-                        } else if (fullText[char] === "!") {
-                            if (fullText[char-1] === "\\") {
-                                newText += addSymbol(fullDict["\\!"]);
-                            } else {
-                                newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
-                                addSymbol(fullDict[temporaryBox.join("")]) + fullDict[fullText[char]] : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                                mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
-                            };
-                        } else {
-                            newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
-                            addSymbol(fullDict[temporaryBox.join("")]) + fullDict[fullText[char]] : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                            mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
-                        };
-                        temporaryBox = [];
-                        trigger = false;
-                    } else if (potentialCommandStoppers.includes(fullText[char])) {
-                        if (fullText[char-1] === "\\") {
-                            newText += addSymbol(fullDict[temporaryBox.join("") + fullText[char]]);
-                            mistakes(temporaryBox.join("") + fullText[char], fullDict[temporaryBox.join("") + fullText[char]]);
-                        } else {
-                            newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
-                            addSymbol(fullDict[temporaryBox.join("")]) + fullDict[fullText[char]] : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                            mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
-                        };
-                        temporaryBox = [];
-                        trigger = false;
-                    } else if ((fullText[char] === "\\") || (fullText[char] === "^") || fullText[char] === "_") {
-                        if (fullText[char - 1] === "\\") {
-                            temporaryBox.push(fullText[char]);
-                            newText += addSymbol(str(fullDict[temporaryBox.join("")]));
-                            mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
-                            trigger = false;
-                            temporaryBox = [];
-                        } else {
-                            if (temporaryBox.join("").replace(/\[.*\]/g, "") === "\\sqrt*") {
-                                newText += addSymbol(fullDict["\\sqrt*"](undefined, temporaryBox.join("")));
-                                mistakes(temporaryBox.join(""), fullDict["\\sqrt*"]);
-                                temporaryBox = [fullText[char]];
-                            } else {
-                                newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
-                                addSymbol(fullDict[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                                mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
-                                temporaryBox = [fullText[char]];
-                            };
-                        };
-                    } else if (parentheses.includes(fullText[char])) {
-                        if (temporaryBox.join("").replace(/\[.*\]/g, "") === "\\sqrt*") {
-                            newText += addSymbol(fullDict["\\sqrt*"](undefined, temporaryBox.join("")));
-                            mistakes(temporaryBox.join(""), fullDict["\\sqrt*"]);
-                            newText += addSymbol(fullDict[fullText[char]]);
-                        } else {
-                            newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
-                            addSymbol(fullDict[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                            mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
-                            newText += addSymbol(fullDict[fullText[char]]);
-                        };
-                        temporaryBox = [];
-                        trigger = false;
-                    } else if (brackets.includes(fullText[char])) {
-                        if (temporaryBox.join("").slice(0,5) === "\\sqrt") {
-                            temporaryBox.push(fullText[char]);
-                        } else {
-                            if (fullText[char-1] === "\\") {
-                                if ((fullText[char] === "]") && (mathmodeStarter === "\\[")) {
-                                    newText += addSymbol(fullDict["\\\\"]);
-                                    mathmodeStarter = "";
-                                    mathmode = false;
-                                } else {
-                                    newText += addSymbol(str(fullDict[temporaryBox.join("") + fullText[char]]));
-                                    mistakes(temporaryBox.join("") + fullText[char], fullDict[temporaryBox.join("") + fullText[char]]);
-                                };
-                            } else {
-                                newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
-                                addSymbol(fullDict[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                                mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
-                                newText += addSymbol(fullDict[fullText[char]]);
-                            };
-                            temporaryBox = [];
-                            trigger = false;
-                        };
-                    } else if (fullText[char] === "$") {
-                        if (fullText[char-1] === "\\") {
-                            newText += addSymbol(str(fullDict[temporaryBox.join("") + fullText[char]]));
-                            mistakes(temporaryBox.join("") + fullText[char], fullDict[temporaryBox.join("") + fullText[char]]);
-                        } else {
-                            if (mathmodeStarter === "$") {
-                                if (fullText[char-1] === "$") {
-                                    newText += addSymbol(fullDict["\\\\"]);
-                                    mathmodeStarter = "$$";
-                                } else {
-                                    newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
-                                    addSymbol(fullDict[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                                    mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
-                                    mathmodeStarter = "";
-                                    mathmode = false;
-                                };
-                            } else if (mathmodeStarter === "$$") {
-                                if (fullText[char-1] === "$") {
-                                    newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
-                                    addSymbol(fullDict[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                                    mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
-                                    newText += addSymbol(fullDict["\\\\"]);
-                                    mathmodeStarter = "";
-                                    mathmode = false;
-                                } else if (fullText[char+1] === "$") {
-                                    continue;
-                                } else {
-                                    newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
-                                    addSymbol(fullDict[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                                    mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
-                                    newText += addSymbol(str(fullDict[fullText[char]]));
-                                    mistakes(fullText[char], fullDict[fullText[char]]);
-                                };
-                            } else {
-                                newText += !(typeof fullDict[temporaryBox.join("")] == "function") ? 
-                                addSymbol(fullDict[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                                mistakes(temporaryBox.join(""), fullDict[temporaryBox.join("")]);
-                                newText += addSymbol(fullDict[fullText[char]]);
-                                mistakes(fullText[char], fullDict[fullText[char]]);
-                            };
-                        };
-                        temporaryBox = [];
-                        trigger = false;
-                    } else {
-                        temporaryBox.push(fullText[char]);
-                    };
+                    outTokens.push(temporaryBox.join(""));
+                    outTokens.push(fullText[i]);
                 };
-    //---- EXIT COMMAND (trigger) ----//
-            } else {
-    //---- STILL IN MATH MODE ----//
-                if ((fullText[char] === "\\") || (fullText[char] === "^") || (fullText[char] === "_")) {
-                    temporaryBox.push(fullText[char]);
-                    trigger = true;
-                } else if (fullText[char] === "$") {
-                    if (mathmodeStarter === "$") {
-                        if (fullText[char-1] === "$") {
-                            newText += addSymbol(fullDict["\\\\"]);
-                            mathmodeStarter = "$$";
+                trigger = false;
+                temporaryBox = [];
+            } else if (brackets.includes(fullText[i])) {
+                if (fullText[i-1] === "\\") {
+                    if (mathmode) {
+                        if ((fullText[i] === "]") && (mathmodeStarter === "\\[")) {
+                            mathmode = false;
+                            mathmodeStarter = "";
+                            outTokens.push("\\\\");
+                            outTokens.push(specialTokens.endMathmode);
                         } else {
-                            mathmodeStarter = "";
-                            mathmode = false;
+                            outTokens.push(temporaryBox.join("") + fullText[i]);
                         };
-                    } else if (mathmodeStarter === "$$") {
-                        if (fullText[char-1] === "$") {
-                            newText += addSymbol(fullDict["\\\\"]);
-                            mathmodeStarter = "";
+                        temporaryBox = [];
+                    } else {
+                        if (fullText[i] === "[") {
+                            mathmode = true;
+                            mathmodeStarter = "\\[";
+                            outTokens.push("\\\\");
+                            outTokens.push(specialTokens.startMathmode);
+                        } else {
+                            outTokens.push(temporaryBox.join("") + fullText[i]);
+                        };
+                        temporaryBox = [];
+                    };
+                } else {
+                    // TODO: Add support for sqrt and sqrt*
+                    outTokens.push(temporaryBox.join(""));
+                    outTokens.push(fullText[i]);
+                    trigger = false;
+                    temporaryBox = [];
+                };
+            } else if (fullText[i] === "{") {
+                if (fullText[i-1] === "\\") {
+                    outTokens.push(temporaryBox.join("") + fullText[i]);
+                } else {
+                    outTokens.push(temporaryBox.join(""));
+                    outTokens.push(specialTokens.startArgument);
+                };
+                trigger = false;
+                temporaryBox = [];
+            } else if (fullText[i] === "}") {
+                // TODO: Add support for frac and frac*
+                if (fullText[i-1] === "\\") {
+                    outTokens.push(temporaryBox.join("") + fullText[i]);
+                } else {
+                    outTokens.push(temporaryBox.join(""));
+                    outTokens.push(specialTokens.endArgument);
+                };
+                trigger = false;
+                temporaryBox = [];
+            } else if (fullText[i] === "$") {
+                if (fullText[i-1] === "\\") {
+                    outTokens.push(temporaryBox.join("") + fullText[i]);
+                } else {
+                    if (mathmode) {
+                        if (mathmodeStarter === "$") {
+                            if (fullText[i-1] === "$") {
+                                mathmodeStarter = "$$";
+                                outTokens.push("\\\\");
+                            } else {
+                                mathmode = false;
+                                mathmodeStarter = "";
+                                outTokens.push(temporaryBox.join(""));
+                                outTokens.push(specialTokens.endMathmode);
+                            };
+                        } else if ((fullText[i-1] === "$") && (mathmodeStarter === "$$")) {
                             mathmode = false;
-                        } else if (fullText[char+1] === "$") {
+                            mathmodeStarter = "";
+                            outTokens.push("\\\\");
+                            outTokens.push(specialTokens.endMathmode);
+                        } else if (fullText[i+1] === "$") {
+                            outTokens.push(temporaryBox.join(""));
                             continue;
                         } else {
-                            newText += addSymbol(fullDict[fullText[char]]);
-                            mistakes(fullText[char], fullDict[fullText[char]]);
+                            outTokens.push(temporaryBox.join(""));
+                            outTokens.push(fullText[i]);
                         };
                     } else {
-                        newText += addSymbol(fullDict[fullText[char]]);
-                        mistakes(fullText[char], fullDict[fullText[char]]);
-                    };
-                } else {
-                    newText += addSymbol(fullDict[fullText[char]]);
-                    mistakes(fullText[char], fullDict[fullText[char]]);
-                };
-            };
-    //---- EXIT MATH MODE ----//
-        } else {
-    //---- OUT OF MATH MODE ----//
-            if (trigger) {
-    //---- START OF A COMMAND ----//
-                if (arg) {
-    //---- ENTER COMMAND ARGUMENT ----//
-                    if (fullText[char] === "}") {
-                        if (fullText[char-1] === "\\") {
-                            temporaryArg.push(fullText[char]);
-                        } else {
-                            mistakes("Out of math mode: " + temporaryBox.join("") + "{" + temporaryArg.join("") + "}", dictOutMathmode[temporaryBox.join("")], temporaryBox.join(""));
-                            newText += addSymbol(dictOutMathmode[temporaryBox.join("")](temporaryArg, temporaryBox.join("")));
-                            temporaryBox = [];
-                            temporaryArg = [];
-                            arg = false;
-                            trigger = false;
-                            numberCurly += 1;
-                        };
-                    } else {
-                        temporaryArg.push(fullText[char]);
-                    };
-    //---- EXIT COMMAND ARGUMENT ----//
-                } else {
-    //---- STILL IN A COMMAND (trigger) ----//
-                    if (fullText[char] === "[") {
-                        if (fullText[char-1] === "\\") {
-                            newText += addSymbol(dictOutMathmode["\\\\"]);
-                            mathmodeStarter = "\\[";
-                            mathmode = true;
-                        } else {
-                            newText += !(typeof dictOutMathmode[temporaryBox.join("")] == "function") ? 
-                            addSymbol(dictOutMathmode[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                            mistakes("Out of math mode", dictOutMathmode[temporaryBox.join("")], temporaryBox.join(""));
-                        };
-                        temporaryBox = [];
-                        trigger = false;
-                    } else if (fullText[char] === "$") {
-                        if (fullText[char-1] === "\\") {
-                            newText += addSymbol(str(dictOutMathmode[temporaryBox.join("") + fullText[char]]));
-                            mistakes("Out of math mode", dictOutMathmode[temporaryBox.join("") + fullText[char]], temporaryBox.join("") + fullText[char]);
-                        } else {
-                            newText += !(typeof dictOutMathmode[temporaryBox.join("")] == "function") ? 
-                            addSymbol(dictOutMathmode[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                            mistakes("Out of math mode", dictOutMathmode[temporaryBox.join("")], temporaryBox.join(""));
-                            mathmodeStarter = "$";
-                            mathmode = true;
-                        };
-                        temporaryBox = [];
-                        trigger = false;
-                    } else if (commandStoppers.includes(fullText[char]) || parentheses.includes(fullText[char]) || (fullText[char] === "]") || (fullText[char] === "}")) {
-                        if (fullText[char-1] === "\\") {
-                            newText += addSymbol(dictOutMathmode[temporaryBox.join("") + fullText[char]]);
-                            mistakes("Out of math mode", dictOutMathmode[temporaryBox.join("") + fullText[char]], temporaryBox.join("") + fullText[char]);
-                        } else {
-                            newText += !(typeof dictOutMathmode[temporaryBox.join("")] == "function") ? 
-                            addSymbol(dictOutMathmode[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                            mistakes("Out of math mode", dictOutMathmode[temporaryBox.join("")], temporaryBox.join(""));
-                            newText += addSymbol(dictOutMathmode[fullText[char]]);
-                            mistakes("Out of math mode", dictOutMathmode[fullText[char]], fullText[char]);
-                        };
-                        temporaryBox = [];
-                        trigger = false;
-                    } else if (potentialCommandStoppers.includes(fullText[char])) {
-                        if (fullText[char-1] === "\\") {
-                            temporaryBox.push(fullText[char]);
-                        } else {
-                            newText += !(typeof dictOutMathmode[temporaryBox.join("")] == "function") ? 
-                            addSymbol(dictOutMathmode[temporaryBox.join("")]) : mistakes(temporaryBox.join("") + "{} needs an argument.", undefined);
-                            mistakes("Out of math mode", dictOutMathmode[temporaryBox.join("")], temporaryBox.join(""));
-                            newText += addSymbol(dictOutMathmode[fullText[char]]);
-                            mistakes("Out of math mode", dictOutMathmode[fullText[char]], fullText[char]);
-                            temporaryBox = [];
-                            trigger = false;
-                        };
-                    } else if (fullText[char] === "{") {
-                        if (fullText[char-1] === "\\") {
-                            newText += addSymbol(str(dictOutMathmode[temporaryBox.join("") + fullText[char]]));
-                            mistakes("Out of math mode", dictOutMathmode[temporaryBox.join("") + fullText[char]], temporaryBox.join("") + fullText[char]);
-                            temporaryBox = [];
-                            trigger = false;
-                        } else {
-                            arg = true;
-                            numberCurly += 1;
-                        };
-                    } else if (fullText[char] === "\\") {
-                        if (fullText[char-1] === "\\") {
-                            newText += addSymbol(str(dictOutMathmode["\\\\"]));
-                            mistakes("Out of math mode", dictOutMathmode["\\\\"], "\\\\");
-                            temporaryBox = [];
-                            trigger = false;
-                        } else {
-                            newText += addSymbol(str(dictOutMathmode[temporaryBox.join("")]));
-                            mistakes("Out of math mode", dictOutMathmode[temporaryBox.join("")], temporaryBox.join(""));
-                            temporaryBox = ["\\"];
-                        };
-                    } else {
-                        temporaryBox.push(fullText[char]);
+                        mathmode = true;
+                        mathmodeStarter = "$";
+                        outTokens.push(temporaryBox.join(""));
+                        outTokens.push(specialTokens.startMathmode);
                     };
                 };
-    //---- EXIT COMMAND (trigger) ----//
+                trigger = false;
+                temporaryBox = [];
+            } else if ((fullText[i] === "\\") || (fullText[i] === "^") || (fullText[i] === "_")) {
+                if (fullText[i-1] === "\\") {
+                    outTokens.push(temporaryBox.join("") + fullText[i]);
+                    trigger = false;
+                    temporaryBox = [];
+                } else {
+                    outTokens.push(temporaryBox.join(""));
+                    temporaryBox = [fullText[i]];
+                };
             } else {
-    //---- NO MATH MODE, NO COMMAND ----//
-                if (fullText[char] === "$") {
-                    mathmodeStarter = "$";
-                    mathmode = true;
-                } else if (fullText[char] === "\\") {
-                    temporaryBox.push(fullText[char]);
-                    trigger = true;
+                temporaryBox.push(fullText[i]);
+            };
+        } else {
+            if ((fullText[i] === "\\") || (fullText[i] === "^") || (fullText[i] === "_")) {
+                trigger = true;
+                temporaryBox.push(fullText[i]);
+            } else if (fullText[i] === "$") {
+                if (mathmode) {
+                    if (mathmodeStarter === "$") {
+                        if (fullText[i-1] === "$") {
+                            mathmodeStarter = "$$";
+                            outTokens.push("\\\\");
+                        } else {
+                            mathmode = false;
+                            mathmodeStarter = "";
+                            outTokens.push(specialTokens.endMathmode);
+                        };
+                    } else if (fullText[i+1] === "$") {
+                        continue;
+                    } else {
+                        outTokens.push(fullText[i]);
+                    };
                 } else {
-                    newText += addSymbol(dictOutMathmode[fullText[char]]);
-                    mistakes("Out of math mode", dictOutMathmode[fullText[char]], fullText[char]);
+                    if ((fullText[i-1] === "$") && (mathmodeStarter === "$$")) {
+                        mathmodeStarter = "";
+                        outTokens.push("\\\\");
+                    } else {
+                        mathmode = true;
+                        mathmodeStarter = "$";
+                        outTokens.push(specialTokens.startMathmode);
+                    };
+                };
+            } else if (fullText[i] === "}") {
+                outTokens.push(specialTokens.endArgument);
+            } else {
+                outTokens.push(fullText[i]);
+            };
+        };
+    };
+
+    if (startMathmode) {
+        outTokens.push(specialTokens.endMathmode);
+    };
+
+    return outTokens;
+};
+
+function tokensToText(tokens, dictMM, dictOut) {
+    // Takes a list of tokens as input and uses the dictonary to convert them to symbols
+    let command;
+    let fctStack = [];
+    let fct;
+    let argStack = [];
+    let arg;
+    let outText = "";
+    let mathmode = false;
+    let dict;
+    let i;
+    for (i=0; i<tokens.length; i++) {
+        dict = (mathmode) ? dictMM : dictOut;
+        if (Object.values(specialTokens).includes(tokens[i])) {
+            if (tokens[i] === specialTokens.startArgument) {
+                argStack.push([]);
+            } else if (tokens[i] === specialTokens.endArgument) {
+                fct = fctStack.pop();
+                arg = argStack.pop();
+                if (argStack.length > 0) {
+                    argStack[argStack.length-1].push(...dict[fct](arg, fct));
+                } else {
+                    outText += dict[fct](arg, fct).join("");
+                };
+            } else if (tokens[i] === specialTokens.startMathmode) {
+                mathmode = true;
+            } else if (tokens[i] === specialTokens.endMathmode) {
+                mathmode = false;
+            };
+        } else {
+            command = dict[tokens[i]];
+            if (typeof command == "function") {
+                if (tokens[i+1] === specialTokens.startArgument) {
+                    fctStack.push(tokens[i]);
+                } else {
+                    // error
+                };
+            } else {
+                if (argStack.length > 0) {
+                    argStack[argStack.length-1].push(tokens[i]);
+                } else {
+                    outText += dict[tokens[i]];
                 };
             };
         };
     };
-    if (numberCurly % 2 !== 0) {
-        mistakes("Missing curly brackets { }", undefined);
-    };
-    if (!startMathmode && mathmode) {
-        const comToStop = (mathmodeStarter === "\\[") ? "\\]" : mathmodeStarter;
-        mistakes("Math mode wasn't closed", undefined, "Missing '" + comToStop + "' ");
-    };
-    return newText;
+    return outText;
 };
+
+
+// Used by main functions
 
 function replaceLetters(letters, dict, initialCommand, checkMistakes=true) {
     // Used by a lot of functions to convert every letter in a string of characters
@@ -4335,9 +4057,6 @@ function replaceLetters(letters, dict, initialCommand, checkMistakes=true) {
     };
     return newtext;
 };
-
-
-// Used by main functions
 
 const combineSymbols = (arg, initialCommand, symbol, forTwo=undefined) => {
     // Appends a 'combining symbol' to a regular symbol to create a new one (e.g. 'e' + '´' -> é)
@@ -4363,39 +4082,6 @@ const combineSymbols = (arg, initialCommand, symbol, forTwo=undefined) => {
         };
     };
     return textComb;
-};
-
-function embeddedCommand(command, endOfText, fullDict) {
-    // Is called if there is a command as an argument of a command
-
-    // TODO: Should be rewritten to be much more flexible, there's no reason to not be able to have embedded \sqrt, for instance
-    let args = [];
-    endOfText = endOfText.substring(1);
-    for (let c in endOfText) {
-        if (endOfText[c] === "}") {
-            if (endOfText[c - 1] === "\\") {
-                args.splice(-1, 1);
-                args.push(endOfText[c]);
-            } else {
-                if (command.slice(0, 5) === "\\sqrt") {
-                    mistakes("Embedded \\sqrt are not best practice, use '\\sqrt[n]* (\\sqrt[k]* x)' instead of '\\sqrt[n]{\\sqrt[k]{x}}'", undefined, "ⁿ√(ᵏ√𝑥)");
-                    return [addSymbol(fullDict["\\sqrt"](args, command), true), parseInt(c)];
-                } else {
-                    mistakes(command + "{" + args.join("") + "}", fullDict[command](args, command));
-                    return [addSymbol(fullDict[command](args, command), true), parseInt(c)];
-                };
-            };
-        } else if (endOfText[c] === "{") {
-            if (endOfText[c-1] !== "\\") {
-                mistakes("Embedded commands (depth exceeded)", undefined);
-                return [addSymbol(fullDict[command](args, command), true), parseInt(c)];
-            } else {
-                args.push(fullDict[endOfText[c]]);
-            };
-        } else {
-            args.push(fullDict[endOfText[c]]);
-        };
-    };
 };
 
 function addSymbol(command, keepArray=false) {
