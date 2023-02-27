@@ -894,9 +894,9 @@ const superscript = (arg, initialCommand, forFrac=false) => {
     // This function is by default not called by the frac function
     let output = replaceLetters(arg, Superscript, initialCommand, !forFrac);
     if ((output.indexOf(errSymbol) === -1) || (forFrac)) {
-        return output;
+        return [output];
     } else {
-        return "^(" + arg.join("") + ")";
+        return ["^(" + arg.join("") + ")"];
     };
 };
 
@@ -905,9 +905,9 @@ const subscript = (arg, initialCommand, forFrac=false) => {
     // This function is by default not called by the frac function
     let output = replaceLetters(arg, Subscript, initialCommand, !forFrac);
     if ((output.indexOf(errSymbol) === -1) || (forFrac)) {
-        return output;
+        return [output];
     } else {
-        return "_(" + arg.join("") + ")";
+        return ["_(" + arg.join("") + ")"];
     };
 };
 
@@ -1797,7 +1797,7 @@ const sqrt = (arg, initialCommand) => {
     } else {
         output += addSymbolArray(arg, initialCommand + "{" + arg.join("") + "}");
     };
-    return output;
+    return [output];
 };
 
 
@@ -1835,7 +1835,7 @@ const sqrtNoArg = (arg, initialCommand) => {
         default:
             output += addSymbol(mathDictionary["^"](rootNum.toString().split(""), initialCommand)) + "\u221A";
     };
-    return output;
+    return [output];
 };
 
 const frac = (arg, initialCommand) => {
@@ -1866,7 +1866,7 @@ const frac = (arg, initialCommand) => {
     };
     output += addSymbol(mathDictionary["_"](deno, initialCommand, true));
     if (output.indexOf(errSymbol) === -1) {
-        return output;
+        return [output];
     } else {
         if (arg.join("").includes("\u2710")) {
             const spaces = arg.filter(c => {return c.includes("\u2710")});
@@ -1898,7 +1898,7 @@ const frac = (arg, initialCommand) => {
             };
         };
         output += addSymbolArray(deno, "\\frac{" + arg.join("") + "}") + ")";
-        return output;
+        return [output];
     };
 };
 
@@ -1928,12 +1928,12 @@ const singleCharFrac = (arg, initialCommand) => {
         "c}{u" : "\u2106"
     };
     let output = fractions[noSpaceArg];
-    return (output !== undefined) ? output : frac(arg, initialCommand);
+    return (output !== undefined) ? [output] : frac(arg, initialCommand);
 };
 
 const pmod = (arg, initialCommand) => {
     // returns ' (mod arg)'
-    return "\u2710(mod\u2710" + arg.join("") + ")";
+    return ["\u2710(mod\u2710" + arg.join("") + ")"];
 };
 
 // These functions call combineSymbols with a predetermined symbol
@@ -1992,7 +1992,7 @@ const above = (arg, initialCommand) => {
         return mistakes(initialCommand + "{" + arg.join("") + "}", undefined, "Only one argument accepted");
     };
     mistakes(initialCommand + "{" + arg.join("") + "}", Above[arg[0]], (arg[0] !== undefined) ? arg[0] : "Argument doesn't exist");
-    return Above[arg[0]];
+    return [Above[arg[0]]];
 };
 
 const below = (arg, initialCommand) => {
@@ -2001,7 +2001,7 @@ const below = (arg, initialCommand) => {
         return mistakes(initialCommand + "{" + arg.join("") + "}", undefined, "Only one argument accepted");
     };
     mistakes(initialCommand + "{" + arg.join("") + "}", Below[arg[0]], (arg[0] !== undefined) ? arg[0] : "Argument doesn't exist");
-    return Below[arg[0]];
+    return [Below[arg[0]]];
 };
 
 
@@ -2782,8 +2782,6 @@ const noStyleGreek = {
 const defaultDict = {...mathDictionary, ...stdGreek};
 
 const textCommands = {
-    "\\^" : "^",
-    "\\_" : "_",
     "\\LaTeX" : "𝐿ᴬ𝑇ᴇ𝑋",
     "\\TeX" : "𝑇ᴇ𝑋",
     "\\MatTalX" : "𝑀ᴀᴛ𝑇ᴀʟ𝑋",
@@ -3405,6 +3403,8 @@ const lettersOutMathMode = {
     ">" : ">",
     "%" : "%",
     "*" : "*",
+    "^" : "^",
+    "_" : "_",
     "@" : "@",
     "#" : "#",
     "~" : "~",
@@ -3823,20 +3823,23 @@ function tokenize(fullText, mathmode) {
     // This function takes the text as entered by the user, and outputs a list of tokens
     // For instance "curl written as $\nabla \times \mathbf{F}$" will output
     //  [c,u,r,l, ,w,r,i,t,t,e,n, ,a,s, ,STARTMM,\nabla, ,\times, ,\mathbf,STARTARG,F,ENDARG,ENDMM]
-    let outTokens = [];
-    let temporaryBox = [];  // Stores characters that are in command (e.g. \int -> ['\', 'i', 'n', 't'])
-    let trigger = false;  // true if a command has begun (e.g. input: '\' -> true)
-    let mathmodeStarter = "";  // e.g. if mathmode is started with $$, then "$$" will be mathmodeStarter
     const brackets = ["[", "]"];
     const commandStoppers = [" ", ",", "/", "-", "+", "<", ">", "|", "?", "(", ")"];  // brackets also stops commands (most of the time)
     const potentialCommandStoppers = [":" , ";" , "~", ".", "!", "'", '"', "=", "%", "#"];
     const startMathmode = mathmode;
+    let outTokens = [];
+    let temporaryBox = [];  // Stores characters that are in command (e.g. \int -> ['\', 'i', 'n', 't'])
+    let trigger = false;  // true if a command has begun (e.g. input: '\' -> true)
+    let mathmodeStarter = "";  // e.g. if mathmode is started with $$, then "$$" will be mathmodeStarter
+    let fracDepth = 0;  // Used for fraction (\frac{}{}) parsing, because of the way curly brackets are used
+    // Could be used in the future for \stackrel{}{} (if it replaces the \above command)
 
     if (startMathmode) {
         outTokens.push(specialTokens.startMathmode);
     };
     
-    for (let i=0; i<fullText.length; i++) {
+    let i;
+    for (i=0; i<fullText.length; i++) {
         if (trigger) {
             if (commandStoppers.includes(fullText[i])) {
                 outTokens.push(temporaryBox.join(""));
@@ -3876,26 +3879,34 @@ function tokenize(fullText, mathmode) {
                         temporaryBox = [];
                     };
                 } else {
-                    // TODO: Add support for sqrt and sqrt*
-                    outTokens.push(temporaryBox.join(""));
-                    outTokens.push(fullText[i]);
-                    trigger = false;
-                    temporaryBox = [];
+                    if (temporaryBox.slice(0,5).join("") === "\\sqrt") {
+                        temporaryBox.push(fullText[i]);
+                    } else {
+                        outTokens.push(temporaryBox.join(""));
+                        outTokens.push(fullText[i]);
+                        trigger = false;
+                        temporaryBox = [];
+                    };
                 };
             } else if (fullText[i] === "{") {
                 if (fullText[i-1] === "\\") {
                     outTokens.push(temporaryBox.join("") + fullText[i]);
                 } else {
+                    if (temporaryBox.slice(0,5).join("") === "\\frac") {
+                        fracDepth += 1;
+                    };
                     outTokens.push(temporaryBox.join(""));
                     outTokens.push(specialTokens.startArgument);
                 };
                 trigger = false;
                 temporaryBox = [];
             } else if (fullText[i] === "}") {
-                // TODO: Add support for frac and frac*
                 if (fullText[i-1] === "\\") {
                     outTokens.push(temporaryBox.join("") + fullText[i]);
                 } else {
+                    if ((fracDepth > 0) && (fullText[i+1] !== "{")) {
+                        fracDepth -= 1;
+                    };
                     outTokens.push(temporaryBox.join(""));
                     outTokens.push(specialTokens.endArgument);
                 };
@@ -3937,7 +3948,7 @@ function tokenize(fullText, mathmode) {
                 };
                 trigger = false;
                 temporaryBox = [];
-            } else if ((fullText[i] === "\\") || (fullText[i] === "^") || (fullText[i] === "_")) {
+            } else if (fullText[i] === "\\") {
                 if (fullText[i-1] === "\\") {
                     outTokens.push(temporaryBox.join("") + fullText[i]);
                     trigger = false;
@@ -3946,13 +3957,33 @@ function tokenize(fullText, mathmode) {
                     outTokens.push(temporaryBox.join(""));
                     temporaryBox = [fullText[i]];
                 };
+            } else if ((fullText[i] === "^") || (fullText[i] === "_")) {
+                if (fullText[i-1] === "\\") {
+                    if (mathmode) {
+                        outTokens.push(temporaryBox.join("") + fullText[i]);
+                        trigger = false;
+                        temporaryBox = [];
+                    } else {
+                        temporaryBox.push(fullText[i]);
+                    };
+                } else {
+                    outTokens.push(temporaryBox.join(""));
+                    temporaryBox = [fullText[i]];
+                };
             } else {
                 temporaryBox.push(fullText[i]);
             };
         } else {
-            if ((fullText[i] === "\\") || (fullText[i] === "^") || (fullText[i] === "_")) {
+            if (fullText[i] === "\\") {
                 trigger = true;
                 temporaryBox.push(fullText[i]);
+            } else if ((fullText[i] === "^") || (fullText[i] === "_")) {
+                if (mathmode) {
+                    trigger = true;
+                    temporaryBox.push(fullText[i]);
+                } else {
+                    outTokens.push(fullText[i]);
+                };
             } else if (fullText[i] === "$") {
                 if (mathmode) {
                     if (mathmodeStarter === "$") {
@@ -3980,7 +4011,16 @@ function tokenize(fullText, mathmode) {
                     };
                 };
             } else if (fullText[i] === "}") {
-                outTokens.push(specialTokens.endArgument);
+                if (fracDepth > 0) {
+                    if (fullText[i+1] === "{") {
+                        outTokens.push(fullText[i]);
+                    } else {
+                        fracDepth -= 1;
+                        outTokens.push(specialTokens.endArgument);
+                    };
+                } else {
+                    outTokens.push(specialTokens.endArgument);
+                };
             } else {
                 outTokens.push(fullText[i]);
             };
@@ -3994,51 +4034,123 @@ function tokenize(fullText, mathmode) {
     return outTokens;
 };
 
-function tokensToText(tokens, dictMM, dictOut) {
+function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
     // Takes a list of tokens as input and uses the dictonary to convert them to symbols
-    let command;
-    let fctStack = [];
+    
+    // The basic idea of the algorithm is:
+    // Loop on tokens
+    //     If token is STARTARG
+    //         push to argStack
+    //     If token is ENDARG
+    //         pop from fctStack and argStack
+    //         add the corresponding symbol to outText or mathmodeText
+    //     Else
+    //         push token to outText, mathmodeText, fctStack or the last index of argStack depending on token
+
+    let command;  // Used to check if a command is a function or a symbol
     let fct;
-    let argStack = [];
+    let fctStack = [];  // Stores the functions until they are used
+    let callingFct;  // Might be different from fct (e.g. \\sqrt[3] is called with \\sqrt)
     let arg;
-    let outText = "";
-    let mathmode = false;
-    let dict;
+    let argStack = [];  // Stores the function arguments until they are used
+    let outText = "";  // The text that will be returned
+    let mathmodeText = "";  // Intermediary string that holds the text inside mathmode until the spaces are ajusted
+    let mathmode = false;  // true if in mathmode, false if not
+    let dict;  // dictMM (mathmode) or dictOut (out of mathmode) depending if in mathmode or not
+    let mathmodeOccurence = 0;  // Counts the number of times one enters and leaves mathmode
+    let argOccurence = 0;  // Counts the number of times one gets in and out of an argument
+
     let i;
     for (i=0; i<tokens.length; i++) {
         dict = (mathmode) ? dictMM : dictOut;
         if (Object.values(specialTokens).includes(tokens[i])) {
             if (tokens[i] === specialTokens.startArgument) {
                 argStack.push([]);
+                argOccurence += 1;
             } else if (tokens[i] === specialTokens.endArgument) {
-                fct = fctStack.pop();
-                arg = argStack.pop();
-                if (argStack.length > 0) {
-                    argStack[argStack.length-1].push(...dict[fct](arg, fct));
+                argOccurence += 1;
+                if (fctStack.length > 0) {
+                    fct = fctStack.pop();
+                    if (argStack.length > 0) {
+                        arg = argStack.pop();
+                        if (fct.substring(0,5) === "\\sqrt") {
+                            callingFct = fct.replace(/\[.*\]/g, "")
+                        } else {
+                            callingFct = fct;
+                        };
+                        if (argStack.length > 0) {
+                            argStack[argStack.length-1].push(...dict[callingFct](arg, fct));
+                        } else {
+                            if (mathmode) {
+                                mathmodeText += str(dict[callingFct](arg, fct).join(""));
+                                mistakes(fct+"{"+arg.join("")+"}", str(dict[callingFct](arg, fct).join("")));
+                            } else {
+                                outText += str(dict[callingFct](arg, fct).join(""));
+                                mistakes("Out of math mode", str(dict[callingFct](arg, fct).join("")), fct+"{"+arg.join("")+"}");
+                            };
+                        };
+                    } else {
+                        if (mathmode) {
+                            mathmodeText += mistakes("Out of math mode", undefined, "Can't find an argument for " + fct + "{}");
+                        } else {
+                            outText += mistakes(fct+"{}", undefined, "Can't find an argument");
+                        };
+                    };
                 } else {
-                    outText += dict[fct](arg, fct).join("");
+                    if (argStack.length > 0) {
+                        arg = argStack.pop();
+                        if (mathmode) {
+                            mathmodeText += mistakes("Out of math mode", undefined, "Can't find a function for {" + arg.join("") + "}");
+                        } else {
+                            outText += mistakes("Can't find a function for {" + arg.join("") + "}", undefined);
+                        };
+                    };
                 };
             } else if (tokens[i] === specialTokens.startMathmode) {
+                mathmodeOccurence += 1;
                 mathmode = true;
             } else if (tokens[i] === specialTokens.endMathmode) {
+                mathmodeOccurence += 1;
                 mathmode = false;
+                outText += adjustSpacing(mathmodeText);
+                mathmodeText = "";
             };
         } else {
-            command = dict[tokens[i]];
+            if (tokens[i].substring(0,5) === "\\sqrt") {
+                command = dict[tokens[i].replace(/\[.*\]/g, "")];
+            } else {
+                command = dict[tokens[i]];
+            };
             if (typeof command == "function") {
                 if (tokens[i+1] === specialTokens.startArgument) {
                     fctStack.push(tokens[i]);
                 } else {
-                    // error
+                    if (mathmode) {
+                        mathmodeText += mistakes("Out of math mode", undefined, "Can't find an argument for "+tokens[i]+"{}");
+                    } else {
+                        outText += mistakes(tokens[i]+"{}", undefined, "Can't find an argument");
+                    };
                 };
             } else {
                 if (argStack.length > 0) {
-                    argStack[argStack.length-1].push(tokens[i]);
+                    argStack[argStack.length-1].push(dict[tokens[i]]);
                 } else {
-                    outText += dict[tokens[i]];
+                    if (mathmode) {
+                        mathmodeText += str(dict[tokens[i]]);
+                        mistakes(tokens[i], dict[tokens[i]]);
+                    } else {
+                        outText += str(dict[tokens[i]]);
+                        mistakes("Out of math mode", dict[tokens[i]], tokens[i]);
+                    };
                 };
             };
         };
+    };
+    if (mathmodeOccurence % 2 !== 0) {
+        mistakes("Math mode was not closed", undefined);
+    };
+    if (argOccurence % 2 !== 0) {
+        mistakes("Unbalanced curly brackets ('{', '}')", undefined);
     };
     return outText;
 };
@@ -4094,7 +4206,7 @@ function addSymbol(command, keepArray=false) {
 };
 
 function addSymbolArray(args, command, checkMistakes=true) {
-    // Differs from the function above as it returns an array instead of a string
+    // Differs from the function above as it takes in an array instead of a string
     let output = "";
     for (let i in args) {
         output += (args[i] !== undefined) ? args[i] : errSymbol;
@@ -4414,13 +4526,12 @@ function convert(fullText) {
         // Chemistry package, differs in the automatic conversion of letters and spacing adjustments
         fullDict = makeDict(firstWord);
         fullText = fullText.replace("!chem", "");
-        fullText = replaceText(fullText, fullDict, changeModeButton.checked);
-        fullText = adjustSpaceChem(fullText);
+        fullText = tokensToText(tokenize(fullText, changeModeButton.checked), fullDict, adjustSpaceChem);
     } else if (firstWord === "!matrix") {
         // Matrix package, the input should be of the form [a,b,c][d,e,f]
         fullDict = makeDict(firstWord);
         fullText = fullText.replace("!matrix", "");
-        fullText = replaceText(fullText, fullDict, true);
+        fullText = tokensToText(tokenize(fullText, true), fullDict);
         fullText = matrix(fullText);
         if (changeFontButton.checked) {
             mistakes("!matrix", undefined, "Works better with 'Mathematical font' unchecked");
@@ -4428,8 +4539,7 @@ function convert(fullText) {
     } else {
         // Default package
         fullDict = makeDict("default");
-        fullText = replaceText(fullText, fullDict, changeModeButton.checked);
-        fullText = adjustSpaces(fullText);
+        fullText = tokensToText(tokenize(fullText, changeModeButton.checked), fullDict, adjustSpaces);
     };
     return fullText;
 };

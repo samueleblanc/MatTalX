@@ -10,9 +10,13 @@ function test() {
         "$f:\\mathbb{R} \\rightarrow \\mathbb{R} ; x \\mapsto f(x) \\coloneqq x^{2}$",
         "Let $f$ be a function such that $f(x) \\geq 0 \\forall x \\in \\mathbb{Z}$",
         "$\\mathbf{\\mathfrak{abc}}$",
-        "curl written as $\\nabla \\times \\mathbf{F}",
+        "curl written as $\\nabla \\times \\mathbf{F}$",
         "$\\sqrt{\\sqrt[3]{\\sqrt[4]{\\cdots\\sqrt[n]{n}}}}$",
-        "All\\^{o}, $\\frac{1}{2}$ est rationnelle"
+        "Bien s\\^{u}r, $\\frac{1}{2}$ est rationnelle. De plus, $\\frac{\\frac{\\frac{1}{2}}{2}}{2}$ l'est aussi.",
+        "$n!$ grows fast, but less so than $n \\uparrow\\uparrow\\uparrow n$",
+        "\\textbf{Proposition}: Let $a \\in \\mathbb{R}$, then $a \\leq x  \\forall x \\in \\emptyset$",
+        "\\textbf{Theorem}: Let $S^{n}$ be a closed ball of an Euclidiean space and $f$ be a continuous function. Then \\\\" + 
+        "      $\\exists f:S^{n} \\rightarrow S^{n}$ such that $f(x_{0}) = x_{0}$"
     ];
     const _dictMM = {...mathDictionary, ...stdGreek, ...lettersMath};
     const _dictOut = {...lettersOutMathMode, ...textCommands, " " : " "};
@@ -26,7 +30,7 @@ function test() {
         console.log("├┬─ Tokens:");
         console.log("│└─── " + _token);
         console.log("├┬─ Convert:");
-        console.log("│└─── " + tokensToText(_token, _dictMM, _dictOut));
+        console.log("│└─── " + tokensToText(_token, _dictMM, _dictOut, (t) => {return t}));
         console.log("└──────────────────────────────────────");
     };
     _time = process.hrtime(_time);
