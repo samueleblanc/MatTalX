@@ -894,7 +894,7 @@ const superscript = (arg, initialCommand, forFrac=false) => {
     // This function is by default not called by the frac function
     let output = replaceLetters(arg, Superscript, initialCommand, !forFrac);
     if ((output.indexOf(errSymbol) === -1) || (forFrac)) {
-        return [output];
+        return output;
     } else {
         return ["^(" + arg.join("") + ")"];
     };
@@ -905,7 +905,7 @@ const subscript = (arg, initialCommand, forFrac=false) => {
     // This function is by default not called by the frac function
     let output = replaceLetters(arg, Subscript, initialCommand, !forFrac);
     if ((output.indexOf(errSymbol) === -1) || (forFrac)) {
-        return [output];
+        return output;
     } else {
         return ["_(" + arg.join("") + ")"];
     };
@@ -3824,15 +3824,16 @@ function tokenize(fullText, mathmode) {
     // For instance "curl written as $\nabla \times \mathbf{F}$" will output
     //  [c,u,r,l, ,w,r,i,t,t,e,n, ,a,s, ,STARTMM,\nabla, ,\times, ,\mathbf,STARTARG,F,ENDARG,ENDMM]
     const brackets = ["[", "]"];
-    const commandStoppers = [" ", ",", "/", "-", "+", "<", ">", "|", "?", "(", ")"];  // brackets also stops commands (most of the time)
+    const commandStoppers = [" ", ",", "/", "-", "+", "<", ">", "|", "?", "(", ")"]; 
+    // N.B. Brackets also stops commands (most of the time)
     const potentialCommandStoppers = [":" , ";" , "~", ".", "!", "'", '"', "=", "%", "#"];
     const startMathmode = mathmode;
     let outTokens = [];
-    let temporaryBox = [];  // Stores characters that are in command (e.g. \int -> ['\', 'i', 'n', 't'])
-    let trigger = false;  // true if a command has begun (e.g. input: '\' -> true)
-    let mathmodeStarter = "";  // e.g. if mathmode is started with $$, then "$$" will be mathmodeStarter
-    let fracDepth = 0;  // Used for fraction (\frac{}{}) parsing, because of the way curly brackets are used
-    // Could be used in the future for \stackrel{}{} (if it replaces the \above command)
+    let temporaryBox = [];      // Stores characters that are in command (e.g. \int -> ['\', 'i', 'n', 't'])
+    let trigger = false;        // true if a command has begun (e.g. input: '\' -> true)
+    let mathmodeStarter = "";   // e.g. if mathmode is started with $$, then "$$" will be mathmodeStarter
+    let fracDepth = 0;          // Used for fraction (\frac{}{}) parsing, because of the way curly brackets are used
+    // N.B. Could be used in the future for \stackrel{}{} (if it replaces the \above command)
 
     if (startMathmode) {
         outTokens.push(specialTokens.startMathmode);
@@ -4047,18 +4048,18 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
     //     Else
     //         push token to outText, mathmodeText, fctStack or the last index of argStack depending on token
 
-    let command;  // Used to check if a command is a function or a symbol
+    let command;                 // Used to check if a command is a function or a symbol
     let fct;
-    let fctStack = [];  // Stores the functions until they are used
-    let callingFct;  // Might be different from fct (e.g. \\sqrt[3] is called with \\sqrt)
+    let fctStack = [];           // Stores the functions until they are used
+    let callingFct;              // Might be different from fct (e.g. \\sqrt[3] is called with \\sqrt)
     let arg;
-    let argStack = [];  // Stores the function arguments until they are used
-    let outText = "";  // The text that will be returned
-    let mathmodeText = "";  // Intermediary string that holds the text inside mathmode until the spaces are ajusted
-    let mathmode = false;  // true if in mathmode, false if not
-    let dict;  // dictMM (mathmode) or dictOut (out of mathmode) depending if in mathmode or not
-    let mathmodeOccurence = 0;  // Counts the number of times one enters and leaves mathmode
-    let argOccurence = 0;  // Counts the number of times one gets in and out of an argument
+    let argStack = [];           // Stores the function arguments until they are used
+    let outText = "";            // The text that will be returned
+    let mathmodeText = "";       // Intermediary string that holds the text inside mathmode until the spaces are ajusted
+    let mathmode = false;        // true if in mathmode, false if not
+    let dict;                    // dictMM (mathmode) or dictOut (out of mathmode) depending if in mathmode or not
+    let mathmodeOccurence = 0;   // Counts the number of times one enters and leaves mathmode
+    let argOccurence = 0;        // Counts the number of times one gets in and out of an argument
 
     let i;
     for (i=0; i<tokens.length; i++) {
@@ -4083,26 +4084,26 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
                         } else {
                             if (mathmode) {
                                 mathmodeText += str(dict[callingFct](arg, fct).join(""));
-                                mistakes(fct+"{"+arg.join("")+"}", str(dict[callingFct](arg, fct).join("")));
+                                // mistakes(fct+"{"+arg.join("")+"}", str(dict[callingFct](arg, fct).join("")));
                             } else {
                                 outText += str(dict[callingFct](arg, fct).join(""));
-                                mistakes("Out of math mode", str(dict[callingFct](arg, fct).join("")), fct+"{"+arg.join("")+"}");
+                                // mistakes("Out of math mode", str(dict[callingFct](arg, fct).join("")), fct+"{"+arg.join("")+"}");
                             };
                         };
                     } else {
                         if (mathmode) {
-                            mathmodeText += mistakes("Out of math mode", undefined, "Can't find an argument for " + fct + "{}");
+                            mathmodeText += mistakes(fct+"{}", undefined, "Can't find an argument");
                         } else {
-                            outText += mistakes(fct+"{}", undefined, "Can't find an argument");
+                            outText += mistakes("Out of math mode", undefined, "Can't find an argument for " + fct + "{}");
                         };
                     };
                 } else {
                     if (argStack.length > 0) {
                         arg = argStack.pop();
                         if (mathmode) {
-                            mathmodeText += mistakes("Out of math mode", undefined, "Can't find a function for {" + arg.join("") + "}");
+                            mathmodeText += mistakes("Can't find a function for {" + arg.join("") + "}", undefined);
                         } else {
-                            outText += mistakes("Can't find a function for {" + arg.join("") + "}", undefined);
+                            outText += mistakes("Out of math mode", undefined, "Can't find a function for {" + arg.join("") + "}");
                         };
                     };
                 };
@@ -4170,14 +4171,13 @@ function replaceLetters(letters, dict, initialCommand, checkMistakes=true) {
     return newtext;
 };
 
-const combineSymbols = (arg, initialCommand, symbol, forTwo=undefined) => {
+function combineSymbols(arg, initialCommand, symbol, forTwo=undefined) {
     // Appends a 'combining symbol' to a regular symbol to create a new one (e.g. 'e' + '´' -> é)
-    // N.B. errSymbol  ->  error symbol
     let textComb = [];
     if ((arg.length === 2) && (forTwo !== undefined)) {
-        textComb.push(arg[0] + forTwo + arg[1]);
-        mistakes(initialCommand + "{" + errSymbol + arg[1] + "}", arg[0], "Argument doesn't exist");
-        mistakes(initialCommand + "{" + arg[0] + errSymbol + "}", arg[1], "Argument doesn't exist");
+        textComb.push(str(arg[0]) + forTwo + str(arg[1]));
+        mistakes(initialCommand + "{" + errSymbol + str(arg[1]) + "}", arg[0], "Argument doesn't exist");
+        mistakes(initialCommand + "{" + str(arg[0]) + errSymbol + "}", arg[1], "Argument doesn't exist");
     } else {
         let err = [];
         for (let c in arg) {
@@ -4190,7 +4190,7 @@ const combineSymbols = (arg, initialCommand, symbol, forTwo=undefined) => {
             };
         };
         if (err.includes(errSymbol)) {
-            mistakes(initialCommand + "{" + err.join("") + "}", undefined, "Argument doesn't exist")
+            mistakes(initialCommand + "{" + err.join("") + "}", undefined, "Argument doesn't exist");
         };
     };
     return textComb;
@@ -4420,7 +4420,7 @@ function adjustSpacesCommon(input, symbolSpaced, conditionalSpaces) {
         Also, a_{i}-x should return a_{i} - x, but \sum_{i}-x should return \sum_{i}-x (as in \sum_{i}(-x) or -\sum_{i}x)
         Again, it should take the context in consideration
     */
-    input = input.slice(0, input.length - 1)  // Since the last char is a space
+
     if ((spacesButton.checked == true) && (input.length > 2)) {
         const noSpaceSymbols = Object.values(Subscript).concat(Object.values(Above), Object.values(Below)).filter(x => {return x !== "\u2710";});
         // noSpaceSymbols is a list of all the symbols (subscript and combined symbol, without spaces) that delay a space to be added.
@@ -4520,18 +4520,19 @@ function adjustSpaceChem(input) {
 
 function convert(fullText) {
     // Takes text and convert it based on the documentclass (or package)
+    const dictOutMathmode = {...lettersOutMathMode, ...textCommands};
     const firstWord = fullText.split(" ")[0];
     let fullDict;
     if (firstWord === "!chem") {
         // Chemistry package, differs in the automatic conversion of letters and spacing adjustments
         fullDict = makeDict(firstWord);
         fullText = fullText.replace("!chem", "");
-        fullText = tokensToText(tokenize(fullText, changeModeButton.checked), fullDict, adjustSpaceChem);
+        fullText = tokensToText(tokenize(fullText, changeModeButton.checked), fullDict, dictOutMathmode, adjustSpaceChem);
     } else if (firstWord === "!matrix") {
         // Matrix package, the input should be of the form [a,b,c][d,e,f]
         fullDict = makeDict(firstWord);
         fullText = fullText.replace("!matrix", "");
-        fullText = tokensToText(tokenize(fullText, true), fullDict);
+        fullText = tokensToText(tokenize(fullText, true), fullDict, dictOutMathmode, adjustSpaces);
         fullText = matrix(fullText);
         if (changeFontButton.checked) {
             mistakes("!matrix", undefined, "Works better with 'Mathematical font' unchecked");
@@ -4539,7 +4540,7 @@ function convert(fullText) {
     } else {
         // Default package
         fullDict = makeDict("default");
-        fullText = tokensToText(tokenize(fullText, changeModeButton.checked), fullDict, adjustSpaces);
+        fullText = tokensToText(tokenize(fullText, changeModeButton.checked), fullDict, dictOutMathmode, adjustSpaces);
     };
     return fullText;
 };
