@@ -3190,8 +3190,8 @@ const lettersMath = {
     "}" : "}",
     "[" : "[",
     "]" : "]",
-    "<" : "\u003C",
-    ">" : "\u003E",
+    "<" : "<",
+    ">" : ">",
     "%" : "%",
     "#" : "#",
     "~" : "~",
@@ -3293,8 +3293,8 @@ const lettersNoFont = {
     "}" : "}",
     "[" : "[",
     "]" : "]",
-    "<" : "\u003C",
-    ">" : "\u003E",
+    "<" : "<",
+    ">" : ">",
     "%" : "%",
     "*" : "*",
     "@" : "@",
@@ -3552,8 +3552,8 @@ const mistakesBox = document.getElementById("mistakes");
 /** Other **/
 
 // Used in the subsection 'Suggestion box (or completion)' to recognize on which word is the cursor
-const wordsDelimiters = [" ", "", "\u000A", "\\", "^", "_", "(", ")", "[", "]", "{", "}", ".", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];
-const wordsDelimitersWOB = [" ", "", "\u000A", "^", "_", "(", ")", "[", "]", "{", "}", ".", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"]; // Without backslash
+const wordsDelimiters = [" ", "", "\u000A", "\\", "^", "_", "(", ")", "[", "]", "{", "}", ".", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!", "$"];
+const wordsDelimitersWOB = [" ", "", "\u000A", "^", "_", "(", ")", "[", "]", "{", "}", ".", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!", "$"]; // Without backslash
 
 // Used in adjustSpacesCommon to chose which symbols to surround with spaces (if touched by a specific symbol like '+' or '-')
 const characters = "AÀÂBCÇDEÉÈËÊFGHIJKLMNOÔÖPQRSTUÙÛVWXYZaàâbcçdeéèêëfghijklmnoôöpqrstuùûvwxyz0123456789"+
@@ -3907,11 +3907,17 @@ function tokenize(fullText, mathmode) {
                 if (fullText[i-1] === "\\") {
                     outTokens.push(temporaryBox.join("") + fullText[i]);
                 } else {
-                    if ((fracDepth > 0) && (fullText[i+1] !== "{")) {
-                        fracDepth -= 1;
-                    };
                     outTokens.push(temporaryBox.join(""));
-                    outTokens.push(specialTokens.endArgument);
+                    if (fracDepth > 0) {
+                        if (fullText[i+1] === "{") {
+                            outTokens.push(fullText[i]);
+                        } else {
+                            fracDepth -= 1;
+                            outTokens.push(specialTokens.endArgument);
+                        };
+                    } else {
+                        outTokens.push(specialTokens.endArgument);
+                    };
                 };
                 trigger = false;
                 temporaryBox = [];
@@ -4245,14 +4251,22 @@ function mistakes(textInput, textOutput, letter="") {
 
     const text = "\u{1D404}\u{1D42B}\u{1D42B}\u{1D428}\u{1D42B}\u{1D42C}: \r\n";  // "Errors" in bold
     if (textOutput === undefined) {
-        if (letter != "") {
+        if (letter !== "") {
             if (letter !== errSymbol) {  // Only add to errorsList once
                 if (letter.includes("\u2710")) {  // i.e. Spaces
-                    if (textInput.substring(0,5) == "\\text") {
+                    if (textInput.substring(0,5) === "\\text") {
                         errorsList += spaceCommand(textInput + " \u2192 Spaces are kept inside '" + textInput.replace(/{.*}/g, "") + "{}', no need for a spacing command") + "\r\n";
                     } else if ((textInput[0] === "^") || (textInput[0] === "_") || (textInput.substring(0,5) == "\\frac")) {
                         const initialSpaceCommand = ["\\:", "\\;", "\\quad", "\\qquad"];
                         errorsList += spaceCommand(textInput + " \u2192 Replace '" + initialSpaceCommand[letter.length-1] + "' by '\\hspace{" + letter.length + "}'") + "\r\n";
+                    } else {
+                        errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
+                    };
+                } else if ((textInput[0] === "^") || (textInput[0] === "_")) {
+                    if (letter.indexOf("Can't find an argument") !== -1) {
+                        const example = (textInput[0] === "^") ? "ⁿ" : "ₙ";
+                        errorsList += "For '" + textInput[0] + "' alone: \\" + textInput[0] + " \u2192 " + textInput[0] + 
+                        "  |  To use '" + textInput[0] + "' as a command: " + textInput[0] + "{n} \u2192 " + example + "\r\n";
                     } else {
                         errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
                     };
@@ -4269,16 +4283,10 @@ function mistakes(textInput, textOutput, letter="") {
             };
         } else {
             if ((textInput[0] === "^") || (textInput[0] === "_")) {
-                if (textInput.indexOf(" needs an argument.") !== -1) {
-                    const example = (textInput[0] === "^") ? "¹" : "₁";
-                    errorsList += "For '" + textInput[0] + "' alone: \\" + textInput[0] + " \u2192 " + textInput[0] + 
-                    "  |  To use '" + textInput[0] + "' as a command: " + textInput[0] + "{1} \u2192 " + example + "\r\n";
+                if (textInput[1] === "{") {
+                    errorsList += '"' + textInput + '" \u2192 ' + "Argument does not exists" + '\r\n';
                 } else {
-                    if (textInput[1] === "{") {
-                        errorsList += '"' + textInput + '" \u2192 ' + "Argument does not exists" + '\r\n';
-                    } else {
-                        errorsList += '"' + textInput + '" \u2192 ' + "try: " + textInput[0] + "{" + textInput.slice(1) + "}" + '\r\n';
-                    };
+                    errorsList += '"' + textInput + '" \u2192 ' + "try: " + textInput[0] + "{" + textInput.slice(1) + "}" + '\r\n';
                 };
             } else {
                 errorsList += '"' + textInput + '" \r\n';
@@ -4494,34 +4502,34 @@ function adjustSpacesCommon(input, symbolSpaced, conditionalSpaces) {
 
 function adjustSpaces(input) {
     // Calls adjustSpacesCommon with specific symbols where spaces around them should be added
-    const symbolSpaced = ["=", "\u003D", "\u21D2", "\u21D0", "\u21CD", "\u21CF", "\u21CE", "\u2192", "\u27F6", "\u2190", "\u27F5", 
-                "\u2194", "\u21AE", "\u219A", "\u219B", "\u27F8", "\u27F9", "\u27F9", "\u21D4", "\u27FA", "\u27FC", "\u21CC", "\u21CB", 
-                "\u21C0", "\u21C1", "\u21BC", "\u21BD", "\u219E", "\u21A0", "\u21C7", "\u21C9", "\u21F6", "\u21C6", "\u21C4", "\u21DA", 
-                "\u21DB", "\u21A2", "\u21A3", "\u21DC", "\u21DD", "\u21AD", "\u27FF", "\u21E0", "\u21E2", "\u2208", "\u2209", "\u220B",
-                "\u2282", "\u2284", "\u2286", "\u2288", "\u2283", "\u2285", "\u2287", "\u2289", "\u228F", "\u2290", "\u2291", "\u2292",
-                "\u22D0", "\u22D1", "\u2ABF", "\u2AC0", "\u27C3", "\u27C4", "\u2245", "\u2247", "\u221D", "\u2261", "\u2A67", "\u2263",
-                "\u2260", "\u226E", "\u226F", "\u2264", "\u2A7D", "\u2265", "\u2A7E", "\u2270", "\u2271", "\u2A87", "\u2268", "\u2A88",
-                "\u2269", "\u2A89", "\u2A8A", "\u22E6", "\u22E7", "\u226A", "\u22D8", "\u226B", "\u22D9", "\u227A", "\u227B", "\u2280",
-                "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
-                "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u2971", "\u2972", "\u2974", "\u2250",
-                "\u2A66", "\u00D7", "\u22CA", "\u22C9", "\u225D", "\u2254", "\u2255"];
+    const symbolSpaced = ["\u003D", "\u003C", "\u003E", "\u21D2", "\u21D0", "\u21CD", "\u21CF", "\u21CE", "\u2192", "\u27F6", "\u2190", "\u27F5", 
+                          "\u2194", "\u21AE", "\u219A", "\u219B", "\u27F8", "\u27F9", "\u27F9", "\u21D4", "\u27FA", "\u27FC", "\u21CC", "\u21CB", 
+                          "\u21C0", "\u21C1", "\u21BC", "\u21BD", "\u219E", "\u21A0", "\u21C7", "\u21C9", "\u21F6", "\u21C6", "\u21C4", "\u21DA", 
+                          "\u21DB", "\u21A2", "\u21A3", "\u21DC", "\u21DD", "\u21AD", "\u27FF", "\u21E0", "\u21E2", "\u2208", "\u2209", "\u220B",
+                          "\u2282", "\u2284", "\u2286", "\u2288", "\u2283", "\u2285", "\u2287", "\u2289", "\u228F", "\u2290", "\u2291", "\u2292",
+                          "\u22D0", "\u22D1", "\u2ABF", "\u2AC0", "\u27C3", "\u27C4", "\u2245", "\u2247", "\u221D", "\u2261", "\u2A67", "\u2263",
+                          "\u2260", "\u226E", "\u226F", "\u2264", "\u2A7D", "\u2265", "\u2A7E", "\u2270", "\u2271", "\u2A87", "\u2268", "\u2A88",
+                          "\u2269", "\u2A89", "\u2A8A", "\u22E6", "\u22E7", "\u226A", "\u22D8", "\u226B", "\u22D9", "\u227A", "\u227B", "\u2280",
+                          "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
+                          "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u2971", "\u2972", "\u2974", "\u2250",
+                          "\u2A66", "\u00D7", "\u22CA", "\u22C9", "\u225D", "\u2254", "\u2255"];
     const conditionalSpaces = ["\u002B", "\u2212", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
     return adjustSpacesCommon(input, symbolSpaced, conditionalSpaces);
 };
 
 function adjustSpaceChem(input) {
     // Calls adjustSpacesCommon with specific symbols where spaces around them should be added
-    const symbolSpaced = ["\u21D2", "\u21D0", "\u21CD", "\u21CF", "\u21CE", "\u2192", "\u27F6", "\u2190", "\u27F5", 
-            "\u2194", "\u21AE", "\u219A", "\u219B", "\u27F8", "\u27F9", "\u27F9", "\u21D4", "\u27FA", "\u27FC", "\u21CC", "\u21CB", 
-            "\u21C0", "\u21C1", "\u21BC", "\u21BD", "\u219E", "\u21A0", "\u21C7", "\u21C9", "\u21F6", "\u21C6", "\u21C4", "\u21DA", 
-            "\u21DB", "\u21A2", "\u21A3", "\u21DC", "\u21DD", "\u21AD", "\u27FF", "\u21E0", "\u21E2", "\u2208", "\u2209", "\u220B",
-            "\u2282", "\u2284", "\u2286", "\u2288", "\u2283", "\u2285", "\u2287", "\u2289", "\u228F", "\u2290", "\u2291", "\u2292",
-            "\u22D0", "\u22D1", "\u2ABF", "\u2AC0", "\u27C3", "\u27C4", "\u2245", "\u2247", "\u221D", "\u2A67", "\u2250", "\u2A66",
-            "\u2260", "\u226E", "\u226F", "\u2264", "\u2A7D", "\u2265", "\u2A7E", "\u2270", "\u2271", "\u2A87", "\u2268", "\u2A88",
-            "\u2269", "\u2A89", "\u2A8A", "\u22E6", "\u22E7", "\u226A", "\u22D8", "\u226B", "\u22D9", "\u227A", "\u227B", "\u2280",
-            "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
-            "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u2971", "\u2972", "\u2974", "\u00D7", 
-            "\u22CA", "\u22C9", "\u225D", "\u2254", "\u2255"];
+    const symbolSpaced = ["\u21D2", "\u21D0", "\u21CD", "\u21CF", "\u21CE", "\u2192", "\u27F6", "\u2190", "\u27F5", "\u003C", "\u003E",
+                          "\u2194", "\u21AE", "\u219A", "\u219B", "\u27F8", "\u27F9", "\u27F9", "\u21D4", "\u27FA", "\u27FC", "\u21CC", "\u21CB", 
+                          "\u21C0", "\u21C1", "\u21BC", "\u21BD", "\u219E", "\u21A0", "\u21C7", "\u21C9", "\u21F6", "\u21C6", "\u21C4", "\u21DA", 
+                          "\u21DB", "\u21A2", "\u21A3", "\u21DC", "\u21DD", "\u21AD", "\u27FF", "\u21E0", "\u21E2", "\u2208", "\u2209", "\u220B",
+                          "\u2282", "\u2284", "\u2286", "\u2288", "\u2283", "\u2285", "\u2287", "\u2289", "\u228F", "\u2290", "\u2291", "\u2292",
+                          "\u22D0", "\u22D1", "\u2ABF", "\u2AC0", "\u27C3", "\u27C4", "\u2245", "\u2247", "\u221D", "\u2A67", "\u2250", "\u2A66",
+                          "\u2260", "\u226E", "\u226F", "\u2264", "\u2A7D", "\u2265", "\u2A7E", "\u2270", "\u2271", "\u2A87", "\u2268", "\u2A88",
+                          "\u2269", "\u2A89", "\u2A8A", "\u22E6", "\u22E7", "\u226A", "\u22D8", "\u226B", "\u22D9", "\u227A", "\u227B", "\u2280",
+                          "\u2281", "\u227C", "\u227D", "\u2AB5", "\u2AB6", "\u2AB9", "\u2ABA", "\u22E8", "\u22E9", "\u27C2", "\u2AEB", "\u2225",
+                          "\u2226", "\u2AF4", "\u2AF5", "\u224D", "\u2227", "\u2228", "\u27CE", "\u27CF", "\u2971", "\u2972", "\u2974", "\u00D7", 
+                          "\u22CA", "\u22C9", "\u225D", "\u2254", "\u2255"];
     const conditionalSpaces = ["\u002B", "\u00B1", "\u2213", "\u2248", "\u223C", "\u224C", "\u2241"];
     return adjustSpacesCommon(input, symbolSpaced, conditionalSpaces);
 };
