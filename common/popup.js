@@ -1723,13 +1723,13 @@ const text = (arg, initialCommand) => {
 const hspace = (arg, initialCommand) => {
     // hspace stands for horizontal space
     // Adds the number of space specified in 'arg'
-    let spaces = "";
+    let spaces = [];
     const num = arg.join("");
     if (num * 0 !== 0) {
-        spaces = mistakes(initialCommand + "{" + num + "}", undefined, "Argument must be a number");
+        spaces.push(mistakes(initialCommand + "{" + num + "}", undefined, "Argument must be a number"));
     } else {
         for (let i=0; i<parseInt(num); i++) {
-            spaces += "\u2710";
+            spaces.push("\u2710");
         };
     };
     return spaces;
@@ -1738,22 +1738,24 @@ const hspace = (arg, initialCommand) => {
 const vskip = (arg, initialCommand) => {
     // vskip stands for vertical skip
     // Adds the number of linebreaks specified in 'arg'
-    let skips = "";
+    let skips = [];
     const num = arg.join("");
     if (num * 0 !== 0) {
-        skips = mistakes(initialCommand + "{" + num + "}", undefined, "Argument must be a number");
+        skips.push(mistakes(initialCommand + "{" + num + "}", undefined, "Argument must be a number"));
     } else {
         for (let i=0; i<parseInt(num); i++) {
-            skips += "\u000A";
+            skips.push("\u000A");
         };
     };
     return skips;
 };
 
 const phantom = (arg, initialCommand) => {
-    let spaces = "";
+    // Outputs the same number of spaces as the length of the argument
+    // e.g. \phantom{abc} -> 3 spaces and \phantom{\int} -> 1 space
+    let spaces = [];
     for (let i=0; i<arg.length; i++) {
-        spaces += "\u2710";
+        spaces.push("\u2710");
     };
     if (arg.includes(errSymbol)) {
         mistakes(initialCommand + "{" + arg.join("") + "}", undefined, "Undefined argument");
@@ -3553,7 +3555,7 @@ const mistakesBox = document.getElementById("mistakes");
 const wordsDelimiters = [" ", "", "\u000A", "\\", "^", "_", "(", ")", "[", "]", "{", "}", ".", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"];
 const wordsDelimitersWOB = [" ", "", "\u000A", "^", "_", "(", ")", "[", "]", "{", "}", ".", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!"]; // Without backslash
 
-// Used in adjustSpacesCommon to chose which symbols to surround with spaces (if touched by a specific symbol like '=')
+// Used in adjustSpacesCommon to chose which symbols to surround with spaces (if touched by a specific symbol like '+' or '-')
 const characters = "AÀÂBCÇDEÉÈËÊFGHIJKLMNOÔÖPQRSTUÙÛVWXYZaàâbcçdeéèêëfghijklmnoôöpqrstuùûvwxyz0123456789"+
                    "𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧"+
                    "𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"+
@@ -3571,7 +3573,7 @@ const characters = "AÀÂBCÇDEÉÈËÊFGHIJKLMNOÔÖPQRSTUÙÛVWXYZaàâbcçde�
                    "ΑαΒβΓγδΖζΗηθϑΙιΚκϰΛλΜμΝνξΟοΠπϖΡρϱΣσςΤτΥυϕφΧχΨψΩω" + 
                    "𝝖𝝰𝝗𝝱𝝘𝝲𝛅𝝛𝝵𝝜𝝶𝛉𝛝𝝞𝛊𝝟𝝹𝞌𝝠𝝺𝝡𝝻𝝢𝝼𝝽𝝤𝝾𝝥𝝿𝞏𝝦𝞀𝞎𝝨𝞂𝞁𝝩𝞃𝝪𝞄𝞍𝞅𝝬𝞆𝝭𝞇𝝮𝞈" +
                    "ℾℽℿℼ⅀" + 
-                   "()[]{}⦅⦆⟦⟧⦃⦄";
+                   ")]}⦆⟧⦄";  // Only right parentheses, since the algorithm to adjust spaces only looks at the previous symbol
 
 // Symbol for an error
 const errSymbol = "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}";  // bold "err" with two "x" under it
@@ -3849,13 +3851,13 @@ function tokenize(fullText, mathmode) {
                 temporaryBox = [];
             } else if (potentialCommandStoppers.includes(fullText[i])) {
                 if (fullText[i-1] === "\\") {
-                    outTokens.push(temporaryBox.join("") + fullText[i]);
+                    temporaryBox.push(fullText[i]);
                 } else {
                     outTokens.push(temporaryBox.join(""));
                     outTokens.push(fullText[i]);
+                    trigger = false;
+                    temporaryBox = [];
                 };
-                trigger = false;
-                temporaryBox = [];
             } else if (brackets.includes(fullText[i])) {
                 if (fullText[i-1] === "\\") {
                     if (mathmode) {
@@ -3867,7 +3869,6 @@ function tokenize(fullText, mathmode) {
                         } else {
                             outTokens.push(temporaryBox.join("") + fullText[i]);
                         };
-                        temporaryBox = [];
                     } else {
                         if (fullText[i] === "[") {
                             mathmode = true;
@@ -3877,8 +3878,9 @@ function tokenize(fullText, mathmode) {
                         } else {
                             outTokens.push(temporaryBox.join("") + fullText[i]);
                         };
-                        temporaryBox = [];
                     };
+                    trigger = false;
+                    temporaryBox = [];
                 } else {
                     if (temporaryBox.slice(0,5).join("") === "\\sqrt") {
                         temporaryBox.push(fullText[i]);
@@ -3991,25 +3993,27 @@ function tokenize(fullText, mathmode) {
                         if (fullText[i-1] === "$") {
                             mathmodeStarter = "$$";
                             outTokens.push("\\\\");
+                        } else if (fullText[i+1] === "$") {
+                            continue;
                         } else {
                             mathmode = false;
                             mathmodeStarter = "";
                             outTokens.push(specialTokens.endMathmode);
                         };
-                    } else if (fullText[i+1] === "$") {
-                        continue;
-                    } else {
+                    } else if (mathmodeStarter === "$$") {
+                        if (fullText[i-1] === "$") {
+                            mathmode = false;
+                            mathmodeStarter = "";
+                            outTokens.push("\\\\");
+                            outTokens.push(specialTokens.endMathmode);
+                        };
+                    } else {
                         outTokens.push(fullText[i]);
                     };
                 } else {
-                    if ((fullText[i-1] === "$") && (mathmodeStarter === "$$")) {
-                        mathmodeStarter = "";
-                        outTokens.push("\\\\");
-                    } else {
-                        mathmode = true;
-                        mathmodeStarter = "$";
-                        outTokens.push(specialTokens.startMathmode);
-                    };
+                    mathmode = true;
+                    mathmodeStarter = "$";
+                    outTokens.push(specialTokens.startMathmode);
                 };
             } else if (fullText[i] === "}") {
                 if (fracDepth > 0) {
@@ -4022,6 +4026,12 @@ function tokenize(fullText, mathmode) {
                 } else {
                     outTokens.push(specialTokens.endArgument);
                 };
+            } else if (fullText[i] === "{") {
+                if (fracDepth > 0) {
+                    outTokens.push(fullText[i]);
+                } else {
+                    outTokens.push(specialTokens.startArgument);
+                };
             } else {
                 outTokens.push(fullText[i]);
             };
@@ -4031,7 +4041,6 @@ function tokenize(fullText, mathmode) {
     if (startMathmode) {
         outTokens.push(specialTokens.endMathmode);
     };
-
     return outTokens;
 };
 
@@ -4084,10 +4093,8 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
                         } else {
                             if (mathmode) {
                                 mathmodeText += str(dict[callingFct](arg, fct).join(""));
-                                // mistakes(fct+"{"+arg.join("")+"}", str(dict[callingFct](arg, fct).join("")));
                             } else {
                                 outText += str(dict[callingFct](arg, fct).join(""));
-                                // mistakes("Out of math mode", str(dict[callingFct](arg, fct).join("")), fct+"{"+arg.join("")+"}");
                             };
                         };
                     } else {
@@ -4101,9 +4108,9 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
                     if (argStack.length > 0) {
                         arg = argStack.pop();
                         if (mathmode) {
-                            mathmodeText += mistakes("Can't find a function for {" + arg.join("") + "}", undefined);
+                            mathmodeText += mistakes("Can't find a function for {" + arg.join("") + "}", undefined, "'\\{' and '\\}' to output a curly bracket");
                         } else {
-                            outText += mistakes("Out of math mode", undefined, "Can't find a function for {" + arg.join("") + "}");
+                            outText += mistakes("Out of math mode", undefined, "Can't find a function for {" + arg.join("") + "}" + ". Use '\\{' or '\\}' to output a curly bracket");
                         };
                     };
                 };
@@ -4125,11 +4132,17 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
             if (typeof command == "function") {
                 if (tokens[i+1] === specialTokens.startArgument) {
                     fctStack.push(tokens[i]);
+                } else if (tokens.slice(i+1).filter(x => x !== " ")[0] === specialTokens.startArgument) {
+                    if (mathmode) {
+                        mathmodeText += mistakes(tokens[i]+" {}", undefined, "Remove extra space");
+                    } else {
+                        outText += mistakes("Out of math mode: "+tokens[i]+" {}", undefined, "Remove extra space");
+                    };
                 } else {
                     if (mathmode) {
-                        mathmodeText += mistakes("Out of math mode", undefined, "Can't find an argument for "+tokens[i]+"{}");
+                        mathmodeText += mistakes(tokens[i]+"{}", undefined, "Can't find an argument");
                     } else {
-                        outText += mistakes(tokens[i]+"{}", undefined, "Can't find an argument");
+                        outText += mistakes("Out of math mode", undefined, "Can't find an argument for "+tokens[i]+"{}");
                     };
                 };
             } else {
@@ -4153,7 +4166,7 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
     if (argOccurence % 2 !== 0) {
         mistakes("Unbalanced curly brackets ('{', '}')", undefined);
     };
-    return outText;
+    return spaceCommand(outText);
 };
 
 
