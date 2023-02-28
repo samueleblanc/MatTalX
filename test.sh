@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 copy_common () {
-    cp -RT common $1  # Parameter is the name of the directory (e.g. 'extension', 'firefox_add_on', etc.)
+    cp -RT common $1  # Parameter is the name of the directory (in these cases, test_mattalx)
     echo "Files from 'common' transfered"
 }
 
@@ -16,8 +16,8 @@ test_liveserver () {
     cat test_mattalx/popup-specific.js >> test_mattalx/popup.js
     rm test_mattalx/popup-specific.js
     mv test_mattalx/popup.html test_mattalx/index.html
-    sed '$d' test_mattalx/index.html
-    sed '$d' test_mattalx/index.html
+    sed -i '$d' test_mattalx/index.html
+    sed -i '$d' test_mattalx/index.html
     # sed -i '' -e '$ d' test_mattalx/index.html  # For Mac users
     # sed -i '' -e '$ d' test_mattalx/index.html
     cat test/liveserver_test.txt >> test_mattalx/index.html
