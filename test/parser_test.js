@@ -6,7 +6,7 @@
 
 function test() {
     const _parserTest = [
-        "Let $A \\in M_{n}(K)$ be a square matrix",
+        "Let $A \\in M_{mxn}(K)$ be a matrix",
         "$f:\\mathbb{R} \\rightarrow \\mathbb{R} ; x \\mapsto f(x) \\coloneqq x^{2}$",
         "Let $f$ be a function such that $f(x) \\geq 0 \\forall x \\in \\mathbb{Z}$",
         "$\\mathbf{\\mathfrak{abc}}$",
