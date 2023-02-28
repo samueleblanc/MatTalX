@@ -52,7 +52,7 @@ Thank you for considering to help out! Pull requests and issues are welcomed!
 More info [here](CONTRIBUTING.md).
 
 ## Testing
-A basic test can be ran with `bash build.sh test`
+A basic (and quite specific) test can be ran with `bash test.sh liveserver` and `bash test.sh parser`
 
 For a full test, it's recommended to build the extension or add-on (`bash build.sh chrome` or `bash build.sh firefox` respectively) and then test it in the browser.
 
