@@ -186,7 +186,9 @@ const mathbb = (arg, initialCommand) => {
         "\u2710\u2710\u2710" : "\u2710\u2710\u2710",
         "\u2710\u2710\u2710\u2710" : "\u2710\u2710\u2710\u2710",
         "\u270E" : "\u270E",
-        " " : " "
+        " " : " ",
+        "\u000A" : "\u000A",
+        "" : ""
     };
     return replaceLetters(arg, symbols, initialCommand);
 };
@@ -536,7 +538,9 @@ const mathbf = (arg, initialCommand) => {
         "\u2710\u2710\u2710" : "\u2710\u2710\u2710",
         "\u2710\u2710\u2710\u2710" : "\u2710\u2710\u2710\u2710",
         "\u270E" : "\u270E",
-        " " : " "
+        " " : " ",
+        "\u000A" : "\u000A",
+        "" : ""
     };
     return replaceLetters(arg, symbols, initialCommand);
 };
@@ -710,7 +714,9 @@ const mathcal = (arg, initialCommand) => {
         "\u2710\u2710\u2710" : "\u2710\u2710\u2710",
         "\u2710\u2710\u2710\u2710" : "\u2710\u2710\u2710\u2710",
         "\u270E" : "\u270E",
-        " " : " "
+        " " : " ",
+        "\u000A" : "\u000A",
+        "" : ""
     };
     return replaceLetters(arg, symbols, initialCommand);
 };
@@ -884,7 +890,9 @@ const mathfrak = (arg, initialCommand) => {
         "\u2710\u2710\u2710" : "\u2710\u2710\u2710",
         "\u2710\u2710\u2710\u2710" : "\u2710\u2710\u2710\u2710",
         "\u270E" : "\u270E",
-        " " : " "
+        " " : " ",
+        "\u000A" : "\u000A",
+        "" : ""
     };
     return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1126,7 +1134,9 @@ const textbf = (arg, initialCommand) => {
 
         "\u2710" : "\u2710",
         "\u270E" : "\u270E",
-		" " : "\u2710"
+		" " : "\u2710",
+        "\u000A" : "\u000A",
+        "" : ""
 	};
 	return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1356,7 +1366,9 @@ const textit = (arg, initialCommand) => {
 
         "\u2710" : "\u2710",
         "\u270E" : "\u270E",
-        " " : "\u2710"
+        " " : "\u2710",
+        "\u000A" : "\u000A",
+        "" : ""
 	};
 	return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1523,7 +1535,9 @@ const texttt = (arg, initialCommand) => {
 
         "\u2710" : "\u2710",
         "\u270E" : "\u270E",
-        " " : "\u2710"
+        " " : "\u2710",
+        "\u000A" : "\u000A",
+        "" : ""
     };
     return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1715,7 +1729,9 @@ const text = (arg, initialCommand) => {
 
         "\u2710" : "\u2710",
         "\u270E" : "\u270E",
-        " " : "\u2710"
+        " " : "\u2710",
+        "\u000A" : "\u000A",
+        "" : ""
     };
     return replaceLetters(arg, symbols, initialCommand);
 };
@@ -1906,7 +1922,8 @@ const frac = (arg, initialCommand) => {
 
 const singleCharFrac = (arg, initialCommand) => {
     // Some fractions already exists as unicode symbols they can be accessed via this function
-    let noSpaceArg = arg.join("").replace(/ /g, "");
+    let noSpaceArg = arg.join("").replace(/ /g, "")
+                                 .replace(/\u000A/g, "");
     const fractions = {
         "1}{2" : "\u00BD",
         "1}{7" : "⅐",
@@ -2986,7 +3003,9 @@ const Superscript = {
 
     "\u2710" : "\u2710",
     "\u270E" : "\u270E",
-    " " : " "
+    " " : " ",
+    "\u000A" : "\u000A",
+    "" : ""
 };
 
 // Subscript is used (by the subscript function) to convert characters to the corresponding subscript character
@@ -3067,7 +3086,9 @@ const Subscript = {
 
     "\u2710" : "\u2710",
     "\u270E" : "\u270E",
-    " " : " "
+    " " : " ",
+    "\u000A" : "\u000A",
+    "" : ""
 };
 
 // Dict with characters and their corresponding symbol that can be combined and put above another symbol
@@ -3140,7 +3161,9 @@ const Above = {
     "∴" : "\u1AB4",
     "⋯" : "\u20DB",
     "…" : "\u20DB",
-    " " : " "
+    " " : " ",
+    "\u000A" : "\u000A",
+    "" : ""
 };
 
 // Dict with characters and their corresponding symbol that can be combined and put below another symbol
@@ -3162,7 +3185,9 @@ const Below = {
     "←" : "\u20EE",
     "→" : "\u20EF",
     "↔" : "\u034D",
-    " " : " "
+    " " : " ",
+    "\u000A" : "\u000A",
+    "" : ""
 };
 
 // Regular dict used to convert characters that are not a command
@@ -3268,7 +3293,9 @@ const lettersMath = {
     "Z" : "\u{1D44D}",
     "z" : "\u{1D467}",
     "\u2710" : " ",
-    " " : " "
+    " " : " ",
+    "\u000A" : "",
+    "" : ""
 };
 
 // Dict used to convert characters that are not a command if the keyword !chem is used as the fist word of the text input
@@ -3377,7 +3404,9 @@ const lettersNoFont = {
     "Z" : "Z",
     "z" : "z",
     "\u2710" : " ",
-    " " : " "
+    " " : " ",
+    "\u000A" : "",
+    "" : ""
 };
 
 const lettersOutMathMode = {
@@ -3501,7 +3530,9 @@ const lettersOutMathMode = {
     "Z" : "Z",
     "z" : "z",
     "\u2710" : " ",
-    " " : " "
+    " " : " ",
+    "\u000A" : "",
+    "" : ""
 };
 
 
@@ -3826,7 +3857,7 @@ function tokenize(fullText, mathmode) {
     // For instance "curl written as $\nabla \times \mathbf{F}$" will output
     //  [c,u,r,l, ,w,r,i,t,t,e,n, ,a,s, ,STARTMM,\nabla, ,\times, ,\mathbf,STARTARG,F,ENDARG,ENDMM]
     const brackets = ["[", "]"];
-    const commandStoppers = [" ", ",", "/", "-", "+", "<", ">", "|", "?", "(", ")"]; 
+    const commandStoppers = [" ", "\u000A", ",", "/", "-", "+", "<", ">", "|", "?", "(", ")"]; 
     // N.B. Brackets also stops commands (most of the time)
     const potentialCommandStoppers = [":" , ";" , "~", ".", "!", "'", '"', "=", "%", "#"];
     const startMathmode = mathmode;
@@ -3835,7 +3866,7 @@ function tokenize(fullText, mathmode) {
     let trigger = false;        // true if a command has begun (e.g. input: '\' -> true)
     let mathmodeStarter = "";   // e.g. if mathmode is started with $$, then "$$" will be mathmodeStarter
     let fracDepth = 0;          // Used for fraction (\frac{}{}) parsing, because of the way curly brackets are used
-    // N.B. Could be used in the future for \stackrel{}{} (if it replaces the \above command)
+    // N.B. fracDepth could be used in the future for \stackrel{}{} (if it replaces the \above command)
 
     if (startMathmode) {
         outTokens.push(specialTokens.startMathmode);
@@ -4271,14 +4302,7 @@ function mistakes(textInput, textOutput, letter="") {
                         errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
                     };
                 } else {
-                    const subSupChar = Object.values(Superscript).concat(Object.values(Subscript)).filter(x => {return x !== "\u2710";});  // Makes sure that there are no spaces that sneaks in
-                    if (subSupChar.includes(letter)) {
-                        const argPos = Object.values(Superscript).includes(letter) ? "superscript" : "subscript";
-                        const commandPos = (textInput[0] === "^") ? "superscript" : "subscript";
-                        errorsList += spaceCommand(textInput + " \u2192 Can't put a " + argPos + " (" + letter + ") in a " + commandPos + " position") + "\r\n";
-                    } else {
-                        errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
-                    };
+                    errorsList += spaceCommand(textInput + " \u2192 " + '"' + letter + '" \r\n');
                 };
             };
         } else {
@@ -4583,11 +4607,10 @@ function makeDict(documentClass) {
 function main() {
     // Takes the original text (input) and outputs the new one, with the converted symbols
 
+    let fullText = textIn.value;
+    
     mistakesBox.textContent = "";  // Starts with an empty box for errors
     errorsList = "";  // Makes sure it starts empty
-
-    let fullText = textIn.value;
-    fullText = fullText.replace(/\u000A/g, " ");  // Cancels the line skipped by pressing "enter", use "\\" instead
 
     fullText = convert(fullText + " ");
 
