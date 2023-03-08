@@ -28,10 +28,6 @@ function updateMessage(version) {
     // To be changed by hand every version
     const majorChanges = "Welcome to 𝑀ᴀᴛ𝑇ᴀʟ𝑋 version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
-    " 1) Added the function \\phantom{}, which outputs as many spaces as there are characters in the argument. \r\n" + 
-    "    For instance, \\phantom{abc} → 3 spaces and \\phantom{\\int} → 1 space \r\n" + 
-    " 2) Improved automatic spaces \r\n" + 
-    " 3) Included accents for out of math mode (\\^{a} → â, \\~{e} → ẽ, \\c{k} → ķ, etc.) \r\n" + 
-    " 4) Minor bug fixes";
+    " 1) Fixed broken link to documentation";
     textOut.value = majorChanges;  // In "text_input" form
 };
