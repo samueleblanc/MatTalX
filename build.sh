@@ -49,9 +49,6 @@ if  [[ $1 == "firefox" ]]; then
     firefox_addon
 elif [[ $1 == "chrome" ]]; then
     chrome_ext
-elif [[ $1 == "b-all" ]]; then
-    firefox_addon
-    chrome_ext
 else
-    echo "Accepted arguments: 'firefox', 'chrome' or 'b-all'." # b-all stands for build all
+    echo "Accepted arguments: 'firefox' or 'chrome'"
 fi
