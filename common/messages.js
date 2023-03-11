@@ -28,6 +28,6 @@ function updateMessage(version) {
     // To be changed by hand every version
     const majorChanges = "Welcome to 𝑀ᴀᴛ𝑇ᴀʟ𝑋 version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
-    " 1) Fixed broken link to documentation";
+    " 1) Included 'Settings', where you can adjust font size and shortcuts!";
     textOut.value = majorChanges;  // In "text_input" form
 };
