@@ -3570,6 +3570,11 @@ const changeFontButton = document.getElementById("mathFont");
 // Math mode button
 const changeModeButton = document.getElementById("mathMode");
 
+// Settings
+const settingsBtn = document.getElementById("settingsBtn");
+settingsBtn.onclick = function() {openSettings()};
+const settingsBox = document.getElementById("settingsBox");
+
 // First and second text box
 const textIn = document.getElementById("text_in");
 const textOut = document.getElementById("text_out");
@@ -3649,6 +3654,18 @@ function clear() {
     textOut.disabled = true;
     suggestionsPopup.style.display = "none";
     suggestionsPopup.textContent = "";
+};
+
+function openSettings() {
+    if ((settingsBox.style.display === "none") || (settingsBox.style.display === "")) {
+        settingsBox.style.display = "block";
+    };
+};
+
+function closeSettings() {
+    if (settingsBox.style.display === "block") {
+        settingsBox.style.display = "none";
+    };
 };
 
 // Show suggestion button and hide shortcuts if the device is screen only

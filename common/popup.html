@@ -19,6 +19,7 @@
             <span id="adjustSpaces"><label for="adjust">Adjust spaces</label><input type="checkbox" name="adjust" id="adjust" checked></span>
             <span id="changeFont"><label for="mathFont">Mathematical font</label><input type="checkbox" name="mathFont" id="mathFont" checked></span>
             <span id="changeMode"><label for="mathMode">Math mode</label><input type="checkbox" name="mathMode" id="mathMode" checked></span>
+            <input type="button" value="Settings" id="settingsBtn">
             <p class="shortcuts">
             <b class="shortcutTitle">Shorcuts</b><br>
                 <!--Filled with javascript-->
@@ -32,6 +33,26 @@
         <img id="title_light" alt="MatTalX" src="images/mattalx_logo_nobg_light.png">
         <img id="title_dark" alt="MatTalX" src="images/mattalx_logo_nobg_dark.png">
     </header>
+    <div id="settingsBox">
+        <div id="settingsContent">
+            <h3>Settings</h3>
+            <h4>Font</h4>
+            <span><label for="fontSize">Font size: </label><input type="number" name="fontSize" id="fontSize" value="14" maxlength="2" size="1"></span>
+            <h4>Shortcuts</h4>
+            <span><label for="shortOpen">Open/Close MatTalX: </label>
+            <select name="shortOpen" id="shortOpenK"><option value="alt">Alt</option><option value="ctrl">Ctrl</option></select>+
+            <input type="text" name="shortOpen" id="shortOpenL" value="M" maxlength="1" size="1"></span>
+            <span><label for="shortCopyInput">Copy input (first box): </label>
+            <select name="shortOpen" id="shortCopyInputK"><option value="alt">Alt</option><option value="ctrl">Ctrl</option></select>+
+            <input type="text" name="shortCopyInput" id="shortCopyInputL" value="I" maxlength="1" size="1"></span>
+            <span><label for="shortCopyOutput">Copy output (second box): </label>
+            <select name="shortOpen" id="shortCopyOutputK"><option value="alt">Alt</option><option value="ctrl">Ctrl</option></select>+
+            <input type="text" name="shortCopyOutput" id="shortCopyOutputL" value="O" maxlength="1" size="1"></span>
+            <span><label for="shortCompletion">Open/Close completion: </label>
+            <select name="shortOpen" id="shortCompletionK"><option value="alt">Alt</option><option value="ctrl">Ctrl</option></select>+
+            <input type="text" name="shortCompletion" id="shortCompletionL" value="C" maxlength="1" size="1"></span>
+        </div>
+    </div>
     <div id="body">
     <form name="text_input">
         <textarea type="text" name="text_in" id="text_in" spellcheck="false"></textarea>

@@ -66,7 +66,8 @@ body {
 #git, 
 #adjustSpaces,
 #changeFont,
-#changeMode {
+#changeMode,
+#settingsBtn {
     display: block;
     width: 100%;
     font-size: 15px;
@@ -116,6 +117,36 @@ tr, td {
     border-collapse: collapse;
     width: 100%;
 }
+#settingsBox {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    overflow: auto;
+}
+#settingsContent {
+    position: absolute;
+    display: block;
+    padding: 12px;
+    border-radius: 5px;
+    width: 70%;
+    height: 80%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    text-decoration: none;
+}
+#settingsContent h3 {
+    text-align: center;
+}
+#settingsContent span {
+    display: block;
+    padding: 1px;
+}
 
 /* Colors and style */
 @media (prefers-color-scheme: light) {
@@ -164,7 +195,8 @@ tr, td {
     #git, 
     #adjustSpaces,
     #changeFont,
-    #changeMode {
+    #changeMode,
+    #settingsBtn {
         color: black;
         background-color: whitesmoke;
     }
@@ -172,7 +204,8 @@ tr, td {
     #git:hover,
     #adjustSpaces:hover,
     #changeFont:hover,
-    #changeMode:hover {
+    #changeMode:hover,
+    #settingsBtn:hover {
         background-color: lightgrey;
     }
     #convert,
@@ -203,6 +236,14 @@ tr, td {
     tr, td {
         border: 1px solid rgb(238, 238, 238);
         background-color: white;
+    }
+    #settingsBox {
+        background-color: whitesmoke;
+        background-color: rgba(245, 245, 245, 0.7);
+    }
+    #settingsContent {
+        background-color: whitesmoke;
+        color: black;
     }
 }
 @media (prefers-color-scheme: dark) {
@@ -252,7 +293,8 @@ tr, td {
     #git, 
     #adjustSpaces,
     #changeFont,
-    #changeMode {
+    #changeMode,
+    #settingsBtn {
         color: whitesmoke;
         background-color: rgb(31, 31, 31);
     }
@@ -260,7 +302,8 @@ tr, td {
     #git:hover,
     #adjustSpaces:hover,
     #changeFont:hover,
-    #changeMode:hover  {
+    #changeMode:hover,
+    #settingsBtn:hover  {
         background-color: rgb(41, 41, 41);
     }
     #convert,
@@ -291,5 +334,13 @@ tr, td {
     tr, td {
         border: 1px solid rgb(31, 31, 31);
         background-color: rgb(39, 39, 39);
+    }
+    #settingsBox {
+        background-color: rgb(31, 31, 31);
+        background-color: rgba(31, 31, 31, 0.7);
+    }
+    #settingsContent {
+        background-color: rgb(31, 31, 31);
+        color: whitesmoke;
     }
 }

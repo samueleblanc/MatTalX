@@ -68,6 +68,10 @@ window.addEventListener("click", (event) => {
         if ((event.target.id !== "text_in") && (event.target.id !== "suggestionsBtn")) {
             closeSuggestions();
         };
+    } else if (settingsBox.style.display === "block") {
+        if (event.target.id === "settingsBox") {
+            closeSettings();
+        };
     };
 });
 
