@@ -3581,6 +3581,17 @@ const textOut = document.getElementById("text_out");
 
 const mistakesBox = document.getElementById("mistakes");
 
+// Settings
+// Font size
+const fontSize = document.getElementById("fontSize");
+// Keyboard shortcuts
+const srtCopyInputKey = document.getElementById("shortCopyInputK");
+const srtCopyInputLetter = document.getElementById("shortCopyInputL");
+const srtCopyOutputKey = document.getElementById("shortCopyOutputK");
+const srtCopyOutputLetter = document.getElementById("shortCopyOutputL");
+const srtCompletionKey = document.getElementById("shortCompletionK");
+const srtCompletionLetter = document.getElementById("shortCompletionL");
+
 
 //-----------------------------------------------------//
 
@@ -3654,18 +3665,6 @@ function clear() {
     textOut.disabled = true;
     suggestionsPopup.style.display = "none";
     suggestionsPopup.textContent = "";
-};
-
-function openSettings() {
-    if ((settingsBox.style.display === "none") || (settingsBox.style.display === "")) {
-        settingsBox.style.display = "block";
-    };
-};
-
-function closeSettings() {
-    if (settingsBox.style.display === "block") {
-        settingsBox.style.display = "none";
-    };
 };
 
 // Show suggestion button and hide shortcuts if the device is screen only

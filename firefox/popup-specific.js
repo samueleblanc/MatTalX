@@ -79,12 +79,12 @@ window.addEventListener("click", (event) => {
 
 document.addEventListener("keydown", (keyPressed) => {
     // Listens for Alt+C to show suggestions, Alt+I to copy text of the first box (input) and Alt+O to copy text in the second box (output)
-    if ((keyPressed.key === "c") && keyPressed.altKey && (textIn == document.activeElement)) {
+    if ((keyPressed.key === srtCompletionLetter.value) && keyPressed.altKey && (textIn == document.activeElement)) {
         // Alt+C to shows suggestions but closes the popup if the suggestion box is already opened
         getSuggestion();
-    } else if ((keyPressed.key === "i") && keyPressed.altKey) {
+    } else if ((keyPressed.key === srtCopyInputLetter.value) && keyPressed.altKey) {
         copyTextIn();
-    } else if ((keyPressed.key === "o") && keyPressed.altKey) {
+    } else if ((keyPressed.key === srtCopyOutputKey.value) && keyPressed.altKey) {
         copyTextOut();
     } else {
         // If any key is pressed while the suggestion popup is opened, it adjusts the suggestions
@@ -109,3 +109,59 @@ document.addEventListener("keydown", (keyPressed) => {
         };
     };
 });
+
+function openSettings() {
+    if ((settingsBox.style.display === "none") || (settingsBox.style.display === "")) {
+        browser.storage.local.get("font_size", (text) => {
+            if (text.font_size !== undefined) {
+                fontSize.value = text.font_size;
+            };
+        });
+        browser.storage.local.get("copy_input_key", (text) => {
+            if (text.copy_input_key !== undefined) {
+                srtCopyInputKey.value = text.copy_input_key;
+            };
+        });
+        browser.storage.local.get("copy_input_letter", (text) => {
+            if (text.copy_input_letter !== undefined) {
+                srtCopyInputLetter.value = text.copy_input_letter;
+            };
+        });
+        browser.storage.local.get("copy_output_key", (text) => {
+            if (text.copy_output_key !== undefined) {
+                srtCopyOutputKey.value = text.copy_output_key;
+            };
+        });
+        browser.storage.local.get("copy_output_letter", (text) => {
+            if (text.copy_output_letter !== undefined) {
+                srtCopyOutputLetter.value = text.copy_output_letter;
+            };
+        });
+        browser.storage.local.get("completion_key", (text) => {
+            if (text.completion_key !== undefined) {
+                srtCompletionKey.value = text.completion_key;
+            };
+        });
+        browser.storage.local.get("completion_letter", (text) => {
+            if (text.completion_letter !== undefined) {
+                srtCompletionLetter.value = text.completion_letter;
+            };
+        });
+        settingsBox.style.display = "block";
+    };
+};
+
+function closeSettings() {
+    if (settingsBox.style.display === "block") {
+        browser.storage.local.set({
+            "font_size" : fontSize.value,
+            "copy_input_key" : srtCopyInputKey.value,
+            "copy_input_letter" : srtCopyInputLetter.value,
+            "copy_output_key" : srtCopyOutputKey.value,
+            "copy_output_letter" : srtCopyOutputLetter.value,
+            "completion_key" : srtCompletionKey.value,
+            "completion_letter" : srtCompletionLetter.value
+        });
+        settingsBox.style.display = "none";
+    };
+};
