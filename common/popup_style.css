@@ -147,6 +147,13 @@ tr, td {
     display: block;
     padding: 1px;
 }
+#settingsContent input[type=number],
+#settingsContent input[type=text],
+#settingsContent select {
+    border: none;
+    border-radius: 5px;
+    padding: 4px;
+}
 
 /* Colors and style */
 @media (prefers-color-scheme: light) {
@@ -245,6 +252,12 @@ tr, td {
         background-color: whitesmoke;
         color: black;
     }
+    #settingsContent input[type=number],
+    #settingsContent input[type=text],
+    #settingsContent select {
+        color: black;
+        background-color: white;
+    }
 }
 @media (prefers-color-scheme: dark) {
     body {
@@ -342,5 +355,11 @@ tr, td {
     #settingsContent {
         background-color: rgb(31, 31, 31);
         color: whitesmoke;
+    }
+    #settingsContent input[type=number],
+    #settingsContent input[type=text],
+    #settingsContent select {
+        color: whitesmoke;
+        background-color: rgb(61, 61, 61);
     }
 }
