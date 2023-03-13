@@ -3585,12 +3585,16 @@ const mistakesBox = document.getElementById("mistakes");
 // Font size
 const fontSize = document.getElementById("fontSize");
 // Keyboard shortcuts
-const srtCopyInputKey = document.getElementById("shortCopyInputK");
-const srtCopyInputLetter = document.getElementById("shortCopyInputL");
-const srtCopyOutputKey = document.getElementById("shortCopyOutputK");
-const srtCopyOutputLetter = document.getElementById("shortCopyOutputL");
-const srtCompletionKey = document.getElementById("shortCompletionK");
-const srtCompletionLetter = document.getElementById("shortCompletionL");
+const setCopyInputKey = document.getElementById("shortCopyInputK");
+const setCopyInputLetter = document.getElementById("shortCopyInputL");
+const setCopyOutputKey = document.getElementById("shortCopyOutputK");
+const setCopyOutputLetter = document.getElementById("shortCopyOutputL");
+const setCompletionKey = document.getElementById("shortCompletionK");
+const setCompletionLetter = document.getElementById("shortCompletionL");
+
+const shortCopyInput = document.getElementById("short_copy_input");
+const shortCopyOutput = document.getElementById("short_copy_output");
+const shortOpenCompletion = document.getElementById("short_open_suggestions");
 
 
 //-----------------------------------------------------//
@@ -3642,6 +3646,12 @@ const specialTokens = {startMathmode: "STARTMM", endMathmode: "ENDMM", startArgu
 
 /** Front-end **/
 
+// Show suggestion button and hide shortcuts if the device is screen only
+if (touchScreen) {
+    suggestionsBtn.style.display = "inline-block";
+    document.getElementsByClassName("shortcuts").style.display = "none";
+};
+
 function copyTextOut() {
     // Copy second box (output) to clipboard
     if (textOut.disabled === false) {
@@ -3667,12 +3677,84 @@ function clear() {
     suggestionsPopup.textContent = "";
 };
 
-// Show suggestion button and hide shortcuts if the device is screen only
-if (touchScreen) {
-    suggestionsBtn.style.display = "inline-block";
-    document.getElementsByClassName("shortcuts").style.display = "none";
+function verifySettings(variable, varType) {
+    // Makes sure the settings are appropriate
+    // Normally, every setting should be fine since of the restriction in HTML (type and maxvalue)
+    const restriction = {
+        "font" : {
+            min: 1,
+            max: 99,
+        },
+        "letter" : {
+            min: "A",
+            max: "z",
+        }
+    };
+    if ((variable < restriction[varType].min) || (variable > restriction[varType].max)) {
+        mistakes("Settings", undefined, variable + " is out of range");
+    };
 };
 
+function writeSettings() {
+    shortCopyInput.textContent = setCopyInputKey.value+"+"+setCopyInputLetter.value.toUpperCase()+" : Copy input (first box)";
+    shortCopyOutput.textContent = setCopyOutputKey.value+"+"+setCopyOutputLetter.value.toUpperCase()+" : Copy ouput (second box)";
+    shortOpenCompletion.textContent = setCompletionKey.value+"+"+setCompletionLetter.value.toUpperCase()+" : Open/Close completion";
+
+    textIn.style.fontSize = fontSize.value.toString() + "px";
+    textOut.style.fontSize = (parseInt(fontSize.value)+1).toString() + "px";
+};
+
+document.addEventListener("keydown", (keyPressed) => {
+    // Listens for keydown to open completion popup, copy the input text or copy the output
+    if (((keyPressed.key === setCompletionLetter.value.toLowerCase()) || (keyPressed.key === setCompletionLetter.value.toUpperCase())) && 
+         (
+          (keyPressed.altKey && rightKey("Alt", setCompletionKey.value)) || 
+          (keyPressed.ctrlKey && rightKey("Ctrl", setCompletionKey.value)) || 
+          (keyPressed.altKey && keyPressed.shiftKey && ("Alt+Shift" === setCompletionKey.value)) ||
+          (keyPressed.ctrlKey && keyPressed.shiftKey && ("Ctrl+Shift" === setCompletionKey.value))
+          ) &&
+         (textIn == document.activeElement)) {
+        // Shows suggestions but closes the popup if the suggestion box is already opened
+        getSuggestion();
+    } else if (((keyPressed.key === setCopyInputLetter.value.toLowerCase()) || (keyPressed.key === setCopyInputLetter.value.toUpperCase())) && 
+        (
+        (keyPressed.altKey && rightKey("Alt", setCopyInputKey.value)) || 
+        (keyPressed.ctrlKey && rightKey("Ctrl", setCopyInputKey.value)) || 
+        (keyPressed.altKey && keyPressed.shiftKey && ("Alt+Shift" === setCopyInputKey.value)) ||
+        (keyPressed.ctrlKey && keyPressed.shiftKey && ("Ctrl+Shift" === setCopyInputKey.value))
+        )) {
+        copyTextIn();
+    } else if (((keyPressed.key === setCopyOutputLetter.value.toLowerCase()) || (keyPressed.key === setCopyOutputLetter.value.toUpperCase())) && 
+        (
+        (keyPressed.altKey && rightKey("Alt", setCopyOutputKey.value)) || 
+        (keyPressed.ctrlKey && rightKey("Ctrl", setCopyOutputKey.value)) || 
+        (keyPressed.altKey && keyPressed.shiftKey && ("Alt+Shift" === setCopyOutputKey.value)) ||
+        (keyPressed.ctrlKey && keyPressed.shiftKey && ("Ctrl+Shift" === setCopyOutputKey.value))
+        )) {
+        copyTextOut();
+    } else {
+        // If any key is pressed while the suggestion popup is opened, it adjusts the suggestions
+        // The word must be adjusted "by hand" because the eventListener is synchronous
+        if (suggestionsPopup.style.display === "inline-block") {
+            if (keyPressed.key === "Backspace") {
+                suggestionsPopup.textContent = "";
+                let word = findWord(textIn.value, textIn.selectionEnd - 1, "Backspace");
+                suggestions(word);
+            } else if ((keyPressed.code === "Space") || (keyPressed.code === "Tab")) {
+                closeSuggestions();
+            } else if (keyPressed.key.length === 1) {  // i.e. A letter
+                suggestionsPopup.textContent = "";
+                let word = findWord(textIn.value, textIn.selectionEnd - 1, keyPressed.key);
+                suggestions(word);
+            } else if ((keyPressed.key === "ArrowUp") || (keyPressed.key === "ArrowRight") || (keyPressed.key === "ArrowLeft") || (keyPressed.key === "ArrowDown")) {
+                suggestionsPopup.textContent = "";
+                const arrows = {"ArrowUp": 0, "ArrowRight": 1, "ArrowLeft": -1, "ArrowDown": 0};
+                let word = findWord(textIn.value, (textIn.selectionEnd - 1 + arrows[keyPressed.key]));  // Only adjusts the cursor position for right and left arrows
+                suggestions(word);
+            };
+        };
+    };
+});
 
 //-----------------------------------------------------//
 
@@ -3728,12 +3810,15 @@ function findWord(text, cursorPosition, addedLetter="") {
 
 function suggestions(command) {
     // Outputs list of other commands that are similar to the one currently being written
+    const btnBackColor = getComputedStyle(document.body).backgroundColor;
+    const btnFontColor = (btnBackColor === "rgb(255, 255, 255)") ? "black" : "whitesmoke"; 
     if (command === "") {
         closeSuggestions();
     } else if (command[0] !== "\\") {
         let row = suggestionsPopup.insertRow(-1);
         let cell = row.insertCell(0);
         cell.textContent = "The first character of the command must be a backslash (\\). Superscript starts with ^ and subscript with _";
+        cell.style.color = btnFontColor;
     } else {
         command = command.substring(1, command.length);  // Erases the backslash so that, for instance, \arrow will also show \rightarrow, etc.
         for (let keys in defaultDict) {
@@ -3748,8 +3833,6 @@ function suggestions(command) {
                 // Button style
                 btn.style.width = "145px";  // Would be cleaner with something like 'fit-content', but is way to slow
                 btn.style.height = "17px";
-                const btnBackColor = getComputedStyle(document.body).backgroundColor;
-                const btnFontColor = (btnBackColor === "rgb(255, 255, 255)") ? "black" : "whitesmoke"; 
                 btn.style.backgroundColor = btnBackColor;
                 btn.style.border = "1px solid " + btnBackColor;
                 btn.style.color = btnFontColor;

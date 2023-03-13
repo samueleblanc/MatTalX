@@ -5,13 +5,7 @@
     Therefore, a special attention to variable names is needed.
 
     These functions differs from their Firefox counterpart as the API for storing data is slightly different
-    and because shortcuts are different
 */
-
-document.getElementById("short_open_mattalx").textContent = "Ctrl+M : Open/Close MatTalX";
-document.getElementById("short_copy_input").textContent = "Alt+I : Copy input (first box)";
-document.getElementById("short_copy_output").textContent = "Alt+O : Copy ouput (second box)";
-document.getElementById("short_open_suggestions").textContent = "Alt+S : Open/Close suggestions";
 
 window.addEventListener("blur", () => {
     // Saves the text in the first box so it doesn't disappear if you change page or close MatTalX
@@ -19,6 +13,13 @@ window.addEventListener("blur", () => {
     chrome.storage.sync.set({"spaces" : spacesButton.checked});
     chrome.storage.sync.set({"font" : changeFontButton.checked});
     chrome.storage.sync.set({"mode" : changeModeButton.checked});
+    chrome.storage.sync.set({"font_size" : fontSize.value});
+    chrome.storage.sync.set({"copy_input_key" : setCopyInputKey.value});
+    chrome.storage.sync.set({"copy_input_letter" : setCopyInputLetter.value});
+    chrome.storage.sync.set({"copy_output_key" : setCopyOutputKey.value});
+    chrome.storage.sync.set({"copy_output_letter" : setCopyOutputLetter.value});
+    chrome.storage.sync.set({"completion_key" : setCompletionKey.value});
+    chrome.storage.sync.set({"completion_letter" : setCompletionLetter.value});
 });
 
 window.addEventListener("focus", () => {
@@ -46,6 +47,8 @@ window.addEventListener("focus", () => {
             changeModeButton.checked = false;
         };
     });
+    getSettings();
+    writeSettings();
     textIn.focus();
 });
 
@@ -75,90 +78,66 @@ window.addEventListener("click", (event) => {
     };
 });
 
-document.addEventListener("keydown", (keyPressed) => {
-    // Listens for Alt+S to show suggestions, Alt+I to copy text of the first box (input) and Alt+O to copy text in the second box (output)
-    if ((keyPressed.key === srtCompletionLetter.value) && keyPressed.altKey && (textIn == document.activeElement)) {
-        // Alt+S to shows suggestions but closes the popup if the suggestion box is already opened
-        getSuggestion();
-    } else if ((keyPressed.key === srtCopyInputLetter.value) && keyPressed.altKey) {
-        copyTextIn();
-    } else if ((keyPressed.key === srtCopyOutputKey.value) && keyPressed.altKey) {
-        copyTextOut();
-    } else {
-        // If any key is pressed while the suggestion popup is opened, it adjusts the suggestions
-        // The word must be adjusted "by hand" because the eventListener is synchronous
-        if (suggestionsPopup.style.display === "inline-block") {
-            if (keyPressed.key === "Backspace") {
-                suggestionsPopup.textContent = "";
-                let word = findWord(textIn.value, textIn.selectionEnd - 1, "Backspace");
-                suggestions(word);
-            } else if ((keyPressed.code === "Space") || (keyPressed.code === "Tab")) {
-                closeSuggestions();
-            } else if (keyPressed.key.length === 1) {  // i.e. A letter
-                suggestionsPopup.textContent = "";
-                let word = findWord(textIn.value, textIn.selectionEnd - 1, keyPressed.key);
-                suggestions(word);
-            } else if ((keyPressed.key === "ArrowUp") || (keyPressed.key === "ArrowRight") || (keyPressed.key === "ArrowLeft") || (keyPressed.key === "ArrowDown")) {
-                suggestionsPopup.textContent = "";
-                const arrows = {"ArrowUp": 0, "ArrowRight": 1, "ArrowLeft": -1, "ArrowDown": 0};
-                let word = findWord(textIn.value, (textIn.selectionEnd - 1 + arrows[keyPressed.key]));  // Only adjusts the cursor position for right and left arrows
-                suggestions(word);
-            };
+function getSettings() {
+    chrome.storage.sync.get(["font_size"], (text) => {
+        if (text.font_size !== undefined) {
+            fontSize.value = text.font_size;
         };
-    };
-});
+    });
+    chrome.storage.sync.get(["copy_input_key"], (text) => {
+        if (text.copy_input_key !== undefined) {
+            setCopyInputKey.value = text.copy_input_key;
+        };
+    });
+    chrome.storage.sync.get(["copy_input_letter"], (text) => {
+        if (text.copy_input_letter !== undefined) {
+            setCopyInputLetter.value = text.copy_input_letter;
+        };
+    });
+    chrome.storage.sync.get(["copy_output_key"], (text) => {
+        if (text.copy_output_key !== undefined) {
+            setCopyOutputKey.value = text.copy_output_key;
+        };
+    });
+    chrome.storage.sync.get(["copy_output_letter"], (text) => {
+        if (text.copy_output_letter !== undefined) {
+            setCopyOutputLetter.value = text.copy_output_letter;
+        };
+    });
+    chrome.storage.sync.get(["completion_key"], (text) => {
+        if (text.completion_key !== undefined) {
+            setCompletionKey.value = text.completion_key;
+        };
+    });
+    chrome.storage.sync.get(["completion_letter"], (text) => {
+        if (text.completion_letter !== undefined) {
+            setCompletionLetter.value = text.completion_letter;
+        };
+    });
+};
 
 function openSettings() {
     if ((settingsBox.style.display === "none") || (settingsBox.style.display === "")) {
-        chrome.storage.sync.get(["font_size"], (text) => {
-            if (text.font_size !== undefined) {
-                fontSize.value = text.font_size;
-            };
-        });
-        chrome.storage.sync.get(["copy_input_key"], (text) => {
-            if (text.copy_input_key !== undefined) {
-                srtCopyInputKey.value = text.copy_input_key;
-            };
-        });
-        chrome.storage.sync.get(["copy_input_letter"], (text) => {
-            if (text.copy_input_letter !== undefined) {
-                srtCopyInputLetter.value = text.copy_input_letter;
-            };
-        });
-        chrome.storage.sync.get(["copy_output_key"], (text) => {
-            if (text.copy_output_key !== undefined) {
-                srtCopyOutputKey.value = text.copy_output_key;
-            };
-        });
-        chrome.storage.sync.get(["copy_output_letter"], (text) => {
-            if (text.copy_output_letter !== undefined) {
-                srtCopyOutputLetter.value = text.copy_output_letter;
-            };
-        });
-        chrome.storage.sync.get(["completion_key"], (text) => {
-            if (text.completion_key !== undefined) {
-                srtCompletionKey.value = text.completion_key;
-            };
-        });
-        chrome.storage.sync.get(["completion_letter"], (text) => {
-            if (text.completion_letter !== undefined) {
-                srtCompletionLetter.value = text.completion_letter;
-            };
-        });
+        getSettings();
         settingsBox.style.display = "block";
     };
 };
 
 function closeSettings() {
-    if (settingsBox.style.display === "block") {
-        chrome.storage.sync.set({"font_size" : fontSize.value});
-        chrome.storage.sync.set({"copy_input_key" : srtCopyInputKey.value});
-        chrome.storage.sync.set({"copy_input_letter" : srtCopyInputLetter.value});
-        chrome.storage.sync.set({"copy_output_key" : srtCopyOutputKey.value});
-        chrome.storage.sync.set({"copy_output_letter" : srtCopyOutputLetter.value});
-        chrome.storage.sync.set({"completion_key" : srtCompletionKey.value});
-        chrome.storage.sync.set({"completion_letter" : srtCompletionLetter.value});
-        
-        settingsBox.style.display = "none";
-    };
+    verifySettings(fontSize.value, "font");
+    verifySettings(setCopyInputLetter.value, "letter");
+    verifySettings(setCopyOutputLetter.value, "letter");
+    verifySettings(setCompletionLetter.value, "letter");
+
+    chrome.storage.sync.set({"font_size" : fontSize.value});
+    chrome.storage.sync.set({"copy_input_key" : setCopyInputKey.value});
+    chrome.storage.sync.set({"copy_input_letter" : setCopyInputLetter.value});
+    chrome.storage.sync.set({"copy_output_key" : setCopyOutputKey.value});
+    chrome.storage.sync.set({"copy_output_letter" : setCopyOutputLetter.value});
+    chrome.storage.sync.set({"completion_key" : setCompletionKey.value});
+    chrome.storage.sync.set({"completion_letter" : setCompletionLetter.value});
+    
+    writeSettings();
+
+    settingsBox.style.display = "none";
 };
