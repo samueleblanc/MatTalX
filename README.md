@@ -8,7 +8,7 @@ The documentation (PDF and text file) is also [here](docs)
 
 ## Presentation from the Chrome webstore and Firefox Add-ons marketplace
 
-Write mathematical expression in UTF format - Convert LaTeX command to text!
+Write mathematical expressions in plain text - Convert LaTeX command to character!
 
 With MatTalX (pronounced "Math Talk"), you can convert a simple command, like e^{x} or \alpha into 𝑒ˣ and 𝛼 respectively. They can then be sent via Facebook, Twitter, Instagram, Teams, Gmail and every other online platform.
 
