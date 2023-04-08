@@ -28,6 +28,7 @@ function updateMessage(version) {
     // To be changed by hand every version
     const majorChanges = "Welcome to 𝑀ᴀᴛ𝑇ᴀʟ𝑋 version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
-    " 1) Included 'Settings', where you can adjust font size and shortcuts!";
+    " 1) Included 'Settings', where you can adjust font size, font family and shortcuts! \r\n" + 
+    " 2) Added many superscript characters";
     textOut.value = majorChanges;  // In "text_input" form
 };
