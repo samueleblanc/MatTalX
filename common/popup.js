@@ -1,6 +1,6 @@
 /*
     The main purpose of this program is to take a text as input (mostly LaTeX commands), 
-    to convert them into the desired symbol (UTF) and finally to display them so they can 
+    to convert them into the desired symbol (character) and finally to display them so they can 
     be copied and sent via Messenger, Instagram, Twitter, etc.
 */
 
@@ -16,6 +16,7 @@
     ├─ Functions (as const)
     ├─ Dictionaries
     ├─ HTMLElements
+    │   └─ Settings
     ├─ Other
     │
     /// FUNCTIONS ///  -> All the functions
@@ -1955,6 +1956,13 @@ const pmod = (arg, initialCommand) => {
     return ["\u2710(mod\u2710" + arg.join("") + ")"];
 };
 
+const today = () => {
+    // returns today's date
+    let date = new Date();
+    let month = date.toLocaleString('en', {month: 'long'});  // Will change to 'default' when many languages will be supported
+    return month + " " + date.getDate() + ", " + date.getFullYear();
+};
+
 // These functions call combineSymbols with a predetermined symbol
 
 const overline = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u0305")};
@@ -2855,7 +2863,8 @@ const textCommands = {
     "\\d" : dotBelow,
     "\\r" : ringAbove,
     "\\u" : breve,
-    "\\v" : caron
+    "\\v" : caron,
+    "\\today" : today()
 };
 
 // Superscript is used (by the superscript function) to convert characters to the corresponding superscript character
@@ -3616,10 +3625,12 @@ const changeFontButton = document.getElementById("mathFont");
 // Math mode button
 const changeModeButton = document.getElementById("mathMode");
 
-// Settings
+// Settings popup
 const settingsBtn = document.getElementById("settingsBtn");
 settingsBtn.onclick = function() {openSettings()};
 const settingsBox = document.getElementById("settingsBox");
+const resetSettingsButton = document.getElementById("resetSettingsBtn");
+resetSettingsButton.onclick = function() {resetSettings()};
 
 // First and second text box
 const textIn = document.getElementById("text_in");
@@ -3627,10 +3638,16 @@ const textOut = document.getElementById("text_out");
 
 const mistakesBox = document.getElementById("mistakes");
 
+
 // Settings
-// Font size
+
+// Font
 const fontSize = document.getElementById("fontSize");
+const fontFamily = document.getElementById("fontFamily");
+
 // Keyboard shortcuts
+
+// Shortcuts settings
 const setCopyInputKey = document.getElementById("shortCopyInputK");
 const setCopyInputLetter = document.getElementById("shortCopyInputL");
 const setCopyOutputKey = document.getElementById("shortCopyOutputK");
@@ -3638,9 +3655,13 @@ const setCopyOutputLetter = document.getElementById("shortCopyOutputL");
 const setCompletionKey = document.getElementById("shortCompletionK");
 const setCompletionLetter = document.getElementById("shortCompletionL");
 
-const shortCopyInput = document.getElementById("short_copy_input");
-const shortCopyOutput = document.getElementById("short_copy_output");
-const shortOpenCompletion = document.getElementById("short_open_suggestions");
+// Shortcuts info (in dropdownInfo)
+const textCopyInputKey = document.getElementById("short_copy_input_key");
+const textCopyInputLetter = document.getElementById("short_copy_input_letter");
+const textCopyOutputKey = document.getElementById("short_copy_output_key");
+const textCopyOutputLetter = document.getElementById("short_copy_output_letter");
+const textCompletionKey = document.getElementById("short_open_suggestions_key");
+const textCompletionLetter = document.getElementById("short_open_suggestions_letter");
 
 
 //-----------------------------------------------------//
@@ -3683,6 +3704,18 @@ const touchScreen = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0)
 
 // Used by tokenizer() and tokensToText()
 const specialTokens = {startMathmode: "STARTMM", endMathmode: "ENDMM", startArgument: "STARTARG", endArgument: "ENDARG"};
+
+// Default values for settings (only those in the Settings box)
+const defaultSettings = {
+    "font_size" : 14,
+    "font_family" : "monospace",
+    "copy_input_key" : "Alt",
+    "copy_input_letter" : "I",
+    "copy_output_key" : "Alt",
+    "copy_output_letter" : "O",
+    "completion_key" : "Alt",
+    "completion_letter" : "C"
+};
 
 
 /**************************************************************************************/
@@ -3737,25 +3770,51 @@ function verifySettings(variable, varType) {
         }
     };
     if ((variable < restriction[varType].min) || (variable > restriction[varType].max)) {
-        mistakes("Settings", undefined, variable + " is out of range");
+        const errReason = (varType === "letter") ? "not an accepted character" : "out of range";
+        mistakesBox.textContent = "";
+        errorsList = "";
+        mistakes("Settings", undefined, variable + " is " + errReason);
     };
 };
 
-function writeSettings() {
-    shortCopyInput.textContent = setCopyInputKey.value+"+"+setCopyInputLetter.value.toUpperCase()+" : Copy input (first box)";
-    shortCopyOutput.textContent = setCopyOutputKey.value+"+"+setCopyOutputLetter.value.toUpperCase()+" : Copy ouput (second box)";
-    shortOpenCompletion.textContent = setCompletionKey.value+"+"+setCompletionLetter.value.toUpperCase()+" : Open/Close completion";
+function applySettings() {
+    // Writes down the value of the shortcuts chosen in the settings and updates the font
+    // Called when MatTalX opens, when the Settings box closes and by resetSettings()
+    textCopyInputKey.textContent = setCopyInputKey.value;
+    textCopyInputLetter.textContent = setCopyInputLetter.value.toUpperCase();
+    textCopyOutputKey.textContent = setCopyOutputKey.value;
+    textCopyOutputLetter.textContent = setCopyOutputLetter.value.toUpperCase();
+    textCompletionKey.textContent = setCompletionKey.value;
+    textCompletionLetter.textContent = setCompletionLetter.value.toUpperCase();
 
     textIn.style.fontSize = fontSize.value.toString() + "px";
     textOut.style.fontSize = (parseInt(fontSize.value)+1).toString() + "px";
+
+    textIn.style.fontFamily = fontFamily.value;
+    textOut.style.fontFamily = fontFamily.value;
+};
+
+function resetSettings() {
+    // Give each settings its default value
+    // Called when the 'Reset' button in the Settings box is clicked
+    fontSize.value = defaultSettings["font_size"];
+    fontFamily.value = defaultSettings["font_family"];
+    setCopyInputKey.value = defaultSettings["copy_input_key"];
+    setCopyInputLetter.value = defaultSettings["copy_input_letter"];
+    setCopyOutputKey.value = defaultSettings["copy_output_key"];
+    setCopyOutputLetter.value = defaultSettings["copy_output_letter"];
+    setCompletionKey.value = defaultSettings["completion_key"];
+    setCompletionLetter.value = defaultSettings["completion_letter"];
+
+    applySettings();
 };
 
 document.addEventListener("keydown", (keyPressed) => {
     // Listens for keydown to open completion popup, copy the input text or copy the output
     if (((keyPressed.key === setCompletionLetter.value.toLowerCase()) || (keyPressed.key === setCompletionLetter.value.toUpperCase())) && 
          (
-          (keyPressed.altKey && rightKey("Alt", setCompletionKey.value)) || 
-          (keyPressed.ctrlKey && rightKey("Ctrl", setCompletionKey.value)) || 
+          (keyPressed.altKey && ("Alt" === setCompletionKey.value)) || 
+          (keyPressed.ctrlKey && ("Ctrl" === setCompletionKey.value)) || 
           (keyPressed.altKey && keyPressed.shiftKey && ("Alt+Shift" === setCompletionKey.value)) ||
           (keyPressed.ctrlKey && keyPressed.shiftKey && ("Ctrl+Shift" === setCompletionKey.value))
           ) &&
@@ -3764,16 +3823,16 @@ document.addEventListener("keydown", (keyPressed) => {
         getSuggestion();
     } else if (((keyPressed.key === setCopyInputLetter.value.toLowerCase()) || (keyPressed.key === setCopyInputLetter.value.toUpperCase())) && 
         (
-        (keyPressed.altKey && rightKey("Alt", setCopyInputKey.value)) || 
-        (keyPressed.ctrlKey && rightKey("Ctrl", setCopyInputKey.value)) || 
+        (keyPressed.altKey && ("Alt" === setCopyInputKey.value)) || 
+        (keyPressed.ctrlKey && ("Ctrl" === setCopyInputKey.value)) || 
         (keyPressed.altKey && keyPressed.shiftKey && ("Alt+Shift" === setCopyInputKey.value)) ||
         (keyPressed.ctrlKey && keyPressed.shiftKey && ("Ctrl+Shift" === setCopyInputKey.value))
         )) {
         copyTextIn();
     } else if (((keyPressed.key === setCopyOutputLetter.value.toLowerCase()) || (keyPressed.key === setCopyOutputLetter.value.toUpperCase())) && 
         (
-        (keyPressed.altKey && rightKey("Alt", setCopyOutputKey.value)) || 
-        (keyPressed.ctrlKey && rightKey("Ctrl", setCopyOutputKey.value)) || 
+        (keyPressed.altKey && ("Alt" === setCopyOutputKey.value)) || 
+        (keyPressed.ctrlKey && ("Ctrl" === setCopyOutputKey.value)) || 
         (keyPressed.altKey && keyPressed.shiftKey && ("Alt+Shift" === setCopyOutputKey.value)) ||
         (keyPressed.ctrlKey && keyPressed.shiftKey && ("Ctrl+Shift" === setCopyOutputKey.value))
         )) {

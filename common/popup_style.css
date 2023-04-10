@@ -76,7 +76,8 @@ body {
     border: none;
 }
 #convert,
-#reset {
+#reset,
+#resetSettingsBtn {
     font-size: 14px;
     font-family: 'Lucida Grande';
     border: none;
@@ -217,13 +218,15 @@ tr, td {
     }
     #convert,
     #reset,
-    #suggestionsBtn {
+    #suggestionsBtn,
+    #resetSettingsBtn {
         color: black;
         background-color: rgb(230, 229, 229);
     }
     #convert:hover,
     #reset:hover,
-    #suggestionsBtn:hover {
+    #suggestionsBtn:hover,
+    #resetSettingsBtn:hover {
         background-color: lightgrey;
     }
     #copy {
@@ -321,13 +324,15 @@ tr, td {
     }
     #convert,
     #reset,
-    #suggestionsBtn {
+    #suggestionsBtn,
+    #resetSettingsBtn {
         color: whitesmoke;
         background-color: rgb(53, 53, 53);
     }
     #convert:hover,
     #reset:hover,
-    #suggestionsBtn:hover {
+    #suggestionsBtn:hover,
+    #resetSettingsBtn:hover {
         background-color: rgb(61, 61, 61);
     }
     #copy {

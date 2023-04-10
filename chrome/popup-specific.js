@@ -14,6 +14,7 @@ window.addEventListener("blur", () => {
     chrome.storage.sync.set({"font" : changeFontButton.checked});
     chrome.storage.sync.set({"mode" : changeModeButton.checked});
     chrome.storage.sync.set({"font_size" : fontSize.value});
+    chrome.storage.sync.set({"font_family" : fontFamily.value});
     chrome.storage.sync.set({"copy_input_key" : setCopyInputKey.value});
     chrome.storage.sync.set({"copy_input_letter" : setCopyInputLetter.value});
     chrome.storage.sync.set({"copy_output_key" : setCopyOutputKey.value});
@@ -48,7 +49,6 @@ window.addEventListener("focus", () => {
         };
     });
     getSettings();
-    writeSettings();
     textIn.focus();
 });
 
@@ -79,40 +79,72 @@ window.addEventListener("click", (event) => {
 });
 
 function getSettings() {
+    // For settings in the Settings box
     chrome.storage.sync.get(["font_size"], (text) => {
         if (text.font_size !== undefined) {
             fontSize.value = text.font_size;
+        } else {
+            fontSize.value = defaultSettings["font_size"];
         };
+        textIn.style.fontSize = fontSize.value.toString() + "px";
+        textOut.style.fontSize = (parseInt(fontSize.value)+1).toString() + "px";
+    });
+    chrome.storage.sync.get(["font_family"], (text) => {
+        if (text.font_family !== undefined) {
+            fontFamily.value = text.font_family;
+        }  else {
+            fontFamily.value = defaultSettings["font_family"];
+        };
+        textIn.style.fontFamily = fontFamily.value;
+        textOut.style.fontFamily = fontFamily.value;
     });
     chrome.storage.sync.get(["copy_input_key"], (text) => {
         if (text.copy_input_key !== undefined) {
             setCopyInputKey.value = text.copy_input_key;
+        } else {
+            setCopyInputKey.value = defaultSettings["copy_input_key"];
         };
+        textCopyInputKey.textContent = setCopyInputKey.value;
     });
     chrome.storage.sync.get(["copy_input_letter"], (text) => {
         if (text.copy_input_letter !== undefined) {
             setCopyInputLetter.value = text.copy_input_letter;
+        } else {
+            setCopyInputLetter.value = defaultSettings["copy_input_letter"];
         };
+        textCopyInputLetter.textContent = setCopyInputLetter.value.toUpperCase();
     });
     chrome.storage.sync.get(["copy_output_key"], (text) => {
         if (text.copy_output_key !== undefined) {
             setCopyOutputKey.value = text.copy_output_key;
+        } else {
+            setCopyOutputKey.value = defaultSettings["copy_output_key"];
         };
+        textCopyOutputKey.textContent = setCopyOutputKey.value;
     });
     chrome.storage.sync.get(["copy_output_letter"], (text) => {
         if (text.copy_output_letter !== undefined) {
             setCopyOutputLetter.value = text.copy_output_letter;
+        } else {
+            setCopyOutputLetter.value = defaultSettings["copy_output_letter"];
         };
+        textCopyOutputLetter.textContent = setCopyOutputLetter.value.toUpperCase();
     });
     chrome.storage.sync.get(["completion_key"], (text) => {
         if (text.completion_key !== undefined) {
             setCompletionKey.value = text.completion_key;
+        } else {
+            setCompletionKey.value = defaultSettings["completion_key"];
         };
+        textCompletionKey.textContent = setCompletionKey.value;
     });
     chrome.storage.sync.get(["completion_letter"], (text) => {
         if (text.completion_letter !== undefined) {
             setCompletionLetter.value = text.completion_letter;
+        } else {
+            setCompletionLetter.value = defaultSettings["completion_letter"];
         };
+        textCompletionLetter.textContent = setCompletionLetter.value.toUpperCase();
     });
 };
 
@@ -130,6 +162,7 @@ function closeSettings() {
     verifySettings(setCompletionLetter.value, "letter");
 
     chrome.storage.sync.set({"font_size" : fontSize.value});
+    chrome.storage.sync.set({"font_family" : fontFamily.value});
     chrome.storage.sync.set({"copy_input_key" : setCopyInputKey.value});
     chrome.storage.sync.set({"copy_input_letter" : setCopyInputLetter.value});
     chrome.storage.sync.set({"copy_output_key" : setCopyOutputKey.value});
@@ -137,7 +170,7 @@ function closeSettings() {
     chrome.storage.sync.set({"completion_key" : setCompletionKey.value});
     chrome.storage.sync.set({"completion_letter" : setCompletionLetter.value});
     
-    writeSettings();
+    applySettings();
 
     settingsBox.style.display = "none";
 };

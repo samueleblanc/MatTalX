@@ -22,11 +22,11 @@
             <input type="button" value="Settings" id="settingsBtn">
             <p class="shortcuts">
             <b class="shortcutTitle">Shorcuts</b><br>
-                <span id="short_open_mattalx">Alt+M: Open/Close MatTalX</span><br>
+                <span id="short_open_mattalx">Alt+M : Open/Close MatTalX</span><br>
                 <!--Filled with javascript-->
-                <span id="short_copy_input"></span><br>
-                <span id="short_copy_output"></span><br>
-                <span id="short_open_suggestions"></span>
+                <span id="short_copy_input"><span id="short_copy_input_key"></span>+<span id="short_copy_input_letter"></span> : Copy input (first box)<br>
+                <span id="short_copy_output"><span id="short_copy_output_key"></span>+<span id="short_copy_output_letter"></span> : Copy ouput (second box)<br>
+                <span id="short_open_suggestions"><span id="short_open_suggestions_key"></span>+<span id="short_open_suggestions_letter"></span> : Open/Close completion</span>
             </p>
         </div>
         </div>
@@ -40,9 +40,14 @@
             <span><label for="fontSize">Font size: </label><input type="number" name="fontSize" id="fontSize" value="14" maxlength="2" size="1"></span>
             <span><label for="fontFamily">Font family: </label>
                 <select name="fontFamily" id="fontFamily">
-                    <option value="arial">Arial</option>
+                    <option value="Arial">Arial</option>
+                    <option value="Calibri">Calibri</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Gill Sans">Gill Sans</option>
+                    <option value="Lucida Grande">Lucida Grande</option>
                     <option value="monospace">Monospace</option>
-                    <option value="times_new_roman">Times New Roman</option>
+                    <option value="Segoe UI">Segoe UI</option>
+                    <option value="Times New Roman">Times New Roman</option>
                 </select>
             <h4>Shortcuts</h4>
             <span>Open/Close MatTalX: <i>Can be modified from the browser's settings</i></span>
@@ -70,6 +75,8 @@
                 <option value="Alt+Shift">Alt+Shift</option>
             </select> + 
             <input type="text" name="shortCompletion" id="shortCompletionL" value="C" maxlength="1" size="1"></span>
+            <br>
+            <input type="button" value="Reset" id="resetSettingsBtn">
         </div>
     </div>
     <div id="body">
