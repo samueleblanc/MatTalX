@@ -925,15 +925,29 @@ const textbf = (arg, initialCommand) => {
     // This function converts the list of characters to the corresponding (text) bold font character
 	const symbols = {
         "A" : "\u{1D5D4}",
+        "À" : "𝗔̀",
+        "Â" : "𝗔̂",
         "a" : "\u{1D5EE}",
+        "à" : "𝗮̀",
+        "â" : "𝗮̂",
         "B" : "\u{1D5D5}",
         "b" : "\u{1D5EF}",
         "C" : "\u{1D5D6}",
+        "Ç" : "𝗖̧",
         "c" : "\u{1D5F0}",
+        "ç" : "𝗰̧",
         "D" : "\u{1D5D7}",
         "d" : "\u{1D5F1}",
         "E" : "\u{1D5D8}",
+        "É" : "𝗘́",
+        "Ê" : "𝗘̂",
+        "Ë" : "𝗘̈",
+        "È" : "𝗘̀",
         "e" : "\u{1D5F2}",
+        "é" : "𝗲́",
+        "ê" : "𝗲̂",
+        "ë" : "𝗲̈",
+        "è" : "𝗲̀",
         "F" : "\u{1D5D9}",
         "f" : "\u{1D5F3}",
         "G" : "\u{1D5DA}",
@@ -953,7 +967,11 @@ const textbf = (arg, initialCommand) => {
         "N" : "\u{1D5E1}",
         "n" : "\u{1D5FB}",
         "O" : "\u{1D5E2}",
+        "Ô" : "𝗢̂",
+        "Ö" : "𝗢̈",
         "o" : "\u{1D5FC}",
+        "ô" : "𝗼̂",
+        "ö" : "𝗼̈",
         "P" : "\u{1D5E3}",
         "p" : "\u{1D5FD}",
         "Q" : "\u{1D5E4}",
@@ -965,7 +983,11 @@ const textbf = (arg, initialCommand) => {
         "T" : "\u{1D5E7}",
         "t" : "\u{1D601}",
         "U" : "\u{1D5E8}",
+        "Û" : "𝗨̂",
+        "Ù" : "𝗨̀",
         "u" : "\u{1D602}",
+        "û" : "𝘂̂",
+        "ù" : "𝘂̀",
         "V" : "\u{1D5E9}",
         "v" : "\u{1D603}",
         "W" : "\u{1D5EA}",
@@ -1147,15 +1169,29 @@ const textit = (arg, initialCommand) => {
     // This function converts the list of characters to the corresponding italic character
     const symbols = {
         "A" : "\u{1D608}",
+        "Â" : "𝘈̂",
+        "À" : "𝘈̀",
         "a" : "\u{1D622}",
+        "â" : "𝘢̂",
+        "à" : "𝘢̀",
         "B" : "\u{1D609}",
         "b" : "\u{1D623}",
         "C" : "\u{1D60A}",
+        "Ç" : "𝘊̧",
         "c" : "\u{1D624}",
+        "ç" : "𝘤̧",
         "D" : "\u{1D60B}",
         "d" : "\u{1D625}",
         "E" : "\u{1D60C}",
+        "É" : "𝘌́",
+        "Ê" : "𝘌̂",
+        "È" : "𝘌̀",
+        "Ë" : "𝘌̈",
         "e" : "\u{1D626}",
+        "é" : "𝘦́",
+        "ê" : "𝘦̂",
+        "è" : "𝘦̀",
+        "ë" : "𝘦̈",
         "F" : "\u{1D60D}",
         "f" : "\u{1D627}",
         "G" : "\u{1D60E}",
@@ -1175,7 +1211,11 @@ const textit = (arg, initialCommand) => {
         "N" : "\u{1D615}",
         "n" : "\u{1D62F}",
         "O" : "\u{1D616}",
+        "Ô" : "𝘖̂",
+        "Ö" : "𝘖̈",
         "o" : "\u{1D630}",
+        "ô" : "𝘰̂",
+        "ö" : "𝘰̈",
         "P" : "\u{1D617}",
         "p" : "\u{1D631}",
         "Q" : "\u{1D618}",
@@ -1187,7 +1227,11 @@ const textit = (arg, initialCommand) => {
         "T" : "\u{1D61B}",
         "t" : "\u{1D635}",
         "U" : "\u{1D61C}",
+        "Û" : "𝘜̂",
+        "Ù" : "𝘜̀",
         "u" : "\u{1D636}",
+        "û" : "𝘶̂",
+        "ù" : "𝘶̀",
         "V" : "\u{1D61D}",
         "v" : "\u{1D637}",
         "W" : "\u{1D61E}",
@@ -1379,15 +1423,29 @@ const texttt = (arg, initialCommand) => {
     // This function converts the list of characters to the corresponding typewriter character
     const symbols = {
         "A" : "\u{1D670}",
+        "Â" : "𝙰̂",
+        "À" : "𝙰̀",
         "a" : "\u{1D68A}",
+        "â" : "𝚊̂",
+        "à" : "𝚊̀",
         "B" : "\u{1D671}",
         "b" : "\u{1D68B}",
         "C" : "\u{1D672}",
+        "Ç" : "𝙲̧",
         "c" : "\u{1D68C}",
+        "ç" : "𝚌̧",
         "D" : "\u{1D673}",
         "d" : "\u{1D68D}",
         "E" : "\u{1D674}",
+        "É" : "𝙴́",
+        "È" : "𝙴̀",
+        "Ê" : "𝙴̂",
+        "Ë" : "𝙴̈",
         "e" : "\u{1D68E}",
+        "é" : "𝚎́",
+        "ê" : "𝚎̂",
+        "è" : "𝚎̀",
+        "ë" : "𝚎̈",
         "F" : "\u{1D675}",
         "f" : "\u{1D68F}",
         "G" : "\u{1D676}",
@@ -1407,7 +1465,11 @@ const texttt = (arg, initialCommand) => {
         "N" : "\u{1D67D}",
         "n" : "\u{1D697}",
         "O" : "\u{1D67E}",
+        "Ô" : "𝙾̂",
+        "Ö" : "𝙾̈",
         "o" : "\u{1D698}",
+        "ô" : "𝚘̂",
+        "ö" : "𝚘̈",
         "P" : "\u{1D67F}",
         "p" : "\u{1D699}",
         "Q" : "\u{1D680}",
@@ -1419,7 +1481,11 @@ const texttt = (arg, initialCommand) => {
         "T" : "\u{1D683}",
         "t" : "\u{1D69D}",
         "U" : "\u{1D684}",
+        "Û" : "𝚄̂",
+        "Ù" : "𝚄̀",
         "u" : "\u{1D69E}",
+        "û" : "𝚞̂",
+        "ù" : "𝚞̀",
         "V" : "\u{1D685}",
         "v" : "\u{1D69F}",
         "W" : "\u{1D686}",
@@ -1588,8 +1654,10 @@ const text = (arg, initialCommand) => {
         "n" : "n",
         "O" : "O",
         "Ô" : "Ô",
+        "Ö" : "Ö",
         "o" : "o",
         "ô" : "ô",
+        "ö" : "ö",
         "P" : "P",
         "p" : "p",
         "Q" : "Q",
@@ -1602,6 +1670,8 @@ const text = (arg, initialCommand) => {
         "t" : "t",
         "U" : "U",
         "u" : "u",
+        "Û" : "Û",
+        "û" : "û",
         "Ù" : "Ù",
         "ù" : "ù",
         "V" : "V",
@@ -3758,9 +3828,9 @@ function clear() {
 
 function verifySettings(variable, varType) {
     // Makes sure the settings are appropriate
-    // Normally, every setting should be fine since of the restriction in HTML (type and maxvalue)
     const restriction = {
         "font" : {
+            // Should be fine since 2 char limits in HTML
             min: 1,
             max: 99,
         },
@@ -3953,14 +4023,14 @@ function suggestions(command) {
 
                 // Shows what the command ouputs on mouseover, return to normal on mouseout
                 btn.addEventListener("mouseover", () => {
-                    let x = btn.textContent;
+                    let tmp = btn.textContent;
                     btn.textContent = btn.value;
-                    btn.value = x;
+                    btn.value = tmp;
                 });
                 btn.addEventListener("mouseout", () => {
-                    let x = btn.textContent;
+                    let tmp = btn.textContent;
                     btn.textContent = btn.value;
-                    btn.value = x;
+                    btn.value = tmp;
                 });
                 cell.appendChild(btn);
             };
@@ -4000,11 +4070,11 @@ function showCommand(key) {
         } else if ((key == "\\above") || (key == "\\below") || (key == "\\hspace") || (key == "\\vskip")) {
             return key + "{}";
         } else if ((key == "_") || (key == "^")) {
-            return "x" + key + "{a1} \u2192 𝑥" + (defaultDict[key](["a", "1"], defaultDict[key])).join("");
+            return "x" + key + "{a1} \u2192 𝑥" + spaceCommand((defaultDict[key](["a", "1"], defaultDict[key])).join(""));
         } else if (key == "\\pmod") {
             return key + "{n} \u2192 " + spaceCommand(defaultDict[key](["n"], defaultDict[key]));
         } else {
-            return key + "{abc} \u2192 " + (defaultDict[key](["a", "b", "c"], defaultDict[key])).join("");
+            return key + "{abc} \u2192 " + spaceCommand((defaultDict[key](["a", "b", "c"], defaultDict[key])).join(""));
         };
     } else {
         if (key == "\\:") {
