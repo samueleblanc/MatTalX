@@ -38,7 +38,7 @@ test_parser () {
     echo "Deleting lines associated with html"
     sed -i -e '/HTMLElements/,/Other/d' test_mattalx/popup.js
     sed -i '/^const touchScreen/d' test_mattalx/popup.js
-    sed -i -e '/if (touchScreen)/,/};/d' test_mattalx/popup.js
+    sed -i -e '/if (touchScreen)/,/Suggestion box (or completion)/d' test_mattalx/popup.js
     cat test/parser_test.js >> test_mattalx/popup.js
     echo "Directory made"
     cd test_mattalx
