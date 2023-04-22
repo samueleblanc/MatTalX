@@ -3,25 +3,25 @@
 # Creates a directory and a zip file for either a chrome extension or firefox add-on
 
 copy_common () {
-    cp -RT common $1  # Parameter is the name of the directory (e.g. 'extension', 'firefox_add_on', etc.)
+    cp -RT common $1  # Parameter is the name of the directory (e.g. 'chrome_extension', 'firefox_add_on', etc.)
     echo "Files from 'common' transfered"
 }
 
 chrome_ext () {
-    if [[ -e extension ]]; then
-        echo "'extension' directory already exists"
+    if [[ -e chrome_extension ]]; then
+        echo "'chrome_extension' directory already exists"
     else
-        echo "Creating 'extension' directory..."
-        mkdir extension
-        copy_common extension
-        cp -RT chrome extension
-        cat extension/messages.js >> extension/popup.js
-        cat extension/popup-specific.js >> extension/popup.js
-        rm extension/messages.js
-        rm extension/popup-specific.js
+        echo "Creating 'chrome_extension' directory..."
+        mkdir chrome_extension
+        copy_common chrome_extension
+        cp -RT chrome chrome_extension
+        cat chrome_extension/messages.js >> chrome_extension/popup.js
+        cat chrome_extension/popup-specific.js >> chrome_extension/popup.js
+        rm chrome_extension/messages.js
+        rm chrome_extension/popup-specific.js
         echo "Directory made"
         echo "Compressing..."
-        cd extension; zip -r ../extension.zip .
+        cd chrome_extension; zip -r ../chrome_extension.zip .
         echo "--Done--"
     fi
 }
