@@ -62,16 +62,25 @@ body {
     right: 0;
     border-radius: 7px;
 }
-#docs, 
-#git, 
+#docs,
+#git,
+#adjustSpaces,
+#changeFont,
+#changeMode,
+#settingsBtn,
+.shortcuts b,
+.shortcuts span {
+    font-size: 15px;
+    font-family: 'Times New Roman';
+}
+#docs,
+#git,
 #adjustSpaces,
 #changeFont,
 #changeMode,
 #settingsBtn {
     display: block;
     width: 100%;
-    font-size: 15px;
-    font-family: 'Times New Roman';
     text-decoration: none;
     border: none;
 }
