@@ -29,6 +29,8 @@ function updateMessage(version) {
     const majorChanges = "Welcome to 𝑀ᴀᴛ𝑇ᴀʟ𝑋 version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
     " 1) Included 'Settings', where you can adjust font size, font family and shortcuts! \r\n" + 
-    " 2) Added many superscript characters";
+    " 2) Added many superscript characters \r\n" +
+    " 3) Default shortcut to open and close 𝑀ᴀᴛ𝑇ᴀʟ𝑋 is now Alt+M both for Chrome and Firefox. \r\n" + 
+    "    You can modify it in the browser settings!";
     textOut.value = majorChanges;  // In "text_input" form
 };

@@ -3726,6 +3726,7 @@ const setCompletionKey = document.getElementById("shortCompletionK");
 const setCompletionLetter = document.getElementById("shortCompletionL");
 
 // Shortcuts info (in dropdownInfo)
+const textOpenMatTalX = document.getElementById("short_open_mattalx_command");
 const textCopyInputKey = document.getElementById("short_copy_input_key");
 const textCopyInputLetter = document.getElementById("short_copy_input_letter");
 const textCopyOutputKey = document.getElementById("short_copy_output_key");
@@ -3779,6 +3780,7 @@ const specialTokens = {startMathmode: "STARTMM", endMathmode: "ENDMM", startArgu
 const defaultSettings = {
     "font_size" : 14,
     "font_family" : "monospace",
+    "open_mattalx_shortcut" : "Alt+M",
     "copy_input_key" : "Alt",
     "copy_input_letter" : "I",
     "copy_output_key" : "Alt",
@@ -3856,6 +3858,17 @@ function applySettings() {
     textCopyOutputLetter.textContent = setCopyOutputLetter.value.toUpperCase();
     textCompletionKey.textContent = setCompletionKey.value;
     textCompletionLetter.textContent = setCompletionLetter.value.toUpperCase();
+
+    // Verify if each shortcuts are unique
+    const listShortcuts = [
+        textOpenMatTalX.textContent,
+        [textCopyInputKey.textContent, "+", textCopyInputLetter.textContent].join(""), 
+        [textCopyOutputKey.textContent, "+", textCopyOutputLetter.textContent].join(""),
+        [textCompletionKey.textContent, "+", textCompletionLetter.textContent].join("")
+    ];
+    if ((new Set(listShortcuts)).size !== listShortcuts.length) {
+        mistakes("Settings", undefined, "At least two shortcuts are identical");
+    };
 
     textIn.style.fontSize = fontSize.value.toString() + "px";
     textOut.style.fontSize = (parseInt(fontSize.value)+1).toString() + "px";

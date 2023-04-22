@@ -50,6 +50,19 @@ window.addEventListener("focus", () => {
             changeModeButton.checked = false;
         };
     });
+    browser.commands.getAll().then(
+        // Show the right shortcut used to open and close MatTalX
+        // Function is different from the other since this shortcut can be modified from 
+        // the browser settings, not directly from MatTalX
+        (commands) => {
+            if (commands[0].name == "_execute_browser_action") {
+                textOpenMatTalX.textContent = commands[0].shortcut;
+            };
+        },
+        () => {
+            textOpenMatTalX.textContent = defaultSettings["open_mattalx_shortcut"];
+        }
+    );
     getSettings();
     textIn.focus();
 });
