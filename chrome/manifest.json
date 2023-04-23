@@ -1,6 +1,6 @@
 {
     "name": "MatTalX - Write math symbols",
-    "description": "Write mathematical expressions in plain text - Convert LaTeX command to a character!",
+    "description": "Write mathematical expressions anywhere - Convert LaTeX commands to plain text!",
     "version": "2.6.0",
     "icons" : {
       "32": "/images/mattalx_favicon32.png",
