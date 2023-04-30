@@ -85,8 +85,7 @@ body {
     border: none;
 }
 #convert,
-#reset,
-#resetSettingsBtn {
+#reset {
     font-size: 14px;
     font-family: 'Lucida Grande';
     border: none;
@@ -123,7 +122,8 @@ body {
     border-radius: 5px;
     position: absolute;
 }
-tr, td {
+#completion tr,
+#completion td {
     border-collapse: collapse;
     width: 100%;
 }
@@ -149,6 +149,7 @@ tr, td {
     transform: translate(-50%, -50%);
     font-size: 14px;
     text-decoration: none;
+    overflow-y: scroll;
 }
 #settingsContent h3 {
     text-align: center;
@@ -163,6 +164,24 @@ tr, td {
     border: none;
     border-radius: 5px;
     padding: 4px;
+}
+#settingsContent input[type=button] {
+    font-size: 14px;
+    font-family: 'Lucida Grande';
+    border: none;
+    padding: 8px;
+}
+#commandsBuilt {
+    display: none;
+    width: 80%;
+    text-align: center;
+    border-radius: 5px;
+    position: absolute;
+}
+#commandsBuilt tr,
+#commandsBuilt td {
+    border-collapse: collapse;
+    background: none;
 }
 
 /* Colors and style */
@@ -227,15 +246,13 @@ tr, td {
     }
     #convert,
     #reset,
-    #completionBtn,
-    #resetSettingsBtn {
+    #completionBtn {
         color: black;
         background-color: rgb(230, 229, 229);
     }
     #convert:hover,
     #reset:hover,
-    #completionBtn:hover,
-    #resetSettingsBtn:hover {
+    #completionBtn:hover {
         background-color: lightgrey;
     }
     #copy {
@@ -269,6 +286,13 @@ tr, td {
     #settingsContent select {
         color: black;
         background-color: white;
+    }
+    #settingsContent input[type=button] {
+        color: black;
+        background-color: rgb(230, 229, 229);
+    }
+    #settingsContent input[type=button]:hover {
+        background-color: lightgrey;
     }
 }
 @media (prefers-color-scheme: dark) {
@@ -333,15 +357,13 @@ tr, td {
     }
     #convert,
     #reset,
-    #completionBtn,
-    #resetSettingsBtn {
+    #completionBtn {
         color: whitesmoke;
         background-color: rgb(53, 53, 53);
     }
     #convert:hover,
     #reset:hover,
-    #completionBtn:hover,
-    #resetSettingsBtn:hover {
+    #completionBtn:hover {
         background-color: rgb(61, 61, 61);
     }
     #copy {
@@ -374,6 +396,13 @@ tr, td {
     #settingsContent input[type=text],
     #settingsContent select {
         color: whitesmoke;
+        background-color: rgb(61, 61, 61);
+    }
+    #settingsContent input[type=button] {
+        color: whitesmoke;
+        background-color: rgb(53, 53, 53);
+    }
+    #settingsContent input[type=button]:hover {
         background-color: rgb(61, 61, 61);
     }
 }

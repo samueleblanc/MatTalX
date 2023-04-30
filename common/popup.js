@@ -22,6 +22,7 @@
     /// FUNCTIONS ///  -> All the functions
     │
     ├─ Front-end
+    ├─ Build commands and operators
     ├─ Completion box
     ├─ Convert text
     │   ├─ Main functions
@@ -2370,6 +2371,7 @@ const mathDictionary = {
     "\\Downarrow" : "\u21D3",
     "\\Updownarrow" : "\u21D5",
     "\\rightarrow" : "\u2192",
+    "\\to" : "\u2192",
     "\\longrightarrow" : "\u27F6",
     "\\leftarrow" : "\u2190",
     "\\longleftarrow" : "\u27F5",
@@ -3735,6 +3737,10 @@ const textCopyOutputLetter = document.getElementById("short_copy_output_letter")
 const textCompletionKey = document.getElementById("short_open_completion_key");
 const textCompletionLetter = document.getElementById("short_open_completion_letter");
 
+// Commands & Operators
+const buildCommandsBtn = document.getElementById("buildNewCommand");
+buildCommandsBtn.onclick = function() {buildNewCommand()};
+const commandsBuilt = document.getElementById("commandsBuilt");
 
 //-----------------------------------------------------//
 
@@ -3861,7 +3867,7 @@ function applySettings() {
     textCompletionKey.textContent = setCompletionKey.value;
     textCompletionLetter.textContent = setCompletionLetter.value.toUpperCase();
 
-    // Verify if each shortcuts are unique
+    // Verify if each shortcut is unique
     const listShortcuts = [
         textOpenMatTalX.textContent,
         [textCopyInputKey.textContent, "+", textCopyInputLetter.textContent].join(""), 
@@ -3882,7 +3888,7 @@ function applySettings() {
 };
 
 function resetSettings() {
-    // Give each settings its default value
+    // Give each setting its default value
     // Called when the 'Reset' button in the Settings box is clicked
     fontSize.value = defaultSettings["font_size"];
     fontFamily.value = defaultSettings["font_family"];
@@ -3948,6 +3954,78 @@ document.addEventListener("keydown", (keyPressed) => {
         };
     };
 });
+
+//-----------------------------------------------------//
+
+
+/** Build commands and operators **/
+
+function buildNewCommand() {
+    // Called when 'buildCommandsBtn' is clicked
+    // Adds a new row to the 'commandsBuilt' table
+    commandsBuilt.style.display = "block";
+
+    // Curly brackets are used to mimic the style of \command{}{}
+    let curlyBracketsLeftCN = document.createElement("td");
+    let curlyBracketsRigthCN = document.createElement("td");
+    let curlyBracketsLeftCA = document.createElement("td");
+    let curlyBracketsRigthCA = document.createElement("td");
+    curlyBracketsLeftCN.textContent = "{";
+    curlyBracketsRigthCN.textContent = "}";
+    curlyBracketsLeftCA.textContent = "{";
+    curlyBracketsRigthCA.textContent = "}";
+
+    let row = document.createElement("tr");
+
+    // This block builds the select form from which you can select what to build
+    let typeInput = document.createElement("td");
+    let select = document.createElement("select");
+    select.className = "commandList";
+    let newCommandOpt = document.createElement("option");
+    let renewCommandOpt = document.createElement("option");
+    let declareMathOperatorOpt = document.createElement("option");
+    let declareUnicodeCharacterOpt = document.createElement("option");
+    newCommandOpt.text = "\\newcommand";
+    newCommandOpt.value = "\\newcommand";
+    renewCommandOpt.text = "\\renewcommand";
+    renewCommandOpt.value = "\\renewcommand";
+    declareMathOperatorOpt.text = "\\DeclareMathOperator";
+    declareMathOperatorOpt.value = "\\DeclareMathOperator";
+    declareUnicodeCharacterOpt.text = "\\DeclareUnicodeCharacter";
+    declareUnicodeCharacterOpt.value = "\\DeclareUnicodeCharacter";
+    select.add(newCommandOpt);
+    select.add(renewCommandOpt);
+    select.add(declareMathOperatorOpt);
+    select.add(declareUnicodeCharacterOpt);
+    typeInput.appendChild(select);
+    row.appendChild(typeInput);
+
+    row.appendChild(curlyBracketsLeftCN);
+
+    // newCommandName is the command name *to be* used
+    let newCommandName = document.createElement("td");
+    let inputNewCommandName = document.createElement("input");
+    inputNewCommandName.type = "text";
+    newCommandName.appendChild(inputNewCommandName);
+    row.appendChild(newCommandName);
+    inputNewCommandName.style.width = "90%";
+
+    row.appendChild(curlyBracketsRigthCN);
+    row.appendChild(curlyBracketsLeftCA);
+
+    // defaultCommandName is the *old* (or default) command
+    let defaultCommandName = document.createElement("td");
+    let inputDefaultCommandArg = document.createElement("input");
+    inputDefaultCommandArg.type = "text";
+    defaultCommandName.appendChild(inputDefaultCommandArg);
+    row.appendChild(defaultCommandName);
+    inputDefaultCommandArg.style.width = "90%";
+
+    row.appendChild(curlyBracketsRigthCA);
+
+    commandsBuilt.appendChild(row);
+};
+
 
 //-----------------------------------------------------//
 
