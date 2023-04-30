@@ -3724,6 +3724,7 @@ const setCopyOutputKey = document.getElementById("shortCopyOutputK");
 const setCopyOutputLetter = document.getElementById("shortCopyOutputL");
 const setCompletionKey = document.getElementById("shortCompletionK");
 const setCompletionLetter = document.getElementById("shortCompletionL");
+const showCompletionBtn = document.getElementById("showCompletionBtn");
 
 // Shortcuts info (in dropdownInfo)
 const textOpenMatTalX = document.getElementById("short_open_mattalx_command");
@@ -3786,7 +3787,8 @@ const defaultSettings = {
     "copy_output_key" : "Alt",
     "copy_output_letter" : "O",
     "completion_key" : "Alt",
-    "completion_letter" : "C"
+    "completion_letter" : "C",
+    "completion_button" : false
 };
 
 
@@ -3875,6 +3877,8 @@ function applySettings() {
 
     textIn.style.fontFamily = fontFamily.value;
     textOut.style.fontFamily = fontFamily.value;
+
+    completionBtn.style.display = (showCompletionBtn.checked || touchScreen) ? "inline-block" : "none";
 };
 
 function resetSettings() {
@@ -3888,6 +3892,7 @@ function resetSettings() {
     setCopyOutputLetter.value = defaultSettings["copy_output_letter"];
     setCompletionKey.value = defaultSettings["completion_key"];
     setCompletionLetter.value = defaultSettings["completion_letter"];
+    showCompletionBtn.checked = defaultSettings["completion_button"];
 
     applySettings();
 };

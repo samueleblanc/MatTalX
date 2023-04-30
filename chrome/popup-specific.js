@@ -21,6 +21,7 @@ window.addEventListener("blur", () => {
     chrome.storage.sync.set({"copy_output_letter" : setCopyOutputLetter.value});
     chrome.storage.sync.set({"completion_key" : setCompletionKey.value});
     chrome.storage.sync.set({"completion_letter" : setCompletionLetter.value});
+    chrome.storage.sync.set({"completion_button" : showCompletionBtn.checked});
 });
 
 window.addEventListener("focus", () => {
@@ -159,6 +160,13 @@ function getSettings() {
         };
         textCompletionLetter.textContent = setCompletionLetter.value.toUpperCase();
     });
+    chrome.storage.sync.get(["completion_button"], (button) => {
+        if (button.completion_button === true) {
+            // Default is false
+            showCompletionBtn.checked = true;
+        };
+        completionBtn.style.display = (showCompletionBtn.checked || touchScreen) ? "inline-block" : "none";
+    });
 };
 
 function openSettings() {
@@ -182,6 +190,7 @@ function closeSettings() {
     chrome.storage.sync.set({"copy_output_letter" : setCopyOutputLetter.value});
     chrome.storage.sync.set({"completion_key" : setCompletionKey.value});
     chrome.storage.sync.set({"completion_letter" : setCompletionLetter.value});
+    chrome.storage.sync.set({"completion_button" : showCompletionBtn.checked});
     
     applySettings();
 
