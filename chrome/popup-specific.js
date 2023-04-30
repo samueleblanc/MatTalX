@@ -80,9 +80,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
 window.addEventListener("click", (event) => {
     // Closes the suggestion popup if the users clicks anywhere except on the suggestion popup itself or input box
-    if (suggestionsPopup.style.display === "inline-block") {
-        if ((event.target.id !== "text_in") && (event.target.id !== "suggestionsBtn")) {
-            closeSuggestions();
+    if (completionPopup.style.display === "inline-block") {
+        if ((event.target.id !== "text_in") && (event.target.id !== "completionBtn")) {
+            closeCompletion();
         };
     } else if (settingsBox.style.display === "block") {
         if (event.target.id === "settingsBox") {

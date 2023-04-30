@@ -26,7 +26,7 @@
                 <span id="short_open_mattalx"><span id="short_open_mattalx_command"></span> : Open/Close MatTalX</span><br>
                 <span id="short_copy_input"><span id="short_copy_input_key"></span>+<span id="short_copy_input_letter"></span> : Copy input (first box)</span><br>
                 <span id="short_copy_output"><span id="short_copy_output_key"></span>+<span id="short_copy_output_letter"></span> : Copy ouput (second box)</span><br>
-                <span id="short_open_suggestions"><span id="short_open_suggestions_key"></span>+<span id="short_open_suggestions_letter"></span> : Open/Close completion</span>
+                <span id="short_open_completion"><span id="short_open_completion_key"></span>+<span id="short_open_completion_letter"></span> : Open/Close completion</span>
             </p>
         </div>
         </div>
@@ -77,14 +77,16 @@
             <input type="text" name="shortCompletion" id="shortCompletionL" value="C" maxlength="1" size="1"></span>
             <br>
             <input type="button" value="Reset" id="resetSettingsBtn">
+            <br>
+            <label for="showCompletionBtn">Show completion button</label><input type="checkbox" id="showCompletionBtn">
         </div>
     </div>
     <div id="body">
     <form name="text_input">
         <textarea type="text" name="text_in" id="text_in" spellcheck="false"></textarea>
-        <div class="suggestion"><table id="suggestions"></table></div><br>
+        <div class="completion"><table id="completion"></table></div><br>
         <input type="button" value="Convert" id="convert">
-        <input type="button" value="Suggestions" id="suggestionsBtn">  <!--suggestionsBtn is used with the android version-->
+        <input type="button" value="Completion" id="completionBtn">
         <input type="reset" value="Clear" id="reset"><br><br>
         <textarea type="text" name="text_out" id="text_out" spellcheck="false" disabled></textarea><br><br>
         <input type="button" value="Copy text" id="copy"><br>

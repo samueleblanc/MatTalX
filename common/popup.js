@@ -22,7 +22,7 @@
     /// FUNCTIONS ///  -> All the functions
     │
     ├─ Front-end
-    ├─ Suggestion box (or completion)
+    ├─ Completion box
     ├─ Convert text
     │   ├─ Main functions
     │   └─ Used by main functions
@@ -2879,7 +2879,7 @@ const noStyleGreek = {
     "\\omega" : "\u03C9"
 };
 
-// Default dict (in math mode), used in the suggestion popup
+// Default dict (in math mode), used in the completion popup
 const defaultDict = {...mathDictionary, ...stdGreek};
 
 const textCommands = {
@@ -3678,13 +3678,13 @@ copyButton.onclick = function() {copyTextOut()};
 const resetButton = document.getElementById("reset");
 resetButton.onclick = function() {clear()};
 
-// Button to open the suggestions popup
-const suggestionsBtn = document.getElementById("suggestionsBtn");
-suggestionsBtn.onclick = function() {getSuggestion()};
+// Button to open the completion popup
+const completionBtn = document.getElementById("completionBtn");
+completionBtn.onclick = function() {getCompletion()};
 
 // Originally hidden
-// Can be accessed with a keyboard shortcut (Alt+S or Alt+C on chrome or firefox respectively) or by clicking the button (android)
-const suggestionsPopup = document.getElementById("suggestions");
+// Can be accessed with a keyboard shortcut (Alt+C by default) or by clicking the button (android)
+const completionPopup = document.getElementById("completion");
 
 // Adjust spaces button
 const spacesButton = document.getElementById("adjust");
@@ -3731,8 +3731,8 @@ const textCopyInputKey = document.getElementById("short_copy_input_key");
 const textCopyInputLetter = document.getElementById("short_copy_input_letter");
 const textCopyOutputKey = document.getElementById("short_copy_output_key");
 const textCopyOutputLetter = document.getElementById("short_copy_output_letter");
-const textCompletionKey = document.getElementById("short_open_suggestions_key");
-const textCompletionLetter = document.getElementById("short_open_suggestions_letter");
+const textCompletionKey = document.getElementById("short_open_completion_key");
+const textCompletionLetter = document.getElementById("short_open_completion_letter");
 
 
 //-----------------------------------------------------//
@@ -3740,7 +3740,7 @@ const textCompletionLetter = document.getElementById("short_open_suggestions_let
 
 /** Other **/
 
-// Used in the subsection 'Suggestion box (or completion)' to recognize on which word is the cursor
+// Used in the subsection 'Completion box' to recognize on which word is the cursor
 const wordsDelimiters = [" ", "", "\u000A", "\\", "^", "_", "(", ")", "[", "]", "{", "}", ".", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!", "$"];
 const wordsDelimitersWOB = [" ", "", "\u000A", "^", "_", "(", ")", "[", "]", "{", "}", ".", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!", "$"]; // Without backslash
 
@@ -3797,9 +3797,9 @@ const defaultSettings = {
 
 /** Front-end **/
 
-// Show suggestion button and hide shortcuts if the device is screen only
+// Show completion button and hide shortcuts if the device is screen only
 if (touchScreen) {
-    suggestionsBtn.style.display = "inline-block";
+    completionBtn.style.display = "inline-block";
     document.getElementsByClassName("shortcuts").style.display = "none";
 };
 
@@ -3824,8 +3824,8 @@ function clear() {
     copyButton.value = "Copy text";
     mistakesBox.textContent = "";
     textOut.disabled = true;
-    suggestionsPopup.style.display = "none";
-    suggestionsPopup.textContent = "";
+    completionPopup.style.display = "none";
+    completionPopup.textContent = "";
 };
 
 function verifySettings(variable, varType) {
@@ -3902,8 +3902,8 @@ document.addEventListener("keydown", (keyPressed) => {
           (keyPressed.ctrlKey && keyPressed.shiftKey && ("Ctrl+Shift" === setCompletionKey.value))
           ) &&
          (textIn == document.activeElement)) {
-        // Shows suggestions but closes the popup if the suggestion box is already opened
-        getSuggestion();
+        // Shows completion but closes the popup if the completion box is already opened
+        getCompletion();
     } else if (((keyPressed.key === setCopyInputLetter.value.toLowerCase()) || (keyPressed.key === setCopyInputLetter.value.toUpperCase())) && 
         (
         (keyPressed.altKey && ("Alt" === setCopyInputKey.value)) || 
@@ -3921,24 +3921,24 @@ document.addEventListener("keydown", (keyPressed) => {
         )) {
         copyTextOut();
     } else {
-        // If any key is pressed while the suggestion popup is opened, it adjusts the suggestions
+        // If any key is pressed while the completion popup is opened, it adjusts the suggestions
         // The word must be adjusted "by hand" because the eventListener is synchronous
-        if (suggestionsPopup.style.display === "inline-block") {
+        if (completionPopup.style.display === "inline-block") {
             if (keyPressed.key === "Backspace") {
-                suggestionsPopup.textContent = "";
+                completionPopup.textContent = "";
                 let word = findWord(textIn.value, textIn.selectionEnd - 1, "Backspace");
-                suggestions(word);
+                completion(word);
             } else if ((keyPressed.code === "Space") || (keyPressed.code === "Tab")) {
-                closeSuggestions();
+                closeCompletion();
             } else if (keyPressed.key.length === 1) {  // i.e. A letter
-                suggestionsPopup.textContent = "";
+                completionPopup.textContent = "";
                 let word = findWord(textIn.value, textIn.selectionEnd - 1, keyPressed.key);
-                suggestions(word);
+                completion(word);
             } else if ((keyPressed.key === "ArrowUp") || (keyPressed.key === "ArrowRight") || (keyPressed.key === "ArrowLeft") || (keyPressed.key === "ArrowDown")) {
-                suggestionsPopup.textContent = "";
+                completionPopup.textContent = "";
                 const arrows = {"ArrowUp": 0, "ArrowRight": 1, "ArrowLeft": -1, "ArrowDown": 0};
                 let word = findWord(textIn.value, (textIn.selectionEnd - 1 + arrows[keyPressed.key]));  // Only adjusts the cursor position for right and left arrows
-                suggestions(word);
+                completion(word);
             };
         };
     };
@@ -3947,28 +3947,28 @@ document.addEventListener("keydown", (keyPressed) => {
 //-----------------------------------------------------//
 
 
-/** Suggestion box (or completion) **/
+/** Completion box **/
 
-function closeSuggestions() {
-    // Close and empties the suggestion popup
-    suggestionsPopup.style.display = "none";
-    suggestionsPopup.textContent = "";
+function closeCompletion() {
+    // Close and empties the completion popup
+    completionPopup.style.display = "none";
+    completionPopup.textContent = "";
 };
 
-function getSuggestion() {
-    // Calls suggestions() with the word touching the cursor if the popup is closed, else it closes the popup
-    if (suggestionsPopup.style.display !== "inline-block") { 
-        suggestionsPopup.textContent = "";
+function getCompletion() {
+    // Calls completion() with the word touching the cursor if the popup is closed, else it closes the popup
+    if (completionPopup.style.display !== "inline-block") { 
+        completionPopup.textContent = "";
         let word = findWord(textIn.value, textIn.selectionEnd - 1);
-        suggestionsPopup.style.display = "inline-block";
-        suggestions(word);
+        completionPopup.style.display = "inline-block";
+        completion(word);
     } else {
-        closeSuggestions();
+        closeCompletion();
     };
 };
 
 function findWord(text, cursorPosition, addedLetter="") {
-    // Used in the suggestion / completion popup
+    // Used in the completion popup
     // Finds the word that is touched by the cursor
     if (addedLetter.length === 1) {  // ie a letter
         text = text.split("");
@@ -3996,14 +3996,14 @@ function findWord(text, cursorPosition, addedLetter="") {
     return word;
 };
 
-function suggestions(command) {
+function completion(command) {
     // Outputs list of other commands that are similar to the one currently being written
     const btnBackColor = getComputedStyle(document.body).backgroundColor;
     const btnFontColor = (btnBackColor === "rgb(255, 255, 255)") ? "black" : "whitesmoke"; 
     if (command === "") {
-        closeSuggestions();
+        closeCompletion();
     } else if (command[0] !== "\\") {
-        let row = suggestionsPopup.insertRow(-1);
+        let row = completionPopup.insertRow(-1);
         let cell = row.insertCell(0);
         cell.textContent = "The first character of the command must be a backslash (\\). Superscript starts with ^ and subscript with _";
         cell.style.color = btnFontColor;
@@ -4012,7 +4012,7 @@ function suggestions(command) {
         for (let keys in defaultDict) {
             // Puts commands in button form, so they can be clicked on to replace the command being written
             if (keys.toLowerCase().indexOf(command.toLowerCase()) !== -1) {
-                let row = suggestionsPopup.insertRow(-1);
+                let row = completionPopup.insertRow(-1);
                 let cell = row.insertCell(0);
                 let btn = document.createElement("button");
                 btn.value = showCommand(keys);
@@ -4030,7 +4030,7 @@ function suggestions(command) {
                 // Complete the command if the user clicks on that command
                 btn.addEventListener("click", () => {
                     textIn.value = semiAutoCompletion(textIn.value, textIn.selectionEnd, btn.value);
-                    closeSuggestions();
+                    closeCompletion();
                     textIn.focus();
                 });
 
@@ -4069,8 +4069,8 @@ function semiAutoCompletion(textIn, cursorPosition, command) {
 };
 
 function showCommand(key) {
-    // Used in suggestions
-    // Changes what's seen when the user hovers on a command in the suggestion popup
+    // Used in completion
+    // Changes what's seen when the user hovers on a command in the completion popup
     if (typeof defaultDict[key] == "function") {
         if (key == "\\sqrt") {
             return "\\sqrt[n]{x} \u2192 ⁿ√𝑥";
@@ -4111,8 +4111,8 @@ function showCommand(key) {
 };
 
 function toReplaceCommand(key) {
-    // Used in suggestions
-    // Changes what the user sees when the suggestion popup is opened
+    // Used in completion
+    // Changes what the user sees when the completion popup is opened
     if (typeof defaultDict[key] == "function") {
         if (key == "\\sqrt") {
             return "\\sqrt[]{}";
