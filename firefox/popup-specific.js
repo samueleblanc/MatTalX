@@ -22,7 +22,8 @@ window.addEventListener("blur", () => {
         "copy_output_letter" : setCopyOutputLetter.value,
         "completion_key" : setCompletionKey.value,
         "completion_letter" : setCompletionLetter.value,
-        "completion_button" : showCompletionBtn.checked
+        "completion_button" : showCompletionBtn.checked,
+        "built_commands" : storeCommands()
     });
 });
 
@@ -170,6 +171,15 @@ function getSettings() {
         };
         completionBtn.style.display = (showCompletionBtn.checked || touchScreen) ? "inline-block" : "none";
     });
+    browser.storage.local.get("built_commands", (list) => {
+        const startingRow = commandsBuilt.rows.length;
+        for (let i=startingRow; i<list.built_commands.length; i++) {
+            buildNewCommand();
+            commandsBuilt.rows[i].cells[0].firstChild.value = list.built_commands[i].type;
+            commandsBuilt.rows[i].cells[2].firstChild.value = list.built_commands[i].newInput;
+            commandsBuilt.rows[i].cells[5].firstChild.value = list.built_commands[i].output;
+        };
+    });
 };
 
 function openSettings() {
@@ -194,7 +204,8 @@ function closeSettings() {
         "copy_output_letter" : setCopyOutputLetter.value,
         "completion_key" : setCompletionKey.value,
         "completion_letter" : setCompletionLetter.value,
-        "completion_button" : showCompletionBtn.checked
+        "completion_button" : showCompletionBtn.checked,
+        "built_commands" : storeCommands()
     });
 
     applySettings();

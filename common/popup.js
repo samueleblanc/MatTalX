@@ -3662,6 +3662,14 @@ const lettersOutMathMode = {
     "" : ""
 };
 
+// This object contains the functions to create or modify commands
+const settingsFunctions = {
+    "\\newcommand" : newCommand,
+    "\\renewcommand" : renewCommand,
+    "\\DeclareMathOperator" : declareMathOperator,
+    "\\DeclareUnicodeCharacter" : declareUnicodeCharacter
+};
+
 
 //-----------------------------------------------------//
 
@@ -4041,6 +4049,93 @@ function buildNewCommand() {
     row.appendChild(deleteCommand);
 
     commandsBuilt.appendChild(row);
+};
+
+function storeCommands() {
+    // Loops on all the commands and returns an array containing all the info
+    // Called when MatTalX or the settings popup closes
+    let commandsList = [];
+    for (let row=0; row<commandsBuilt.rows.length; row++) {
+        if (commandsBuilt.rows[row].cells[2].firstChild.value !== undefined && 
+            commandsBuilt.rows[row].cells[5].firstChild.value !== undefined &&
+            commandsBuilt.rows[row].cells[2].firstChild.value !== "" &&
+            commandsBuilt.rows[row].cells[5].firstChild.value !== "")
+        {
+            commandsList.push({
+                type : commandsBuilt.rows[row].cells[0].firstChild.value,
+                newInput : commandsBuilt.rows[row].cells[2].firstChild.value,
+                output : commandsBuilt.rows[row].cells[5].firstChild.value
+            });
+        };
+    };
+    return commandsList;
+};
+
+function buildAllCommands(fullDict) {
+    // Includes every commands built by the user in the object containing every commands (in math mode)
+    // Called by makeDict()
+    for (let i=0; i<commandsBuilt.rows.length; i++) {
+        if (commandsBuilt.rows[i].cells[2].firstChild.value !== undefined && 
+            commandsBuilt.rows[i].cells[5].firstChild.value !== undefined && 
+            commandsBuilt.rows[i].cells[2].firstChild.value !== "" && 
+            commandsBuilt.rows[i].cells[5].firstChild.value !== "")
+        {
+            fullDict = settingsFunctions[commandsBuilt.rows[i].cells[0].firstChild.value](
+                            fullDict, 
+                            commandsBuilt.rows[i].cells[2].firstChild.value.replace(/ /g, ""), 
+                            commandsBuilt.rows[i].cells[5].firstChild.value+" "
+                        );
+        };
+    };
+    return fullDict;
+};
+
+function newCommand(fullDict, input, output) {
+    // Only add the command if its name is not already defined
+    if (Object.hasOwn(fullDict, input)) {
+        mistakes("Settings", undefined, input + " is already defined. Use '\\renewcommand' instead.");
+        return fullDict;
+    } else {
+        let outputSymbol = tokensToText(tokenize(output, true), fullDict, {}, (t) => {return t;});
+        fullDict[input] = outputSymbol;
+        return fullDict;
+    };
+};
+
+function renewCommand(fullDict, input, output) {
+    // Overrides existing command if needed, if not it creates it (like newCommand)
+    let outputSymbol = tokensToText(tokenize(output, true), fullDict, {}, (t) => {return t;});
+    fullDict[input] = outputSymbol;
+    return fullDict;
+};
+
+function declareMathOperator(fullDict, input, output) {
+    // Adds a new operator
+    // Currently only accepts 1 argument
+    let outputSymbol = tokensToText(tokenize(output, true), fullDict, {}, (t) => {return t;});
+    const newOp = (arg, initialCommand) => {
+        // This function will be the value of every operator built by the user
+        return [outputSymbol + "[" + arg.join("") + "]"];
+    };
+    fullDict[input] = newOp;
+    return fullDict;
+};
+
+function declareUnicodeCharacter(fullDict, input, output) {
+    // Verifies if the output is a valid unicode character and if so, adds it as a command
+    if (output.substring(0,2) === "\\u") {
+        try {
+            let outputSymbol = String.fromCodePoint(parseInt(output.substring(2).replace(/ /g, ""), 16));
+            fullDict[input] = outputSymbol
+            return fullDict;
+        } catch(err) {
+            mistakes("Settings", undefined, output + " is not a valid unicode character.");
+            return fullDict;
+        };
+    } else {
+        mistakes("Settings", undefined, output + " is not a valid unicode character. Must be of the form '\\uXXXX'.");
+        return fullDict;
+    };
 };
 
 
@@ -4988,7 +5083,7 @@ function makeDict(documentClass) {
     } else {  // documentClass === "default"
         letters = (changeFontButton.checked) ? lettersMath : lettersNoFont;
     };
-    return {...mathDictionary, ...greek, ...letters};
+    return buildAllCommands({...mathDictionary, ...greek, ...letters});
 };
 
 function main() {
