@@ -180,6 +180,7 @@ body {
 }
 #commandsBuilt tr,
 #commandsBuilt td {
+    border: none;
     border-collapse: collapse;
     background: none;
 }

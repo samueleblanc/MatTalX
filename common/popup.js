@@ -4023,6 +4023,23 @@ function buildNewCommand() {
 
     row.appendChild(curlyBracketsRigthCA);
 
+    // Button used to delete the command (and remove the row)
+    let deleteCommand = document.createElement("td");
+    let deleteCommandBtn = document.createElement("input");
+    deleteCommandBtn.type = "button";
+    deleteCommandBtn.value = "☒";
+    deleteCommandBtn.style.fontSize = "18px";
+    deleteCommandBtn.style.borderRadius = "6px";
+    deleteCommandBtn.style.padding = "5px";
+
+    deleteCommandBtn.addEventListener("click", () => {
+        // Delete the command
+        row.remove();
+    });
+
+    deleteCommand.appendChild(deleteCommandBtn);
+    row.appendChild(deleteCommand);
+
     commandsBuilt.appendChild(row);
 };
 
