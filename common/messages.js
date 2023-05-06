@@ -29,6 +29,6 @@ function updateMessage(version) {
     const majorChanges = "Welcome to 𝑀ᴀᴛ𝑇ᴀʟ𝑋 version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
     " 1) There is now an alternative to the shortcut to open and close the completion box (option in settings)\r\n" +
-    "";
+    " 2) You can now build new commands and operators or modify them!";
     textOut.value = majorChanges;  // In "text_input" form
 };
