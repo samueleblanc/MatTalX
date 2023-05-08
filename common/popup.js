@@ -2741,6 +2741,7 @@ const mathDictionary = {
     "\\blacksquare" : "\u25A0",
     "\\square" : "\u25A1",
     "\\lightning" : "\u21AF",
+    "\\dbend" : "\u2621",
     "\\male" : "\u2642",
     "\\female" : "\u2640",
     "\\Hermaphrodite" : "\u26A5",
