@@ -4095,17 +4095,28 @@ function newCommand(fullDict, input, output) {
     // Only add the command if its name is not already defined
     if (Object.hasOwn(fullDict, input)) {
         mistakes("Settings", undefined, input + " is already defined. Use '\\renewcommand' instead.");
-        return fullDict;
     } else {
-        let outputSymbol = tokensToText(tokenize(output, true), fullDict, {}, (t) => {return t;});
+        let outNoSpace = output.replace(/ /g, "");
+        let outputSymbol;
+        if (typeof fullDict[outNoSpace] == "function") {
+            outputSymbol = fullDict[outNoSpace];
+        } else {
+            outputSymbol = tokensToText(tokenize(output, true), fullDict, {}, (t) => {return t;});
+        };
         fullDict[input] = outputSymbol;
-        return fullDict;
     };
+    return fullDict;
 };
 
 function renewCommand(fullDict, input, output) {
     // Overrides existing command if needed, if not it creates it (like newCommand)
-    let outputSymbol = tokensToText(tokenize(output, true), fullDict, {}, (t) => {return t;});
+    let outNoSpace = output.replace(/ /g, "");
+    let outputSymbol;
+    if (typeof fullDict[outNoSpace] == "function") {
+        outputSymbol = fullDict[outNoSpace];
+    } else {
+        outputSymbol = tokensToText(tokenize(output, true), fullDict, {}, (t) => {return t;});
+    };
     fullDict[input] = outputSymbol;
     return fullDict;
 };
