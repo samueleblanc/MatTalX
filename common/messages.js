@@ -27,9 +27,8 @@ function updateMessage(version) {
     // Writes explanation in the second box
     // To be changed by hand every version
     const majorChanges = "Welcome to 𝑀ᴀᴛ𝑇ᴀʟ𝑋 version " + version + "\r\n \r\n" + 
-    "Major changes: \r\n" +
-    " 1) There is now an alternative to the shortcut for opening and closing the completion box.\r\n" +
-    " 2) You can finally build new commands and operators or modify them!\r\n" + 
-    "Both can be found in the settings!";
+    "Major change: \r\n" +
+    " 1) You can now declare a function as a new command. \r\n" + 
+    "    For instance, \\renewcommand{\\b}{\\mathbb} (in the settings) will enable \\b{R} ⟼ ℝ.";
     textOut.value = majorChanges;  // In "text_input" form
 };
