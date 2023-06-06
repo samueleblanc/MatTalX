@@ -4361,6 +4361,7 @@ function tokenize(fullText, mathmode) {
     let mathmodeStarter = "";   // e.g. if mathmode is started with $$, then "$$" will be mathmodeStarter
     let fracDepth = 0;          // Used for fraction (\frac{}{}) parsing, because of the way curly brackets are used
     // N.B. fracDepth could be used in the future for \stackrel{}{} (if it replaces the \above command)
+    let char;
 
     if (startMathmode) {
         outTokens.push(specialTokens.startMathmode);
@@ -4421,6 +4422,8 @@ function tokenize(fullText, mathmode) {
                     outTokens.push(temporaryBox.join("") + fullText[i]);
                 } else {
                     if (temporaryBox.slice(0,5).join("") === "\\frac") {
+                        fracDepth += 1;
+                    } else if (fracDepth > 0) {
                         fracDepth += 1;
                     };
                     outTokens.push(temporaryBox.join(""));
@@ -4564,7 +4567,8 @@ function tokenize(fullText, mathmode) {
                     outTokens.push(specialTokens.startArgument);
                 };
             } else {
-                outTokens.push(fullText[i]);
+                char = fullText[i].normalize("NFD").split("");
+                outTokens.push(...char);
             };
         };
     };

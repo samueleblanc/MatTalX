@@ -27,8 +27,8 @@ function updateMessage(version) {
     // Writes explanation in the second box
     // To be changed by hand every version
     const majorChanges = "Welcome to 𝑀ᴀᴛ𝑇ᴀʟ𝑋 version " + version + "\r\n \r\n" + 
-    "Major change: \r\n" +
-    " 1) You can now declare a function as a new command. \r\n" + 
-    "    For instance, \\renewcommand{\\b}{\\mathbb} (in the settings) will enable \\b{R} ⟼ ℝ.";
+    "Major changes: \r\n" +
+    " 1) Bug fixed in \\frac{}{} \r\n" + 
+    " 2) Improved accents support";
     textOut.value = majorChanges;  // In "text_input" form
 };
