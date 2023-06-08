@@ -903,7 +903,7 @@ const superscript = (arg, initialCommand, forFrac=false) => {
     // Sends input to be converted by replaceLetters
     // This function is by default not called by the frac function
     let output = replaceLetters(arg, Superscript, initialCommand, !forFrac);
-    if ((output.indexOf(errSymbol) === -1) || (forFrac)) {
+    if (((output.indexOf(errSymbol) === -1) && (output.filter(e => accents[e] !== undefined).length === 0)) || (forFrac)) {
         return output;
     } else {
         return ["^(" + arg.join("") + ")"];
@@ -914,7 +914,7 @@ const subscript = (arg, initialCommand, forFrac=false) => {
     // Sends input to be converted by replaceLetters
     // This function is by default not called by the frac function
     let output = replaceLetters(arg, Subscript, initialCommand, !forFrac);
-    if ((output.indexOf(errSymbol) === -1) || (forFrac)) {
+    if (((output.indexOf(errSymbol) === -1) && (output.filter(e => accents[e] !== undefined).length === 0)) || (forFrac)) {
         return output;
     } else {
         return ["_(" + arg.join("") + ")"];
@@ -926,29 +926,15 @@ const textbf = (arg, initialCommand) => {
     // This function converts the list of characters to the corresponding (text) bold font character
 	const symbols = {
         "A" : "\u{1D5D4}",
-        "À" : "𝗔̀",
-        "Â" : "𝗔̂",
         "a" : "\u{1D5EE}",
-        "à" : "𝗮̀",
-        "â" : "𝗮̂",
         "B" : "\u{1D5D5}",
         "b" : "\u{1D5EF}",
         "C" : "\u{1D5D6}",
-        "Ç" : "𝗖̧",
         "c" : "\u{1D5F0}",
-        "ç" : "𝗰̧",
         "D" : "\u{1D5D7}",
         "d" : "\u{1D5F1}",
         "E" : "\u{1D5D8}",
-        "É" : "𝗘́",
-        "Ê" : "𝗘̂",
-        "Ë" : "𝗘̈",
-        "È" : "𝗘̀",
         "e" : "\u{1D5F2}",
-        "é" : "𝗲́",
-        "ê" : "𝗲̂",
-        "ë" : "𝗲̈",
-        "è" : "𝗲̀",
         "F" : "\u{1D5D9}",
         "f" : "\u{1D5F3}",
         "G" : "\u{1D5DA}",
@@ -968,11 +954,7 @@ const textbf = (arg, initialCommand) => {
         "N" : "\u{1D5E1}",
         "n" : "\u{1D5FB}",
         "O" : "\u{1D5E2}",
-        "Ô" : "𝗢̂",
-        "Ö" : "𝗢̈",
         "o" : "\u{1D5FC}",
-        "ô" : "𝗼̂",
-        "ö" : "𝗼̈",
         "P" : "\u{1D5E3}",
         "p" : "\u{1D5FD}",
         "Q" : "\u{1D5E4}",
@@ -984,11 +966,7 @@ const textbf = (arg, initialCommand) => {
         "T" : "\u{1D5E7}",
         "t" : "\u{1D601}",
         "U" : "\u{1D5E8}",
-        "Û" : "𝗨̂",
-        "Ù" : "𝗨̀",
         "u" : "\u{1D602}",
-        "û" : "𝘂̂",
-        "ù" : "𝘂̀",
         "V" : "\u{1D5E9}",
         "v" : "\u{1D603}",
         "W" : "\u{1D5EA}",
@@ -1170,29 +1148,15 @@ const textit = (arg, initialCommand) => {
     // This function converts the list of characters to the corresponding italic character
     const symbols = {
         "A" : "\u{1D608}",
-        "Â" : "𝘈̂",
-        "À" : "𝘈̀",
         "a" : "\u{1D622}",
-        "â" : "𝘢̂",
-        "à" : "𝘢̀",
         "B" : "\u{1D609}",
         "b" : "\u{1D623}",
         "C" : "\u{1D60A}",
-        "Ç" : "𝘊̧",
         "c" : "\u{1D624}",
-        "ç" : "𝘤̧",
         "D" : "\u{1D60B}",
         "d" : "\u{1D625}",
         "E" : "\u{1D60C}",
-        "É" : "𝘌́",
-        "Ê" : "𝘌̂",
-        "È" : "𝘌̀",
-        "Ë" : "𝘌̈",
         "e" : "\u{1D626}",
-        "é" : "𝘦́",
-        "ê" : "𝘦̂",
-        "è" : "𝘦̀",
-        "ë" : "𝘦̈",
         "F" : "\u{1D60D}",
         "f" : "\u{1D627}",
         "G" : "\u{1D60E}",
@@ -1212,11 +1176,7 @@ const textit = (arg, initialCommand) => {
         "N" : "\u{1D615}",
         "n" : "\u{1D62F}",
         "O" : "\u{1D616}",
-        "Ô" : "𝘖̂",
-        "Ö" : "𝘖̈",
         "o" : "\u{1D630}",
-        "ô" : "𝘰̂",
-        "ö" : "𝘰̈",
         "P" : "\u{1D617}",
         "p" : "\u{1D631}",
         "Q" : "\u{1D618}",
@@ -1228,11 +1188,7 @@ const textit = (arg, initialCommand) => {
         "T" : "\u{1D61B}",
         "t" : "\u{1D635}",
         "U" : "\u{1D61C}",
-        "Û" : "𝘜̂",
-        "Ù" : "𝘜̀",
         "u" : "\u{1D636}",
-        "û" : "𝘶̂",
-        "ù" : "𝘶̀",
         "V" : "\u{1D61D}",
         "v" : "\u{1D637}",
         "W" : "\u{1D61E}",
@@ -1424,29 +1380,15 @@ const texttt = (arg, initialCommand) => {
     // This function converts the list of characters to the corresponding typewriter character
     const symbols = {
         "A" : "\u{1D670}",
-        "Â" : "𝙰̂",
-        "À" : "𝙰̀",
         "a" : "\u{1D68A}",
-        "â" : "𝚊̂",
-        "à" : "𝚊̀",
         "B" : "\u{1D671}",
         "b" : "\u{1D68B}",
         "C" : "\u{1D672}",
-        "Ç" : "𝙲̧",
         "c" : "\u{1D68C}",
-        "ç" : "𝚌̧",
         "D" : "\u{1D673}",
         "d" : "\u{1D68D}",
         "E" : "\u{1D674}",
-        "É" : "𝙴́",
-        "È" : "𝙴̀",
-        "Ê" : "𝙴̂",
-        "Ë" : "𝙴̈",
         "e" : "\u{1D68E}",
-        "é" : "𝚎́",
-        "ê" : "𝚎̂",
-        "è" : "𝚎̀",
-        "ë" : "𝚎̈",
         "F" : "\u{1D675}",
         "f" : "\u{1D68F}",
         "G" : "\u{1D676}",
@@ -1466,11 +1408,7 @@ const texttt = (arg, initialCommand) => {
         "N" : "\u{1D67D}",
         "n" : "\u{1D697}",
         "O" : "\u{1D67E}",
-        "Ô" : "𝙾̂",
-        "Ö" : "𝙾̈",
         "o" : "\u{1D698}",
-        "ô" : "𝚘̂",
-        "ö" : "𝚘̈",
         "P" : "\u{1D67F}",
         "p" : "\u{1D699}",
         "Q" : "\u{1D680}",
@@ -1482,11 +1420,7 @@ const texttt = (arg, initialCommand) => {
         "T" : "\u{1D683}",
         "t" : "\u{1D69D}",
         "U" : "\u{1D684}",
-        "Û" : "𝚄̂",
-        "Ù" : "𝚄̀",
         "u" : "\u{1D69E}",
-        "û" : "𝚞̂",
-        "ù" : "𝚞̀",
         "V" : "\u{1D685}",
         "v" : "\u{1D69F}",
         "W" : "\u{1D686}",
@@ -1614,27 +1548,15 @@ const text = (arg, initialCommand) => {
     // This function doesn't change the output (i.e. "abc" -> "abc")
     const symbols = {
         "A" : "A",
-        "À" : "À",
-        "à" : "à",
         "a" : "a",
         "B" : "B",
         "b" : "b",
         "C" : "C",
-        "Ç" : "Ç",
         "c" : "c",
-        "ç" : "ç",
         "D" : "D",
         "d" : "d",
         "E" : "E",
-        "É" : "É",
-        "È" : "È",
-        "Ê" : "Ê",
-        "Ë" : "Ë",
         "e" : "e",
-        "é" : "é",
-        "è" : "è",
-        "ê" : "ê",
-        "ë" : "ë",
         "F" : "F",
         "f" : "f",
         "G" : "G",
@@ -1654,11 +1576,7 @@ const text = (arg, initialCommand) => {
         "N" : "N",
         "n" : "n",
         "O" : "O",
-        "Ô" : "Ô",
-        "Ö" : "Ö",
         "o" : "o",
-        "ô" : "ô",
-        "ö" : "ö",
         "P" : "P",
         "p" : "p",
         "Q" : "Q",
@@ -1671,10 +1589,6 @@ const text = (arg, initialCommand) => {
         "t" : "t",
         "U" : "U",
         "u" : "u",
-        "Û" : "Û",
-        "û" : "û",
-        "Ù" : "Ù",
-        "ù" : "ù",
         "V" : "V",
         "v" : "v",
         "W" : "W",
@@ -1687,9 +1601,7 @@ const text = (arg, initialCommand) => {
         "z" : "z",
 
         "𝐴" : "A",
-        "𝐴̀" : "À",
         "𝑎" : "a",
-        "𝑎̀" : "à",
         "𝐵" : "B",
         "𝑏" : "b",
         "𝐶" : "C",
@@ -1697,14 +1609,6 @@ const text = (arg, initialCommand) => {
         "𝐷" : "D",
         "𝑑" : "d",
         "𝐸" : "E",
-        "𝐸̀" : "È",
-        "𝐸̈" : "Ë",
-        "𝐸́" : "É",
-        "𝐸̂" : "Ê",
-        "𝑒̂" : "ê",
-        "𝑒́" : "é",
-        "𝑒̈" : "ë",
-        "𝑒̀" : "è",
         "𝑒" : "e",
         "𝐹" : "F",
         "𝑓" : "f",
@@ -1738,7 +1642,6 @@ const text = (arg, initialCommand) => {
         "𝑡" : "t",
         "𝑈" : "U",
         "𝑢" : "u",
-        "𝑢̀" : "ù",
         "𝑉" : "V",
         "𝑣" : "v",
         "𝑊" : "W",
@@ -1931,7 +1834,7 @@ const sqrtNoArg = (arg, initialCommand) => {
 const frac = (arg, initialCommand) => {
     // Used to make a fraction
     // If a character doesn't exist in superscript or subscript, it outputs the fraction in the format f(x)/g(x)
-    let output = "";
+    let output = [];
     let nume = [];
     let deno = [];
     let numerator = true;
@@ -1945,7 +1848,7 @@ const frac = (arg, initialCommand) => {
         } else {
             if (arg[i] === "{") {
                 if (arg[i - 1] === "}") {
-                    output += addSymbol(mathDictionary["^"](nume, initialCommand, true)) + "\u2215";
+                    output.push(...addSymbol(superscript(nume, initialCommand, true), true), "\u2215");
                 } else {
                     deno.push(arg[i]);
                 };
@@ -1954,9 +1857,9 @@ const frac = (arg, initialCommand) => {
             };
         };
     };
-    output += addSymbol(mathDictionary["_"](deno, initialCommand, true));
-    if (output.indexOf(errSymbol) === -1) {
-        return [output];
+    output.push(...addSymbol(subscript(deno, initialCommand, true), true));
+    if ((output.indexOf(errSymbol) === -1) && (output.filter(e => accents[e] !== undefined).length === 0)) {
+        return output;
     } else {
         if (arg.join("").includes("\u2710")) {
             const spaces = arg.filter(c => {return c.includes("\u2710")});
@@ -1964,7 +1867,7 @@ const frac = (arg, initialCommand) => {
                 mistakes(initialCommand + "{" + arg.join("") + "}", undefined, spaces[i]);
             };
         };
-        output = "";
+        output = [];
         numerator = true;
         nume = [];
         deno = [];
@@ -1978,7 +1881,7 @@ const frac = (arg, initialCommand) => {
             } else {
                 if (arg[i] === "{") {
                     if (arg[i - 1] === "}") {
-                        output += "(" + addSymbolArray(nume, "\\frac{" + arg.join("") + "}") + "/";
+                        output.push("(", addSymbolArray(nume, "\\frac{" + arg.join("") + "}"), "/");
                     } else {
                         deno.push(arg[i]);
                     };
@@ -1987,8 +1890,8 @@ const frac = (arg, initialCommand) => {
                 };
             };
         };
-        output += addSymbolArray(deno, "\\frac{" + arg.join("") + "}") + ")";
-        return [output];
+        output.push(addSymbolArray(deno, "\\frac{" + arg.join("") + "}") + ")");
+        return output;
     };
 };
 
@@ -2546,23 +2449,15 @@ const mathDictionary = {
 
     // Non italic letters
     "\\A" : "A",
-    "\\À" : "À",
     "\\a" : "a",
-    "\\à" : "à",
     "\\B" : "B",
     "\\b" : "b",
     "\\C" : "C",
-    "\\Ç" : "Ç",
     "\\c" : "c",
-    "\\ç" : "ç",
     "\\D" : "D",
     "\\d" : "d",
     "\\E" : "E",
-    "\\É" : "É",
-    "\\È" : "È",
     "\\e" : "e",
-    "\\é" : "é",
-    "\\è" : "è",
     "\\F" : "F",
     "\\f" : "f",
     "\\G" : "G",
@@ -2595,8 +2490,6 @@ const mathDictionary = {
     "\\t" : "t",
     "\\U" : "U",
     "\\u" : "u",
-    "\\Ù" : "Ù",
-    "\\ù" : "ù",
     "\\V" : "V",
     "\\v" : "v",
     "\\W" : "W",
@@ -3363,9 +3256,7 @@ const lettersMath = {
     "8" : "8",
     "9" : "9",
     "A" : "\u{1D434}",
-    "À" : "\u{1D434}\u0300",
     "a" : "\u{1D44E}",
-    "à" : "\u{1D44E}\u0300",
     "B" : "\u{1D435}",
     "b" : "\u{1D44F}",
     "C" : "\u{1D436}",
@@ -3373,9 +3264,7 @@ const lettersMath = {
     "D" : "\u{1D437}",
     "d" : "\u{1D451}",
     "E" : "\u{1D438}",
-    "É" : "\u{1D438}\u0301",
     "e" : "\u{1D452}",
-    "é" : "\u{1D452}\u0301",
     "F" : "\u{1D439}",
     "f" : "\u{1D453}",
     "G" : "\u{1D43A}",
@@ -3407,9 +3296,7 @@ const lettersMath = {
     "T" : "\u{1D447}",
     "t" : "\u{1D461}",
     "U" : "\u{1D448}",
-    "Ù" : "\u{1D448}\u0300",
     "u" : "\u{1D462}",
-    "ù" : "\u{1D462}\u0300",
     "V" : "\u{1D449}",
     "v" : "\u{1D463}",
     "W" : "\u{1D44A}",
@@ -3470,23 +3357,15 @@ const lettersNoFont = {
     "8" : "8",
     "9" : "9", 
     "A" : "A",
-    "À" : "À",
     "a" : "a",
-    "à" : "à",
     "B" : "B",
     "b" : "b",
     "C" : "C",
-    "Ç" : "Ç",
     "c" : "c",
-    "ç" : "ç",
     "D" : "D",
     "d" : "d",
     "E" : "E",
-    "É" : "É",
-    "È" : "È",
     "e" : "e",
-    "é" : "é",
-    "è" : "è",
     "F" : "F",
     "f" : "f",
     "G" : "G",
@@ -3519,8 +3398,6 @@ const lettersNoFont = {
     "t" : "t",
     "U" : "U",
     "u" : "u",
-    "Ù" : "Ù",
-    "ù" : "ù",
     "V" : "V",
     "v" : "v",
     "W" : "W",
@@ -3582,29 +3459,15 @@ const lettersOutMathMode = {
     "8" : "8",
     "9" : "9", 
     "A" : "A",
-    "À" : "À",
-    "Â" : "Â",
     "a" : "a",
-    "à" : "à",
-    "â" : "â",
     "B" : "B",
     "b" : "b",
     "C" : "C",
-    "Ç" : "Ç",
     "c" : "c",
-    "ç" : "ç",
     "D" : "D",
     "d" : "d",
     "E" : "E",
-    "É" : "É",
-    "È" : "È",
-    "Ê" : "Ê",
-    "Ë" : "Ë",
     "e" : "e",
-    "é" : "é",
-    "è" : "è",
-    "ê" : "ê",
-    "ë" : "ë",
     "F" : "F",
     "f" : "f",
     "G" : "G",
@@ -3612,9 +3475,7 @@ const lettersOutMathMode = {
     "H" : "H",
     "h" : "h",
     "I" : "I",
-    "Ï" : "Ï",
     "i" : "i",
-    "ï" : "ï",
     "J" : "J",
     "j" : "j",
     "K" : "K",
@@ -3626,11 +3487,7 @@ const lettersOutMathMode = {
     "N" : "N",
     "n" : "n",
     "O" : "O",
-    "Ö" : "Ö",
-    "Ô" : "Ô",
     "o" : "o",
-    "ö" : "ö",
-    "ô" : "ô",
     "P" : "P",
     "p" : "p",
     "Q" : "Q",
@@ -3643,10 +3500,6 @@ const lettersOutMathMode = {
     "t" : "t",
     "U" : "U",
     "u" : "u",
-    "Ù" : "Ù",
-    "ù" : "ù",
-    "Û" : "Û",
-    "û" : "û",
     "V" : "V",
     "v" : "v",
     "W" : "W",
@@ -3661,6 +3514,88 @@ const lettersOutMathMode = {
     " " : " ",
     "\u000A" : "",
     "" : ""
+};
+
+const accents = {
+    "\u0300" : "\u0300",
+    "\u0301" : "\u0301",
+    "\u0302" : "\u0302",
+    "\u0303" : "\u0303",
+    "\u0304" : "\u0304",
+    "\u0305" : "\u0305",
+    "\u0306" : "\u0306",
+    "\u0307" : "\u0307",
+    "\u0308" : "\u0308",
+    "\u0309" : "\u0309",
+    "\u030A" : "\u030A",
+    "\u030B" : "\u030B",
+    "\u030C" : "\u030C",
+    "\u030D" : "\u030D",
+    "\u030E" : "\u030E",
+    "\u030F" : "\u030F",
+    "\u0310" : "\u0310",
+    "\u0311" : "\u0311",
+    "\u0312" : "\u0312",
+    "\u0313" : "\u0313",
+    "\u0314" : "\u0314",
+    "\u0315" : "\u0315",
+    "\u0316" : "\u0316",
+    "\u0317" : "\u0317",
+    "\u0318" : "\u0318",
+    "\u0319" : "\u0319",
+    "\u031A" : "\u031A",
+    "\u031B" : "\u031B",
+    "\u031C" : "\u031C",
+    "\u031D" : "\u031D",
+    "\u031E" : "\u031E",
+    "\u031F" : "\u031F",
+    "\u0320" : "\u0320",
+    "\u0321" : "\u0321",
+    "\u0322" : "\u0322",
+    "\u0323" : "\u0323",
+    "\u0324" : "\u0324",
+    "\u0325" : "\u0325",
+    "\u0326" : "\u0326",
+    "\u0327" : "\u0327",
+    "\u0328" : "\u0328",
+    "\u0329" : "\u0329",
+    "\u032A" : "\u032A",
+    "\u032B" : "\u032B",
+    "\u032C" : "\u032C",
+    "\u032D" : "\u032D",
+    "\u032E" : "\u032E",
+    "\u032F" : "\u032F",
+    "\u0330" : "\u0330",
+    "\u0331" : "\u0331",
+    "\u0332" : "\u0332",
+    "\u0333" : "\u0333",
+    "\u0334" : "\u0334",
+    "\u0335" : "\u0335",
+    "\u0336" : "\u0336",
+    "\u0337" : "\u0337",
+    "\u0338" : "\u0338",
+    "\u0339" : "\u0339",
+    "\u033A" : "\u033A",
+    "\u033B" : "\u033B",
+    "\u033C" : "\u033C",
+    "\u033D" : "\u033D",
+    "\u033E" : "\u033E",
+    "\u033F" : "\u033F",
+    "\u0340" : "\u0340",
+    "\u0341" : "\u0341",
+    "\u0342" : "\u0342",
+    "\u0343" : "\u0343",
+    "\u0344" : "\u0344",
+    "\u0345" : "\u0345",
+    "\u0346" : "\u0346",
+    "\u0347" : "\u0347",
+    "\u0348" : "\u0348",
+    "\u0349" : "\u0349",
+    "\u034A" : "\u034A",
+    "\u034B" : "\u034B",
+    "\u034C" : "\u034C",
+    "\u034D" : "\u034D",
+    "\u034E" : "\u034E"
 };
 
 // This object contains the functions to create or modify commands
@@ -4709,6 +4644,7 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
 
 function replaceLetters(letters, dict, initialCommand, checkMistakes=true) {
     // Used by a lot of functions to convert every letter in a string of characters
+    dict = {...dict, ...accents};
     let newtext = [];
     for (let c in letters) {
         newtext.push(addSymbol(dict[letters[c]]));
@@ -4755,14 +4691,14 @@ function addSymbol(command, keepArray=false) {
 
 function addSymbolArray(args, command, checkMistakes=true) {
     // Differs from the function above as it takes in an array instead of a string
-    let output = "";
+    let output = [];
     for (let i in args) {
-        output += (args[i] !== undefined) ? args[i] : errSymbol;
+        output.push((args[i] !== undefined) ? args[i] : errSymbol);
         if (checkMistakes) {
             mistakes(command, ((args[i] === errSymbol) || (args[i] === undefined)) ? undefined : args[i], "A symbol does not exist or can't be shown");
         };
     };
-    return output;
+    return output.join("");
 };
 
 function str(command) {
@@ -5063,7 +4999,7 @@ function adjustSpaceChem(input) {
 
 function convert(fullText) {
     // Takes text and convert it based on the documentclass (or package)
-    const dictOutMathmode = {...lettersOutMathMode, ...textCommands};
+    const dictOutMathmode = {...lettersOutMathMode, ...accents, ...textCommands};
     const firstWord = fullText.split(" ")[0];
     let fullDict;
     if (firstWord === "!chem") {
@@ -5099,7 +5035,7 @@ function makeDict(documentClass) {
     } else {  // documentClass === "default"
         letters = (changeFontButton.checked) ? lettersMath : lettersNoFont;
     };
-    return buildAllCommands({...mathDictionary, ...greek, ...letters});
+    return buildAllCommands({...mathDictionary, ...greek, ...letters, ...accents});
 };
 
 function main() {
