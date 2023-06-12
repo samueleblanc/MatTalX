@@ -3883,7 +3883,7 @@ document.addEventListener("keydown", (keyPressed) => {
                 completionPopup.textContent = "";
                 let word = findWord(textIn.value, textIn.selectionEnd - 1, "Backspace");
                 completion(word);
-            } else if ((keyPressed.code === "Space") || (keyPressed.code === "Tab")) {
+            } else if (keyPressed.code === "Space") {
                 closeCompletion();
             } else if (keyPressed.key.length === 1) {  // i.e. A letter
                 completionPopup.textContent = "";
@@ -4157,8 +4157,9 @@ function completion(command) {
                 let row = completionPopup.insertRow(-1);
                 let cell = row.insertCell(0);
                 let btn = document.createElement("button");
-                btn.value = showCommand(keys);
+                btn.name = showCommand(keys);
                 btn.textContent = toReplaceCommand(keys);
+                btn.value = toReplaceCommand(keys);  // Value is unchanged
 
                 // Button style
                 btn.style.width = "145px";  // Would be cleaner with something like 'fit-content', but is way to slow
@@ -4168,6 +4169,7 @@ function completion(command) {
                 btn.style.color = btnFontColor;
                 btn.style.borderRadius = "3px";
                 btn.type = "button";
+                btn.tabIndex = "0";
 
                 // Complete the command if the user clicks on that command
                 btn.addEventListener("click", () => {
@@ -4179,13 +4181,13 @@ function completion(command) {
                 // Shows what the command ouputs on mouseover, return to normal on mouseout
                 btn.addEventListener("mouseover", () => {
                     let tmp = btn.textContent;
-                    btn.textContent = btn.value;
-                    btn.value = tmp;
+                    btn.textContent = btn.name;
+                    btn.name = tmp;
                 });
                 btn.addEventListener("mouseout", () => {
                     let tmp = btn.textContent;
-                    btn.textContent = btn.value;
-                    btn.value = tmp;
+                    btn.textContent = btn.name;
+                    btn.name = tmp;
                 });
                 cell.appendChild(btn);
             };
