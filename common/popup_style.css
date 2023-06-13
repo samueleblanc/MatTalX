@@ -247,19 +247,14 @@ body {
     }
     #convert,
     #reset,
-    #completionBtn {
+    #completionBtn,
+    #copy {
         color: black;
         background-color: rgb(230, 229, 229);
     }
     #convert:hover,
     #reset:hover,
-    #completionBtn:hover {
-        background-color: lightgrey;
-    }
-    #copy {
-        color: black;
-        background-color: rgb(230, 229, 229);
-    }
+    #completionBtn:hover,
     #copy:hover {
         background-color: lightgrey;
     }
@@ -358,19 +353,14 @@ body {
     }
     #convert,
     #reset,
-    #completionBtn {
+    #completionBtn,
+    #copy {
         color: whitesmoke;
         background-color: rgb(53, 53, 53);
     }
     #convert:hover,
     #reset:hover,
-    #completionBtn:hover {
-        background-color: rgb(61, 61, 61);
-    }
-    #copy {
-        color: whitesmoke;
-        background-color: rgb(53, 53, 53);
-    }
+    #completionBtn:hover,
     #copy:hover {
         background-color: rgb(61, 61, 61);
     }
