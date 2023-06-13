@@ -14,6 +14,7 @@ window.addEventListener("blur", () => {
         "spaces" : spacesButton.checked,
         "font" : changeFontButton.checked,
         "mode" : changeModeButton.checked,
+        "dark_mode" : darkMode.checked,
         "font_size" : fontSize.value,
         "font_family" : fontFamily.value,
         "copy_input_key" : setCopyInputKey.value,
@@ -98,6 +99,15 @@ window.addEventListener("click", (event) => {
 
 function getSettings() {
     // For settings in the Settings box
+    browser.storage.local.get("dark_mode", (button) => {
+        if (button.dark_mode === true) {
+            // Default is false
+            darkMode.checked = true;
+        } else if (button.dark_mode === undefined) {
+            darkMode.checked = prefersDarkMode;
+        };
+        updateMainColors();
+    });
     browser.storage.local.get("font_size", (text) => {
         if (text.font_size !== undefined) {
             fontSize.value = text.font_size;
@@ -196,6 +206,7 @@ function closeSettings() {
     verifySettings(setCompletionLetter.value, "letter");
 
     browser.storage.local.set({
+        "dark_mode" : darkMode.checked,
         "font_size" : fontSize.value,
         "font_family" : fontFamily.value,
         "copy_input_key" : setCopyInputKey.value,

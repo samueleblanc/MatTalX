@@ -13,6 +13,7 @@ window.addEventListener("blur", () => {
     chrome.storage.sync.set({"spaces" : spacesButton.checked});
     chrome.storage.sync.set({"font" : changeFontButton.checked});
     chrome.storage.sync.set({"mode" : changeModeButton.checked});
+    chrome.storage.sync.set({"dark_mode" : darkMode.checked});
     chrome.storage.sync.set({"font_size" : fontSize.value});
     chrome.storage.sync.set({"font_family" : fontFamily.value});
     chrome.storage.sync.set({"copy_input_key" : setCopyInputKey.value});
@@ -95,6 +96,15 @@ window.addEventListener("click", (event) => {
 
 function getSettings() {
     // For settings in the Settings box
+    chrome.storage.sync.get(["dark_mode"], (button) => {
+        if (button.dark_mode === true) {
+            // Default is false
+            darkMode.checked = true;
+        } else if (button.dark_mode === undefined) {
+            darkMode.checked = prefersDarkMode;
+        };
+        updateMainColors();
+    });
     chrome.storage.sync.get(["font_size"], (text) => {
         if (text.font_size !== undefined) {
             fontSize.value = text.font_size;
@@ -192,6 +202,7 @@ function closeSettings() {
     verifySettings(setCopyOutputLetter.value, "letter");
     verifySettings(setCompletionLetter.value, "letter");
 
+    chrome.storage.sync.set({"dark_mode" : darkMode.checked});
     chrome.storage.sync.set({"font_size" : fontSize.value});
     chrome.storage.sync.set({"font_family" : fontFamily.value});
     chrome.storage.sync.set({"copy_input_key" : setCopyInputKey.value});

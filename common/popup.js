@@ -3612,9 +3612,9 @@ const settingsFunctions = {
 
 /** HTMLElements **/
 
-// Submit button ('Convert' is what's seen by the users)
-const submit = document.getElementById("convert");
-submit.onclick = function() {main()};
+// Convert button
+const convertButton = document.getElementById("convert");
+convertButton.onclick = function() {main()};
 
 // Copy button
 const copyButton = document.getElementById("copy");
@@ -3657,7 +3657,8 @@ const mistakesBox = document.getElementById("mistakes");
 
 // Settings
 
-// Font
+// Style
+const darkMode = document.getElementById("darkMode");
 const fontSize = document.getElementById("fontSize");
 const fontFamily = document.getElementById("fontFamily");
 
@@ -3673,6 +3674,7 @@ const setCompletionLetter = document.getElementById("shortCompletionL");
 const showCompletionBtn = document.getElementById("showCompletionBtn");
 
 // Shortcuts info (in dropdownInfo)
+const shortcutsList = document.getElementsByClassName("shortcuts");
 const textOpenMatTalX = document.getElementById("short_open_mattalx_command");
 const textCopyInputKey = document.getElementById("short_copy_input_key");
 const textCopyInputLetter = document.getElementById("short_copy_input_letter");
@@ -3727,8 +3729,12 @@ const touchScreen = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0)
 // Used by tokenizer() and tokensToText()
 const specialTokens = {startMathmode: "STARTMM", endMathmode: "ENDMM", startArgument: "STARTARG", endArgument: "ENDARG"};
 
+// Detects the prefered color scheme of the user
+const prefersDarkMode = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')).matches;
+
 // Default values for settings (only those in the Settings box)
 const defaultSettings = {
+    "dark_mode" : prefersDarkMode,
     "font_size" : 14,
     "font_family" : "monospace",
     "open_mattalx_shortcut" : "Alt+M",
@@ -3739,6 +3745,53 @@ const defaultSettings = {
     "completion_key" : "Alt",
     "completion_letter" : "C",
     "completion_button" : false
+};
+
+// Colors
+
+// Index 0 is for light mode and 1 is for dark mode
+const mainColors = {
+    "body" : ["white", "rgb(39,39,39)"],
+    "text" : {
+        "color" : ["black", "whitesmoke"],
+        "background" : ["whitesmoke", "rgb(83,83,83)"],
+        "border" : ["rgb(231,231,231)", "rgb(83,83,83)"]
+    },
+    "infoBtn" : ["white", "rgb(39,39,39)"],
+    "shortcuts" : ["black", "whitesmoke"],
+    "dropdown" : ["whitesmoke", "rgb(31,31,31)"],
+    "btnDropdown" : {
+        "color" : ["black", "whitesmoke"],
+        "background" : ["whitesmoke", "rgb(31,31,31)"],
+        "hover" : ["lightgrey", "rgb(41,41,41)"]
+    },
+    "mainBtn" : {
+        "color" : ["black", "whitesmoke"],
+        "background" : ["rgb(230,229,229)", "rgb(53,53,53)"],
+        "hover" : ["lightgrey", "rgb(61,61,61)"]
+    },
+    "mistakes" : ["black", "whitesmoke"],
+    "completion" : {
+        "border" : ["rgb(238,238,238)", "rgb(31,31,31)"],
+        "backgroundTrTd" : ["white", "rgb(39,39,39)"]
+    },
+    "settingsBox" : {
+        "background" : ["rgba(245,245,245,0.7)", "rgba(31,31,31,0.7)"],
+        "backgroundBackup" : ["whitesmoke", "rgb(31,31,31)"]
+    },
+    "settingsContent" : {
+        "color" : ["black", "whitesmoke"],
+        "background" : ["whitesmoke", "rgb(31,31,31)"],
+        "input" : {
+            "color" : ["black", "whitesmoke"],
+            "background" : ["white", "rgb(61,61,61)"]
+        },
+        "inputBtn" : {
+            "color" : ["black", "whitesmoke"],
+            "background" : ["rgb(230,229,229)", "rgb(53,53,53)"],
+            "hover" : ["lightgrey", "rgb(61,61,61)"]
+        }
+    }
 };
 
 
@@ -3752,7 +3805,7 @@ const defaultSettings = {
 // Show completion button and hide shortcuts if the device is screen only
 if (touchScreen) {
     completionBtn.style.display = "inline-block";
-    document.getElementsByClassName("shortcuts").style.display = "none";
+    shortcutsList.style.display = "none";
 };
 
 function copyTextOut() {
@@ -3834,6 +3887,7 @@ function applySettings() {
 function resetSettings() {
     // Give each setting its default value
     // Called when the 'Reset' button in the Settings box is clicked
+    darkMode.checked = defaultSettings["dark_mode"];
     fontSize.value = defaultSettings["font_size"];
     fontFamily.value = defaultSettings["font_family"];
     setCopyInputKey.value = defaultSettings["copy_input_key"];
@@ -3844,8 +3898,179 @@ function resetSettings() {
     setCompletionLetter.value = defaultSettings["completion_letter"];
     showCompletionBtn.checked = defaultSettings["completion_button"];
 
+    updateMainColors();
     applySettings();
 };
+
+function updateMainColors() {
+    // Updates the colors (light or dark mode) of the popup
+    // Does *not* update the color theme for syntax highlighting
+    const titleLight = document.getElementById("title_light");
+    const titleDark = document.getElementById("title_dark");
+    const infoBtnLight = document.getElementsByClassName("infoButton_light");
+    const infoBtnDark = document.getElementsByClassName("infoButton_dark");
+    const infoImgLight = document.getElementsByClassName("info_light");
+    const infoImgDark = document.getElementsByClassName("info_dark");
+    const dropdownInfo = document.getElementsByClassName("dropdownInfo");
+    const docsBtn = document.getElementById("docs");
+    const gitBtn = document.getElementById("git");
+    const adjustSpacesBtn = document.getElementById("adjustSpaces");
+    const changeFontBtn = document.getElementById("changeFont");
+    const changeModeBtn = document.getElementById("changeMode");
+    const tr = document.getElementsByTagName("tr");
+    const td = document.getElementsByTagName("td");
+    const settingsContent = document.getElementById("settingsContent");
+    
+    const i = (darkMode.checked) ? 1 : 0;
+    document.body.style.backgroundColor = mainColors["body"][i];
+    textIn.style.color = mainColors["text"]["color"][i];
+    textIn.style.backgroundColor = mainColors["text"]["background"][i];
+    textIn.style.border = "2px solid " + mainColors["text"]["border"][i];
+    textOut.style.color = mainColors["text"]["color"][i];
+    textOut.style.backgroundColor = mainColors["text"]["background"][i];
+    textOut.style.border = "2px solid " + mainColors["text"]["border"][i];
+    shortcutsList.style.color = mainColors["shortcuts"][i];
+    dropdownInfo.style.backgroundColor = mainColors["dropdown"][i];
+    docsBtn.style.color = mainColors["btnDropdown"]["color"][i];
+    docsBtn.addEventListener("mouseenter", (e) => {
+        docsBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
+    });
+    docsBtn.addEventListener("mouseleave", (e) => {
+        docsBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
+    });
+    gitBtn.style.color = mainColors["btnDropdown"]["color"][i];
+    gitBtn.addEventListener("mouseenter", (e) => {
+        gitBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
+    });
+    gitBtn.addEventListener("mouseleave", (e) => {
+        gitBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
+    });
+    adjustSpacesBtn.style.color = mainColors["btnDropdown"]["color"][i];
+    adjustSpacesBtn.addEventListener("mouseenter", (e) => {
+        adjustSpacesBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
+    });
+    adjustSpacesBtn.addEventListener("mouseleave", (e) => {
+        adjustSpacesBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
+    });
+    changeFontBtn.style.color = mainColors["btnDropdown"]["color"][i];
+    changeFontBtn.addEventListener("mouseenter", (e) => {
+        changeFontBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
+    });
+    changeFontBtn.addEventListener("mouseleave", (e) => {
+        changeFontBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
+    });
+    changeModeBtn.style.color = mainColors["btnDropdown"]["color"][i];
+    changeModeBtn.addEventListener("mouseenter", (e) => {
+        changeModeBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
+    });
+    changeModeBtn.addEventListener("mouseleave", (e) => {
+        changeModeBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
+    });
+    settingsBtn.style.color = mainColors["btnDropdown"]["color"][i];
+    settingsBtn.addEventListener("mouseenter", (e) => {
+        settingsBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
+    });
+    settingsBtn.addEventListener("mouseleave", (e) => {
+        settingsBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
+    });
+    convertButton.style.color = mainColors["mainBtn"]["color"][i];
+    convertButton.style.backgroundColor = mainColors["mainBtn"]["background"][i];
+    convertButton.addEventListener("mouseenter", (e) => {
+        convertButton.style.backgroundColor = mainColors["mainBtn"]["hover"][i];
+    });
+    convertButton.addEventListener("mouseleave", (e) => {
+        convertButton.style.backgroundColor = mainColors["mainBtn"]["background"][i];
+    });
+    resetButton.style.color = mainColors["mainBtn"]["color"][i];
+    resetButton.addEventListener("mouseenter", (e) => {
+        resetButton.style.backgroundColor = mainColors["mainBtn"]["hover"][i];
+    });
+    resetButton.addEventListener("mouseleave", (e) => {
+        resetButton.style.backgroundColor = mainColors["mainBtn"]["background"][i];
+    });
+    copyButton.style.color = mainColors["mainBtn"]["color"][i];
+    copyButton.addEventListener("mouseenter", (e) => {
+        copyButton.style.backgroundColor = mainColors["mainBtn"]["hover"][i];
+    });
+    copyButton.addEventListener("mouseleave", (e) => {
+        copyButton.style.backgroundColor = mainColors["mainBtn"]["background"][i];
+    });
+    completionBtn.style.color = mainColors["mainBtn"]["color"][i];
+    completionBtn.addEventListener("mouseenter", (e) => {
+        completionBtn.style.backgroundColor = mainColors["mainBtn"]["hover"][i];
+    });
+    completionBtn.addEventListener("mouseleave", (e) => {
+        completionBtn.style.backgroundColor = mainColors["mainBtn"]["background"][i];
+    });
+    mistakesBox.style.color = mainColors["mistakes"][i];
+    completionPopup.style.border = "1px solid " + mainColors["completion"]["border"][i];
+    completionPopup.style.backgroundColor = mainColors["completion"]["backgroundTrTd"][i];
+    tr.style.border = "1px solid " + mainColors["completion"]["border"][i];
+    tr.style.backgroundColor = mainColors["completion"]["backgroundTrTd"][i];
+    td.style.border = "1px solid " + mainColors["completion"]["border"][i];
+    td.style.backgroundColor = mainColors["completion"]["backgroundTrTd"][i];
+    settingsBox.style.backgroundColor = mainColors["settingsBox"]["backgroundBackup"][i];
+    settingsBox.style.backgroundColor = mainColors["settingsBox"]["background"][i];
+
+    settingsContent.querySelectorAll("input").map((inp) => {
+        if ((inp.type == "number") || (inp.type == "text")) {
+            inp.style.color = mainColors["settingsContent"]["input"]["color"][i];
+            inp.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][i];
+        } else if (inp.type == "button") {
+            inp.style.color = mainColors["settingsContent"]["inputBtn"]["color"][i];
+            inp.addEventListener("mouseenter", (e) => {
+                inp.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["hover"][i];
+            });
+            inp.addEventListener("mouseleave", (e) => {
+                inp.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][i];
+            });
+        };
+    });
+    settingsContent.querySelectorAll("select").map((inp) => {
+        inp.style.color = mainColors["settingsContent"]["input"]["color"][i];
+        inp.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][i];
+    });
+
+    if (darkMode.checked) {
+        titleDark.style.display = "inline-block";
+        titleDark.style.width = "25%";
+        titleDark.style.height = "25%";
+        titleDark.style.marginLeft = "37%";
+        titleDark.style.marginRight = "37%";
+        titleLight.style.display = "none";
+        infoBtnDark.style.display = "inline-block";
+        infoBtnDark.style.border = "none";
+        infoBtnDark.style.float = "right";
+        infoBtnLight.style.display = "none";
+        infoImgDark.style.display = "inline-block";
+        infoImgDark.style.width = "15px";
+        infoImgDark.style.height = "15px";
+        infoImgDark.style.cursor = "default";
+        infoImgDark.style.float = "right";
+        infoImgLight.style.display = "none";
+    } else {
+        titleLight.style.display = "inline-block";
+        titleLight.style.width = "25%";
+        titleLight.style.height = "25%";
+        titleLight.style.marginLeft = "37%";
+        titleLight.style.marginRight = "37%";
+        titleDark.style.display = "none";
+        infoBtnLight.style.display = "inline-block";
+        infoBtnLight.style.border = "none";
+        infoBtnLight.style.float = "right";
+        infoBtnDark.style.display = "none";
+        infoImgLight.style.display = "inline-block";
+        infoImgLight.style.width = "15px";
+        infoImgLight.style.height = "15px";
+        infoImgLight.style.cursor = "default";
+        infoImgLight.style.float = "right";
+        infoImgDark.style.display = "none";
+    };
+};
+
+darkMode.addEventListener("click", (e) => {
+    updateMainColors();
+});
 
 document.addEventListener("keydown", (keyPressed) => {
     // Listens for keydown to open completion popup, copy the input text or copy the output
