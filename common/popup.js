@@ -3629,7 +3629,7 @@ const completionBtn = document.getElementById("completionBtn");
 completionBtn.onclick = function() {getCompletion()};
 
 // Originally hidden
-// Can be accessed with a keyboard shortcut (Alt+C by default) or by clicking the button (android)
+// Can be accessed with a keyboard shortcut (Alt+C by default) or by clicking the button
 const completionPopup = document.getElementById("completion");
 
 // Adjust spaces button
@@ -3674,7 +3674,7 @@ const setCompletionLetter = document.getElementById("shortCompletionL");
 const showCompletionBtn = document.getElementById("showCompletionBtn");
 
 // Shortcuts info (in dropdownInfo)
-const shortcutsList = document.getElementsByClassName("shortcuts");
+const shortcutsList = document.getElementById("shortcuts");
 const textOpenMatTalX = document.getElementById("short_open_mattalx_command");
 const textCopyInputKey = document.getElementById("short_copy_input_key");
 const textCopyInputLetter = document.getElementById("short_copy_input_letter");
@@ -3907,11 +3907,11 @@ function updateMainColors() {
     // Does *not* update the color theme for syntax highlighting
     const titleLight = document.getElementById("title_light");
     const titleDark = document.getElementById("title_dark");
-    const infoBtnLight = document.getElementsByClassName("infoButton_light");
-    const infoBtnDark = document.getElementsByClassName("infoButton_dark");
-    const infoImgLight = document.getElementsByClassName("info_light");
-    const infoImgDark = document.getElementsByClassName("info_dark");
-    const dropdownInfo = document.getElementsByClassName("dropdownInfo");
+    const infoBtnLight = document.getElementById("infoButton_light");
+    const infoBtnDark = document.getElementById("infoButton_dark");
+    const infoImgLight = document.getElementById("info_light");
+    const infoImgDark = document.getElementById("info_dark");
+    const dropdownInfo = document.getElementById("dropdownInfo");
     const docsBtn = document.getElementById("docs");
     const gitBtn = document.getElementById("git");
     const adjustSpacesBtn = document.getElementById("adjustSpaces");
@@ -3920,7 +3920,9 @@ function updateMainColors() {
     const tr = document.getElementsByTagName("tr");
     const td = document.getElementsByTagName("td");
     const settingsContent = document.getElementById("settingsContent");
-    
+    const settingsContentInp = settingsContent.getElementsByTagName("input");
+    const settingsContentSel = settingsContent.getElementsByTagName("select");
+
     const i = (darkMode.checked) ? 1 : 0;
     document.body.style.backgroundColor = mainColors["body"][i];
     textIn.style.color = mainColors["text"]["color"][i];
@@ -3929,9 +3931,11 @@ function updateMainColors() {
     textOut.style.color = mainColors["text"]["color"][i];
     textOut.style.backgroundColor = mainColors["text"]["background"][i];
     textOut.style.border = "2px solid " + mainColors["text"]["border"][i];
-    shortcutsList.style.color = mainColors["shortcuts"][i];
     dropdownInfo.style.backgroundColor = mainColors["dropdown"][i];
+    shortcutsList.style.color = mainColors["shortcuts"][i];
+
     docsBtn.style.color = mainColors["btnDropdown"]["color"][i];
+    docsBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
     docsBtn.addEventListener("mouseenter", (e) => {
         docsBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
     });
@@ -3939,6 +3943,7 @@ function updateMainColors() {
         docsBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
     });
     gitBtn.style.color = mainColors["btnDropdown"]["color"][i];
+    gitBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
     gitBtn.addEventListener("mouseenter", (e) => {
         gitBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
     });
@@ -3946,6 +3951,7 @@ function updateMainColors() {
         gitBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
     });
     adjustSpacesBtn.style.color = mainColors["btnDropdown"]["color"][i];
+    adjustSpacesBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
     adjustSpacesBtn.addEventListener("mouseenter", (e) => {
         adjustSpacesBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
     });
@@ -3953,6 +3959,7 @@ function updateMainColors() {
         adjustSpacesBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
     });
     changeFontBtn.style.color = mainColors["btnDropdown"]["color"][i];
+    changeFontBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
     changeFontBtn.addEventListener("mouseenter", (e) => {
         changeFontBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
     });
@@ -3960,6 +3967,7 @@ function updateMainColors() {
         changeFontBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
     });
     changeModeBtn.style.color = mainColors["btnDropdown"]["color"][i];
+    changeModeBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
     changeModeBtn.addEventListener("mouseenter", (e) => {
         changeModeBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
     });
@@ -3967,6 +3975,7 @@ function updateMainColors() {
         changeModeBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
     });
     settingsBtn.style.color = mainColors["btnDropdown"]["color"][i];
+    settingsBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
     settingsBtn.addEventListener("mouseenter", (e) => {
         settingsBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
     });
@@ -3982,6 +3991,7 @@ function updateMainColors() {
         convertButton.style.backgroundColor = mainColors["mainBtn"]["background"][i];
     });
     resetButton.style.color = mainColors["mainBtn"]["color"][i];
+    resetButton.style.backgroundColor = mainColors["mainBtn"]["background"][i];
     resetButton.addEventListener("mouseenter", (e) => {
         resetButton.style.backgroundColor = mainColors["mainBtn"]["hover"][i];
     });
@@ -3989,6 +3999,7 @@ function updateMainColors() {
         resetButton.style.backgroundColor = mainColors["mainBtn"]["background"][i];
     });
     copyButton.style.color = mainColors["mainBtn"]["color"][i];
+    copyButton.style.backgroundColor = mainColors["mainBtn"]["background"][i];
     copyButton.addEventListener("mouseenter", (e) => {
         copyButton.style.backgroundColor = mainColors["mainBtn"]["hover"][i];
     });
@@ -3996,40 +4007,50 @@ function updateMainColors() {
         copyButton.style.backgroundColor = mainColors["mainBtn"]["background"][i];
     });
     completionBtn.style.color = mainColors["mainBtn"]["color"][i];
+    completionBtn.style.backgroundColor = mainColors["mainBtn"]["background"][i];
     completionBtn.addEventListener("mouseenter", (e) => {
         completionBtn.style.backgroundColor = mainColors["mainBtn"]["hover"][i];
     });
     completionBtn.addEventListener("mouseleave", (e) => {
         completionBtn.style.backgroundColor = mainColors["mainBtn"]["background"][i];
     });
+
     mistakesBox.style.color = mainColors["mistakes"][i];
     completionPopup.style.border = "1px solid " + mainColors["completion"]["border"][i];
-    completionPopup.style.backgroundColor = mainColors["completion"]["backgroundTrTd"][i];
-    tr.style.border = "1px solid " + mainColors["completion"]["border"][i];
-    tr.style.backgroundColor = mainColors["completion"]["backgroundTrTd"][i];
-    td.style.border = "1px solid " + mainColors["completion"]["border"][i];
-    td.style.backgroundColor = mainColors["completion"]["backgroundTrTd"][i];
+    completionPopup.style.backgroundColor = mainColors["completion"]["border"][i];
     settingsBox.style.backgroundColor = mainColors["settingsBox"]["backgroundBackup"][i];
     settingsBox.style.backgroundColor = mainColors["settingsBox"]["background"][i];
+    settingsContent.style.color = mainColors["settingsContent"]["color"][i];
+    settingsContent.style.backgroundColor = mainColors["settingsContent"]["background"][i];
 
-    settingsContent.querySelectorAll("input").map((inp) => {
-        if ((inp.type == "number") || (inp.type == "text")) {
-            inp.style.color = mainColors["settingsContent"]["input"]["color"][i];
-            inp.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][i];
-        } else if (inp.type == "button") {
-            inp.style.color = mainColors["settingsContent"]["inputBtn"]["color"][i];
-            inp.addEventListener("mouseenter", (e) => {
-                inp.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["hover"][i];
+    let j;
+    for (j=0; j<tr.length; j++) {
+        tr[j].style.border = "1px solid " + mainColors["completion"]["border"][i];
+        tr[j].style.backgroundColor = mainColors["completion"]["backgroundTrTd"][i];
+    };
+    for (j=0; j<td.length; j++) {
+        td[j].style.border = "1px solid " + mainColors["completion"]["border"][i];
+        td[j].style.backgroundColor = mainColors["completion"]["backgroundTrTd"][i];
+    };
+    for (j=0; j<settingsContentInp.length; j++) {
+        if ((settingsContentInp[j].type == "number") || (settingsContentInp[j].type == "text")) {
+            settingsContentInp[j].style.color = mainColors["settingsContent"]["input"]["color"][i];
+            settingsContentInp[j].style.backgroundColor = mainColors["settingsContent"]["input"]["background"][i];
+        } else if (settingsContentInp[j].type == "button") {
+            settingsContentInp[j].style.color = mainColors["settingsContent"]["inputBtn"]["color"][i];
+            settingsContentInp[j].style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][i];
+            settingsContentInp[j].addEventListener("mouseenter", (e) => {
+                settingsContentInp[j].style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["hover"][i];
             });
-            inp.addEventListener("mouseleave", (e) => {
-                inp.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][i];
+            settingsContentInp[j].addEventListener("mouseleave", (e) => {
+                settingsContentInp[j].style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][i];
             });
         };
-    });
-    settingsContent.querySelectorAll("select").map((inp) => {
-        inp.style.color = mainColors["settingsContent"]["input"]["color"][i];
-        inp.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][i];
-    });
+    };
+    for (j=0; j<settingsContentSel.length; j++) {
+        settingsContentSel[j].style.color = mainColors["settingsContent"]["input"]["color"][i];
+        settingsContentSel[j].style.backgroundColor = mainColors["settingsContent"]["input"]["background"][i];
+    };
 
     if (darkMode.checked) {
         titleDark.style.display = "inline-block";
@@ -4041,6 +4062,7 @@ function updateMainColors() {
         infoBtnDark.style.display = "inline-block";
         infoBtnDark.style.border = "none";
         infoBtnDark.style.float = "right";
+        infoBtnDark.style.backgroundColor = mainColors["infoBtn"][i];
         infoBtnLight.style.display = "none";
         infoImgDark.style.display = "inline-block";
         infoImgDark.style.width = "15px";
@@ -4058,6 +4080,7 @@ function updateMainColors() {
         infoBtnLight.style.display = "inline-block";
         infoBtnLight.style.border = "none";
         infoBtnLight.style.float = "right";
+        infoBtnLight.style.backgroundColor = mainColors["infoBtn"][i];
         infoBtnDark.style.display = "none";
         infoImgLight.style.display = "inline-block";
         infoImgLight.style.width = "15px";
@@ -4365,8 +4388,8 @@ function findWord(text, cursorPosition, addedLetter="") {
 
 function completion(command) {
     // Outputs list of other commands that are similar to the one currently being written
-    const btnBackColor = getComputedStyle(document.body).backgroundColor;
-    const btnFontColor = (btnBackColor === "rgb(255, 255, 255)") ? "black" : "whitesmoke"; 
+    const btnBackColor = mainColors["completion"]["backgroundTrTd"][(darkMode.checked) ? 1 : 0];
+    const btnFontColor = (darkMode.checked) ? "whitesmoke" : "black";
     if (command === "") {
         closeCompletion();
     } else if (command[0] !== "\\") {
@@ -4389,12 +4412,15 @@ function completion(command) {
                 // Button style
                 btn.style.width = "145px";  // Would be cleaner with something like 'fit-content', but is way to slow
                 btn.style.height = "17px";
-                btn.style.backgroundColor = btnBackColor;
+                btn.style.backgroundColor = btnBackColor
                 btn.style.border = "1px solid " + btnBackColor;
                 btn.style.color = btnFontColor;
                 btn.style.borderRadius = "3px";
                 btn.type = "button";
                 btn.tabIndex = "0";
+
+                cell.style.border = "1px solid " + btnBackColor;
+                cell.style.backgroundColor = btnBackColor;
 
                 // Complete the command if the user clicks on that command
                 btn.addEventListener("click", () => {

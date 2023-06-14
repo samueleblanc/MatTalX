@@ -8,19 +8,19 @@ header {
     margin-left: 10px;
     margin-right: 10px;
 }
-.infoDiv {
+#infoDiv {
     position: relative;
     float: right;
 }
 a {
     text-decoration: none;
 }
-.infoDiv:hover .dropdownInfo {
+#infoDiv:hover #dropdownInfo {
     text-align: center;
     display: block;
     padding: 8px;
 }
-.shortcutTitle {
+#shortcutTitle {
     padding-top: 6px;
     padding-bottom: 0px;
     cursor: default;
@@ -47,13 +47,13 @@ body {
     font-size: 15px;
     text-decoration: none;
 }
-.shortcuts {
+#shortcuts {
     font-size: 15x;
     font-family: 'Times New Roman';
     text-decoration: none;
     cursor: default;
 }
-.dropdownInfo {
+#dropdownInfo {
     display: none;
     position: absolute;
     z-index: 1;
@@ -68,8 +68,8 @@ body {
 #changeFont,
 #changeMode,
 #settingsBtn,
-.shortcuts b,
-.shortcuts span {
+#shortcuts b,
+#shortcuts span {
     font-size: 15px;
     font-family: 'Times New Roman';
 }
@@ -205,27 +205,27 @@ body {
         border: 2px solid rgb(231, 231, 231);
         background-color: whitesmoke;
     }
-    .infoButton_dark {
+    #infoButton_dark {
         display: none;
     }
-    .infoButton_light {
+    #infoButton_light {
         background-color: white;
         border: none;
         float: right;
     }
-    .info_dark {
+    #info_dark {
         display: none;
     }
-    .info_light {
+    #info_light {
         width: 15px;
         height: 15px;
         cursor: default;
         float: right;
     }
-    .shortcuts {
+    #shortcuts {
         color: black;
     }
-    .dropdownInfo {
+    #dropdownInfo {
         background-color: whitesmoke;
     }
     #docs, 
@@ -311,27 +311,27 @@ body {
         border: 2px solid rgb(83, 83, 83);
         background-color: rgb(83, 83, 83);
     }
-    .infoButton_light {
+    #infoButton_light {
         display: none;
     }
-    .infoButton_dark {
+    #infoButton_dark {
         background-color: rgb(39, 39, 39);
         border: none;
         float: right;
     }
-    .info_light {
+    #info_light {
         display: none;
     }
-    .info_dark {
+    #info_dark {
         width: 15px;
         height: 15px;
         cursor: default;
         float: right;
     }
-    .shortcuts {
+    #shortcuts {
         color: whitesmoke;
     }
-    .dropdownInfo {
+    #dropdownInfo {
         background-color: rgb(31, 31, 31);
     }
     #docs, 
