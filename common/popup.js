@@ -4022,16 +4022,20 @@ function updateMainColors() {
     settingsBox.style.backgroundColor = mainColors["settingsBox"]["background"][i];
     settingsContent.style.color = mainColors["settingsContent"]["color"][i];
     settingsContent.style.backgroundColor = mainColors["settingsContent"]["background"][i];
+    resetSettingsButton.addEventListener("mouseenter", (e) => {
+        resetSettingsButton.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["hover"][i];
+    });
+    resetSettingsButton.addEventListener("mouseleave", (e) => {
+        resetSettingsButton.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][i];
+    });
+    buildCommandsBtn.addEventListener("mouseenter", (e) => {
+        buildCommandsBtn.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["hover"][i];
+    });
+    buildCommandsBtn.addEventListener("mouseleave", (e) => {
+        buildCommandsBtn.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][i];
+    });
 
     let j;
-    for (j=0; j<tr.length; j++) {
-        tr[j].style.border = "1px solid " + mainColors["completion"]["border"][i];
-        tr[j].style.backgroundColor = mainColors["completion"]["backgroundTrTd"][i];
-    };
-    for (j=0; j<td.length; j++) {
-        td[j].style.border = "1px solid " + mainColors["completion"]["border"][i];
-        td[j].style.backgroundColor = mainColors["completion"]["backgroundTrTd"][i];
-    };
     for (j=0; j<settingsContentInp.length; j++) {
         if ((settingsContentInp[j].type == "number") || (settingsContentInp[j].type == "text")) {
             settingsContentInp[j].style.color = mainColors["settingsContent"]["input"]["color"][i];
@@ -4039,12 +4043,6 @@ function updateMainColors() {
         } else if (settingsContentInp[j].type == "button") {
             settingsContentInp[j].style.color = mainColors["settingsContent"]["inputBtn"]["color"][i];
             settingsContentInp[j].style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][i];
-            settingsContentInp[j].addEventListener("mouseenter", (e) => {
-                settingsContentInp[j].style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["hover"][i];
-            });
-            settingsContentInp[j].addEventListener("mouseleave", (e) => {
-                settingsContentInp[j].style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][i];
-            });
         };
     };
     for (j=0; j<settingsContentSel.length; j++) {
@@ -4155,6 +4153,8 @@ document.addEventListener("keydown", (keyPressed) => {
 function buildNewCommand() {
     // Called when 'buildCommandsBtn' is clicked
     // Adds a new row to the 'commandsBuilt' table
+    const darkModeInt = (darkMode.checked) ? 1 : 0;
+
     commandsBuilt.style.display = "block";
 
     // Curly brackets are used to mimic the style of \command{}{}
@@ -4189,6 +4189,8 @@ function buildNewCommand() {
     select.add(renewCommandOpt);
     select.add(declareMathOperatorOpt);
     select.add(declareUnicodeCharacterOpt);
+    select.style.color = mainColors["settingsContent"]["input"]["color"][darkModeInt];
+    select.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][darkModeInt];
     typeInput.appendChild(select);
     row.appendChild(typeInput);
 
@@ -4198,6 +4200,8 @@ function buildNewCommand() {
     let newCommandName = document.createElement("td");
     let inputNewCommandName = document.createElement("input");
     inputNewCommandName.type = "text";
+    inputNewCommandName.style.color = mainColors["settingsContent"]["input"]["color"][darkModeInt];
+    inputNewCommandName.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][darkModeInt];
     newCommandName.appendChild(inputNewCommandName);
     row.appendChild(newCommandName);
     inputNewCommandName.style.width = "90%";
@@ -4209,6 +4213,8 @@ function buildNewCommand() {
     let defaultCommandName = document.createElement("td");
     let inputDefaultCommandArg = document.createElement("input");
     inputDefaultCommandArg.type = "text";
+    inputDefaultCommandArg.style.color = mainColors["settingsContent"]["input"]["color"][darkModeInt];
+    inputDefaultCommandArg.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][darkModeInt];
     defaultCommandName.appendChild(inputDefaultCommandArg);
     row.appendChild(defaultCommandName);
     inputDefaultCommandArg.style.width = "90%";
@@ -4223,6 +4229,19 @@ function buildNewCommand() {
     deleteCommandBtn.style.fontSize = "18px";
     deleteCommandBtn.style.borderRadius = "6px";
     deleteCommandBtn.style.padding = "5px";
+    deleteCommandBtn.style.color = mainColors["settingsContent"]["inputBtn"]["color"][darkModeInt];
+    deleteCommandBtn.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][darkModeInt];
+
+    // Commented out since it leads to a bug. The color chosen now "sticks" to the button. Therefore, if the user changes 
+    // the color mode, the button won't have the right color when hover.
+    /*
+    deleteCommandBtn.addEventListener("mouseenter", (e) => {
+        deleteCommandBtn.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["hover"][darkModeInt];
+    });
+    deleteCommandBtn.addEventListener("mouseleave", (e) => {
+        deleteCommandBtn.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][darkModeInt];
+    });
+    */
 
     deleteCommandBtn.addEventListener("click", () => {
         // Delete the command

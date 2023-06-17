@@ -28,6 +28,7 @@ function updateMessage(version) {
     // To be changed by hand every version
     const majorChanges = "Welcome to 𝑀ᴀᴛ𝑇ᴀʟ𝑋 version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
-    " 1) You can now navigate in the completion popup with your keyboard (using tab).";
+    " 1) You can now navigate in the completion popup with your keyboard (using tab) \r\n" + 
+    " 2) Select dark mode or light mode manually";
     textOut.value = majorChanges;  // In "text_input" form
 };
