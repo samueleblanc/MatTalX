@@ -3661,6 +3661,7 @@ const mistakesBox = document.getElementById("mistakes");
 const darkMode = document.getElementById("darkMode");
 const fontSize = document.getElementById("fontSize");
 const fontFamily = document.getElementById("fontFamily");
+const colorThemes = document.getElementById("colorThemes");
 
 // Keyboard shortcuts
 
@@ -3737,6 +3738,7 @@ const defaultSettings = {
     "dark_mode" : prefersDarkMode,
     "font_size" : 14,
     "font_family" : "monospace",
+    "color_theme" : "Default",
     "open_mattalx_shortcut" : "Alt+M",
     "copy_input_key" : "Alt",
     "copy_input_letter" : "I",
@@ -3890,6 +3892,7 @@ function resetSettings() {
     darkMode.checked = defaultSettings["dark_mode"];
     fontSize.value = defaultSettings["font_size"];
     fontFamily.value = defaultSettings["font_family"];
+    colorThemes.value = defaultSettings["color_theme"];
     setCopyInputKey.value = defaultSettings["copy_input_key"];
     setCopyInputLetter.value = defaultSettings["copy_input_letter"];
     setCopyOutputKey.value = defaultSettings["copy_output_key"];

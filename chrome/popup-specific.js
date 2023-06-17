@@ -16,6 +16,7 @@ window.addEventListener("blur", () => {
     chrome.storage.sync.set({"dark_mode" : darkMode.checked});
     chrome.storage.sync.set({"font_size" : fontSize.value});
     chrome.storage.sync.set({"font_family" : fontFamily.value});
+    chrome.storage.sync.set({"color_theme" : colorThemes.value});
     chrome.storage.sync.set({"copy_input_key" : setCopyInputKey.value});
     chrome.storage.sync.set({"copy_input_letter" : setCopyInputLetter.value});
     chrome.storage.sync.set({"copy_output_key" : setCopyOutputKey.value});
@@ -123,6 +124,13 @@ function getSettings() {
         textIn.style.fontFamily = fontFamily.value;
         textOut.style.fontFamily = fontFamily.value;
     });
+    chrome.storage.sync.get(["color_theme"], (color) => {
+        if (color.color_theme !== undefined) {
+            colorThemes.value = color.color_theme;
+        }  else {
+            colorThemes.value = defaultSettings["color_theme"];
+        };
+    });
     chrome.storage.sync.get(["copy_input_key"], (text) => {
         if (text.copy_input_key !== undefined) {
             setCopyInputKey.value = text.copy_input_key;
@@ -205,6 +213,7 @@ function closeSettings() {
     chrome.storage.sync.set({"dark_mode" : darkMode.checked});
     chrome.storage.sync.set({"font_size" : fontSize.value});
     chrome.storage.sync.set({"font_family" : fontFamily.value});
+    chrome.storage.sync.set({"color_theme" : colorThemes.value});
     chrome.storage.sync.set({"copy_input_key" : setCopyInputKey.value});
     chrome.storage.sync.set({"copy_input_letter" : setCopyInputLetter.value});
     chrome.storage.sync.set({"copy_output_key" : setCopyOutputKey.value});
