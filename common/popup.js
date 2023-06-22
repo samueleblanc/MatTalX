@@ -2590,6 +2590,7 @@ const mathDictionary = {
     "\\ell" : "\u2113",
     "\\dagger" : "\u2020",
     "\\ddagger" : "\u2021",
+    "\\dddagger" : "\u2E4B",
     "\\hermitian" : "\u22B9",
     "\\qc" : "\u269C",
     "\\section" : "\u00A7",
