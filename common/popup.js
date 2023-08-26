@@ -3905,7 +3905,6 @@ function resetSettings() {
 
 function updateMainColors() {
     // Updates the colors (light or dark mode) of the popup
-    // Does *not* update the color theme for syntax highlighting
     const titleLight = document.getElementById("title_light");
     const titleDark = document.getElementById("title_dark");
     const infoBtnLight = document.getElementById("infoButton_light");
@@ -3918,8 +3917,6 @@ function updateMainColors() {
     const adjustSpacesBtn = document.getElementById("adjustSpaces");
     const changeFontBtn = document.getElementById("changeFont");
     const changeModeBtn = document.getElementById("changeMode");
-    const tr = document.getElementsByTagName("tr");
-    const td = document.getElementsByTagName("td");
     const settingsContent = document.getElementById("settingsContent");
     const settingsContentInp = settingsContent.getElementsByTagName("input");
     const settingsContentSel = settingsContent.getElementsByTagName("select");
