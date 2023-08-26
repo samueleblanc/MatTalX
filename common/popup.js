@@ -4564,8 +4564,6 @@ function tokenize(fullText, mathmode) {
     let temporaryBox = [];      // Stores characters that are in command (e.g. \int -> ['\', 'i', 'n', 't'])
     let trigger = false;        // true if a command has begun (e.g. input: '\' -> true)
     let mathmodeStarter = "";   // e.g. if mathmode is started with $$, then "$$" will be mathmodeStarter
-    let fracDepth = 0;          // Used for fraction (\frac{}{}) parsing, because of the way curly brackets are used
-    // N.B. fracDepth could be used in the future for \stackrel{}{} (if it replaces the \above command)
     let char;
 
     if (startMathmode) {
@@ -4626,11 +4624,6 @@ function tokenize(fullText, mathmode) {
                 if (fullText[i-1] === "\\") {
                     outTokens.push(temporaryBox.join("") + fullText[i]);
                 } else {
-                    if (temporaryBox.slice(0,5).join("") === "\\frac") {
-                        fracDepth += 1;
-                    } else if (fracDepth > 0) {
-                        fracDepth += 1;
-                    };
                     outTokens.push(temporaryBox.join(""));
                     outTokens.push(specialTokens.startArgument);
                 };
@@ -4641,16 +4634,7 @@ function tokenize(fullText, mathmode) {
                     outTokens.push(temporaryBox.join("") + fullText[i]);
                 } else {
                     outTokens.push(temporaryBox.join(""));
-                    if (fracDepth > 0) {
-                        if (fullText[i+1] === "{") {
-                            outTokens.push(fullText[i]);
-                        } else {
-                            fracDepth -= 1;
-                            outTokens.push(specialTokens.endArgument);
-                        };
-                    } else {
-                        outTokens.push(specialTokens.endArgument);
-                    };
+                    outTokens.push(specialTokens.endArgument);
                 };
                 trigger = false;
                 temporaryBox = [];
@@ -4755,22 +4739,9 @@ function tokenize(fullText, mathmode) {
                     outTokens.push(specialTokens.startMathmode);
                 };
             } else if (fullText[i] === "}") {
-                if (fracDepth > 0) {
-                    if (fullText[i+1] === "{") {
-                        outTokens.push(fullText[i]);
-                    } else {
-                        fracDepth -= 1;
-                        outTokens.push(specialTokens.endArgument);
-                    };
-                } else {
-                    outTokens.push(specialTokens.endArgument);
-                };
+                outTokens.push(specialTokens.endArgument);
             } else if (fullText[i] === "{") {
-                if (fracDepth > 0) {
-                    outTokens.push(fullText[i]);
-                } else {
-                    outTokens.push(specialTokens.startArgument);
-                };
+                outTokens.push(specialTokens.startArgument);
             } else {
                 char = fullText[i].normalize("NFD").split("");
                 outTokens.push(...char);
@@ -4801,7 +4772,7 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
     let fct;
     let fctStack = [];           // Stores the functions until they are used
     let callingFct;              // Might be different from fct (e.g. \\sqrt[3] is called with \\sqrt)
-    let arg;
+    let arg = [];
     let argStack = [];           // Stores the function arguments until they are used
     let outText = "";            // The text that will be returned
     let mathmodeText = "";       // Intermediary string that holds the text inside mathmode until the spaces are ajusted
@@ -4809,6 +4780,8 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
     let dict;                    // dictMM (mathmode) or dictOut (out of mathmode) depending if in mathmode or not
     let mathmodeOccurence = 0;   // Counts the number of times one enters and leaves mathmode
     let argOccurence = 0;        // Counts the number of times one gets in and out of an argument
+    let currentArgCount = [];    // Number of arguments per function
+    let argNum;                  // Stores the number of arguments for the current function
 
     let i;
     for (i=0; i<tokens.length; i++) {
@@ -4817,43 +4790,55 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
             if (tokens[i] === specialTokens.startArgument) {
                 argStack.push([]);
                 argOccurence += 1;
+                if (tokens[i-1] !== specialTokens.endArgument) {
+                    currentArgCount.push(1);
+                };
             } else if (tokens[i] === specialTokens.endArgument) {
                 argOccurence += 1;
-                if (fctStack.length > 0) {
-                    fct = fctStack.pop();
-                    if (argStack.length > 0) {
-                        arg = argStack.pop();
-                        if (fct.substring(0,5) === "\\sqrt") {
-                            callingFct = fct.replace(/\[.*\]/g, "")
-                        } else {
-                            callingFct = fct;
-                        };
+                if (tokens[i+1] === specialTokens.startArgument) {
+                    currentArgCount[currentArgCount.length-1] += 1;
+                } else {
+                    if (fctStack.length > 0) {
+                        fct = fctStack.pop();
                         if (argStack.length > 0) {
-                            argStack[argStack.length-1].push(...dict[callingFct](arg, fct));
+                            argNum = currentArgCount.pop();
+                            for (let j=0; j<argNum; j++) {
+                                arg.push(argStack.pop());
+                            };
+                            if (fct.substring(0,5) === "\\sqrt") {
+                                callingFct = fct.replace(/\[.*\]/g, "")
+                            } else {
+                                callingFct = fct;
+                            };
+                            if (argStack.length > 0) {
+                                argStack[argStack.length-1].push(...dict[callingFct](arg, fct));
+                            } else {
+                                if (mathmode) {
+                                    mathmodeText += str(dict[callingFct](arg, fct).join(""));
+                                } else {
+                                    outText += str(dict[callingFct](arg, fct).join(""));
+                                };
+                            };
                         } else {
                             if (mathmode) {
-                                mathmodeText += str(dict[callingFct](arg, fct).join(""));
+                                mathmodeText += mistakes(fct+"{}", undefined, "Can't find an argument");
                             } else {
-                                outText += str(dict[callingFct](arg, fct).join(""));
+                                outText += mistakes("Out of math mode", undefined, "Can't find an argument for " + fct + "{}");
                             };
                         };
+                        arg = [];
                     } else {
-                        if (mathmode) {
-                            mathmodeText += mistakes(fct+"{}", undefined, "Can't find an argument");
-                        } else {
-                            outText += mistakes("Out of math mode", undefined, "Can't find an argument for " + fct + "{}");
-                        };
-                    };
-                } else {
-                    if (argStack.length > 0) {
-                        arg = argStack.pop();
-                        if (mathmode) {
-                            mathmodeText += mistakes("Can't find a function for {" + arg.join("") + "}", undefined, "'\\{' and '\\}' to output a curly bracket");
-                        } else {
-                            outText += mistakes("Out of math mode", undefined, "Can't find a function for {" + arg.join("") + "}" + ". Use '\\{' or '\\}' to output a curly bracket");
+                        if (argStack.length > 0) {
+                            arg = argStack.pop();
+                            if (mathmode) {
+                                mathmodeText += mistakes("Can't find a function for {" + arg.join("") + "}", undefined, "'\\{' and '\\}' to output a curly bracket");
+                            } else {
+                                outText += mistakes("Out of math mode", undefined, "Can't find a function for {" + arg.join("") + "}" + ". Use '\\{' or '\\}' to output a curly bracket");
+                            };
                         };
                     };
                 };
+            // TODO: Empty stacks
             } else if (tokens[i] === specialTokens.startMathmode) {
                 mathmodeOccurence += 1;
                 mathmode = true;
