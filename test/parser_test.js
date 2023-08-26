@@ -3,7 +3,12 @@
     and test the functions named tokenize and tokensToText
 */
 
-// v 2.5.7 time approx 0.035s for 10 sentences
+/*
+    Time to parse:
+    
+        v 2.5.7 - 0.0035s/sentence
+        v 2.7.3 - 0.0112s/sentence
+*/
 
 
 function test() {
