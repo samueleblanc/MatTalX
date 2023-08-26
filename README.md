@@ -16,7 +16,7 @@ You can finally talk about physics, mathematics, chemistry, and (even) chess wit
 
 Copy and paste " H(t) | \psi (t) \rangle = i \hbar \frac{\partial}{\partial t}| \psi (t) \rangle " in the upper square, click "Convert" and see what happens! 
 
-Simple, free, and open source!
+Simple, free, and open-source!
 
 
 ** Documentation **
