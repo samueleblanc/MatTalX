@@ -10,14 +10,14 @@ function firstMessage(version) {
     "on the top right corner. 𝑀ᴀᴛ𝑇ᴀʟ𝑋 almost always uses the same command as 𝐿ᴬ𝑇ᴇ𝑋, but there are some differences.";
     const tutorial = "First and foremost, it is important to remember that 𝑀ᴀᴛ𝑇ᴀʟ𝑋 converts the command into text, therefore a command like: \r\n" + 
     "x^{x^{x^{x}}} will give an error, since it can't fit in a line.\r\n \r\n" +
-    "Every commands (except superscript and subscript) starts with a backslash ('\\'). If you are unsure about a command, open the suggestion " + 
+    "Every command (except superscript and subscript) starts with a backslash ('\\'). If you are unsure about a command, open the suggestion " + 
     "popup by looking at the shortcut (will appear if you hover your mouse on the question mark) or click on the button if you are on a screen-only device! \r\n\r\n" +
     "Every letter will automatically be converted to a mathematical font, if you do not want that, you can uncheck 'Mathematical font'. " + 
     "If you simply want a single letter to not be in this font, add '\\' before the letter:\r\n" + 
     " a → \u{1d44e} | \\a (or \\text{a}) → a\r\n \r\n" + 
     "As a last tip, if you get an error and the command seems right, the character that you want might not exist in unicode:\r\n" + 
     " x^{y} → 𝑥ʸ | x^{Y} → 𝑥^(𝑌) (ie y exists in superscript but not Y)\r\n \r\n" +
-    "But, before jumping to conclusion, please look at the documentation! The command, for various reason, might be different than in 𝐿ᴬ𝑇ᴇ𝑋!";
+    "But, before jumping to a conclusion, please look at the documentation! The command, for various reasons, might be different than in 𝐿ᴬ𝑇ᴇ𝑋!";
     textIn.value = text;  // In "text_input" form
     textOut.value = tutorial;  // In "text_input" form
 };
@@ -28,7 +28,7 @@ function updateMessage(version) {
     // To be changed by hand every version
     const majorChanges = "Welcome to 𝑀ᴀᴛ𝑇ᴀʟ𝑋 version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
-    " 1) You can now navigate in the completion popup with your keyboard (using tab) \r\n" + 
-    " 2) Select dark mode or light mode manually";
+    " 1) You can now navigate in the completion popup with your keyboard (using tab). \r\n" + 
+    " 2) Select dark mode or light mode manually.";
     textOut.value = majorChanges;  // In "text_input" form
 };
