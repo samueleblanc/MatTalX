@@ -17,7 +17,6 @@ window.addEventListener("blur", () => {
         "dark_mode" : darkMode.checked,
         "font_size" : fontSize.value,
         "font_family" : fontFamily.value,
-        "color_theme" : colorThemes.value,
         "copy_input_key" : setCopyInputKey.value,
         "copy_input_letter" : setCopyInputLetter.value,
         "copy_output_key" : setCopyOutputKey.value,
@@ -127,13 +126,6 @@ function getSettings() {
         textIn.style.fontFamily = fontFamily.value;
         textOut.style.fontFamily = fontFamily.value;
     });
-    browser.storage.local.get("color_theme", (color) => {
-        if (color.color_theme !== undefined) {
-            colorThemes.value = color.color_theme;
-        } else {
-            colorThemes.value = defaultSettings["color_theme"];
-        };
-    });
     browser.storage.local.get("copy_input_key", (text) => {
         if (text.copy_input_key !== undefined) {
             setCopyInputKey.value = text.copy_input_key;
@@ -217,7 +209,6 @@ function closeSettings() {
         "dark_mode" : darkMode.checked,
         "font_size" : fontSize.value,
         "font_family" : fontFamily.value,
-        "color_theme" : colorThemes.value,
         "copy_input_key" : setCopyInputKey.value,
         "copy_input_letter" : setCopyInputLetter.value,
         "copy_output_key" : setCopyOutputKey.value,
