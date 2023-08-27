@@ -1806,45 +1806,6 @@ const sqrt = (arg, initialCommand) => {
     return [output].concat(extraArgs(arg.slice(1), initialCommand));
 };
 
-/*
-const sqrtNoArg = (arg, initialCommand) => {
-    // Compared with sqrt, this function only takes the root as parameter, not the argument
-    // For instance the 'cube root of two' would be in sqrt, but simply the 'cube root' would be parsed here 
-    if (arg[0] !== undefined) {
-        mistakes(initialCommand + " does not take in arguments and should take the form \\sqrt[n]*", undefined, "ⁿ√  (use \\sqrt[n]{x} to get ⁿ√𝑥)");
-        return addSymbol(undefined);
-    };
-    const numStart = parseInt(initialCommand.indexOf("["));
-    const numEnd = parseInt(initialCommand.indexOf("]"));
-    let rootNum;
-    if ((numStart === -1) || (numEnd === -1)) {
-        if ((numStart === -1) && (numEnd === -1)) {
-            rootNum = undefined;
-        } else {
-            mistakes(initialCommand + " should take the form \\sqrt[n]*", undefined, "ⁿ√");
-            return addSymbol(undefined);
-        };
-    } else {
-        rootNum = initialCommand.substring(numStart + 1, numEnd);
-    };
-    let output = "";
-    switch (rootNum) {
-        case "3":
-            output += "\u221B";
-            break;
-        case "4":
-            output += "\u221C";
-            break;
-        case undefined:
-            output += "\u221A";
-            break;
-        default:
-            output += addSymbol(mathDictionary["^"](rootNum.toString().split(""), initialCommand)) + "\u221A";
-    };
-    return [output];
-};
-*/
-
 const frac = (arg, initialCommand) => {
     // Used to make a fraction
     // If a character doesn't exist in superscript or subscript, it outputs the fraction in the format f(x)/g(x)
@@ -2351,7 +2312,7 @@ const mathDictionary = {
 
     // Square root and fractions
     "\\sqrt" : sqrt,
-    // "\\sqrt*" : sqrtNoArg,
+    // "\\sqrt*" : sqrtNoArg,  // TODO: Remove from docs
     "\\frac" : frac,
     "\\frac*" : singleCharFrac,
 
@@ -4463,8 +4424,6 @@ function showCommand(key) {
     if (typeof defaultDict[key] == "function") {
         if (key == "\\sqrt") {
             return "\\sqrt[n]{x} \u2192 ⁿ√𝑥";
-        // } else if (key == "\\sqrt*") {
-        //    return "\\sqrt[n]* \u2192 ⁿ√";
         } else if (key == "\\frac") {
             return "\\frac{1}{2} \u2192 ¹∕₂";
         } else if (key == "\\frac*") {
@@ -4505,8 +4464,6 @@ function toReplaceCommand(key) {
     if (typeof defaultDict[key] == "function") {
         if (key == "\\sqrt") {
             return "\\sqrt[]{}";
-        // } else if (key == "\\sqrt*") {
-        //    return "\\sqrt[]*";
         } else if (key == "\\frac") {
             return "\\frac{}{}";
         } else if (key == "\\frac*") {
