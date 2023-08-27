@@ -192,7 +192,7 @@ const mathbb = (arg, initialCommand) => {
         "\u000A" : "\u000A",
         "" : ""
     };
-    return replaceLetters(arg, symbols, initialCommand);
+    return replaceLetters(arg[0], symbols, initialCommand).concat(extraArgs(arg.slice(1), initialCommand));
 };
 
 const mathbf = (arg, initialCommand) => {
@@ -544,7 +544,7 @@ const mathbf = (arg, initialCommand) => {
         "\u000A" : "\u000A",
         "" : ""
     };
-    return replaceLetters(arg, symbols, initialCommand);
+    return replaceLetters(arg[0], symbols, initialCommand).concat(extraArgs(arg.slice(1), initialCommand));
 };
 
 const mathcal = (arg, initialCommand) => {
@@ -720,7 +720,7 @@ const mathcal = (arg, initialCommand) => {
         "\u000A" : "\u000A",
         "" : ""
     };
-    return replaceLetters(arg, symbols, initialCommand);
+    return replaceLetters(arg[0], symbols, initialCommand).concat(extraArgs(arg.slice(1), initialCommand));
 };
 
 const mathfrak = (arg, initialCommand) => {
@@ -896,28 +896,28 @@ const mathfrak = (arg, initialCommand) => {
         "\u000A" : "\u000A",
         "" : ""
     };
-    return replaceLetters(arg, symbols, initialCommand);
+    return replaceLetters(arg[0], symbols, initialCommand).concat(extraArgs(arg.slice(1), initialCommand));
 };
 
 const superscript = (arg, initialCommand, forFrac=false) => {
     // Sends input to be converted by replaceLetters
     // This function is by default not called by the frac function
-    let output = replaceLetters(arg, Superscript, initialCommand, !forFrac);
+    let output = replaceLetters(arg[0], Superscript, initialCommand, !forFrac);
     if (((output.indexOf(errSymbol) === -1) && (output.filter(e => accents[e] !== undefined).length === 0)) || (forFrac)) {
-        return output;
+        return output.concat(extraArgs(arg.slice(1), initialCommand));
     } else {
-        return ["^(" + arg.join("") + ")"];
+        return ["^(" + arg[0].join("") + ")"].concat(extraArgs(arg.slice(1), initialCommand));
     };
 };
 
 const subscript = (arg, initialCommand, forFrac=false) => {
     // Sends input to be converted by replaceLetters
     // This function is by default not called by the frac function
-    let output = replaceLetters(arg, Subscript, initialCommand, !forFrac);
+    let output = replaceLetters(arg[0], Subscript, initialCommand, !forFrac);
     if (((output.indexOf(errSymbol) === -1) && (output.filter(e => accents[e] !== undefined).length === 0)) || (forFrac)) {
-        return output;
+        return output.concat(extraArgs(arg.slice(1), initialCommand));
     } else {
-        return ["_(" + arg.join("") + ")"];
+        return ["_(" + arg[0].join("") + ")"].concat(extraArgs(arg.slice(1), initialCommand));
     };
 };
 
@@ -1140,7 +1140,7 @@ const textbf = (arg, initialCommand) => {
         "\u000A" : "\u000A",
         "" : ""
 	};
-	return replaceLetters(arg, symbols, initialCommand);
+	return replaceLetters(arg[0], symbols, initialCommand).concat(extraArgs(arg.slice(1), initialCommand));
 };
 
 const textit = (arg, initialCommand) => {
@@ -1372,7 +1372,7 @@ const textit = (arg, initialCommand) => {
         "\u000A" : "\u000A",
         "" : ""
 	};
-	return replaceLetters(arg, symbols, initialCommand);
+	return replaceLetters(arg[0], symbols, initialCommand).concat(extraArgs(arg.slice(1), initialCommand));
 };
 
 const texttt = (arg, initialCommand) => {
@@ -1541,7 +1541,7 @@ const texttt = (arg, initialCommand) => {
         "\u000A" : "\u000A",
         "" : ""
     };
-    return replaceLetters(arg, symbols, initialCommand);
+    return replaceLetters(arg[0], symbols, initialCommand).concat(extraArgs(arg.slice(1), initialCommand));
 };
 
 const text = (arg, initialCommand) => {
@@ -1708,14 +1708,14 @@ const text = (arg, initialCommand) => {
         "\u000A" : "\u000A",
         "" : ""
     };
-    return replaceLetters(arg, symbols, initialCommand);
+    return replaceLetters(arg[0], symbols, initialCommand).concat(extraArgs(arg.slice(1), initialCommand));
 };
 
 const hspace = (arg, initialCommand) => {
     // hspace stands for horizontal space
     // Adds the number of space specified in 'arg'
     let spaces = [];
-    const num = arg.join("");
+    const num = arg[0].join("");
     if (num * 0 !== 0) {
         spaces.push(mistakes(initialCommand + "{" + num + "}", undefined, "Argument must be a number"));
     } else {
@@ -1723,14 +1723,14 @@ const hspace = (arg, initialCommand) => {
             spaces.push("\u2710");
         };
     };
-    return spaces;
+    return spaces.concat(extraArgs(arg.slice(1), initialCommand));
 };
 
 const vskip = (arg, initialCommand) => {
     // vskip stands for vertical skip
     // Adds the number of linebreaks specified in 'arg'
     let skips = [];
-    const num = arg.join("");
+    const num = arg[0].join("");
     if (num * 0 !== 0) {
         skips.push(mistakes(initialCommand + "{" + num + "}", undefined, "Argument must be a number"));
     } else {
@@ -1738,20 +1738,33 @@ const vskip = (arg, initialCommand) => {
             skips.push("\u000A");
         };
     };
-    return skips;
+    return skips.concat(extraArgs(arg.slice(1), initialCommand));
 };
 
 const phantom = (arg, initialCommand) => {
     // Outputs the same number of spaces as the length of the argument
     // e.g. \phantom{abc} -> 3 spaces and \phantom{\int} -> 1 space
     let spaces = [];
-    for (let i=0; i<arg.length; i++) {
+    for (let i=0; i<arg[0].length; i++) {
         spaces.push("\u2710");
     };
-    if (arg.includes(errSymbol)) {
-        mistakes(initialCommand + "{" + arg.join("") + "}", undefined, "Undefined argument");
+    if (arg[0].includes(errSymbol)) {
+        mistakes(initialCommand + "{" + arg[0].join("") + "}", undefined, "Undefined argument");
     };
-    return spaces;
+    return spaces.concat(extraArgs(arg.slice(1), initialCommand));
+};
+
+const mathord = (arg, initialCommand) => {
+    // Removes spaces around arg
+    // \mathord{arg} is equivalent to {arg} and \! arg \!
+    let output = [];
+    for (let i in arg) {
+        output.push("\u270E", arg[i].join(""), "\u270E");
+        if (arg[i].includes(errSymbol)) {
+            mistakes(initialCommand + "{" + arg[i].join("") + "}", undefined, "Undefined argument");
+        };
+    };
+    return output;
 };
 
 const sqrt = (arg, initialCommand) => {
@@ -1783,21 +1796,21 @@ const sqrt = (arg, initialCommand) => {
             output += "\u221A";
             break;
         default:
-            output += addSymbol(mathDictionary["^"](rootNum.toString().split(""), initialCommand)) + "\u221A";
+            output += addSymbol(superscript([rootNum.split("")], initialCommand)) + "\u221A";
     };
-    if (arg.length >= 2) {
-        output += "(" + addSymbolArray(arg, initialCommand + "{" + arg.join("") + "}") + ")";
+    if (arg[0].length >= 2) {
+        output += "(" + addSymbolArray(arg[0], initialCommand + "{" + arg[0].join("") + "}") + ")";
     } else {
-        output += addSymbolArray(arg, initialCommand + "{" + arg.join("") + "}");
+        output += addSymbolArray(arg[0], initialCommand + "{" + arg[0].join("") + "}");
     };
-    return [output];
+    return [output].concat(extraArgs(arg.slice(1), initialCommand));
 };
 
-
+/*
 const sqrtNoArg = (arg, initialCommand) => {
     // Compared with sqrt, this function only takes the root as parameter, not the argument
     // For instance the 'cube root of two' would be in sqrt, but simply the 'cube root' would be parsed here 
-    if (arg !== undefined) {
+    if (arg[0] !== undefined) {
         mistakes(initialCommand + " does not take in arguments and should take the form \\sqrt[n]*", undefined, "ⁿ√  (use \\sqrt[n]{x} to get ⁿ√𝑥)");
         return addSymbol(undefined);
     };
@@ -1830,104 +1843,66 @@ const sqrtNoArg = (arg, initialCommand) => {
     };
     return [output];
 };
+*/
 
 const frac = (arg, initialCommand) => {
     // Used to make a fraction
     // If a character doesn't exist in superscript or subscript, it outputs the fraction in the format f(x)/g(x)
     let output = [];
-    let nume = [];
-    let deno = [];
-    let numerator = true;
-    for (let i in arg) {
-        if (numerator) {
-            if (arg[i] === "}") {
-                numerator = false;
-            } else {
-                nume.push(arg[i]);
-            };
-        } else {
-            if (arg[i] === "{") {
-                if (arg[i - 1] === "}") {
-                    output.push(...addSymbol(superscript(nume, initialCommand, true), true), "\u2215");
-                } else {
-                    deno.push(arg[i]);
-                };
-            } else {
-                deno.push(arg[i]);
-            };
-        };
-    };
-    output.push(...addSymbol(subscript(deno, initialCommand, true), true));
+    output.push(...addSymbol(superscript(arg[0], initialCommand, true), true), "\u2215");
+    output.push(...addSymbol(subscript(arg[1], initialCommand, true), true));
     if ((output.indexOf(errSymbol) === -1) && (output.filter(e => accents[e] !== undefined).length === 0)) {
-        return output;
+        return output.concat(extraArgs(arg.slice(2), initialCommand));
     } else {
+        // TODO: Why???
         if (arg.join("").includes("\u2710")) {
             const spaces = arg.filter(c => {return c.includes("\u2710")});
             for (let i in spaces) {
                 mistakes(initialCommand + "{" + arg.join("") + "}", undefined, spaces[i]);
             };
         };
-        output = [];
-        numerator = true;
-        nume = [];
-        deno = [];
-        for (let i in arg) {
-            if (numerator) {
-                if (arg[i] === "}") {
-                    numerator = false;
-                } else {
-                    nume.push(arg[i]);
-                };
-            } else {
-                if (arg[i] === "{") {
-                    if (arg[i - 1] === "}") {
-                        output.push("(", addSymbolArray(nume, "\\frac{" + arg.join("") + "}"), "/");
-                    } else {
-                        deno.push(arg[i]);
-                    };
-                } else {
-                    deno.push(arg[i]);
-                };
-            };
-        };
-        output.push(addSymbolArray(deno, "\\frac{" + arg.join("") + "}") + ")");
-        return output;
+        output = ["(", 
+                  addSymbolArray(arg[0], "\\frac{" + arg[0].join("") + "}" + "{" + arg[1].join("") + "}"), 
+                  "/", 
+                  addSymbolArray(arg[1], "\\frac{" + arg[0].join("") + "}" + "{" + arg[1].join("") + "}"),
+                   ")"];
+        return output.concat(extraArgs(arg.slice(2), initialCommand));
     };
 };
 
 const singleCharFrac = (arg, initialCommand) => {
     // Some fractions already exists as unicode symbols they can be accessed via this function
-    let noSpaceArg = arg.join("").replace(/ /g, "")
-                                 .replace(/\u000A/g, "");
+    let noSpaceArg = arg.slice(0,2).join("").replace(/ /g, "")
+                                            .replace(/\u000A/g, "");
     const fractions = {
-        "1}{2" : "\u00BD",
-        "1}{7" : "⅐",
-        "1}{9" : "⅑",
-        "1}{10" : "⅒",
-        "1}{3"  :"⅓",
-        "2}{3" : "⅔",
-        "1}{5" : "⅕",
-        "2}{5" : "⅖",
-        "3}{5" : "⅗",
-        "4}{5" : "⅘",
-        "1}{6" : "⅙",
-        "5}{6" : "⅚",
-        "1}{8" : "⅛",
-        "3}{8" : "⅜",
-        "5}{8" : "⅝",
-        "7}{8" : "⅞",
-        "a}{c" : "\u2100",
-        "a}{s" : "\u2101",
-        "c}{o" : "\u2105",
-        "c}{u" : "\u2106"
+        "12" : "\u00BD",
+        "17" : "⅐",
+        "19" : "⅑",
+        "110" : "⅒",
+        "13"  :"⅓",
+        "23" : "⅔",
+        "15" : "⅕",
+        "25" : "⅖",
+        "35" : "⅗",
+        "45" : "⅘",
+        "16" : "⅙",
+        "56" : "⅚",
+        "18" : "⅛",
+        "38" : "⅜",
+        "58" : "⅝",
+        "78" : "⅞",
+        "ac" : "\u2100",
+        "as" : "\u2101",
+        "co" : "\u2105",
+        "cu" : "\u2106"
     };
     let output = fractions[noSpaceArg];
-    return (output !== undefined) ? [output] : frac(arg, initialCommand);
+    return (output !== undefined) ? [output].concat(extraArgs(arg.slice(2), initialCommand)) : frac(arg, initialCommand);
 };
 
 const pmod = (arg, initialCommand) => {
     // returns ' (mod arg)'
-    return ["\u2710(mod\u2710" + arg.join("") + ")"];
+    return ["\u2710(mod\u2710" + arg[0].join("") + ")"].concat(extraArgs(arg.slice(1), initialCommand));
 };
 
 const today = () => {
@@ -1987,22 +1962,23 @@ const dotBelow = (arg, initialCommand) => {return combineSymbols(arg, initialCom
 
 const ogonek = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u0328")};
 
+// TODO: Change for \stackrel
 const above = (arg, initialCommand) => {
     // Returns the symbol to be put above the preceding character in the input text
-    if (arg.length > 1) {
-        return mistakes(initialCommand + "{" + arg.join("") + "}", undefined, "Only one argument accepted");
+    if (arg[0].length > 1) {
+        return mistakes(initialCommand + "{" + arg[0].join("") + "}", undefined, "Only one argument accepted");
     };
-    mistakes(initialCommand + "{" + arg.join("") + "}", Above[arg[0]], (arg[0] !== undefined) ? arg[0] : "Argument doesn't exist");
-    return [Above[arg[0]]];
+    mistakes(initialCommand + "{" + arg[0].join("") + "}", Above[arg[0][0]], (arg[0][0] !== undefined) ? arg[0][0] : "Argument doesn't exist");
+    return [Above[arg[0][0]]].concat(extraArgs(arg.slice(1), initialCommand));
 };
 
 const below = (arg, initialCommand) => {
     // Returns the symbol to be put below the preceding character in the input text
-    if (arg.length > 1) {
-        return mistakes(initialCommand + "{" + arg.join("") + "}", undefined, "Only one argument accepted");
+    if (arg[0].length > 1) {
+        return mistakes(initialCommand + "{" + arg[0].join("") + "}", undefined, "Only one argument accepted");
     };
-    mistakes(initialCommand + "{" + arg.join("") + "}", Below[arg[0]], (arg[0] !== undefined) ? arg[0] : "Argument doesn't exist");
-    return [Below[arg[0]]];
+    mistakes(initialCommand + "{" + arg[0].join("") + "}", Below[arg[0][0]], (arg[0][0] !== undefined) ? arg[0][0] : "Argument doesn't exist");
+    return [Below[arg[0][0]]].concat(extraArgs(arg.slice(1), initialCommand));
 };
 
 
@@ -2371,10 +2347,11 @@ const mathDictionary = {
     "\\hspace" : hspace,
     "\\vskip" : vskip,
     "\\phantom" : phantom,
+    "\\mathord" : mathord,
 
     // Square root and fractions
     "\\sqrt" : sqrt,
-    "\\sqrt*" : sqrtNoArg,
+    // "\\sqrt*" : sqrtNoArg,
     "\\frac" : frac,
     "\\frac*" : singleCharFrac,
 
@@ -4486,8 +4463,8 @@ function showCommand(key) {
     if (typeof defaultDict[key] == "function") {
         if (key == "\\sqrt") {
             return "\\sqrt[n]{x} \u2192 ⁿ√𝑥";
-        } else if (key == "\\sqrt*") {
-            return "\\sqrt[n]* \u2192 ⁿ√";
+        // } else if (key == "\\sqrt*") {
+        //    return "\\sqrt[n]* \u2192 ⁿ√";
         } else if (key == "\\frac") {
             return "\\frac{1}{2} \u2192 ¹∕₂";
         } else if (key == "\\frac*") {
@@ -4528,8 +4505,8 @@ function toReplaceCommand(key) {
     if (typeof defaultDict[key] == "function") {
         if (key == "\\sqrt") {
             return "\\sqrt[]{}";
-        } else if (key == "\\sqrt*") {
-            return "\\sqrt[]*";
+        // } else if (key == "\\sqrt*") {
+        //    return "\\sqrt[]*";
         } else if (key == "\\frac") {
             return "\\frac{}{}";
         } else if (key == "\\frac*") {
@@ -4803,7 +4780,7 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
                         if (argStack.length > 0) {
                             argNum = currentArgCount.pop();
                             for (let j=0; j<argNum; j++) {
-                                arg.push(argStack.pop());
+                                arg.unshift(argStack.pop());
                             };
                             if (fct.substring(0,5) === "\\sqrt") {
                                 callingFct = fct.replace(/\[.*\]/g, "")
@@ -4865,7 +4842,21 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
                     };
                 } else {
                     if (mathmode) {
-                        mathmodeText += mistakes(tokens[i]+"{}", undefined, "Can't find an argument");
+                        if (command === sqrt) {
+                            if (argStack.length > 0) {
+                                argStack[argStack.length-1].push(sqrt([], tokens[i]));
+                            } else {
+                                if (mathmode) {
+                                    mathmodeText += str(sqrt([], "\\sqrt"));
+                                    mistakes(tokens[i], sqrt([], tokens[i]));
+                                } else {
+                                    outText += str(sqrt([], tokens[i]));
+                                    mistakes("Out of math mode", sqrt([], tokens[i]), tokens[i]);
+                                };
+                            };
+                        } else {
+                            mathmodeText += mistakes(tokens[i]+"{}", undefined, "Can't find an argument");
+                        };
                     } else {
                         outText += mistakes("Out of math mode", undefined, "Can't find an argument for "+tokens[i]+"{}");
                     };
@@ -4959,6 +4950,12 @@ function addSymbolArray(args, command, checkMistakes=true) {
 function str(command) {
     // Make sure the command is a string
     return (typeof command === "string") ? command : errSymbol;
+};
+
+function extraArgs(args, initialCommand) {
+    // If the user enters to many arguments in a function, the extras will be sent to this function
+    // e.g. \mathbf{A}{B} will result in \mathbf{A}\mathord{B}
+    return mathord(args, initialCommand);
 };
 
 
