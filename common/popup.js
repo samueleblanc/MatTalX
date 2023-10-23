@@ -4498,13 +4498,12 @@ function tokenize(fullText, mathmode) {
     let temporaryBox = [];      // Stores characters that are in command (e.g. \int -> ['\', 'i', 'n', 't'])
     let trigger = false;        // true if a command has begun (e.g. input: '\' -> true)
     let mathmodeStarter = "";   // e.g. if mathmode is started with $$, then "$$" will be mathmodeStarter
-    let char;
+    let char, i;
 
     if (startMathmode) {
         outTokens.push(specialTokens.startMathmode);
     };
-    
-    let i;
+
     for (i=0; i<fullText.length; i++) {
         if (trigger) {
             if (commandStoppers.includes(fullText[i])) {
@@ -4713,32 +4712,36 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
     let mathmode = false;        // true if in mathmode, false if not
     let dict;                    // dictMM (mathmode) or dictOut (out of mathmode) depending if in mathmode or not
     let mathmodeOccurence = 0;   // Counts the number of times one enters and leaves mathmode
-    let argOccurence = 0;        // Counts the number of times one gets in and out of an argument
+    let argDepth = 0;            // Add +1 if startArgument and -1 if endArgument
     let currentArgCount = [];    // Number of arguments per function
     let argNum;                  // Stores the number of arguments for the current function
+    let i, j;
 
-    let i;
     for (i=0; i<tokens.length; i++) {
         dict = (mathmode) ? dictMM : dictOut;
         if (Object.values(specialTokens).includes(tokens[i])) {
             if (tokens[i] === specialTokens.startArgument) {
                 argStack.push([]);
-                argOccurence += 1;
+                argDepth += 1;
+                // TODO: Useful?
                 if (tokens[i-1] !== specialTokens.endArgument) {
                     currentArgCount.push(1);
                 };
             } else if (tokens[i] === specialTokens.endArgument) {
-                argOccurence += 1;
+                argDepth -= 1;
                 if (tokens[i+1] === specialTokens.startArgument) {
                     currentArgCount[currentArgCount.length-1] += 1;
                 } else {
                     if (fctStack.length > 0) {
                         fct = fctStack.pop();
                         if (argStack.length > 0) {
+                            /*
                             argNum = currentArgCount.pop();
-                            for (let j=0; j<argNum; j++) {
+                            for (j=0; j<argNum; j++) {
                                 arg.unshift(argStack.pop());
                             };
+                            */
+                            arg = argStack.pop();
                             if (fct.substring(0,5) === "\\sqrt") {
                                 callingFct = fct.replace(/\[.*\]/g, "")
                             } else {
@@ -4762,6 +4765,7 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
                         };
                         arg = [];
                     } else {
+                        /*
                         if (argStack.length > 0) {
                             arg = argStack.pop();
                             if (mathmode) {
@@ -4769,6 +4773,15 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
                             } else {
                                 outText += mistakes("Out of math mode", undefined, "Can't find a function for {" + arg.join("") + "}" + ". Use '\\{' or '\\}' to output a curly bracket");
                             };
+                        };
+                        */
+                        while (argStack.length > 0) {
+                            arg = argStack.pop();
+                            if (mathmode) {
+                                mathmodeText += mathord(arg, "{}");  // mathord seems problematic
+                            } else {
+                                outText += mistakes("Out of math mode", undefined, "Can't find a function for {" + arg.join("") + "}" + ". Use '\\{' or '\\}' to output a curly bracket");
+                            };                            
                         };
                     };
                 };
@@ -4836,8 +4849,10 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
     if (mathmodeOccurence % 2 !== 0) {
         mistakes("Math mode was not closed", undefined);
     };
-    if (argOccurence % 2 !== 0) {
-        mistakes("Unbalanced curly brackets ('{', '}')", undefined);
+    if (argDepth > 0) {
+        mistakes("Unbalanced curly brackets ('{', '}')", undefined, "Too many '{'");
+    } else if (argDepth < 0) {
+        mistakes("Unbalanced curly brackets ('{', '}')", undefined, "Too many '}'");
     };
     return spaceCommand(outText);
 };
