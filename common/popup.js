@@ -1810,8 +1810,12 @@ const frac = (arg, initialCommand) => {
     // Used to make a fraction
     // If a character doesn't exist in superscript or subscript, it outputs the fraction in the format f(x)/g(x)
     let output = [];
-    output.push(...addSymbol(superscript(arg[0], initialCommand, true), true), "\u2215");
-    output.push(...addSymbol(subscript(arg[1], initialCommand, true), true));
+    if (arg.length < 2) {
+        mistakes("\\frac{}{}", undefined, "Two arguments needed");
+        return [errSymbol];
+    };
+    output.push(...addSymbol(superscript([arg[0]], initialCommand, true), true), "\u2215");
+    output.push(...addSymbol(subscript([arg[1]], initialCommand, true), true));
     if ((output.indexOf(errSymbol) === -1) && (output.filter(e => accents[e] !== undefined).length === 0)) {
         return output.concat(extraArgs(arg.slice(2), initialCommand));
     } else {
@@ -4701,6 +4705,10 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
     //     Else
     //         push token to outText, mathmodeText, fctStack or the last index of argStack depending on token
 
+    // Ex. If the input is: \f0{args0\f1{args1}}
+    // Then at first, fctStack = [f0, f1] and argStack = [[args0], [args1]]
+    // and then fctStack = [f0] and argStack = [[args0\f1{args1}]].
+
     let command;                 // Used to check if a command is a function or a symbol
     let fct;
     let fctStack = [];           // Stores the functions until they are used
@@ -4723,7 +4731,6 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
             if (tokens[i] === specialTokens.startArgument) {
                 argStack.push([]);
                 argDepth += 1;
-                // TODO: Useful?
                 if (tokens[i-1] !== specialTokens.endArgument) {
                     currentArgCount.push(1);
                 };
@@ -4735,13 +4742,10 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
                     if (fctStack.length > 0) {
                         fct = fctStack.pop();
                         if (argStack.length > 0) {
-                            /*
                             argNum = currentArgCount.pop();
                             for (j=0; j<argNum; j++) {
                                 arg.unshift(argStack.pop());
                             };
-                            */
-                            arg = argStack.pop();
                             if (fct.substring(0,5) === "\\sqrt") {
                                 callingFct = fct.replace(/\[.*\]/g, "")
                             } else {
@@ -4765,24 +4769,15 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
                         };
                         arg = [];
                     } else {
-                        /*
-                        if (argStack.length > 0) {
-                            arg = argStack.pop();
-                            if (mathmode) {
-                                mathmodeText += mistakes("Can't find a function for {" + arg.join("") + "}", undefined, "'\\{' and '\\}' to output a curly bracket");
-                            } else {
-                                outText += mistakes("Out of math mode", undefined, "Can't find a function for {" + arg.join("") + "}" + ". Use '\\{' or '\\}' to output a curly bracket");
-                            };
-                        };
-                        */
                         while (argStack.length > 0) {
-                            arg = argStack.pop();
-                            if (mathmode) {
-                                mathmodeText += mathord(arg, "{}");  // mathord seems problematic
-                            } else {
-                                outText += mistakes("Out of math mode", undefined, "Can't find a function for {" + arg.join("") + "}" + ". Use '\\{' or '\\}' to output a curly bracket");
-                            };                            
+                            arg.unshift(argStack.pop());
                         };
+                        if (mathmode) {
+                            mathmodeText += str(mathord(arg, "{}").join(""));
+                        } else {
+                            outText += mistakes("Out of math mode", undefined, "Can't find a function for {" + arg.join("") + "}" + ". Use '\\{' or '\\}' to output a curly bracket");
+                        };
+                        arg = [];
                     };
                 };
             // TODO: Empty stacks
@@ -4806,21 +4801,21 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
                     fctStack.push(tokens[i]);
                 } else if (tokens.slice(i+1).filter(x => x !== " ")[0] === specialTokens.startArgument) {
                     if (mathmode) {
-                        mathmodeText += mistakes(tokens[i]+" {}", undefined, "Remove extra space");
+                        mathmodeText += mistakes(tokens[i]+" {}", undefined, "Remove extra spaces");
                     } else {
-                        outText += mistakes("Out of math mode: "+tokens[i]+" {}", undefined, "Remove extra space");
+                        outText += mistakes("Out of math mode: "+tokens[i]+" {}", undefined, "Remove extra spaces");
                     };
                 } else {
                     if (mathmode) {
                         if (command === sqrt) {
                             if (argStack.length > 0) {
-                                argStack[argStack.length-1].push(sqrt([], tokens[i]));
+                                argStack[argStack.length-1].push(...sqrt([], tokens[i]));
                             } else {
                                 if (mathmode) {
-                                    mathmodeText += str(sqrt([], "\\sqrt"));
-                                    mistakes(tokens[i], sqrt([], tokens[i]));
+                                    mathmodeText += str(sqrt([], tokens[i]).join(""));
+                                    mistakes(tokens[i], sqrt([], tokens[i]).join(""));
                                 } else {
-                                    outText += str(sqrt([], tokens[i]));
+                                    outText += str(sqrt([], tokens[i]).join(""));
                                     mistakes("Out of math mode", sqrt([], tokens[i]), tokens[i]);
                                 };
                             };
@@ -4833,7 +4828,7 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing) {
                 };
             } else {
                 if (argStack.length > 0) {
-                    argStack[argStack.length-1].push(dict[tokens[i]]);
+                    argStack[argStack.length-1].push(...dict[tokens[i]]);
                 } else {
                     if (mathmode) {
                         mathmodeText += str(dict[tokens[i]]);
