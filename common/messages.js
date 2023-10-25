@@ -28,7 +28,7 @@ function updateMessage(version) {
     // To be changed by hand every version
     const majorChanges = "Welcome to 𝑀ᴀᴛ𝑇ᴀʟ𝑋 version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
-    " 1) You can now navigate in the completion popup with your keyboard (using tab). \r\n" + 
-    " 2) Select dark mode or light mode manually.";
+    " 1) Putting curly brackets around a symbol now erases the spaces around it. \r\n" +
+    " 2) !matrix and \\sqrt[n]* are not available anymore, use \\matrix{} and \\sqrt[n] instead.";
     textOut.value = majorChanges;  // In "text_input" form
 };

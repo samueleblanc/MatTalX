@@ -2324,7 +2324,6 @@ const mathDictionary = {
 
     // Square root and fractions
     "\\sqrt" : sqrt,
-    // "\\sqrt*" : sqrtNoArg,  // TODO: Remove from docs
     "\\frac" : frac,
     "\\frac*" : singleCharFrac,
 
@@ -2456,12 +2455,7 @@ const mathDictionary = {
 
     // Matrix
     "\\matrix" : matrix,
-    "\\id1" : matrix([["[","1","]"]], "\\matrix"),
-    "\\id2" : matrix([["[","1","0","]","[","0","1","]"]], "\\matrix"),
-    "\\id3" : matrix([["[","1","0","0","]","[","0","1","0","]","[","0","0","1","]"]], "\\matrix"),
-    "\\id4" : matrix([["[","1","0","0","0","]","[","0","1","0","0","]","[","0","0","1","0","]","[","0","0","0","1","]"]], "\\matrix"),
-    /*
-    "\\id1" : "[1]",
+    "\\id1" : "["+spacesChar.add+"1"+spacesChar.add+"]",
     "\\id2" : "\u23A1"+spacesChar.add+"1"+spacesChar.add+"0"+spacesChar.add+"\u23A4 \u000A \u23A3 "+
               spacesChar.add+"0"+spacesChar.add+"1"+spacesChar.add+"\u23A6",
     "\\id3" : "\u23A1"+spacesChar.add+"1"+spacesChar.add+""+spacesChar.add+"0"+spacesChar.add+"\u23A4 \u000A \u23A2"+
@@ -2471,7 +2465,6 @@ const mathDictionary = {
               spacesChar.add+"0"+spacesChar.add+"1"+spacesChar.add+"0"+spacesChar.add+"0"+spacesChar.add+"\u23A5 \u000A \u23A2"+spacesChar.add+
               "0"+spacesChar.add+"0"+spacesChar.add+"1"+spacesChar.add+"0"+spacesChar.add+"\u23A5 \u000A \u23A3"+spacesChar.add+"0"+spacesChar.add+
               "0"+spacesChar.add+"0"+spacesChar.add+"1"+spacesChar.add+"\u23A6",
-    */
     "\\idn" : "\u23A1"+spacesChar.add+"1"+spacesChar.add+"0"+spacesChar.add+"\u22EF"+spacesChar.add+"0"+spacesChar.add+"\u23A4 \u000A \u23A2"+spacesChar.add+
               "0"+spacesChar.add+"1"+spacesChar.add+"\u22EF"+spacesChar.add+"0"+spacesChar.add+"\u23A5 \u000A \u23A2"+spacesChar.add+spacesChar.add+"\u22EE"+
               spacesChar.add+spacesChar.add+"\u22EE"+spacesChar.add+spacesChar.add+"\u22F1"+spacesChar.add+spacesChar.add+"\u22EE"+spacesChar.add+
@@ -2535,7 +2528,7 @@ const mathDictionary = {
     "\\LaTeX" : "𝐿ᴬ𝑇ᴇ𝑋",
     "\\TeX" : "𝑇ᴇ𝑋",
     "\\MatTalX" : "𝑀ᴀᴛ𝑇ᴀʟ𝑋",
-    "\\CaMuS" : "𝐶ᴬ𝑀ᴜ𝑆",  // http://camus.math.usherbrooke.ca/index.html
+    "\\CaMuS" : "𝐶ᴬ𝑀ᴜ𝑆",  // https://camus.espaceweb.usherbrooke.ca/index.html
     "\\infty" : "\u221E",
     "\\iinfin" : "\u29DC",
     "\\tieinfty" : "\u29DD",
@@ -2748,7 +2741,7 @@ const textCommands = {
     "\\LaTeX" : "𝐿ᴬ𝑇ᴇ𝑋",
     "\\TeX" : "𝑇ᴇ𝑋",
     "\\MatTalX" : "𝑀ᴀᴛ𝑇ᴀʟ𝑋",
-    "\\CaMuS" : "𝐶ᴬ𝑀ᴜ𝑆",  // http://camus.math.usherbrooke.ca/index.html
+    "\\CaMuS" : "𝐶ᴬ𝑀ᴜ𝑆",  // https://camus.espaceweb.usherbrooke.ca/index.html
     "\\textbullet" : "\u2022",
     "\\section" : "\u00A7",
     "\\paragraph" : "\u00B6",
@@ -4458,11 +4451,13 @@ function showCommand(key) {
         } else if ((key == "\\above") || (key == "\\below") || (key == "\\hspace") || (key == "\\vskip")) {
             return key + "{}";
         } else if ((key == "_") || (key == "^")) {
-            return "x" + key + "{a1} \u2192 𝑥" + spaceCommand((defaultDict[key](["a", "1"], defaultDict[key])).join(""));
+            return "x" + key + "{a1} \u2192 𝑥" + spaceCommand((defaultDict[key]([["a", "1"]], key)).join(""));
         } else if (key == "\\pmod") {
-            return key + "{n} \u2192 " + spaceCommand(defaultDict[key](["n"], defaultDict[key]));
+            return key + "{n} \u2192 " + spaceCommand(defaultDict[key]([["n"]], key).join(""));
+        } else if (key == "\\matrix") {
+            return key + "{[a,b]} \u2192 " + spaceCommand(defaultDict[key](["[a,b]".split("")], key).join(""));
         } else {
-            return key + "{abc} \u2192 " + spaceCommand((defaultDict[key](["a", "b", "c"], defaultDict[key])).join(""));
+            return key + "{abc} \u2192 " + spaceCommand((defaultDict[key]([["a", "b", "c"]], key)).join(""));
         };
     } else {
         if (key == "\\:") {
@@ -4901,16 +4896,17 @@ function replaceLetters(letters, dict, initialCommand, checkMistakes=true) {
 function combineSymbols(arg, initialCommand, symbol, forTwo=undefined) {
     // Appends a 'combining symbol' to a regular symbol to create a new one (e.g. 'e' + '´' -> é)
     let textComb = [];
-    if ((arg.length === 2) && (forTwo !== undefined)) {
-        textComb.push(str(arg[0]) + forTwo + str(arg[1]));
-        mistakes(initialCommand + "{" + errSymbol + str(arg[1]) + "}", arg[0], "Argument doesn't exist");
-        mistakes(initialCommand + "{" + str(arg[0]) + errSymbol + "}", arg[1], "Argument doesn't exist");
+    let combArg = arg[0];
+    if ((combArg.length === 2) && (forTwo !== undefined)) {
+        textComb.push(str(combArg[0]) + forTwo + str(combArg[1]));
+        mistakes(initialCommand + "{" + errSymbol + str(combArg[1]) + "}", combArg[0], "Argument doesn't exist");
+        mistakes(initialCommand + "{" + str(combArg[0]) + errSymbol + "}", combArg[1], "Argument doesn't exist");
     } else {
         let err = [];
-        for (let c in arg) {
-            if (arg[c] !== undefined) {
-                textComb.push(arg[c] + symbol);
-                err.push(arg[c]);
+        for (let c in combArg) {
+            if (combArg[c] !== undefined) {
+                textComb.push(combArg[c] + symbol);
+                err.push(combArg[c]);
             } else {
                 textComb.push(errSymbol);
                 err.push(errSymbol);
@@ -4920,7 +4916,7 @@ function combineSymbols(arg, initialCommand, symbol, forTwo=undefined) {
             mistakes(initialCommand + "{" + err.join("") + "}", undefined, "Argument doesn't exist");
         };
     };
-    return textComb;
+    return textComb.concat(extraArgs(arg.slice(1), initialCommand));
 };
 
 function addSymbol(command, keepArray=false) {
@@ -5073,7 +5069,7 @@ function matrix(text, initialCommand) {
     matrixText += "\u000A";
     if ((cpt % 2 != 0) || (cpt == 0)) {
         matrixText = errSymbol;
-        mistakes('Wrong arguments given" \r\n \r\nExample: "\\matrix{[a,b,c][d,e,f][1,2,3]}', undefined);
+        mistakes('Wrong arguments given" \r\n  Example: "\\matrix{[a,b,c][d,e,f][1,2,3]}', undefined);
     } else if (changeFontButton.checked) {
         mistakes(initialCommand+"{}", undefined, "Works better with 'Mathematical font' unchecked");
     };
