@@ -183,11 +183,11 @@ const mathbb = (arg, initialCommand) => {
         ")" : "⦆",
 
         // Spaces (\:, \;, \quad and \qquad are passed as a single character in mistakes) 
-        "\u2710" : "\u2710",
-        "\u2710\u2710" : "\u2710\u2710",
-        "\u2710\u2710\u2710" : "\u2710\u2710\u2710",
-        "\u2710\u2710\u2710\u2710" : "\u2710\u2710\u2710\u2710",
-        "\u270E" : "\u270E",
+        "\u2710" : spacesChar.add,
+        "\u2710\u2710" : spacesChar.add+spacesChar.add,
+        "\u2710\u2710\u2710" : spacesChar.add+spacesChar.add+spacesChar.add,
+        "\u2710\u2710\u2710\u2710" : spacesChar.add+spacesChar.add+spacesChar.add+spacesChar.add,
+        "\u270E" : spacesChar.remove,
         " " : " ",
         "\u000A" : "\u000A",
         "" : ""
@@ -535,11 +535,11 @@ const mathbf = (arg, initialCommand) => {
         "𝔷" : "\u{1D59F}",
 
         // Spaces (\:, \;, \quad and \qquad are passed as a single character in mistakes) 
-        "\u2710" : "\u2710",
-        "\u2710\u2710" : "\u2710\u2710",
-        "\u2710\u2710\u2710" : "\u2710\u2710\u2710",
-        "\u2710\u2710\u2710\u2710" : "\u2710\u2710\u2710\u2710",
-        "\u270E" : "\u270E",
+        "\u2710" : spacesChar.add,
+        "\u2710\u2710" : spacesChar.add+spacesChar.add,
+        "\u2710\u2710\u2710" : spacesChar.add+spacesChar.add+spacesChar.add,
+        "\u2710\u2710\u2710\u2710" : spacesChar.add+spacesChar.add+spacesChar.add+spacesChar.add,
+        "\u270E" : spacesChar.remove,
         " " : " ",
         "\u000A" : "\u000A",
         "" : ""
@@ -711,11 +711,11 @@ const mathcal = (arg, initialCommand) => {
         "𝒛" : "\u{1D503}",
 
         // Spaces (\:, \;, \quad and \qquad are passed as a single character in mistakes) 
-        "\u2710" : "\u2710",
-        "\u2710\u2710" : "\u2710\u2710",
-        "\u2710\u2710\u2710" : "\u2710\u2710\u2710",
-        "\u2710\u2710\u2710\u2710" : "\u2710\u2710\u2710\u2710",
-        "\u270E" : "\u270E",
+        "\u2710" : spacesChar.add,
+        "\u2710\u2710" : spacesChar.add+spacesChar.add,
+        "\u2710\u2710\u2710" : spacesChar.add+spacesChar.add+spacesChar.add,
+        "\u2710\u2710\u2710\u2710" : spacesChar.add+spacesChar.add+spacesChar.add+spacesChar.add,
+        "\u270E" : spacesChar.remove,
         " " : " ",
         "\u000A" : "\u000A",
         "" : ""
@@ -887,11 +887,11 @@ const mathfrak = (arg, initialCommand) => {
         "𝒛" : "\u{1D59F}",
 
         // Spaces (\:, \;, \quad and \qquad are passed as a single character in mistakes) 
-        "\u2710" : "\u2710",
-        "\u2710\u2710" : "\u2710\u2710",
-        "\u2710\u2710\u2710" : "\u2710\u2710\u2710",
-        "\u2710\u2710\u2710\u2710" : "\u2710\u2710\u2710\u2710",
-        "\u270E" : "\u270E",
+        "\u2710" : spacesChar.add,
+        "\u2710\u2710" : spacesChar.add+spacesChar.add,
+        "\u2710\u2710\u2710" : spacesChar.add+spacesChar.add+spacesChar.add,
+        "\u2710\u2710\u2710\u2710" : spacesChar.add+spacesChar.add+spacesChar.add+spacesChar.add,
+        "\u270E" : spacesChar.remove,
         " " : " ",
         "\u000A" : "\u000A",
         "" : ""
@@ -1134,9 +1134,9 @@ const textbf = (arg, initialCommand) => {
         "{" : "{",
         "}" : "}",
 
-        "\u2710" : "\u2710",
-        "\u270E" : "\u270E",
-		" " : "\u2710",
+        "\u2710" : spacesChar.add,
+        "\u270E" : spacesChar.remove,
+		" " : spacesChar.add,
         "\u000A" : "\u000A",
         "" : ""
 	};
@@ -1366,9 +1366,9 @@ const textit = (arg, initialCommand) => {
         "8" : "8",
         "9" : "9",
 
-        "\u2710" : "\u2710",
-        "\u270E" : "\u270E",
-        " " : "\u2710",
+        "\u2710" : spacesChar.add,
+        "\u270E" : spacesChar.remove,
+        " " : spacesChar.add,
         "\u000A" : "\u000A",
         "" : ""
 	};
@@ -1535,9 +1535,9 @@ const texttt = (arg, initialCommand) => {
         "{" : "{",
         "}" : "}",
 
-        "\u2710" : "\u2710",
-        "\u270E" : "\u270E",
-        " " : "\u2710",
+        "\u2710" : spacesChar.add,
+        "\u270E" : spacesChar.remove,
+        " " : spacesChar.add,
         "\u000A" : "\u000A",
         "" : ""
     };
@@ -1702,9 +1702,9 @@ const text = (arg, initialCommand) => {
         "{" : "{",
         "}" : "}",
 
-        "\u2710" : "\u2710",
-        "\u270E" : "\u270E",
-        " " : "\u2710",
+        "\u2710" : spacesChar.add,
+        "\u270E" : spacesChar.remove,
+        " " : spacesChar.add,
         "\u000A" : "\u000A",
         "" : ""
     };
@@ -2456,7 +2456,11 @@ const mathDictionary = {
 
     // Matrix
     "\\matrix" : matrix,
-    // TODO: Should call matrix()
+    "\\id1" : matrix([["[","1","]"]], "\\matrix"),
+    "\\id2" : matrix([["[","1","0","]","[","0","1","]"]], "\\matrix"),
+    "\\id3" : matrix([["[","1","0","0","]","[","0","1","0","]","[","0","0","1","]"]], "\\matrix"),
+    "\\id4" : matrix([["[","1","0","0","0","]","[","0","1","0","0","]","[","0","0","1","0","]","[","0","0","0","1","]"]], "\\matrix"),
+    /*
     "\\id1" : "[1]",
     "\\id2" : "\u23A1"+spacesChar.add+"1"+spacesChar.add+"0"+spacesChar.add+"\u23A4 \u000A \u23A3 "+
               spacesChar.add+"0"+spacesChar.add+"1"+spacesChar.add+"\u23A6",
@@ -2467,11 +2471,11 @@ const mathDictionary = {
               spacesChar.add+"0"+spacesChar.add+"1"+spacesChar.add+"0"+spacesChar.add+"0"+spacesChar.add+"\u23A5 \u000A \u23A2"+spacesChar.add+
               "0"+spacesChar.add+"0"+spacesChar.add+"1"+spacesChar.add+"0"+spacesChar.add+"\u23A5 \u000A \u23A3"+spacesChar.add+"0"+spacesChar.add+
               "0"+spacesChar.add+"0"+spacesChar.add+"1"+spacesChar.add+"\u23A6",
+    */
     "\\idn" : "\u23A1"+spacesChar.add+"1"+spacesChar.add+"0"+spacesChar.add+"\u22EF"+spacesChar.add+"0"+spacesChar.add+"\u23A4 \u000A \u23A2"+spacesChar.add+
               "0"+spacesChar.add+"1"+spacesChar.add+"\u22EF"+spacesChar.add+"0"+spacesChar.add+"\u23A5 \u000A \u23A2"+spacesChar.add+spacesChar.add+"\u22EE"+
               spacesChar.add+spacesChar.add+"\u22EE"+spacesChar.add+spacesChar.add+"\u22F1"+spacesChar.add+spacesChar.add+"\u22EE"+spacesChar.add+
               "\u23A5 \u000A \u23A3"+spacesChar.add+"0"+spacesChar.add+"0"+spacesChar.add+"\u22EF"+spacesChar.add+"1"+spacesChar.add+"\u23A6",
-    
     // To build your own
     "\\mlceil" : "\u23A1",
     "\\mrceil" : "\u23A4",
@@ -2975,8 +2979,8 @@ const Superscript = {
     "𝜒" : "\u1D61",
     "χ" : "\u1D61",
 
-    "\u2710" : "\u2710",
-    "\u270E" : "\u270E",
+    "\u2710" : spacesChar.add,
+    "\u270E" : spacesChar.remove,
     " " : " ",
     "\u000A" : "\u000A",
     "" : ""
@@ -3065,8 +3069,8 @@ const Subscript = {
     "→" : spacesChar.add+spacesChar.add+"\u0362"+spacesChar.add+spacesChar.add,
     "∞" : spacesChar.add+"\u035A"+spacesChar.add,
 
-    "\u2710" : "\u2710",
-    "\u270E" : "\u270E",
+    "\u2710" : spacesChar.add,
+    "\u270E" : spacesChar.remove,
     " " : " ",
     "\u000A" : "\u000A",
     "" : ""
@@ -3269,7 +3273,7 @@ const lettersMath = {
     "y" : "\u{1D466}",
     "Z" : "\u{1D44D}",
     "z" : "\u{1D467}",
-    "\u2710" : " ",
+    "\u2710" : spacesChar.add,
     " " : " ",
     "\u000A" : "",
     "" : ""
@@ -5010,7 +5014,8 @@ function mistakes(textInput, textOutput, letter="") {
 function matrix(text, initialCommand) {
     // If the keyword !matrix is used as the first word of the input text, this function is called
     // Converts arrays into a matrix (i.e. !matrix [a,b,c][1,2,3] will be converted to a matrix 2x3)
-    text = text[0].replace(/ /g, "");
+    text = text[0].join("")
+                  .replace(/ /g, "");
     let matrixText = "";
     let i, x;
     let cpt = 0;
@@ -5026,26 +5031,27 @@ function matrix(text, initialCommand) {
     };
     if (cpt == 2) {
         // vector (ie single line matrix)
-        matrixText = text.replace(/ /g, "");
-        matrixText = matrixText.replace(/\[/g, "[ ");
-        matrixText = matrixText.replace(/\]/g, " ]");
+        matrixText = text;
+        matrixText = matrixText.replace(/\[/g, "["+spacesChar.add);
+        matrixText = matrixText.replace(/\]/g, spacesChar.add+"]");
         matrixText = matrixText.replace(/,/g, spacesChar.add);
-        return spaceCommand(matrixText);
+        return [matrixText];
     } else {
+        matrixText += "\u000A";
         for (i in text) {
             if (text[i] == "[" && rceil == 0) {
-                matrixText += "\u23A1 ";
+                matrixText += "\u23A1"+spacesChar.add;
                 rceil += 1;
             } else if (text[i] == "]" && lceil == 0) {
-                matrixText += " \u23A4\u000A";
+                matrixText += spacesChar.add+"\u23A4\u000A";
                 lceil += 1;
             } else if (text[i] == "]") {
-                matrixText += " \u23A5\u000A";
+                matrixText += spacesChar.add+"\u23A5\u000A";
             } else if (text[i] == "[") {
-                matrixText += "\u23A2 ";
+                matrixText += "\u23A2"+spacesChar.add;
             } else {
                 matrixText += text[i];
-            }
+            };
         };
         for (let n = matrixText.length; n > 0; n--) {
             if (matrixText[n] == "\u23A5" && n > rfloor) {
@@ -5063,12 +5069,15 @@ function matrix(text, initialCommand) {
         };
     };
     matrixText = matrixCols(matrixText);  // Adjusts columns width
-    matrixText = matrixText.replace(/,/g, " ");  // Add spaces between characters
+    matrixText = matrixText.replace(/,/g, spacesChar.add);  // Add spaces between characters
+    matrixText += "\u000A";
     if ((cpt % 2 != 0) || (cpt == 0)) {
-        matrixText = "";
-        mistakes('Wrong arguments given" \r\n \r\nExample: "!matrix [a,b,c] [d,e,f] [1,2,3]', undefined);
+        matrixText = errSymbol;
+        mistakes('Wrong arguments given" \r\n \r\nExample: "\\matrix{[a,b,c][d,e,f][1,2,3]}', undefined);
+    } else if (changeFontButton.checked) {
+        mistakes(initialCommand+"{}", undefined, "Works better with 'Mathematical font' unchecked");
     };
-    return [spaceCommand(matrixText)];
+    return [matrixText];
 };
 
 function matrixCols(matrix) {
@@ -5105,7 +5114,7 @@ function matrixCols(matrix) {
             if (matrixPositions[i] == matrixPositions[n]) {
                 matrix = matrix.split("");
                 while (posLengths[i] < posLengths[n]) {
-                    matrix.splice(realPositions[i] + spacesAdded, 0, " ");
+                    matrix.splice(realPositions[i] + spacesAdded, 0, spacesChar.add);
                     posLengths[i] += 1;
                     spacesAdded += 1;
                 };
@@ -5125,12 +5134,16 @@ function spaceCommand(text) {
     // Add spaces ("\:" command)
     // Internally, spaces that are kept even if 'Adjust spaces' is on are represented as \u2710
     // this function changes them back to spaces
-    text = text.replace(/\u2710/g, " ")
+    let sp = new RegExp(spacesChar.add, "g");
+    let sr = new RegExp(spacesChar.remove, "g");
+    let srr = new RegExp(spacesChar.remove+" ", "g");
+    let srl = new RegExp(" "+spacesChar.remove, "g");
+    text = text.replace(sp, " ")
 
     // Also, it removes a space around the command \! (and the command itself)
-            .replace(/\u270E /g, "")
-            .replace(/ \u270E/g, "")
-            .replace(/\u270E/g, "");
+            .replace(srr, "")
+            .replace(srl, "")
+            .replace(sr, "");
     return text;
 };
 
@@ -5252,16 +5265,7 @@ function convert(fullText) {
         fullDict = makeDict(firstWord);
         fullText = fullText.replace("!chem", "");
         fullText = tokensToText(tokenize(fullText, changeModeButton.checked), fullDict, dictOutMathmode, adjustSpaceChem);
-    } /* else if (firstWord === "!matrix") {
-        // Matrix package, the input should be of the form [a,b,c][d,e,f]
-        fullDict = makeDict(firstWord);
-        fullText = fullText.replace("!matrix", "");
-        fullText = tokensToText(tokenize(fullText, true), fullDict, dictOutMathmode, adjustSpaces);
-        fullText = matrix(fullText);
-        if (changeFontButton.checked) {
-            mistakes("!matrix", undefined, "Works better with 'Mathematical font' unchecked");
-        };
-    }*/ else {
+    } else {
         // Default package
         fullDict = makeDict("default");
         fullText = tokensToText(tokenize(fullText, changeModeButton.checked), fullDict, dictOutMathmode, adjustSpaces);
@@ -5275,9 +5279,7 @@ function makeDict(documentClass) {
     let letters;  // lettersMath or lettersNoFont
     if (documentClass === "!chem") {
         letters = lettersNoFont;  // Works better to "draw" molecules with lewis notation
-    } /*else if (documentClass === "!matrix") {
-        letters = (changeFontButton.checked) ? lettersMath : lettersNoFont;
-    }*/ else {  // documentClass === "default"
+    } else {  // documentClass === "default"
         letters = (changeFontButton.checked) ? lettersMath : lettersNoFont;
     };
     return buildAllCommands({...mathDictionary, ...greek, ...letters, ...accents});
