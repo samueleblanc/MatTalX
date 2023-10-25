@@ -29,6 +29,7 @@ function updateMessage(version) {
     const majorChanges = "Welcome to 𝑀ᴀᴛ𝑇ᴀʟ𝑋 version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
     " 1) Putting curly brackets around a symbol now erases the spaces around it. \r\n" +
-    " 2) !matrix and \\sqrt[n]* are not available anymore, use \\matrix{} and \\sqrt[n] instead.";
+    " 2) !matrix and \\sqrt[n]* are not available anymore, use \\matrix{} and \\sqrt[n] instead. \r\n" + 
+    " 3) \\above{} and \\below{} are not available anymore, use \\overset{}{} and \\underset{}{} instead.";
     textOut.value = majorChanges;  // In "text_input" form
 };

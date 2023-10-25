@@ -1931,23 +1931,33 @@ const dotBelow = (arg, initialCommand) => {return combineSymbols(arg, initialCom
 
 const ogonek = (arg, initialCommand) => {return combineSymbols(arg, initialCommand, "\u0328")};
 
-// TODO: Change for \stackrel
-const above = (arg, initialCommand) => {
-    // Returns the symbol to be put above the preceding character in the input text
-    if (arg[0].length > 1) {
-        return mistakes(initialCommand + "{" + arg[0].join("") + "}", undefined, "Only one argument accepted");
+const stackSymbols = (arg, initialCommand, dict) => {
+    // Used in overset, underset and stackrel
+    // Returns the first argument above or below the symbol in the middle of the second argument
+    if (arg.length < 2) {
+        mistakes(initialCommand+"{}{}", undefined, "Two arguments needed");
+        return [errSymbol];
     };
-    mistakes(initialCommand + "{" + arg[0].join("") + "}", Above[arg[0][0]], (arg[0][0] !== undefined) ? arg[0][0] : "Argument doesn't exist");
-    return [Above[arg[0][0]]].concat(extraArgs(arg.slice(1), initialCommand));
+    let rel = arg[0];
+    let mid = arg[1];
+    if (rel.length > 1) {
+        return mistakes(initialCommand+"{"+rel.join("")+"}{"+mid.join("")+"}", undefined, "Length of first argument must be one.");
+    };
+    mistakes(initialCommand+"{"+rel.join("")+"}{"+mid.join("")+"}", dict[rel[0]], (rel[0] !== undefined) ? rel[0] : "Argument doesn't exist");
+    mid[Math.floor(mid.length/2)] += (dict[rel[0]] !== undefined) ? dict[rel[0]] : "";
+    return [mid.join("")].concat(extraArgs(arg.slice(2), initialCommand));
 };
 
-const below = (arg, initialCommand) => {
-    // Returns the symbol to be put below the preceding character in the input text
-    if (arg[0].length > 1) {
-        return mistakes(initialCommand + "{" + arg[0].join("") + "}", undefined, "Only one argument accepted");
-    };
-    mistakes(initialCommand + "{" + arg[0].join("") + "}", Below[arg[0][0]], (arg[0][0] !== undefined) ? arg[0][0] : "Argument doesn't exist");
-    return [Below[arg[0][0]]].concat(extraArgs(arg.slice(1), initialCommand));
+const overset = (arg, initialCommand) => {
+    return stackSymbols(arg, initialCommand, Above);
+};
+
+const stackrel = (arg, initialCommand) => {
+    return overset(arg, initialCommand);
+};
+
+const underset = (arg, initialCommand) => {
+    return stackSymbols(arg, initialCommand, Below);
 };
 
 
@@ -2344,8 +2354,9 @@ const mathDictionary = {
     "\\ddot" : ddot,
     "\\acute" : acute,
     "\\grave" : grave,
-    "\\above" : above,
-    "\\below" : below,
+    "\\stackrel" : stackrel,
+    "\\overset" : overset,
+    "\\underset" : underset,
     "\\check" : caron,
     "\\breve" : breve,
     "\\bar" : bar,
@@ -4448,7 +4459,7 @@ function showCommand(key) {
             return "\\frac{1}{2} \u2192 ¹∕₂";
         } else if (key == "\\frac*") {
             return "\\frac*{1}{2} \u2192 ½";
-        } else if ((key == "\\above") || (key == "\\below") || (key == "\\hspace") || (key == "\\vskip")) {
+        } else if ((key == "\\overset") || (key == "\\underset") || (key == "\\stackrel") || (key == "\\hspace") || (key == "\\vskip")) {
             return key + "{}";
         } else if ((key == "_") || (key == "^")) {
             return "x" + key + "{a1} \u2192 𝑥" + spaceCommand((defaultDict[key]([["a", "1"]], key)).join(""));
