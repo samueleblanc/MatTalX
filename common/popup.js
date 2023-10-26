@@ -4803,6 +4803,7 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing, callSpaceCommand=t
                         };
                         arg = [];
                     } else {
+                        currentArgCount = [];
                         while (argStack.length > 0) {
                             arg.unshift(argStack.pop());
                         };
@@ -4815,7 +4816,6 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing, callSpaceCommand=t
                         arg = [];
                     };
                 };
-            // TODO: Empty stacks
             } else if (tokens[i] === specialTokens.startMathmode) {
                 mathmodeOccurence += 1;
                 mathmode = true;
