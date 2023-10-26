@@ -8,6 +8,7 @@
     
         v 2.5.7 - 0.0035s/sentence
         v 2.7.3 - 0.0112s/sentence
+        v 2.7.4 - 0.0121s/sentence
 */
 
 
@@ -25,7 +26,9 @@ function test() {
         "\\textbf{Proposition}: Let $a \\in \\mathbb{R}$, then $a \\leq x  \\forall x \\in \\emptyset$",
         "\\textbf{Theorem}: Let $S^{n}$ be a closed ball of an Euclidiean space and $f$ be a continuous function. Then \\\\" + 
         "$\\qquad\\exists f:S^{n} \\rightarrow S^{n}$ such that $f(x_{0}) = x_{0}$",
-        "$\\mathbb{P}(X \\geq \\alpha) \\leq \\frac{\\mathbb{E}[X]}{\\alpha}$"
+        "$\\mathbb{P}(X \\geq \\alpha) \\leq \\frac{\\mathbb{E}[X]}{\\alpha}$",
+        "$\\mathrm{CO}_{2} \\rightarrow " +
+        "\\overset{:}{\\underset{:}{\\mathrm{O}}}{=}\\mathrm{C}{=}\\overset{:}{\\underset{:}{\\mathrm{O}}}$"
     ];
     const _parserOuts = [
         // Correct output for each sentence
@@ -40,7 +43,8 @@ function test() {
         "𝗣𝗿𝗼𝗽𝗼𝘀𝗶𝘁𝗶𝗼𝗻: Let 𝑎 ∈ ℝ, then 𝑎 ≤ 𝑥  ∀ 𝑥 ∈ ∅ ",
         "𝗧𝗵𝗲𝗼𝗿𝗲𝗺: Let 𝑆ⁿ be a closed ball of an Euclidiean space and 𝑓 be a continuous function. Then \u000A"+
                 "    ∃ 𝑓∶𝑆ⁿ → 𝑆ⁿ such that 𝑓(𝑥₀) = 𝑥₀ ",
-        "ℙ(𝑋 ≥ 𝛼) ≤ (𝔼[𝑋]/𝛼) "
+        "ℙ(𝑋 ≥ 𝛼) ≤ (𝔼[𝑋]/𝛼) ",
+        "CO₂ → Ö̤=C=Ö̤ "
     ];
     const _dictMM = {...mathDictionary, ...stdGreek, ...lettersMath};
     const _dictOut = {...lettersOutMathMode, ...textCommands, " " : " "};
