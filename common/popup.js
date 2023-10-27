@@ -28,7 +28,7 @@
     │   ├─ Main functions
     │   └─ Used by main functions
     ├─ Check mistakes
-    ├─ Matrix document class
+    ├─ Matrix function
     ├─ Automatic spacing
     └─ Main
 */
@@ -5016,11 +5016,10 @@ function mistakes(textInput, textOutput, letter="") {
 
 //-----------------------------------------------------//
 
-/** Matrix document class **/
+/** Matrix function **/
 
 function matrix(text, initialCommand) {
-    // If the keyword !matrix is used as the first word of the input text, this function is called
-    // Converts arrays into a matrix (i.e. !matrix [a,b,c][1,2,3] will be converted to a matrix 2x3)
+    // Converts arrays into a matrix (i.e. \matrix{[a,b,c][1,2,3]} will be converted to the corresponding 2x3 matrix)
     text = text[0].join("")
                   .replace(/ /g, "");
     let matrixText = "";
@@ -5088,7 +5087,7 @@ function matrix(text, initialCommand) {
 };
 
 function matrixCols(matrix) {
-    // Adjusts columns length for !matrix package
+    // Adjusts columns length for \matrix command
     // So, if the input is [100,10,1][0,0,0], the output should still be a 2x3 matrix with the elements aligned
     let positionLength = 0;
     let posLengths = [];
@@ -5157,7 +5156,7 @@ function spaceCommand(text) {
 function adjustSpacesCommon(input, symbolSpaced, conditionalSpaces) {
     // Removes spaces and add some depending on surrounding symbols
     // Used if 'Adjust space' is on
-
+    // TODO: Linebreaks should be like in LaTeX, i.e. a single "enter" does nothing but two adds a linebreak.
     /* 
         TODO: Spacing around symbols like '+' should depend of context
         For instance f(y+2) should return f(y+2), but 3x²+4y should return 3x² + 4y 
@@ -5225,6 +5224,7 @@ function adjustSpacesCommon(input, symbolSpaced, conditionalSpaces) {
 
 function adjustSpaces(input) {
     // Calls adjustSpacesCommon with specific symbols where spaces around them should be added
+    // TODO: Maybe they should all be conditionalSpaces?
     const symbolSpaced = ["\u003D", "\u003C", "\u003E", "\u21D2", "\u21D0", "\u21CD", "\u21CF", "\u21CE", "\u2192", "\u27F6", "\u2190", "\u27F5", 
                           "\u2194", "\u21AE", "\u219A", "\u219B", "\u27F8", "\u27F9", "\u27F9", "\u21D4", "\u27FA", "\u27FC", "\u21CC", "\u21CB", 
                           "\u21C0", "\u21C1", "\u21BC", "\u21BD", "\u219E", "\u21A0", "\u21C7", "\u21C9", "\u21F6", "\u21C6", "\u21C4", "\u21DA", 
@@ -5240,7 +5240,7 @@ function adjustSpaces(input) {
     return adjustSpacesCommon(input, symbolSpaced, conditionalSpaces);
 };
 
-function adjustSpaceChem(input) {
+function adjustSpaceChem(input) {  // Deprecated
     // Calls adjustSpacesCommon with specific symbols where spaces around them should be added
     const symbolSpaced = ["\u21D2", "\u21D0", "\u21CD", "\u21CF", "\u21CE", "\u2192", "\u27F6", "\u2190", "\u27F5", "\u003C", "\u003E",
                           "\u2194", "\u21AE", "\u219A", "\u219B", "\u27F8", "\u27F9", "\u27F9", "\u21D4", "\u27FA", "\u27FC", "\u21CC", "\u21CB", 
