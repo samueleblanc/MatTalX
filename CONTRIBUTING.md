@@ -11,6 +11,7 @@ Thank you for considering to help out!
 - Improve the documentation
 - Cleaning up the code (including HTML and CSS) or simply adding comments that help with code readability is always appreciated!
 - Create a Safari extension from the Chrome extension (see <a href="https://developer.apple.com/documentation/safariservices/safari_web_extensions/converting_a_web_extension_for_safari" target="_blank">link</a>.)
+- Adapt the current Firefox add-on for it to also work as an Android version (see <a href="https://extensionworkshop.com/documentation/develop/developing-extensions-for-firefox-for-android/" target="_blank">link</a>.)
 - Improve automatic spacing (see below for a specific case)
 - Spacing around symbols like '+' should depend on context. For instance, f(y+2) should return f(y+2), but 3x²+4y should return 3x² + 4y (notice the spaces). Also, a_{i}-x should return a_{i} - x, but \sum_{i}-x should return \sum_{i}-x (as in \sum_{i}(-x) or -\sum_{i}x). Again, it should take the context into consideration
 - Add a nice text editor for the input box. Like all LaTeX text editors, the color of symbols like '$' should be different than plain text, the color of \commands also, etc
