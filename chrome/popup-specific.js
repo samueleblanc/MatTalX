@@ -180,11 +180,12 @@ function getSettings() {
     });
     chrome.storage.sync.get(["built_commands"], (list) => {
         const startingRow = commandsBuilt.rows.length;
-        for (let i=startingRow; i<list.built_commands.length; i++) {
+        for (let i=startingRow; i<list.built_commands.length*2; i++) {
             buildNewCommand();
-            commandsBuilt.rows[i].cells[0].firstChild.value = list.built_commands[i].type;
-            commandsBuilt.rows[i].cells[2].firstChild.value = list.built_commands[i].newInput;
-            commandsBuilt.rows[i].cells[5].firstChild.value = list.built_commands[i].output;
+            commandsBuilt.rows[i].cells[0].firstChild.value = list.built_commands[i/2].type;
+            commandsBuilt.rows[i].cells[2].firstChild.value = list.built_commands[i/2].newInput;
+            commandsBuilt.rows[i].cells[5].firstChild.value = list.built_commands[i/2].numArgs;
+            commandsBuilt.rows[i+1].cells[1].firstChild.value = list.built_commands[i/2].output;
         };
     });
 };

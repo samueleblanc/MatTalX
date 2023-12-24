@@ -4124,22 +4124,27 @@ function buildNewCommand() {
 
     commandsBuilt.style.display = "block";
 
-    // Curly brackets are used to mimic the style of \command{}{}
+    // Curly and square brackets are used to mimic the style of \newcommand{}[]{}
     let curlyBracketsLeftCN = document.createElement("td");
     let curlyBracketsRigthCN = document.createElement("td");
     let curlyBracketsLeftCA = document.createElement("td");
     let curlyBracketsRigthCA = document.createElement("td");
+    let squareBracketLeft = document.createElement("td");
+    let squareBracketRight = document.createElement("td");
     curlyBracketsLeftCN.textContent = "{";
     curlyBracketsRigthCN.textContent = "}";
     curlyBracketsLeftCA.textContent = "{";
     curlyBracketsRigthCA.textContent = "}";
+    squareBracketLeft.textContent = "[";
+    squareBracketRight.textContent = "]";
 
-    let row = document.createElement("tr");
+    let row1 = document.createElement("tr");
+    let row2 = document.createElement("tr");
 
     // This block builds the select form from which you can select what to build
     let typeInput = document.createElement("td");
-    let select = document.createElement("select");
-    select.className = "commandList";
+    let selectCmdType = document.createElement("select");
+    selectCmdType.className = "commandList";
     let newCommandOpt = document.createElement("option");
     let renewCommandOpt = document.createElement("option");
     let declareMathOperatorOpt = document.createElement("option");
@@ -4152,16 +4157,16 @@ function buildNewCommand() {
     declareMathOperatorOpt.value = "\\DeclareMathOperator";
     declareUnicodeCharacterOpt.text = "\\DeclareUnicodeCharacter";
     declareUnicodeCharacterOpt.value = "\\DeclareUnicodeCharacter";
-    select.add(newCommandOpt);
-    select.add(renewCommandOpt);
-    select.add(declareMathOperatorOpt);
-    select.add(declareUnicodeCharacterOpt);
-    select.style.color = mainColors["settingsContent"]["input"]["color"][darkModeInt];
-    select.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][darkModeInt];
-    typeInput.appendChild(select);
-    row.appendChild(typeInput);
+    selectCmdType.add(newCommandOpt);
+    selectCmdType.add(renewCommandOpt);
+    selectCmdType.add(declareMathOperatorOpt);
+    selectCmdType.add(declareUnicodeCharacterOpt);
+    selectCmdType.style.color = mainColors["settingsContent"]["input"]["color"][darkModeInt];
+    selectCmdType.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][darkModeInt];
+    typeInput.appendChild(selectCmdType);
+    row1.appendChild(typeInput);
 
-    row.appendChild(curlyBracketsLeftCN);
+    row1.appendChild(curlyBracketsLeftCN);
 
     // newCommandName is the command name *to be* used
     let newCommandName = document.createElement("td");
@@ -4170,11 +4175,29 @@ function buildNewCommand() {
     inputNewCommandName.style.color = mainColors["settingsContent"]["input"]["color"][darkModeInt];
     inputNewCommandName.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][darkModeInt];
     newCommandName.appendChild(inputNewCommandName);
-    row.appendChild(newCommandName);
+    row1.appendChild(newCommandName);
     inputNewCommandName.style.width = "90%";
 
-    row.appendChild(curlyBracketsRigthCN);
-    row.appendChild(curlyBracketsLeftCA);
+    row1.appendChild(curlyBracketsRigthCN);
+    row1.appendChild(squareBracketLeft);
+
+    // Number of arguments
+    let numberArgsField = document.createElement("td");
+    let numArgs = document.createElement("input");
+    numArgs.type = "number";
+    numArgs.value = "0";
+    numArgs.min = "0";
+    numArgs.step = "1";
+    numArgs.style.color = mainColors["settingsContent"]["input"]["color"][darkModeInt];
+    numArgs.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][darkModeInt];
+    numberArgsField.appendChild(numArgs);
+    row1.appendChild(numberArgsField);
+
+    row1.appendChild(squareBracketRight);
+
+    commandsBuilt.appendChild(row1);
+
+    row2.appendChild(curlyBracketsLeftCA);
 
     // defaultCommandName is the *old* (or default) command
     let defaultCommandName = document.createElement("td");
@@ -4183,10 +4206,10 @@ function buildNewCommand() {
     inputDefaultCommandArg.style.color = mainColors["settingsContent"]["input"]["color"][darkModeInt];
     inputDefaultCommandArg.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][darkModeInt];
     defaultCommandName.appendChild(inputDefaultCommandArg);
-    row.appendChild(defaultCommandName);
+    row2.appendChild(defaultCommandName);
     inputDefaultCommandArg.style.width = "90%";
 
-    row.appendChild(curlyBracketsRigthCA);
+    row2.appendChild(curlyBracketsRigthCA);
 
     // Button used to delete the command (and remove the row)
     let deleteCommand = document.createElement("td");
@@ -4212,29 +4235,31 @@ function buildNewCommand() {
 
     deleteCommandBtn.addEventListener("click", () => {
         // Delete the command
-        row.remove();
+        row1.remove();
+        row2.remove();
     });
 
     deleteCommand.appendChild(deleteCommandBtn);
-    row.appendChild(deleteCommand);
+    row2.appendChild(deleteCommand);
 
-    commandsBuilt.appendChild(row);
+    commandsBuilt.appendChild(row2);
 };
 
 function storeCommands() {
     // Loops on all the commands and returns an array containing all the info
     // Called when MatTalX or the settings popup closes
     let commandsList = [];
-    for (let row=0; row<commandsBuilt.rows.length; row++) {
-        if (commandsBuilt.rows[row].cells[2].firstChild.value !== undefined && 
-            commandsBuilt.rows[row].cells[5].firstChild.value !== undefined &&
-            commandsBuilt.rows[row].cells[2].firstChild.value !== "" &&
-            commandsBuilt.rows[row].cells[5].firstChild.value !== "")
+    for (let i=0; i<commandsBuilt.rows.length; i+=2) {
+        if (commandsBuilt.rows[i].cells[2].firstChild.value !== undefined && 
+            commandsBuilt.rows[i+1].cells[1].firstChild.value !== undefined &&
+            commandsBuilt.rows[i].cells[2].firstChild.value !== "" &&
+            commandsBuilt.rows[i+1].cells[1].firstChild.value !== "")
         {
             commandsList.push({
-                type : commandsBuilt.rows[row].cells[0].firstChild.value,
-                newInput : commandsBuilt.rows[row].cells[2].firstChild.value,
-                output : commandsBuilt.rows[row].cells[5].firstChild.value
+                type : commandsBuilt.rows[i].cells[0].firstChild.value,
+                newInput : commandsBuilt.rows[i].cells[2].firstChild.value,
+                numArgs : commandsBuilt.rows[i].cells[5].firstChild.value,
+                output : commandsBuilt.rows[i+1].cells[1].firstChild.value
             });
         };
     };
@@ -4244,16 +4269,16 @@ function storeCommands() {
 function buildAllCommands(fullDict) {
     // Includes every commands built by the user in the object containing every commands (in math mode)
     // Called by makeDict()
-    for (let i=0; i<commandsBuilt.rows.length; i++) {
+    for (let i=0; i<commandsBuilt.rows.length; i+=2) {
         if (commandsBuilt.rows[i].cells[2].firstChild.value !== undefined && 
-            commandsBuilt.rows[i].cells[5].firstChild.value !== undefined && 
+            commandsBuilt.rows[i+1].cells[1].firstChild.value !== undefined && 
             commandsBuilt.rows[i].cells[2].firstChild.value !== "" && 
-            commandsBuilt.rows[i].cells[5].firstChild.value !== "")
+            commandsBuilt.rows[i+1].cells[1].firstChild.value !== "")
         {
             fullDict = settingsFunctions[commandsBuilt.rows[i].cells[0].firstChild.value](
                             fullDict, 
                             commandsBuilt.rows[i].cells[2].firstChild.value.replace(/ /g, ""), 
-                            commandsBuilt.rows[i].cells[5].firstChild.value+" "
+                            commandsBuilt.rows[i+1].cells[1].firstChild.value+" "
                         );
         };
     };
