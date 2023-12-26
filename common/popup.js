@@ -4119,7 +4119,7 @@ document.addEventListener("keydown", (keyPressed) => {
 
 function buildNewCommand() {
     // Called when 'buildCommandsBtn' is clicked
-    // Adds a new row to the 'commandsBuilt' table
+    // Adds a new command (two new rows) to the 'commandsBuilt' table
     const darkModeInt = (darkMode.checked) ? 1 : 0;
 
     commandsBuilt.style.display = "block";
@@ -4187,6 +4187,7 @@ function buildNewCommand() {
     numArgs.type = "number";
     numArgs.value = "0";
     numArgs.min = "0";
+    numArgs.max = "99";
     numArgs.step = "1";
     numArgs.style.color = mainColors["settingsContent"]["input"]["color"][darkModeInt];
     numArgs.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][darkModeInt];
@@ -4211,7 +4212,7 @@ function buildNewCommand() {
 
     row2.appendChild(curlyBracketsRigthCA);
 
-    // Button used to delete the command (and remove the row)
+    // Button used to delete the command (and remove the rows)
     let deleteCommand = document.createElement("td");
     let deleteCommandBtn = document.createElement("input");
     deleteCommandBtn.type = "button";
@@ -4276,7 +4277,8 @@ function buildAllCommands(fullDict) {
             commandsBuilt.rows[i+1].cells[1].firstChild.value !== "")
         {
             fullDict = settingsFunctions[commandsBuilt.rows[i].cells[0].firstChild.value](
-                            fullDict, 
+                            fullDict,
+                            commandsBuilt.rows[i].cells[5].firstChild.value,
                             commandsBuilt.rows[i].cells[2].firstChild.value.replace(/ /g, ""), 
                             commandsBuilt.rows[i+1].cells[1].firstChild.value+" "
                         );
@@ -4285,40 +4287,67 @@ function buildAllCommands(fullDict) {
     return fullDict;
 };
 
-function newCommand(fullDict, input, output) {
+function buildCommandWithArgs(fullDict, argNums, output) {
+    // Called by newCommand or renewCommand if argNums >= 1
+    output = output.replace(/\\\#/g, "\u0000");
+    let outText = [];
+    let splitArgText = output.split(/\#[1-9]{2}/);
+    for (i in splitArgText) {
+        splitArgText[i] = splitArgText[i].replace(/\u0000/g, "\\#");
+        if (typeof fullDict[splitArgText[i]] == "function") {
+
+        } else {
+            outText.push(tokensToText(tokenize(splitArgText[i], true), fullDict, {}, (t) => {return t;}, false));
+        };
+    }
+    return "";
+};
+
+function newCommand(fullDict, argNums, input, output) {
     // Only add the command if its name is not already defined
     if (Object.hasOwn(fullDict, input)) {
         mistakes("Settings", undefined, input + " is already defined. Use '\\renewcommand' instead.");
     } else {
         let outNoSpace = output.replace(/ /g, "");
         let outputSymbol;
-        if (typeof fullDict[outNoSpace] == "function") {
-            outputSymbol = fullDict[outNoSpace];
+        if (argNums === 0) {
+            if (typeof fullDict[outNoSpace] == "function") {
+                outputSymbol = fullDict[outNoSpace];
+            } else {
+                outputSymbol = tokensToText(tokenize(output, true), fullDict, {}, (t) => {return t;}, false);
+            };
         } else {
-            outputSymbol = tokensToText(tokenize(output, true), fullDict, {}, (t) => {return t;}, false);
+            outputSymbol = buildCommandWithArgs(fullDict, argNums, output);
         };
         fullDict[input] = outputSymbol;
     };
     return fullDict;
 };
 
-function renewCommand(fullDict, input, output) {
+function renewCommand(fullDict, argNums, input, output) {
     // Overrides existing command if needed, if not it creates it (like newCommand)
     let outNoSpace = output.replace(/ /g, "");
     let outputSymbol;
-    if (typeof fullDict[outNoSpace] == "function") {
-        outputSymbol = fullDict[outNoSpace];
+    if (argNums === 0) {
+        if (typeof fullDict[outNoSpace] == "function") {
+            outputSymbol = fullDict[outNoSpace];
+        } else {
+            outputSymbol = tokensToText(tokenize(output, true), fullDict, {}, (t) => {return t;}, false);
+        };
     } else {
-        outputSymbol = tokensToText(tokenize(output, true), fullDict, {}, (t) => {return t;}, false);
+        outputSymbol = buildCommandWithArgs(fullDict, argNums, output);
     };
     fullDict[input] = outputSymbol;
     return fullDict;
 };
 
-function declareMathOperator(fullDict, input, output) {
+function declareMathOperator(fullDict, argNums, input, output) {
     // Adds a new operator
-    // Currently only accepts 1 argument
+    if (argNums !== 0) {
+        mistakes("Settings", undefined, "DeclareMathOperator must have 0 argument.");
+    };
     let outputSymbol = tokensToText(tokenize(output, true), fullDict, {}, (t) => {return t;});
+    // TODO: If text: \mathrm, else: nothing
     const newOp = (arg, initialCommand) => {
         // This function will be the value of every operator built by the user
         return [outputSymbol + "[" + arg.join("") + "]"];
@@ -4327,8 +4356,11 @@ function declareMathOperator(fullDict, input, output) {
     return fullDict;
 };
 
-function declareUnicodeCharacter(fullDict, input, output) {
+function declareUnicodeCharacter(fullDict, argNums, input, output) {
     // Verifies if the output is a valid unicode character and if so, adds it as a command
+    if (argNums !== 0) {
+        mistakes("Settings", undefined, "DeclareUnicodeCharacter must have 0 argument.");
+    };
     if (output.substring(0,2) === "\\u") {
         try {
             let outputSymbol = String.fromCodePoint(parseInt(output.substring(2).replace(/ /g, ""), 16));
