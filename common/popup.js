@@ -4126,18 +4126,24 @@ function buildNewCommand() {
     commandsBuilt.style.display = "block";
 
     // Curly and square brackets are used to mimic the style of \newcommand{}[]{}
-    let curlyBracketsLeftCN = document.createElement("td");
-    let curlyBracketsRigthCN = document.createElement("td");
-    let curlyBracketsLeftCA = document.createElement("td");
-    let curlyBracketsRigthCA = document.createElement("td");
-    let squareBracketLeft = document.createElement("td");
-    let squareBracketRight = document.createElement("td");
+    let curlyBracketsLeftCN = document.createElement("span");
+    let curlyBracketsRightCN = document.createElement("span");
+    let curlyBracketsLeftCA = document.createElement("span");
+    let curlyBracketsRightCA = document.createElement("span");
+    let squareBracketLeft = document.createElement("span");
+    let squareBracketRight = document.createElement("span");
     curlyBracketsLeftCN.textContent = "{";
-    curlyBracketsRigthCN.textContent = "}";
+    curlyBracketsRightCN.textContent = "}";
     curlyBracketsLeftCA.textContent = "{";
-    curlyBracketsRigthCA.textContent = "}";
+    curlyBracketsRightCA.textContent = "}";
     squareBracketLeft.textContent = "[";
     squareBracketRight.textContent = "]";
+    curlyBracketsLeftCN.style.display = "inline";
+    curlyBracketsRightCN.style.display = "inline";
+    curlyBracketsLeftCA.style.display = "inline";
+    curlyBracketsRightCA.style.display = "inline";
+    squareBracketLeft.style.display = "inline";
+    squareBracketRight.style.display = "inline";
 
     let row1 = document.createElement("tr");
     let row2 = document.createElement("tr");
@@ -4175,12 +4181,12 @@ function buildNewCommand() {
     inputNewCommandName.type = "text";
     inputNewCommandName.style.color = mainColors["settingsContent"]["input"]["color"][darkModeInt];
     inputNewCommandName.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][darkModeInt];
+    inputNewCommandName.style.display = "inline";
+    inputNewCommandName.style.width = "80%";
+    newCommandName.appendChild(curlyBracketsLeftCN);
     newCommandName.appendChild(inputNewCommandName);
+    newCommandName.appendChild(curlyBracketsRightCN);
     row1.appendChild(newCommandName);
-    inputNewCommandName.style.width = "90%";
-
-    row1.appendChild(curlyBracketsRigthCN);
-    row1.appendChild(squareBracketLeft);
 
     // Number of arguments
     let numberArgsField = document.createElement("td");
@@ -4192,14 +4198,14 @@ function buildNewCommand() {
     numArgs.step = "1";
     numArgs.style.color = mainColors["settingsContent"]["input"]["color"][darkModeInt];
     numArgs.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][darkModeInt];
+    numArgs.style.width = "3em";
+    numArgs.style.display = "inline";
+    numberArgsField.appendChild(squareBracketLeft);
     numberArgsField.appendChild(numArgs);
+    numberArgsField.appendChild(squareBracketRight);
     row1.appendChild(numberArgsField);
 
-    row1.appendChild(squareBracketRight);
-
     commandsBuilt.appendChild(row1);
-
-    row2.appendChild(curlyBracketsLeftCA);
 
     // defaultCommandName is the *old* (or default) command
     let defaultCommandName = document.createElement("td");
@@ -4207,11 +4213,16 @@ function buildNewCommand() {
     inputDefaultCommandArg.type = "text";
     inputDefaultCommandArg.style.color = mainColors["settingsContent"]["input"]["color"][darkModeInt];
     inputDefaultCommandArg.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][darkModeInt];
+    inputDefaultCommandArg.style.width = "80%";
+    inputDefaultCommandArg.style.display = "inline";
+    defaultCommandName.appendChild(curlyBracketsLeftCA);
     defaultCommandName.appendChild(inputDefaultCommandArg);
+    defaultCommandName.appendChild(curlyBracketsRightCA);
     row2.appendChild(defaultCommandName);
-    inputDefaultCommandArg.style.width = "90%";
 
-    row2.appendChild(curlyBracketsRigthCA);
+    // For style
+    let emptyCell = document.createElement("td");
+    row2.appendChild(emptyCell);
 
     // Button used to delete the command (and remove the rows)
     let deleteCommand = document.createElement("td");
@@ -4252,16 +4263,16 @@ function storeCommands() {
     // Called when MatTalX or the settings popup closes
     let commandsList = [];
     for (let i=0; i<commandsBuilt.rows.length; i+=2) {
-        if (commandsBuilt.rows[i].cells[2].firstChild.value !== undefined && 
-            commandsBuilt.rows[i+1].cells[1].firstChild.value !== undefined &&
-            commandsBuilt.rows[i].cells[2].firstChild.value !== "" &&
-            commandsBuilt.rows[i+1].cells[1].firstChild.value !== "")
+        if (commandsBuilt.rows[i].cells[1].children[1].value !== undefined && 
+            commandsBuilt.rows[i+1].cells[0].children[1].value !== undefined &&
+            commandsBuilt.rows[i].cells[1].children[1].value !== "" &&
+            commandsBuilt.rows[i+1].cells[0].children[1].value !== "")
         {
             commandsList.push({
-                type : commandsBuilt.rows[i].cells[0].firstChild.value,
-                newInput : commandsBuilt.rows[i].cells[2].firstChild.value,
-                numArgs : commandsBuilt.rows[i].cells[5].firstChild.value,
-                output : commandsBuilt.rows[i+1].cells[1].firstChild.value
+                type : commandsBuilt.rows[i].cells[0].children[0].value,
+                newInput : commandsBuilt.rows[i].cells[1].children[1].value,
+                numArgs : commandsBuilt.rows[i].cells[2].children[1].value,
+                output : commandsBuilt.rows[i+1].cells[0].children[1].value
             });
         };
     };
@@ -4272,16 +4283,16 @@ function buildAllCommands(fullDict) {
     // Includes every commands built by the user in the object containing every commands (in math mode)
     // Called by makeDict()
     for (let i=0; i<commandsBuilt.rows.length; i+=2) {
-        if (commandsBuilt.rows[i].cells[2].firstChild.value !== undefined && 
-            commandsBuilt.rows[i+1].cells[1].firstChild.value !== undefined && 
-            commandsBuilt.rows[i].cells[2].firstChild.value !== "" && 
-            commandsBuilt.rows[i+1].cells[1].firstChild.value !== "")
+        if (commandsBuilt.rows[i].cells[1].children[1].value !== undefined && 
+            commandsBuilt.rows[i+1].cells[0].children[1].value !== undefined && 
+            commandsBuilt.rows[i].cells[1].children[1].value !== "" && 
+            commandsBuilt.rows[i+1].cells[0].children[1].value !== "")
         {
-            fullDict = settingsFunctions[commandsBuilt.rows[i].cells[0].firstChild.value](
+            fullDict = settingsFunctions[commandsBuilt.rows[i].cells[0].children[0].value](
                             fullDict,
-                            commandsBuilt.rows[i].cells[5].firstChild.value,
-                            commandsBuilt.rows[i].cells[2].firstChild.value.replace(/ /g, ""), 
-                            commandsBuilt.rows[i+1].cells[1].firstChild.value+" "
+                            commandsBuilt.rows[i].cells[2].children[1].value,
+                            commandsBuilt.rows[i].cells[1].children[1].value.replace(/ /g, ""), 
+                            commandsBuilt.rows[i+1].cells[0].children[1].value+" "
                         );
         };
     };
@@ -4326,7 +4337,7 @@ function newCommand(fullDict, argNums, input, output) {
     } else {
         let outNoSpace = output.replace(/ /g, "");
         let outputSymbol;
-        if (argNums === 0) {
+        if (argNums == 0) {
             if (typeof fullDict[outNoSpace] == "function") {
                 outputSymbol = fullDict[outNoSpace];
             } else {
@@ -4344,7 +4355,7 @@ function renewCommand(fullDict, argNums, input, output) {
     // Overrides existing command if needed, if not it creates it (like newCommand)
     let outNoSpace = output.replace(/ /g, "");
     let outputSymbol;
-    if (argNums === 0) {
+    if (argNums == 0) {
         if (typeof fullDict[outNoSpace] == "function") {
             outputSymbol = fullDict[outNoSpace];
         } else {

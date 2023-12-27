@@ -182,10 +182,10 @@ function getSettings() {
         const startingRow = commandsBuilt.rows.length;
         for (let i=startingRow; i<list.built_commands.length*2; i++) {
             buildNewCommand();
-            commandsBuilt.rows[i].cells[0].firstChild.value = list.built_commands[i/2].type;
-            commandsBuilt.rows[i].cells[2].firstChild.value = list.built_commands[i/2].newInput;
-            commandsBuilt.rows[i].cells[5].firstChild.value = list.built_commands[i/2].numArgs;
-            commandsBuilt.rows[i+1].cells[1].firstChild.value = list.built_commands[i/2].output;
+            commandsBuilt.rows[i].cells[0].children[0].value = list.built_commands[i/2].type;
+            commandsBuilt.rows[i].cells[1].children[1].value = list.built_commands[i/2].newInput;
+            commandsBuilt.rows[i].cells[2].children[1].value = list.built_commands[i/2].numArgs;
+            commandsBuilt.rows[i+1].cells[0].children[1].value = list.built_commands[i/2].output;
         };
     });
 };
