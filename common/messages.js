@@ -26,8 +26,6 @@ function updateMessage(version) {
     // To be changed by hand every version
     const majorChanges = "Welcome to 𝑀ᴀᴛ𝑇ᴀʟ𝑋 version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
-    " 1) Putting curly brackets around a symbol now erases the spaces around it. \r\n" +
-    " 2) !matrix and \\sqrt[n]* are not available anymore, use \\matrix{} and \\sqrt[n] instead. \r\n" + 
-    " 3) \\above{} and \\below{} are not available anymore, use \\overset{}{} and \\underset{}{} instead.";
+    " 1) In the settings, \\newcommand and \\renewcommand now accepts arguments.";
     textOut.value = majorChanges;  // In "text_input" form
 };

@@ -2593,6 +2593,7 @@ const mathDictionary = {
     "\\(" : "(",
     "\\)" : ")",
     "\\$" : "$",
+    "\\#" : "#",
     "\\backslash" : "\\",
     "\\llbracket" : "\u27E6",
     "\\rrbracket" : "\u27E7",
@@ -4287,20 +4288,35 @@ function buildAllCommands(fullDict) {
     return fullDict;
 };
 
-function buildCommandWithArgs(fullDict, argNums, output) {
+function buildCommandWithArgs(fullDict, argNums, input, output) {
     // Called by newCommand or renewCommand if argNums >= 1
-    output = output.replace(/\\\#/g, "\u0000");
-    let outText = [];
-    let splitArgText = output.split(/\#[1-9]{2}/);
-    for (i in splitArgText) {
-        splitArgText[i] = splitArgText[i].replace(/\u0000/g, "\\#");
-        if (typeof fullDict[splitArgText[i]] == "function") {
-
-        } else {
-            outText.push(tokensToText(tokenize(splitArgText[i], true), fullDict, {}, (t) => {return t;}, false));
+    let tokens = tokenize(output, true);
+    // Put argument number (of the form #i) as a single token
+    for (let i=0; i<tokens.length; ++i) {
+        if (tokens[i-1] === "#") {
+            while (!isNaN(tokens[i])) {
+                tokens[i-1] += tokens[i];
+                tokens.splice(i,1);
+            };
         };
-    }
-    return "";
+    };
+    // TODO: tokensToText does not accept special characters, but arg are already converted, so  
+    // some tokens might be special characters (e.g. integral sign, alpha, etc.).
+    const outputFunc = (arg, initialCommand) => {
+        if (argNums > arg.length) {
+            mistakes(input+"{}".repeat(arg.length), undefined, "Missing arguments: "+arg.length+" instead of "+argNums+".");
+        };
+        for (let i=0; i<tokens.length; ++i) {
+            if (tokens[i][0] === "#") {
+                let num = parseInt(tokens[i].substring(1));
+                if (num <= argNums) {
+                    tokens.splice(i,1,...arg[num-1]);
+                };
+            };
+        };
+        return [tokensToText(tokens, fullDict, {}, (t) => {return t;}, false).concat(extraArgs(arg.slice(argNums), initialCommand))];
+    };
+    return outputFunc;
 };
 
 function newCommand(fullDict, argNums, input, output) {
@@ -4317,7 +4333,7 @@ function newCommand(fullDict, argNums, input, output) {
                 outputSymbol = tokensToText(tokenize(output, true), fullDict, {}, (t) => {return t;}, false);
             };
         } else {
-            outputSymbol = buildCommandWithArgs(fullDict, argNums, output);
+            outputSymbol = buildCommandWithArgs(fullDict, argNums, input, output);
         };
         fullDict[input] = outputSymbol;
     };
@@ -4335,7 +4351,7 @@ function renewCommand(fullDict, argNums, input, output) {
             outputSymbol = tokensToText(tokenize(output, true), fullDict, {}, (t) => {return t;}, false);
         };
     } else {
-        outputSymbol = buildCommandWithArgs(fullDict, argNums, output);
+        outputSymbol = buildCommandWithArgs(fullDict, argNums, input, output);
     };
     fullDict[input] = outputSymbol;
     return fullDict;
