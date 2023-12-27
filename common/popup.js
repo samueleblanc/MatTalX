@@ -1716,7 +1716,7 @@ const hspace = (arg, initialCommand) => {
     // Adds the number of space specified in 'arg'
     let spaces = [];
     const num = arg[0].join("");
-    if (num * 0 !== 0) {
+    if (isNaN(num)) {
         spaces.push(mistakes(initialCommand + "{" + num + "}", undefined, "Argument must be a number"));
     } else {
         for (let i=0; i<parseInt(num); i++) {
@@ -1731,7 +1731,7 @@ const vskip = (arg, initialCommand) => {
     // Adds the number of linebreaks specified in 'arg'
     let skips = [];
     const num = arg[0].join("");
-    if (num * 0 !== 0) {
+    if (isNaN(num)) {
         skips.push(mistakes(initialCommand + "{" + num + "}", undefined, "Argument must be a number"));
     } else {
         for (let i=0; i<parseInt(num); i++) {
@@ -4427,11 +4427,11 @@ function findWord(text, cursorPosition, addedLetter="") {
         text = text.split("");
         text[cursorPosition] = "";
         text = text.join("");
-        cursorPosition -= 1;
+        --cursorPosition;
     };
     let word = "";
     while (!(wordsDelimiters.includes(text.charAt(cursorPosition + 1)))) {
-        cursorPosition += 1;
+        ++cursorPosition;
     };
     while (!(wordsDelimitersWOB.includes(text.charAt(cursorPosition)))) {
         if (text.charAt(cursorPosition) === "\\") {
@@ -4439,7 +4439,7 @@ function findWord(text, cursorPosition, addedLetter="") {
             break;
         } else {
             word = text.charAt(cursorPosition) + word;
-            cursorPosition -= 1;
+            --cursorPosition;
         }
     };
     return word;
@@ -4510,12 +4510,12 @@ function semiAutoCompletion(textIn, cursorPosition, command) {
     let textOut = textIn;
     // Find end of word
     while (!(wordsDelimiters.includes(textIn.charAt(cursorPosition)))) {
-        cursorPosition += 1;
+        ++cursorPosition;
     };
     // Deletes word
     while (textIn.charAt(cursorPosition - 1) !== "\\") {
         textOut = textOut.substring(0, cursorPosition - 1) + textOut.substring(cursorPosition);
-        cursorPosition -= 1;
+        --cursorPosition;
     };
     // Replace by selected suggestion
     textOut = textOut.substring(0, cursorPosition - 1) + command + textOut.substring(cursorPosition);
@@ -4832,14 +4832,14 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing, callSpaceCommand=t
         if (Object.values(specialTokens).includes(tokens[i])) {
             if (tokens[i] === specialTokens.startArgument) {
                 argStack.push([]);
-                argDepth += 1;
+                ++argDepth;
                 if (tokens[i-1] !== specialTokens.endArgument) {
                     currentArgCount.push(1);
                 };
             } else if (tokens[i] === specialTokens.endArgument) {
-                argDepth -= 1;
+                --argDepth;
                 if (tokens[i+1] === specialTokens.startArgument) {
-                    currentArgCount[currentArgCount.length-1] += 1;
+                    ++currentArgCount[currentArgCount.length-1];
                 } else {
                     if (fctStack.length > 0) {
                         if (fctStack.length < currentArgCount.length) {
@@ -4890,10 +4890,10 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing, callSpaceCommand=t
                     };
                 };
             } else if (tokens[i] === specialTokens.startMathmode) {
-                mathmodeOccurence += 1;
+                ++mathmodeOccurence;
                 mathmode = true;
             } else if (tokens[i] === specialTokens.endMathmode) {
-                mathmodeOccurence += 1;
+                ++mathmodeOccurence;
                 mathmode = false;
                 outText += adjustSpacing(mathmodeText);
                 mathmodeText = "";
@@ -5105,7 +5105,7 @@ function matrix(text, initialCommand) {
 
     for (x in text) {
         if (text[x] == "[" || text[x] == "]") {
-            cpt += 1;
+            ++cpt;
         };
     };
     if (cpt == 2) {
@@ -5120,10 +5120,10 @@ function matrix(text, initialCommand) {
         for (i in text) {
             if (text[i] == "[" && rceil == 0) {
                 matrixText += "\u23A1"+spacesChar.add;
-                rceil += 1;
+                ++rceil;
             } else if (text[i] == "]" && lceil == 0) {
                 matrixText += spacesChar.add+"\u23A4\u000A";
-                lceil += 1;
+                ++lceil;
             } else if (text[i] == "]") {
                 matrixText += spacesChar.add+"\u23A5\u000A";
             } else if (text[i] == "[") {
@@ -5170,7 +5170,7 @@ function matrixCols(matrix) {
     for (let i in matrix) {
         if (matrix[i] == ",") {
             matrixPositions.push(matrixPos);
-            matrixPos += 1;
+            ++matrixPos;
             posLengths.push(positionLength);
             positionLength = 0;
             realPositions.push(i-1);
@@ -5183,7 +5183,7 @@ function matrixCols(matrix) {
         } else if ((matrix[i] == "\u23A1") || (matrix[i] == "\u23A2") || (matrix[i] == "\u23A3") || (matrix[i] == " ") || (matrix[i] == "\u000A")) {  // left bracket and spaces
             continue;
         } else {
-            positionLength += 1;
+            ++positionLength;
         };
     };
     // Add spaces to adjust columns length
@@ -5194,8 +5194,8 @@ function matrixCols(matrix) {
                 matrix = matrix.split("");
                 while (posLengths[i] < posLengths[n]) {
                     matrix.splice(realPositions[i] + spacesAdded, 0, spacesChar.add);
-                    posLengths[i] += 1;
-                    spacesAdded += 1;
+                    ++posLengths[i];
+                    ++spacesAdded;
                 };
                 matrix = matrix.join("");
             };
