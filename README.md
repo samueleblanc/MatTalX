@@ -10,7 +10,7 @@ The documentation (PDF and text file) is also [here](docs)
 
 Write mathematical expressions anywhere - Convert LaTeX commands to plain text and paste it on any platform!
 
-With MatTalX (pronounced "Math Talk"), you can convert a simple command, like e^{x} or \alpha into 𝑒ˣ and 𝛼 respectively. They can then be sent via Facebook, Twitter, Instagram, Teams, Gmail, and every other online platform.
+With MatTalX (pronounced "Math Talk"), you can convert a simple command, like e^{x} or \alpha into 𝑒ˣ and 𝛼 respectively. They can then be sent via Facebook, 𝕏 (Twitter), Instagram, Teams, Gmail, and every other online platform.
 
 You can finally talk about physics, mathematics, chemistry, and (even) chess with your friends! There are more than 1000 commands and you can even create your own! They are quite easy to remember, especially if you are already familiar with LaTeX! If not, simply open the completion popup!
 
