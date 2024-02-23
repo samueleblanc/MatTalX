@@ -2317,6 +2317,8 @@ const mathDictionary = {
     "\\mathbb" : mathbb,
     "\\mathbf" : mathbf,
     "\\mathcal" : mathcal,
+    "\\mathscr" : mathcal,  // In some OS, mathcal = *actual* mathcal and in others mathcal = *actual* mathscr
+                            // Sometimes, mathbf{mathcal} = mathscr or vice versa, depending on OS
     "\\mathfrak" : mathfrak,
     "^" : superscript,
     "_" : subscript,
