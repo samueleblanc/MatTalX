@@ -2584,6 +2584,7 @@ const mathDictionary = {
     "\\fourier" : "\u2131",
     "\\angstrom" : "\u212B",
     "\\mho" : "\u2127",
+    "\\endash" : "\u2013",
     "\\emdash" : "\u2014",
     "\\bullet" : "\u2219",
     "\\textbullet" : "\u2022",
