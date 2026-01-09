@@ -183,12 +183,12 @@ function getSettings() {
     });
     browser.storage.local.get("built_commands", (list) => {
         const startingRow = commandsBuilt.rows.length;
-        for (let i=startingRow; i<list.built_commands.length*2; i+=2) {
+        for (let i=startingRow; i<list.built_commands.length; i+=1) {
             buildNewCommand();
-            commandsBuilt.rows[i].cells[0].children[0].value = list.built_commands[i/2].type;
-            commandsBuilt.rows[i].cells[1].children[1].value = list.built_commands[i/2].newInput;
-            commandsBuilt.rows[i].cells[2].children[1].value = list.built_commands[i/2].numArgs;
-            commandsBuilt.rows[i+1].cells[0].children[1].value = list.built_commands[i/2].output;
+            commandsBuilt.rows[i].cells[0].children[0].value = list.built_commands[i].type;
+            commandsBuilt.rows[i].cells[1].children[1].value = list.built_commands[i].newInput;
+            // commandsBuilt.rows[i].cells[2].children[1].value = list.built_commands[i/2].numArgs;
+            commandsBuilt.rows[i].cells[2].children[1].value = list.built_commands[i].output;
         };
     });
 };
