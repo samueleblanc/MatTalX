@@ -26,7 +26,6 @@ function updateMessage(version) {
     // To be changed by hand every version
     const majorChanges = "Welcome to 𝑀ᴀᴛ𝑇ᴀʟ𝑋 version " + version + "\r\n \r\n" + 
     "Major changes: \r\n" +
-    " 1) In the settings, \\newcommand and \\renewcommand now accepts arguments.\r\n" + 
-    " 2) Added new symbols.";
+    " 1) Added new symbols (e.g., subscript capital letters).";
     textOut.value = majorChanges;  // In "text_input" form
 };
