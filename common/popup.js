@@ -1544,6 +1544,175 @@ const texttt = (arg, initialCommand) => {
     return replaceLetters(arg[0], symbols, initialCommand).concat(extraArgs(arg.slice(1), initialCommand));
 };
 
+const textsc = (arg, initialCommand) => {
+    // textsc stands for text small caps
+    // This function converts the list of characters to the corresponding typewriter character
+    const symbols = {
+        "A" : "A",
+        "a" : "ᴀ",
+        "B" : "B",
+        "b" : "ʙ",
+        "C" : "C",
+        "c" : "ᴄ",
+        "D" : "D",
+        "d" : "ᴅ",
+        "E" : "E",
+        "e" : "ᴇ",
+        "F" : "F",
+        "f" : "ꜰ",
+        "G" : "G",
+        "g" : "ɢ",
+        "H" : "H",
+        "h" : "ʜ",
+        "I" : "I",
+        "i" : "ɪ",
+        "J" : "J",
+        "j" : "ᴊ",
+        "K" : "K",
+        "k" : "ᴋ",
+        "L" : "L",
+        "l" : "ʟ",
+        "M" : "M",
+        "m" : "ᴍ",
+        "N" : "N",
+        "n" : "ɴ",
+        "O" : "O",
+        "o" : "ᴏ",
+        "P" : "P",
+        "p" : "ᴘ",
+        "Q" : "Q",
+        "q" : "ꞯ",
+        "R" : "R",
+        "r" : "ʀ",
+        "S" : "S",
+        "s" : "ꜱ",
+        "T" : "T",
+        "t" : "ᴛ",
+        "U" : "U",
+        "u" : "ᴜ",
+        "V" : "V",
+        "v" : "ᴜ",
+        "W" : "W",
+        "w" : "ᴡ",
+        "X" : "X",
+        "x" : "ₓ",
+        "Y" : "Y",
+        "y" : "ʏ",
+        "Z" : "Z",
+        "z" : "ᴢ",
+
+        "𝐴" : "A",
+        "𝑎" : "ᴀ",
+        "𝐵" : "B",
+        "𝑏" : "ʙ",
+        "𝐶" : "C",
+        "𝑐" : "ᴄ",
+        "𝐷" : "D",
+        "𝑑" : "ᴅ",
+        "𝐸" : "E",
+        "𝑒" : "ᴇ",
+        "𝐹" : "F",
+        "𝑓" : "ꜰ",
+        "𝐺" : "G",
+        "𝑔" : "ɢ",
+        "𝐻" : "H",
+        "ℎ" : "ʜ",
+        "𝐼" : "I",
+        "𝑖" : "ɪ",
+        "𝐽" : "J",
+        "𝑗" : "ᴊ",
+        "𝐾" : "K",
+        "𝑘" : "ᴋ",
+        "𝐿" : "L",
+        "𝑙" : "ʟ",
+        "𝑀" : "M",
+        "𝑚" : "ᴍ",
+        "𝑁" : "N",
+        "𝑛" : "ɴ",
+        "𝑂" : "O",
+        "𝑜" : "ᴏ",
+        "𝑃" : "P",
+        "𝑝" : "ᴘ",
+        "𝑄" : "Q",
+        "𝑞" : "ꞯ",
+        "𝑅" : "R",
+        "𝑟" : "ʀ",
+        "𝑆" : "S",
+        "𝑠" : "ꜱ",
+        "𝑇" : "T",
+        "𝑡" : "ᴛ",
+        "𝑈" : "U",
+        "𝑢" : "ᴜ",
+        "𝑉" : "V",
+        "𝑣" : "ᴠ",
+        "𝑊" : "W",
+        "𝑤" : "ᴡ",
+        "𝑋" : "X",
+        "𝑥" : "ₓ",
+        "𝑌" : "Y",
+        "𝑦" : "ʏ",
+        "𝑍" : "Z",
+        "𝑧" : "ᴢ",
+
+        "0" : "0",
+        "1" : "1",
+        "2" : "2",
+        "3" : "3",
+        "4" : "4",
+        "5" : "5",
+        "6" : "6",
+        "7" : "7",
+        "8" : "8",
+        "9" : "9",
+
+        // These symbols don't exist in texttt, but don't output errors
+        "." : ".",
+        "," : ",",
+        "'" : "'",
+        "′" : "'",
+        '"' : '"',
+        "″" : '"',
+        "!" : "!",
+        "?" : "?",
+        "-" : "-",
+        "\u2212" : "\u2212",
+        "_" : "_",
+        "^" : "^",
+        "/" : "/",
+        "+" : "+",
+        "=" : "=",
+        "$" : "$",
+        "¢" : "¢",
+        "£" : "£",
+        "%" : "%",
+        "&" : "&",
+        "*" : "*",
+        "@" : "@",
+        "#" : "#",
+        "|" : "|",
+        "\\" : "\\",
+        ":" : ":",
+        "∶" : ":",
+        ";" : ";",
+        ">" : ">",
+        "<" : "<",
+        "°" : "°",
+        "(" : "(",
+        ")" : ")",
+        "[" : "[",
+        "]" : "]",
+        "{" : "{",
+        "}" : "}",
+
+        "\u2710" : spacesChar.add,
+        "\u270E" : spacesChar.remove,
+        " " : spacesChar.add,
+        "\u000A" : "\u000A",
+        "" : ""
+    };
+    return replaceLetters(arg[0], symbols, initialCommand).concat(extraArgs(arg.slice(1), initialCommand));
+};
+
 const text = (arg, initialCommand) => {
     // This function doesn't change the output (i.e. "abc" -> "abc")
     const symbols = {
@@ -2336,6 +2505,7 @@ const mathDictionary = {
     "\\textbf" : textbf,
     "\\textit" : textit,
     "\\texttt" : texttt,
+    "\\textsc" : textsc,
 
     // Spaces
     "\\hspace" : hspace,
@@ -2796,6 +2966,7 @@ const textCommands = {
     "\\textbf" : textbf,
     "\\textit" : textit,
     "\\texttt" : texttt,
+    "\\textsc" : textsc,
     "\\hspace" : hspace,
     "\\vskip" : vskip,
     "\\`" : grave,
@@ -3035,15 +3206,12 @@ const Subscript = {
     "l" : "\u2097",
     "m" : "\u2098",
     "n" : "\u2099",
-    "O" : "\u2092",
     "o" : "\u2092",
     "p" : "\u209A",
     "r" : "ᵣ",
-    "S" : "\u209B",
     "s" : "\u209B",
     "t" : "\u209C",
     "u" : "ᵤ",
-    "V" : "ᵥ",
     "v" : "ᵥ",
     "X" : "\u2093",
     "x" : "\u2093",
@@ -3057,15 +3225,12 @@ const Subscript = {
     "𝑙" : "\u2097",
     "𝑚" : "\u2098",
     "𝑛" : "\u2099",
-    "𝑂" : "\u2092",
     "𝑜" : "\u2092",
     "𝑝" : "\u209A",
     "𝑟" : "ᵣ",
-    "𝑆" : "\u209B",
     "𝑠" : "\u209B",
     "𝑡" : "\u209C",
     "𝑢" : "ᵤ",
-    "𝑉" : "ᵥ",
     "𝑣" : "ᵥ",
     "𝑋" : "\u2093",
     "𝑥" : "\u2093",
@@ -3085,6 +3250,71 @@ const Subscript = {
 
     "→" : spacesChar.add+spacesChar.add+"\u0362"+spacesChar.add+spacesChar.add,
     "∞" : spacesChar.add+"\u035A"+spacesChar.add,
+
+    // The following are actually small caps, since they don't exist in subscript
+    "A" : "ᴀ",
+    "B" : "ʙ",
+    "C" : "ᴄ",
+    "D" : "ᴅ",
+    "E" : "ᴇ",
+    "F" : "ꜰ",
+    "G" : "ɢ",
+    "H" : "ʜ",
+    "I" : "ɪ",
+    "J" : "ᴊ",
+    "K" : "ᴋ",
+    "L" : "ʟ",
+    "M" : "ᴍ",
+    "N" : "ɴ",
+    "O" : "ᴏ",
+    "P" : "ᴘ",
+    "Q" : "ꞯ",
+    "R" : "ʀ",
+    "S" : "ѕ",
+    "T" : "ᴛ",
+    "U" : "ᴜ",
+    "V" : "ᴠ",
+    "W" : "ᴡ",
+    "Y" : "ʏ",
+    "Z" : "ᴢ",
+
+    "𝐴" : "ᴀ",
+    "𝐵" : "ʙ",
+    "𝐶" : "ᴄ",
+    "𝐷" : "ᴅ",
+    "𝐸" : "ᴇ",
+    "𝐹" : "ꜰ",
+    "𝐺" : "ɢ",
+    "𝐻" : "ʜ",
+    "𝐼" : "ɪ",
+    "𝐽" : "ᴊ",
+    "𝐾" : "ᴋ",
+    "𝐿" : "ʟ",
+    "𝑀" : "ᴍ",
+    "𝑁" : "ɴ",
+    "𝑂" : "ᴏ",
+    "𝑃" : "ᴘ",
+    "𝑄" : "ꞯ",
+    "𝑅" : "ʀ",
+    "𝑆" : "ѕ",
+    "𝑇" : "ᴛ",
+    "𝑈" : "ᴜ",
+    "𝑉" : "ᴠ",
+    "𝑊" : "ᴡ",
+    "𝑌" : "ʏ",
+    "𝑍" : "ᴢ",
+
+    "Γ" : "ᴦ",
+    "Λ" : "ᴧ",
+    "Π" : "ᴨ",
+    "Ψ" : "ᴪ",
+    "Ω" : "ꭥ",
+
+    "𝛤" : "ᴦ",
+    "𝛬" : "ᴧ",
+    "𝛱" : "ᴨ",
+    "𝛹" : "ᴪ",
+    "Ω" : "ꭥ",
 
     "\u2710" : spacesChar.add,
     "\u270E" : spacesChar.remove,
@@ -4142,23 +4372,23 @@ function buildNewCommand() {
     let curlyBracketsRightCN = document.createElement("span");
     let curlyBracketsLeftCA = document.createElement("span");
     let curlyBracketsRightCA = document.createElement("span");
-    let squareBracketLeft = document.createElement("span");
-    let squareBracketRight = document.createElement("span");
+    // let squareBracketLeft = document.createElement("span");
+    // let squareBracketRight = document.createElement("span");
     curlyBracketsLeftCN.textContent = "{";
     curlyBracketsRightCN.textContent = "}";
     curlyBracketsLeftCA.textContent = "{";
     curlyBracketsRightCA.textContent = "}";
-    squareBracketLeft.textContent = "[";
-    squareBracketRight.textContent = "]";
+    // squareBracketLeft.textContent = "[";
+    // squareBracketRight.textContent = "]";
     curlyBracketsLeftCN.style.display = "inline";
     curlyBracketsRightCN.style.display = "inline";
     curlyBracketsLeftCA.style.display = "inline";
     curlyBracketsRightCA.style.display = "inline";
-    squareBracketLeft.style.display = "inline";
-    squareBracketRight.style.display = "inline";
+    // squareBracketLeft.style.display = "inline";
+    // squareBracketRight.style.display = "inline";
 
     let row1 = document.createElement("tr");
-    let row2 = document.createElement("tr");
+    // let row2 = document.createElement("tr");  // Will be used when multiple arguments are allowed
 
     // This block builds the select form from which you can select what to build
     let typeInput = document.createElement("td");
@@ -4201,6 +4431,7 @@ function buildNewCommand() {
     row1.appendChild(newCommandName);
 
     // Number of arguments
+    /*
     let numberArgsField = document.createElement("td");
     let numArgs = document.createElement("input");
     numArgs.type = "number";
@@ -4216,8 +4447,9 @@ function buildNewCommand() {
     numberArgsField.appendChild(numArgs);
     numberArgsField.appendChild(squareBracketRight);
     row1.appendChild(numberArgsField);
+    */
 
-    commandsBuilt.appendChild(row1);
+    // commandsBuilt.appendChild(row1);
 
     // defaultCommandName is the *old* (or default) command
     let defaultCommandName = document.createElement("td");
@@ -4230,11 +4462,11 @@ function buildNewCommand() {
     defaultCommandName.appendChild(curlyBracketsLeftCA);
     defaultCommandName.appendChild(inputDefaultCommandArg);
     defaultCommandName.appendChild(curlyBracketsRightCA);
-    row2.appendChild(defaultCommandName);
+    row1.appendChild(defaultCommandName);  // Will be on row2 when multiple arguments are allowed
 
     // For style
-    let emptyCell = document.createElement("td");
-    row2.appendChild(emptyCell);
+    // let emptyCell = document.createElement("td");
+    // row2.appendChild(emptyCell);
 
     // Button used to delete the command (and remove the rows)
     let deleteCommand = document.createElement("td");
@@ -4261,30 +4493,31 @@ function buildNewCommand() {
     deleteCommandBtn.addEventListener("click", () => {
         // Delete the command
         row1.remove();
-        row2.remove();
+        // row2.remove();
     });
 
     deleteCommand.appendChild(deleteCommandBtn);
-    row2.appendChild(deleteCommand);
+    row1.appendChild(deleteCommand);
 
-    commandsBuilt.appendChild(row2);
+    commandsBuilt.appendChild(row1);
 };
 
 function storeCommands() {
     // Loops on all the commands and returns an array containing all the info
     // Called when MatTalX or the settings popup closes
     let commandsList = [];
-    for (let i=0; i<commandsBuilt.rows.length; i+=2) {
-        if (commandsBuilt.rows[i].cells[1].children[1].value !== undefined && 
-            commandsBuilt.rows[i+1].cells[0].children[1].value !== undefined &&
+    for (let i=0; i<commandsBuilt.rows.length; i+=1) {
+        if (commandsBuilt.rows[i].cells[0].children[0].value !== undefined && 
             commandsBuilt.rows[i].cells[1].children[1].value !== "" &&
-            commandsBuilt.rows[i+1].cells[0].children[1].value !== "")
+            commandsBuilt.rows[i].cells[2].children[1].value !== ""
+            // commandsBuilt.rows[i+1].cells[0].children[1].value !== ""
+            )
         {
             commandsList.push({
                 type : commandsBuilt.rows[i].cells[0].children[0].value,
                 newInput : commandsBuilt.rows[i].cells[1].children[1].value,
-                numArgs : commandsBuilt.rows[i].cells[2].children[1].value,
-                output : commandsBuilt.rows[i+1].cells[0].children[1].value
+                // numArgs : commandsBuilt.rows[i].cells[2].children[1].value,
+                output : commandsBuilt.rows[i].cells[2].children[1].value
             });
         };
     };
@@ -4294,17 +4527,17 @@ function storeCommands() {
 function buildAllCommands(fullDict) {
     // Includes every commands built by the user in the object containing every commands (in math mode)
     // Called by makeDict()
-    for (let i=0; i<commandsBuilt.rows.length; i+=2) {
-        if (commandsBuilt.rows[i].cells[1].children[1].value !== undefined && 
-            commandsBuilt.rows[i+1].cells[0].children[1].value !== undefined && 
+    for (let i=0; i<commandsBuilt.rows.length; i+=1) {
+        if (commandsBuilt.rows[i].cells[0].children[0].value !== undefined && 
+            // commandsBuilt.rows[i+1].cells[0].children[1].value !== undefined && 
             commandsBuilt.rows[i].cells[1].children[1].value !== "" && 
-            commandsBuilt.rows[i+1].cells[0].children[1].value !== "")
+            commandsBuilt.rows[i].cells[2].children[1].value !== "")
         {
             fullDict = settingsFunctions[commandsBuilt.rows[i].cells[0].children[0].value](
                             fullDict,
-                            commandsBuilt.rows[i].cells[2].children[1].value,
+                            0, // commandsBuilt.rows[i].cells[2].children[1].value,
                             commandsBuilt.rows[i].cells[1].children[1].value.replace(/ /g, ""), 
-                            commandsBuilt.rows[i+1].cells[0].children[1].value+" "
+                            commandsBuilt.rows[i].cells[2].children[1].value+" "
                         );
         };
     };
