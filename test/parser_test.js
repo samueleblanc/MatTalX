@@ -24,8 +24,8 @@ function test() {
         "Bien s\\^{u}r, $\\frac{1}{2}$ est rationnelle. De plus, $\\frac{\\frac{\\frac{1}{2}}{2}}{2}$ l'est aussi.",
         "$n!$ grows fast, but less so than $n \\uparrow\\uparrow\\uparrow n$",
         "\\textbf{Proposition}: Let $a \\in \\mathbb{R}$, then $a \\leq x  \\forall x \\in \\emptyset$",
-        "\\textbf{Theorem}: Let $S^{n}$ be a closed ball of an Euclidiean space and $f$ be a continuous function. Then \\\\" + 
-        "$\\qquad\\exists f:S^{n} \\rightarrow S^{n}$ such that $f(x_{0}) = x_{0}$",
+        "\\textbf{Theorem}: Let $S^{n}$ be a closed ball of a Euclidiean space and $f : S^{n} \\to S^{n}$ be a continuous function. Then \\\\" + 
+        "$\\qquad\\exists x_{0} \\in S^{n}$ such that $f(x_{0}) = x_{0}$",
         "$\\mathbb{P}(X \\geq \\alpha) \\leq \\frac{\\mathbb{E}[X]}{\\alpha}$",
         "$\\mathrm{CO}_{2} \\rightarrow " +
         "\\overset{:}{\\underset{:}{\\mathrm{O}}}{=}\\mathrm{C}{=}\\overset{:}{\\underset{:}{\\mathrm{O}}}$"
@@ -41,8 +41,8 @@ function test() {
         "Bien sûr, ¹∕₂ est rationnelle. De plus, ((¹∕₂/2)/2) l'est aussi. ",
         "𝑛! grows fast, but less so than 𝑛 ↑↑↑ 𝑛 ",
         "𝗣𝗿𝗼𝗽𝗼𝘀𝗶𝘁𝗶𝗼𝗻: Let 𝑎 ∈ ℝ, then 𝑎 ≤ 𝑥  ∀ 𝑥 ∈ ∅ ",
-        "𝗧𝗵𝗲𝗼𝗿𝗲𝗺: Let 𝑆ⁿ be a closed ball of an Euclidiean space and 𝑓 be a continuous function. Then \u000A"+
-                "    ∃ 𝑓∶𝑆ⁿ → 𝑆ⁿ such that 𝑓(𝑥₀) = 𝑥₀ ",
+        "𝗧𝗵𝗲𝗼𝗿𝗲𝗺: Let 𝑆ⁿ be a closed ball of a Euclidiean space and 𝑓 ∶ 𝑆ⁿ → 𝑆ⁿ be a continuous function. Then \u000A"+
+                "    ∃ 𝑥₀ ∈ 𝑆ⁿ such that 𝑓(𝑥₀) = 𝑥₀ ",
         "ℙ(𝑋 ≥ 𝛼) ≤ (𝔼[𝑋]/𝛼) ",
         "CO₂ → Ö̤=C=Ö̤ "
     ];
