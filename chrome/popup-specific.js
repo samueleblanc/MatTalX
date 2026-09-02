@@ -25,12 +25,12 @@ window.addEventListener("focus", () => {
         (commands) => {
             for (const command of commands) {
                 if (command.name === "_execute_action") {
-                    textOpenMatTalX.textContent = command.shortcut;
+                    showOpenShortcut(command.shortcut);
                 };
             };
         },
         () => {
-            textOpenMatTalX.textContent = defaultSettings["open_mattalx_shortcut"];
+            showOpenShortcut(defaultSettings["open_mattalx_shortcut"]);
         }
     );
     textIn.focus();
@@ -84,4 +84,10 @@ function closeSettings() {
     applySettings();
 
     settingsBox.style.display = "none";
+};
+
+function openShortcutSettings() {
+    // Chrome has no way for an extension to set a command's shortcut,
+    // so it opens the page where the user can do it
+    chrome.tabs.create({url: "chrome://extensions/shortcuts"});
 };

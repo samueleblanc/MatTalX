@@ -119,6 +119,12 @@ const setCompletionKey = document.getElementById("shortCompletionK");
 const setCompletionLetter = document.getElementById("shortCompletionL");
 const showCompletionBtn = document.getElementById("showCompletionBtn");
 
+// The shortcut that opens MatTalX belongs to the browser, not to MatTalX, so the Settings box
+// can only show it and open the page where the browser lets the user change it
+const settingsOpenShortcut = document.getElementById("settingsOpenShortcut");
+const changeShortcutBtn = document.getElementById("changeShortcutBtn");
+changeShortcutBtn.onclick = function() {openShortcutSettings()};
+
 // Shortcuts info (in dropdownInfo)
 const shortcutsList = document.getElementById("shortcuts");
 const textOpenMatTalX = document.getElementById("short_open_mattalx_command");
@@ -297,6 +303,13 @@ function buildStoredCommands(builtCommands) {
         // commandsBuilt.rows[i].cells[2].children[1].value = builtCommands[i].numArgs;
         commandsBuilt.rows[i].cells[2].children[1].value = builtCommands[i].output;
     };
+};
+
+function showOpenShortcut(shortcut) {
+    // Shows the shortcut the browser reports, in the dropdown and in the Settings box
+    const text = (shortcut) ? shortcut : "Not set";
+    textOpenMatTalX.textContent = text;
+    settingsOpenShortcut.textContent = text;
 };
 
 function showErrors(errors) {
@@ -500,6 +513,12 @@ function updateMainColors() {
     });
     buildCommandsBtn.addEventListener("mouseleave", (e) => {
         buildCommandsBtn.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][i];
+    });
+    changeShortcutBtn.addEventListener("mouseenter", (e) => {
+        changeShortcutBtn.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["hover"][i];
+    });
+    changeShortcutBtn.addEventListener("mouseleave", (e) => {
+        changeShortcutBtn.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][i];
     });
 
     let j;

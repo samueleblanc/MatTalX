@@ -25,12 +25,12 @@ window.addEventListener("focus", () => {
         (commands) => {
             for (const command of commands) {
                 if (command.name === "_execute_browser_action") {
-                    textOpenMatTalX.textContent = command.shortcut;
+                    showOpenShortcut(command.shortcut);
                 };
             };
         },
         () => {
-            textOpenMatTalX.textContent = defaultSettings["open_mattalx_shortcut"];
+            showOpenShortcut(defaultSettings["open_mattalx_shortcut"]);
         }
     );
     textIn.focus();
@@ -84,4 +84,14 @@ function closeSettings() {
     applySettings();
 
     settingsBox.style.display = "none";
+};
+
+function openShortcutSettings() {
+    // Firefox opens the shortcut page itself since version 127
+    // Older versions get the add-ons page, where the shortcuts are under the gear menu
+    if (browser.commands.openShortcutSettings) {
+        browser.commands.openShortcutSettings();
+    } else {
+        browser.tabs.create({url: "about:addons"});
+    };
 };
