@@ -2819,8 +2819,6 @@ const mathDictionary = {
     "\\%" : "%",
     "\\{" : "{",
     "\\}" : "}",
-    "\\(" : "(",
-    "\\)" : ")",
     "\\$" : "$",
     "\\#" : "#",
     "\\backslash" : "\\",
@@ -3883,6 +3881,7 @@ function tokenize(fullText, mathmode) {
     // For instance "curl written as $\nabla \times \mathbf{F}$" will output
     //  [c,u,r,l, ,w,r,i,t,t,e,n, ,a,s, ,STARTMM,\nabla, ,\times, ,\mathbf,STARTARG,F,ENDARG,ENDMM]
     const brackets = ["[", "]"];
+    const parentheses = ["(", ")"];
     const commandStoppers = [" ", "\u000A", ",", "/", "-", "+", "<", ">", "|", "?", "(", ")"]; 
     // N.B. Brackets also stops commands (most of the time)
     const potentialCommandStoppers = [":" , ";" , "~", ".", "!", "'", '"', "=", "%", "#"];
@@ -3899,7 +3898,29 @@ function tokenize(fullText, mathmode) {
 
     for (i=0; i<fullText.length; i++) {
         if (trigger) {
-            if (commandStoppers.includes(fullText[i])) {
+            if ((parentheses.includes(fullText[i])) && (fullText[i-1] === "\\")) {
+                // '\(' and '\)' enter and leave math mode, like '$'
+                // Unlike '\[' and '\]', they don't skip a line
+                if (mathmode) {
+                    if ((fullText[i] === ")") && (mathmodeStarter === "\\(")) {
+                        mathmode = false;
+                        mathmodeStarter = "";
+                        outTokens.push(specialTokens.endMathmode);
+                    } else {
+                        outTokens.push(temporaryBox.join("") + fullText[i]);
+                    };
+                } else {
+                    if (fullText[i] === "(") {
+                        mathmode = true;
+                        mathmodeStarter = "\\(";
+                        outTokens.push(specialTokens.startMathmode);
+                    } else {
+                        outTokens.push(temporaryBox.join("") + fullText[i]);
+                    };
+                };
+                trigger = false;
+                temporaryBox = [];
+            } else if (commandStoppers.includes(fullText[i])) {
                 outTokens.push(temporaryBox.join(""));
                 outTokens.push(fullText[i]);
                 trigger = false;

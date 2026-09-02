@@ -54,6 +54,18 @@ export const cases = [
       out: "𝑥^{𝑥^{𝑥ˣ}} " },
     { in: "$x^{\\alpha}$",
       out: "𝑥^{𝛼} " },
+    // --- math mode delimiters ---
+    { in: "Let \\(f(x) = x^2\\) be a function",
+      out: "Let 𝑓(𝑥) = 𝑥² be a function " },
+    { in: "a \\(x\\) b and $y$",
+      out: "a 𝑥 b and 𝑦 " },
+    { in: "\\(\\sum_i a_i \\leq \\int_0^1 f\\)",
+      out: "∑ᵢ𝑎ᵢ ≤ ∫₀¹𝑓 " },
+    { in: "x\\)",
+      out: "x\\) " },                             // A ')' that closes nothing is left alone
+    { in: "\\[x^2\\]",
+      out: "\u000A𝑥²\u000A " },                  // '\\[' still skips a line, '\\(' doesn't
+
     // --- text that can't be converted is shown as it was written ---
     { in: "Here is a command: $\\oingt$",
       out: "Here is a command: \\oingt " },
