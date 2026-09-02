@@ -4269,6 +4269,12 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing, callSpaceCommand=t
             };
         };
     };
+    if (mathmode) {
+        // Math mode was left open, so the text is converted as if it had been closed at the end
+        // rather than being dropped with the rest of mathmodeText
+        outText += adjustSpacing(mathmodeText);
+        mathmodeText = "";
+    };
     if (mathmodeOccurence % 2 !== 0) {
         mistakes("Math mode was not closed", undefined);
     };

@@ -63,6 +63,10 @@ export const cases = [
       out: "∑ᵢ𝑎ᵢ ≤ ∫₀¹𝑓 " },
     { in: "x\\)",
       out: "x\\) " },                             // A ')' that closes nothing is left alone
+    { in: "I want to write an integral $\\int f(x)dx for fun",
+      out: "I want to write an integral ∫𝑓(𝑥)𝑑𝑥𝑓𝑜𝑟𝑓𝑢𝑛" },   // Math mode left open is closed at the end
+    { in: "\\(x^2",
+      out: "𝑥²" },
     { in: "\\[x^2\\]",
       out: "\u000A𝑥²\u000A " },                  // '\\[' still skips a line, '\\(' doesn't
 

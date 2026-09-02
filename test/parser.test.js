@@ -56,6 +56,13 @@ test("\\today gives today's date", () => {
     assert.equal(result.errors, "");
 });
 
+test("math mode left open is still reported", () => {
+    // The text is converted as if math mode had been closed, but the user is told about it
+    const result = convert("an integral $\\int f(x)dx for fun ", {mathMode: false});
+    assert.ok(result.text.includes("\u222b"), "the integral must still be converted");
+    assert.ok(result.errors.includes("Math mode was not closed"));
+});
+
 test("core.js never touches the DOM", () => {
     // Runs in node, so anything reaching for document or window would already have thrown
     assert.equal(typeof globalThis.document, "undefined");
