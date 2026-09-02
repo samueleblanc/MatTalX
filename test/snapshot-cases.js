@@ -8,6 +8,10 @@
 
 import { dictionaries } from "../common/core.js";
 
+// Commands whose output isn't the same twice, so they can't be recorded here
+// \today gives the current date, and has its own test in parser.test.js
+const notDeterministic = ["\\today"];
+
 export const configs = [
     { name: "default",    mathFont: true,  mathMode: true,  adjustSpaces: true  },
     { name: "noMathFont", mathFont: false, mathMode: true,  adjustSpaces: true  },
@@ -43,13 +47,17 @@ export function buildInputs() {
     // Every command, called with an argument when it is a function
     for (const dict of [d.mathDictionary, d.stdGreek, d.noStyleGreek]) {
         for (const key of Object.keys(dict)) {
+            if (notDeterministic.includes(key)) continue;
             add((typeof dict[key] === "function") ? "$" + key + "{a}$" : "$" + key + "$");
         };
     };
     for (const key of Object.keys(d.Superscript)) add("$x^{" + key + "}$");
     for (const key of Object.keys(d.Subscript))   add("$x_{" + key + "}$");
     for (const key of Object.keys(d.accents))     add("$" + key + "{u}$");
-    for (const key of Object.keys(d.textCommands)) add(key + "{abc}");
+    for (const key of Object.keys(d.textCommands)) {
+        if (notDeterministic.includes(key)) continue;
+        add(key + "{abc}");
+    };
     for (const key of Object.keys(d.lettersMath))  add("$" + key + "$");
     for (const key of Object.keys(d.lettersOutMathMode)) add(key);
 

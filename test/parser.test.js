@@ -48,6 +48,14 @@ test("a conversion does not keep the errors of the previous one", () => {
     assert.equal(convert("$\\alpha$ ", {mathMode: false}).errors, "");
 });
 
+test("\\today gives today's date", () => {
+    // Kept out of the snapshot, since its output changes every day
+    const result = convert("\\today ", {mathMode: false});
+    assert.match(result.text, /^[A-Z][a-z]+ \d{1,2}, \d{4} $/);
+    assert.ok(result.text.includes(String(new Date().getFullYear())));
+    assert.equal(result.errors, "");
+});
+
 test("core.js never touches the DOM", () => {
     // Runs in node, so anything reaching for document or window would already have thrown
     assert.equal(typeof globalThis.document, "undefined");
