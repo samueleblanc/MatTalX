@@ -23,8 +23,40 @@ let settings = {...defaultConversionSettings};
 // Header the interface puts above the list of errors ("Errors" in bold)
 export const errorHeader = "\u{1D404}\u{1D42B}\u{1D42B}\u{1D428}\u{1D42B}\u{1D42C}: \r\n";
 
-// Symbol for an error
+// Symbol for an error, only used when there is nothing to show instead
 const errSymbol = "\u{1D41E}\u0353\u{1D42B}\u0353\u{1D42B}";  // bold "err" with two "x" under it
+
+// A conversion that fails keeps the text that caused it, surrounded by a character no dictionary
+// can produce, so the output shows the command (or the character) rather than errSymbol
+// The marks are removed by convert(), just before the text is given back to the interface
+const failureMark = "\uE000";  // Private use area
+const failureCode = failureMark.charCodeAt(0);
+
+// Says if a value is a piece of text that couldn't be converted
+// Compares the first character rather than the whole string, since this runs on every symbol
+const isFailure = (value) => {
+    return (typeof value === "string") && (value.charCodeAt(0) === failureCode);
+};
+
+// Same, for an array of values (e.g. the characters of an argument)
+const hasFailure = (values) => {
+    return values.some(isFailure);
+};
+
+// What stands in the output for a piece of text that couldn't be converted
+// Falls back to errSymbol when there is nothing to show, and never marks a failure twice
+const failure = (text) => {
+    if (isFailure(text)) {
+        return text;
+    } else {
+        return failureMark + ((text === undefined) ? errSymbol : text) + failureMark;
+    };
+};
+
+// Removes the marks, leaving only the text that couldn't be converted
+const stripFailures = (text) => {
+    return text.split(failureMark).join("");
+};
 
 // Every undefined commands
 let errorsList = "";
@@ -918,7 +950,7 @@ const superscript = (arg, initialCommand, forFrac=false) => {
     // Sends input to be converted by replaceLetters
     // This function is by default not called by the frac function
     let output = replaceLetters(arg[0], Superscript, initialCommand, !forFrac);
-    if (((output.indexOf(errSymbol) === -1) && (output.filter(e => accents[e] !== undefined).length === 0)) || (forFrac)) {
+    if (((!hasFailure(output)) && (output.filter(e => accents[e] !== undefined).length === 0)) || (forFrac)) {
         return output.concat(extraArgs(arg.slice(1), initialCommand));
     } else {
         return ["^{" + arg[0].join("") + "}"].concat(extraArgs(arg.slice(1), initialCommand));
@@ -929,7 +961,7 @@ const subscript = (arg, initialCommand, forFrac=false) => {
     // Sends input to be converted by replaceLetters
     // This function is by default not called by the frac function
     let output = replaceLetters(arg[0], Subscript, initialCommand, !forFrac);
-    if (((output.indexOf(errSymbol) === -1) && (output.filter(e => accents[e] !== undefined).length === 0)) || (forFrac)) {
+    if (((!hasFailure(output)) && (output.filter(e => accents[e] !== undefined).length === 0)) || (forFrac)) {
         return output.concat(extraArgs(arg.slice(1), initialCommand));
     } else {
         return ["_{" + arg[0].join("") + "}"].concat(extraArgs(arg.slice(1), initialCommand));
@@ -1901,7 +1933,7 @@ const hspace = (arg, initialCommand) => {
     let spaces = [];
     const num = arg[0].join("");
     if (isNaN(num)) {
-        spaces.push(mistakes(initialCommand + "{" + num + "}", undefined, "Argument must be a number"));
+        spaces.push(mistakes(initialCommand + "{" + num + "}", undefined, "Argument must be a number", initialCommand + "{" + num + "}"));
     } else {
         for (let i=0; i<parseInt(num); i++) {
             spaces.push(spacesChar.add);
@@ -1916,7 +1948,7 @@ const vskip = (arg, initialCommand) => {
     let skips = [];
     const num = arg[0].join("");
     if (isNaN(num)) {
-        skips.push(mistakes(initialCommand + "{" + num + "}", undefined, "Argument must be a number"));
+        skips.push(mistakes(initialCommand + "{" + num + "}", undefined, "Argument must be a number", initialCommand + "{" + num + "}"));
     } else {
         for (let i=0; i<parseInt(num); i++) {
             skips.push("\u000A");
@@ -1932,7 +1964,7 @@ const phantom = (arg, initialCommand) => {
     for (let i=0; i<arg[0].length; i++) {
         spaces.push(spacesChar.add);
     };
-    if (arg[0].includes(errSymbol)) {
+    if (hasFailure(arg[0])) {
         mistakes(initialCommand + "{" + arg[0].join("") + "}", undefined, "Undefined argument");
     };
     return spaces.concat(extraArgs(arg.slice(1), initialCommand));
@@ -1944,7 +1976,7 @@ const mathord = (arg, initialCommand) => {
     let output = [];
     for (let i in arg) {
         output.push(spacesChar.remove, arg[i].join(""), spacesChar.remove);
-        if (arg[i].includes(errSymbol)) {
+        if (hasFailure(arg[i])) {
             mistakes(initialCommand + "{" + arg[i].join("") + "}", undefined, "Undefined argument");
         };
     };
@@ -1961,7 +1993,7 @@ const sqrt = (arg, initialCommand) => {
             rootNum = undefined;
         } else {
             mistakes(initialCommand + " should take the form \\sqrt[n]{x}", undefined, "ⁿ√𝑥");
-            return [addSymbol(undefined)];
+            return [failure(initialCommand)];
         };
     } else {
         rootNum = initialCommand.substring(numStart + 1, numEnd);
@@ -2000,11 +2032,11 @@ const frac = (arg, initialCommand) => {
     let output = [];
     if (arg.length < 2) {
         mistakes("\\frac{}{}", undefined, "Two arguments needed");
-        return [errSymbol];
+        return [failure(initialCommand + arg.map((a) => "{" + a.join("") + "}").join(""))];
     };
     output.push(...addSymbol(superscript([arg[0]], initialCommand, true), true), "\u2215");
     output.push(...addSymbol(subscript([arg[1]], initialCommand, true), true));
-    if ((output.indexOf(errSymbol) === -1) && (output.filter(e => accents[e] !== undefined).length === 0)) {
+    if ((!hasFailure(output)) && (output.filter(e => accents[e] !== undefined).length === 0)) {
         return output.concat(extraArgs(arg.slice(2), initialCommand));
     } else {
         // TODO: Why???
@@ -2120,12 +2152,12 @@ const stackSymbols = (arg, initialCommand, dict) => {
     // Returns the first argument above or below the symbol in the middle of the second argument
     if (arg.length < 2) {
         mistakes(initialCommand+"{}{}", undefined, "Two arguments needed");
-        return [errSymbol];
+        return [failure(initialCommand + arg.map((a) => "{" + a.join("") + "}").join(""))];
     };
     let rel = arg[0];
     let mid = arg[1];
     if (rel.length > 1) {
-        return mistakes(initialCommand+"{"+rel.join("")+"}{"+mid.join("")+"}", undefined, "Length of first argument must be one.");
+        return mistakes(initialCommand+"{"+rel.join("")+"}{"+mid.join("")+"}", undefined, "Length of first argument must be one.", initialCommand+"{"+rel.join("")+"}{"+mid.join("")+"}");
     };
     mistakes(initialCommand+"{"+rel.join("")+"}{"+mid.join("")+"}", dict[rel[0]], (rel[0] !== undefined) ? rel[0] : "Argument doesn't exist");
     mid[Math.floor(mid.length/2)] += (dict[rel[0]] !== undefined) ? dict[rel[0]] : "";
@@ -4112,21 +4144,28 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing, callSpaceCommand=t
                             } else {
                                 callingFct = fct;
                             };
+                            // An unknown command keeps its argument, e.g. '\oingt{\alpha}' -> '\oingt{𝛼}'
+                            const converted = (typeof dict[callingFct] === "function") ?
+                                dict[callingFct](arg, fct) :
+                                [failure(fct + arg.map((a) => "{" + stripFailures(a.join("")) + "}").join(""))];
                             if (argStack.length > 0) {
-                                argStack[argStack.length-1].push(...dict[callingFct](arg, fct));
+                                argStack[argStack.length-1].push(...converted);
+                                if (typeof dict[callingFct] !== "function") {
+                                    mistakes(fct, undefined);
+                                };
                             } else {
                                 if (mathmode) {
-                                    mathmodeText += str(dict[callingFct](arg, fct).join(""));
+                                    mathmodeText += str(converted.join(""));
                                 } else {
-                                    outText += str(dict[callingFct](arg, fct).join(""));
+                                    outText += str(converted.join(""));
                                 };
                                 mistakes(fct, dict[callingFct]);
                             };
                         } else {
                             if (mathmode) {
-                                mathmodeText += mistakes(fct+"{}", undefined, "Can't find an argument");
+                                mathmodeText += mistakes(fct+"{}", undefined, "Can't find an argument", fct);
                             } else {
-                                outText += mistakes("Out of math mode", undefined, "Can't find an argument for " + fct + "{}");
+                                outText += mistakes("Out of math mode", undefined, "Can't find an argument for " + fct + "{}", fct);
                             };
                         };
                         arg = [];
@@ -4139,7 +4178,7 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing, callSpaceCommand=t
                             mathmodeText += str(mathord(arg, "").join(""));
                             mistakes("{"+arg.join("")+"}", mathord(arg, "").join(""), arg.join(""));
                         } else {
-                            outText += mistakes("Out of math mode", undefined, "Can't find a function for {" + arg.join("") + "}" + ". Use '\\{' or '\\}' to output a curly bracket");
+                            outText += mistakes("Out of math mode", undefined, "Can't find a function for {" + arg.join("") + "}" + ". Use '\\{' or '\\}' to output a curly bracket", "{" + arg.join("") + "}");
                         };
                         arg = [];
                     };
@@ -4164,9 +4203,9 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing, callSpaceCommand=t
                     fctStack.push(tokens[i]);
                 } else if (tokens.slice(i+1).filter(x => x !== " ")[0] === specialTokens.startArgument) {
                     if (mathmode) {
-                        mathmodeText += mistakes(tokens[i]+" {}", undefined, "Remove extra spaces");
+                        mathmodeText += mistakes(tokens[i]+" {}", undefined, "Remove extra spaces", tokens[i]);
                     } else {
-                        outText += mistakes("Out of math mode: "+tokens[i]+" {}", undefined, "Remove extra spaces");
+                        outText += mistakes("Out of math mode: "+tokens[i]+" {}", undefined, "Remove extra spaces", tokens[i]);
                     };
                 } else {
                     if (mathmode) {
@@ -4183,22 +4222,26 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing, callSpaceCommand=t
                                 };
                             };
                         } else {
-                            mathmodeText += mistakes(tokens[i]+"{}", undefined, "Can't find an argument");
+                            mathmodeText += mistakes(tokens[i]+"{}", undefined, "Can't find an argument", tokens[i]);
                         };
                     } else {
-                        outText += mistakes("Out of math mode", undefined, "Can't find an argument for "+tokens[i]+"{}");
+                        outText += mistakes("Out of math mode", undefined, "Can't find an argument for "+tokens[i]+"{}", tokens[i]);
                     };
                 };
+            } else if ((command === undefined) && (tokens[i+1] === specialTokens.startArgument)) {
+                // An unknown command that is given an argument, e.g. '\oingt{\alpha}'
+                // Kept on the stack like a real function, so the output can show '\oingt{𝛼}'
+                fctStack.push(tokens[i]);
             } else {
                 if (argStack.length > 0) {
-                    argStack[argStack.length-1].push(str(dict[tokens[i]]));
+                    argStack[argStack.length-1].push(str(dict[tokens[i]], tokens[i]));
                     mistakes(tokens[i], dict[tokens[i]]);
                 } else {
                     if (mathmode) {
-                        mathmodeText += str(dict[tokens[i]]);
+                        mathmodeText += str(dict[tokens[i]], tokens[i]);
                         mistakes(tokens[i], dict[tokens[i]]);
                     } else {
-                        outText += str(dict[tokens[i]]);
+                        outText += str(dict[tokens[i]], tokens[i]);
                         mistakes("Out of math mode", dict[tokens[i]], tokens[i]);
                     };
                 };
@@ -4270,10 +4313,15 @@ function replaceLetters(letters, dict, initialCommand, checkMistakes=true) {
     dict = {...dict, ...accents};
     let newtext = [];
     for (let c in letters) {
-        newtext.push(addSymbol(dict[letters[c]]));
+        newtext.push(addSymbol(dict[letters[c]], false, letters[c]));
         if (checkMistakes) {
-            mistakes(initialCommand + "{" + letters.join("") + "}", dict[letters[c]], (letters[c] !== errSymbol) ? letters[c] : "A symbol does not exist or can't be shown");
+            mistakes(initialCommand + "{" + letters.join("") + "}", dict[letters[c]], (!isFailure(letters[c])) ? letters[c] : "A symbol does not exist or can't be shown");
         };
+    };
+    if (hasFailure(newtext)) {
+        // Something in the argument couldn't be converted, so the command is kept whole
+        // in the output (e.g. '\mathbf{\oingt}' rather than just '\oingt')
+        return [failure(initialCommand + "{" + stripFailures(letters.join("")) + "}")];
     };
     return newtext;
 };
@@ -4293,41 +4341,41 @@ function combineSymbols(arg, initialCommand, symbol, forTwo=undefined) {
                 textComb.push(combArg[c] + symbol);
                 err.push(combArg[c]);
             } else {
-                textComb.push(errSymbol);
-                err.push(errSymbol);
+                textComb.push(failure(undefined));
+                err.push(failure(undefined));
             };
         };
-        if (err.includes(errSymbol)) {
+        if (hasFailure(err)) {
             mistakes(initialCommand + "{" + err.join("") + "}", undefined, "Argument doesn't exist");
         };
     };
     return textComb.concat(extraArgs(arg.slice(1), initialCommand));
 };
 
-function addSymbol(command, keepArray=false) {
-    // Return the command if it's defined, if not it returns a bold "err" with two "x" under it
+function addSymbol(command, keepArray=false, original=undefined) {
+    // Return the command if it's defined, if not it returns the text that couldn't be converted
     if ((typeof command == "object") && !(keepArray)) {
         // Changes an array of characters into a string
         command = command.join("");
     };
-    return (command !== undefined) ? command : errSymbol;
+    return (command !== undefined) ? command : failure(original);
 };
 
 function addSymbolArray(args, command, checkMistakes=true) {
     // Differs from the function above as it takes in an array instead of a string
     let output = [];
     for (let i in args) {
-        output.push((args[i] !== undefined) ? args[i] : errSymbol);
+        output.push((args[i] !== undefined) ? args[i] : failure(undefined));
         if (checkMistakes) {
-            mistakes(command, ((args[i] === errSymbol) || (args[i] === undefined)) ? undefined : args[i], "A symbol does not exist or can't be shown");
+            mistakes(command, (isFailure(args[i]) || (args[i] === undefined)) ? undefined : args[i], "A symbol does not exist or can't be shown");
         };
     };
     return output.join("");
 };
 
-function str(command) {
-    // Make sure the command is a string
-    return (typeof command === "string") ? command : errSymbol;
+function str(command, original=undefined) {
+    // Make sure the command is a string, or keep the text that couldn't be converted
+    return (typeof command === "string") ? command : failure(original);
 };
 
 function extraArgs(args, initialCommand) {
@@ -4341,12 +4389,12 @@ function extraArgs(args, initialCommand) {
 
 /** Check mistakes **/
 
-function mistakes(textInput, textOutput, letter="") {
+function mistakes(textInput, textOutput, letter="", shown=undefined) {
     // Writes every errors in a box, so it's easier for the user to find them
 
     if (textOutput === undefined) {
         if (letter !== "") {
-            if (letter !== errSymbol) {  // Only add to errorsList once
+            if (!isFailure(letter)) {  // Only add to errorsList once
                 if (letter.includes(spacesChar.add)) {
                     if (textInput.substring(0,5) === "\\text") {
                         errorsList += spaceCommand(textInput + " \u2192 Spaces are kept inside '" + textInput.replace(/{.*}/g, "") + "{}', no need for a spacing command") + "\r\n";
@@ -4380,7 +4428,7 @@ function mistakes(textInput, textOutput, letter="") {
             };
         };
     };
-    return [errSymbol];
+    return [failure(shown)];
 };
 
 export function resetErrors() {
@@ -4460,7 +4508,7 @@ function matrix(text, initialCommand) {
     matrixText = matrixText.replace(/,/g, spacesChar.add);  // Add spaces between characters
     matrixText += "\u000A";
     if ((cpt % 2 != 0) || (cpt == 0)) {
-        matrixText = errSymbol;
+        matrixText = failure(initialCommand + "{" + text + "}");
         mistakes('Wrong arguments given" \r\n  Example: "\\matrix{[a,b,c][d,e,f][1,2,3]}', undefined);
     } else if (settings.mathFont) {
         mistakes(initialCommand+"{}", undefined, "Works better with 'Mathematical font' unchecked");
@@ -4662,7 +4710,8 @@ export function convert(fullText, userSettings) {
         fullDict = makeDict("default");
         fullText = tokensToText(tokenize(fullText, settings.mathMode), fullDict, dictOutMathmode, adjustSpaces);
     };
-    return {text: fullText, errors: errorsList};
+    // The marks were only there to tell the parser a conversion had failed
+    return {text: stripFailures(fullText), errors: stripFailures(errorsList)};
 };
 
 function makeDict(documentClass) {

@@ -54,6 +54,22 @@ export const cases = [
       out: "𝑥^{𝑥^{𝑥ˣ}} " },
     { in: "$x^{\\alpha}$",
       out: "𝑥^{𝛼} " },
+    // --- text that can't be converted is shown as it was written ---
+    { in: "Here is a command: $\\oingt$",
+      out: "Here is a command: \\oingt " },
+    { in: "$\\mathbf{\\oingt}$",
+      out: "\\mathbf{\\oingt} " },                 // The command is kept whole, not just what failed
+    { in: "$\\oingt{\\alpha}$",
+      out: "\\oingt{𝛼} " },                     // An unknown command keeps its converted argument
+    { in: "$\\mathbf{\\oingt{\\alpha}}$",
+      out: "\\mathbf{\\oingt{𝛼}} " },
+    { in: "$a \\oingt b$",
+      out: "𝑎\\oingt𝑏 " },
+    { in: "café — 90%",
+      out: "café — 90% " },                     // Characters MatTalX doesn't know are left alone
+    { in: "$\\hspace{a}$",
+      out: "\\hspace{𝑎} " },
+
     // --- settings ---
     { in: "$\\alpha x$",
       out: "αx ",

@@ -21,6 +21,28 @@ test("errors are returned instead of written to a box", () => {
     assert.ok(convert("$\\notacommand$ ", {mathMode: false}).errors.includes("\\notacommand"));
 });
 
+test("a command that can't be converted is still reported, not only shown", () => {
+    // The output shows the command, but the box under it must still say what went wrong
+    const result = convert("$\\oingt$ ", {mathMode: false});
+    assert.equal(result.text, "\\oingt ");
+    assert.ok(result.errors.includes("\\oingt"));
+});
+
+test("a failing argument keeps the command around it, in the output and in the errors", () => {
+    const result = convert("$\\mathbf{\\oingt}$ ", {mathMode: false});
+    assert.equal(result.text, "\\mathbf{\\oingt} ");
+    assert.ok(result.errors.includes("\"\\oingt\""), "the command itself must be reported");
+    assert.ok(result.errors.includes("\\mathbf{\\oingt}"), "the whole command must be reported too");
+});
+
+test("nothing that failed leaks the internal mark into the output", () => {
+    for (const text of ["$\\oingt$ ", "$\\mathbf{\\oingt}$ ", "$\\hspace{a}$ ", "café ", "$\\frac{1}$ "]) {
+        const result = convert(text, {mathMode: false});
+        assert.ok(!result.text.includes("\uE000"), "a mark survived in " + JSON.stringify(result.text));
+        assert.ok(!result.errors.includes("\uE000"), "a mark survived in the errors of " + JSON.stringify(text));
+    };
+});
+
 test("a conversion does not keep the errors of the previous one", () => {
     convert("$\\notacommand$ ", {mathMode: false});
     assert.equal(convert("$\\alpha$ ", {mathMode: false}).errors, "");
