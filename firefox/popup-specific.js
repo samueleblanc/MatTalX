@@ -175,20 +175,24 @@ function getSettings() {
         textCompletionLetter.textContent = setCompletionLetter.value.toUpperCase();
     });
     browser.storage.local.get("completion_button", (button) => {
-        if (button.completion_button === true) {
-            // Default is false
-            showCompletionBtn.checked = true;
+        if (button.completion_button !== undefined) {
+            showCompletionBtn.checked = button.completion_button;
+        } else {
+            // Default is to show it on a device with a touch screen
+            showCompletionBtn.checked = defaultSettings["completion_button"];
         };
-        completionBtn.style.display = (showCompletionBtn.checked || touchScreen) ? "inline-block" : "none";
+        completionBtn.style.display = (showCompletionBtn.checked) ? "inline-block" : "none";
     });
     browser.storage.local.get("built_commands", (list) => {
+        // Nothing is stored until a command is built, so the list can be missing
+        const builtCommands = list.built_commands ?? [];
         const startingRow = commandsBuilt.rows.length;
-        for (let i=startingRow; i<list.built_commands.length; i+=1) {
+        for (let i=startingRow; i<builtCommands.length; i+=1) {
             buildNewCommand();
-            commandsBuilt.rows[i].cells[0].children[0].value = list.built_commands[i].type;
-            commandsBuilt.rows[i].cells[1].children[1].value = list.built_commands[i].newInput;
-            // commandsBuilt.rows[i].cells[2].children[1].value = list.built_commands[i/2].numArgs;
-            commandsBuilt.rows[i].cells[2].children[1].value = list.built_commands[i].output;
+            commandsBuilt.rows[i].cells[0].children[0].value = builtCommands[i].type;
+            commandsBuilt.rows[i].cells[1].children[1].value = builtCommands[i].newInput;
+            // commandsBuilt.rows[i].cells[2].children[1].value = builtCommands[i].numArgs;
+            commandsBuilt.rows[i].cells[2].children[1].value = builtCommands[i].output;
         };
     });
 };

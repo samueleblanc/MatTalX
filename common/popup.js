@@ -157,7 +157,7 @@ const defaultSettings = {
     "copy_output_letter" : "O",
     "completion_key" : "Alt",
     "completion_letter" : "C",
-    "completion_button" : false
+    "completion_button" : touchScreen   // Shown by default on a device with a touch screen
 };
 
 // Colors
@@ -214,12 +214,6 @@ const mainColors = {
 /// FUNCTIONS ///
 
 /** Front-end **/
-
-// Show completion button and hide shortcuts if the device is screen only
-if (touchScreen) {
-    completionBtn.style.display = "inline-block";
-    shortcutsList.style.display = "none";
-};
 
 function copyTextOut() {
     // Copy second box (output) to clipboard
@@ -298,7 +292,7 @@ function applySettings() {
     textIn.style.fontFamily = fontFamily.value;
     textOut.style.fontFamily = fontFamily.value;
 
-    completionBtn.style.display = (showCompletionBtn.checked || touchScreen) ? "inline-block" : "none";
+    completionBtn.style.display = (showCompletionBtn.checked) ? "inline-block" : "none";
 };
 
 function resetSettings() {
