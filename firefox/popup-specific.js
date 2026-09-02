@@ -24,13 +24,11 @@ window.addEventListener("focus", () => {
         // the browser settings, not directly from MatTalX
         (commands) => {
             for (const command of commands) {
-                if (command.name === "_execute_browser_action") {
-                    showOpenShortcut(command.shortcut);
-                };
+                showBrowserShortcut(command.name, command.shortcut);
             };
         },
         () => {
-            showOpenShortcut(defaultSettings["open_mattalx_shortcut"]);
+            showBrowserShortcut("_execute_browser_action", defaultSettings["open_mattalx_shortcut"]);
         }
     );
     textIn.focus();

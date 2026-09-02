@@ -2,30 +2,41 @@
     "name": "MatTalX - Write math symbols",
     "description": "Write mathematical expressions anywhere - Convert LaTeX commands to plain text and paste it on any platform!",
     "version": "2.7.5",
-    "icons" : {
-      "32": "/images/mattalx_favicon32.png",
-      "48": "/images/mattalx_favicon48.png",
-      "128": "/images/mattalx_favicon128-nobg.png"
-    },
-    "manifest_version": 3,
-    "background": {
-      "service_worker": "background.js"
-    },
-    "commands" : {
-      "_execute_action" : {
-        "suggested_key" : {
-          "default" : "Alt+M"
-        }
-      }
-    },
-    "action" : {
-      "default_popup": "popup.html",
-      "default_icon": {
+    "icons": {
         "32": "/images/mattalx_favicon32.png",
         "48": "/images/mattalx_favicon48.png",
         "128": "/images/mattalx_favicon128-nobg.png"
-      },
-      "default_title" : "MatTalX - Write math symbols"
     },
-    "permissions" : ["storage"]
+    "manifest_version": 3,
+    "background": {
+        "service_worker": "background.js",
+        "type": "module"
+    },
+    "commands": {
+        "_execute_action": {
+            "suggested_key": {
+                "default": "Alt+M"
+            }
+        },
+        "convert_inline": {
+            "suggested_key": {
+                "default": "Alt+W"
+            },
+            "description": "Convert what is written in the page"
+        }
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "32": "/images/mattalx_favicon32.png",
+            "48": "/images/mattalx_favicon48.png",
+            "128": "/images/mattalx_favicon128-nobg.png"
+        },
+        "default_title": "MatTalX - Write math symbols"
+    },
+    "permissions": [
+        "storage",
+        "activeTab",
+        "scripting"
+    ]
 }

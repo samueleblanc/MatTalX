@@ -122,6 +122,8 @@ const showCompletionBtn = document.getElementById("showCompletionBtn");
 // The shortcut that opens MatTalX belongs to the browser, not to MatTalX, so the Settings box
 // can only show it and open the page where the browser lets the user change it
 const settingsOpenShortcut = document.getElementById("settingsOpenShortcut");
+const settingsInlineShortcut = document.getElementById("settingsInlineShortcut");
+const textInlineShortcut = document.getElementById("short_inline_command");
 const changeShortcutBtn = document.getElementById("changeShortcutBtn");
 changeShortcutBtn.onclick = function() {openShortcutSettings()};
 
@@ -305,11 +307,16 @@ function buildStoredCommands(builtCommands) {
     };
 };
 
-function showOpenShortcut(shortcut) {
-    // Shows the shortcut the browser reports, in the dropdown and in the Settings box
+function showBrowserShortcut(name, shortcut) {
+    // Shows a shortcut the browser owns, in the dropdown and in the Settings box
     const text = (shortcut) ? shortcut : "Not set";
-    textOpenMatTalX.textContent = text;
-    settingsOpenShortcut.textContent = text;
+    if (name === "convert_inline") {
+        textInlineShortcut.textContent = text;
+        settingsInlineShortcut.textContent = text;
+    } else {
+        textOpenMatTalX.textContent = text;
+        settingsOpenShortcut.textContent = text;
+    };
 };
 
 function showErrors(errors) {

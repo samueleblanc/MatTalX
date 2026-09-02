@@ -34,8 +34,12 @@ directly and the tests don't need a browser. `common/settings.js` reads and writ
 knows nothing about the DOM either. `common/popup.js` is the interface: it asks settings.js what the user
 chose and core.js for a conversion, with `convert(text, conversionSettings(settings))`.
 
-`chrome/popup-specific.js` and `firefox/popup-specific.js` hold only what the two browsers name
-differently. They are copied over `common` by `build.sh`.
+`common/inline.js` converts what the user wrote straight in a page, when the shortcut is pressed.
+The functions it sends to the page can only use what is written inside them, since they are sent
+as text, which is why they don't call helpers.
+
+`chrome/popup-specific.js`, `firefox/popup-specific.js` and the two `background.js` hold only what
+the browsers name differently. They are copied over `common` by `build.sh`.
 
 ## Testing
 
