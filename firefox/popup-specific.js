@@ -1,87 +1,51 @@
 /*
-    Functions specific to Firefox
-    
+    Wiring specific to Firefox
+
     This file is copy-pasted in popup.js
     Therefore, a special attention to variable names is needed.
 
-    These functions differs from their Chrome counterpart as the API for storing data is slightly different
+    Reading and writing the settings is in common/settings.js, which both browsers share.
+    What is left here is what Firefox names differently from Chrome.
 */
 
 window.addEventListener("blur", () => {
-    // Saves the text in the first box so it doesn't disappear if you change page or close MatTalX
-    browser.storage.local.set({
-        "box1" : textIn.value,
-        "spaces" : spacesButton.checked,
-        "font" : changeFontButton.checked,
-        "mode" : changeModeButton.checked,
-        "dark_mode" : darkMode.checked,
-        "font_size" : fontSize.value,
-        "font_family" : fontFamily.value,
-        "copy_input_key" : setCopyInputKey.value,
-        "copy_input_letter" : setCopyInputLetter.value,
-        "copy_output_key" : setCopyOutputKey.value,
-        "copy_output_letter" : setCopyOutputLetter.value,
-        "completion_key" : setCompletionKey.value,
-        "completion_letter" : setCompletionLetter.value,
-        "completion_button" : showCompletionBtn.checked,
-        "built_commands" : storeCommands()
-    });
+    // Saves everything, so nothing is lost if you change page or close MatTalX
+    saveSettings(settingsFromBox());
 });
 
 window.addEventListener("focus", () => {
-    // Retreives the text when the popup reopens
-    browser.storage.local.get("box1", (text) => {
-        if (text.box1 !== undefined) {
-            textIn.value = text.box1;
-        };
-    });
-    browser.storage.local.get("spaces", (button) => {
-        // Default is true
-        if (button.spaces === false) {
-            spacesButton.checked = false;
-        };
-    });
-    browser.storage.local.get("font", (button) => {
-        // Default is true
-        if (button.font === false) {
-            changeFontButton.checked = false;
-        };
-    });
-    browser.storage.local.get("mode", (button) => {
-        // Default is true
-        if (button.mode === false) {
-            changeModeButton.checked = false;
-        };
+    loadSettings().then((settings) => {
+        applyTextAndToggles(settings);
+        applySettingsBox(settings);
     });
     browser.commands.getAll().then(
         // Show the right shortcut used to open and close MatTalX
-        // Function is different from the other since this shortcut can be modified from 
+        // Function is different from the others since this shortcut can be modified from
         // the browser settings, not directly from MatTalX
         (commands) => {
-            if (commands[0].name == "_execute_browser_action") {
-                textOpenMatTalX.textContent = commands[0].shortcut;
+            for (const command of commands) {
+                if (command.name === "_execute_browser_action") {
+                    textOpenMatTalX.textContent = command.shortcut;
+                };
             };
         },
         () => {
-            // Set default value if promise gets rejected
             textOpenMatTalX.textContent = defaultSettings["open_mattalx_shortcut"];
         }
     );
-    getSettings();
     textIn.focus();
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-    // Listens for 'message' from background.js
+    // Tells the user what changed, when background.js says MatTalX was just installed or updated
     const manifest = browser.runtime.getManifest();
-    browser.storage.local.get("reason", (details) => {
-        if (details.reason === "install") {
+    takeInstallReason().then((reason) => {
+        if (reason === "install") {
             firstMessage(manifest.version);
-        } else if (details.reason === "update") {
+        } else if (reason === "update") {
             updateMessage(manifest.version);
         };
     });
-    browser.storage.local.remove("reason");
 });
 
 window.addEventListener("click", (event) => {
@@ -98,103 +62,9 @@ window.addEventListener("click", (event) => {
 });
 
 function getSettings() {
-    // For settings in the Settings box
-    browser.storage.local.get("dark_mode", (button) => {
-        if (button.dark_mode === true) {
-            // Default is false
-            darkMode.checked = true;
-        } else if (button.dark_mode === undefined) {
-            darkMode.checked = prefersDarkMode;
-        };
-        updateMainColors();
-    });
-    browser.storage.local.get("font_size", (text) => {
-        if (text.font_size !== undefined) {
-            fontSize.value = text.font_size;
-        } else {
-            fontSize.value = defaultSettings["font_size"];
-        };
-        textIn.style.fontSize = fontSize.value.toString() + "px";
-        textOut.style.fontSize = (parseInt(fontSize.value)+1).toString() + "px";
-    });
-    browser.storage.local.get("font_family", (text) => {
-        if (text.font_family !== undefined) {
-            fontFamily.value = text.font_family;
-        } else {
-            fontFamily.value = defaultSettings["font_family"];
-        };
-        textIn.style.fontFamily = fontFamily.value;
-        textOut.style.fontFamily = fontFamily.value;
-    });
-    browser.storage.local.get("copy_input_key", (text) => {
-        if (text.copy_input_key !== undefined) {
-            setCopyInputKey.value = text.copy_input_key;
-        } else {
-            setCopyInputKey.value = defaultSettings["copy_input_key"];
-        };
-        textCopyInputKey.textContent = setCopyInputKey.value;
-    });
-    browser.storage.local.get("copy_input_letter", (text) => {
-        if (text.copy_input_letter !== undefined) {
-            setCopyInputLetter.value = text.copy_input_letter;
-        } else {
-            setCopyInputLetter.value = defaultSettings["copy_input_letter"];
-        };
-        textCopyInputLetter.textContent = setCopyInputLetter.value.toUpperCase();
-    });
-    browser.storage.local.get("copy_output_key", (text) => {
-        if (text.copy_output_key !== undefined) {
-            setCopyOutputKey.value = text.copy_output_key;
-        } else {
-            setCopyOutputKey.value = defaultSettings["copy_output_key"];
-        };
-        textCopyOutputKey.textContent = setCopyOutputKey.value;
-    });
-    browser.storage.local.get("copy_output_letter", (text) => {
-        if (text.copy_output_letter !== undefined) {
-            setCopyOutputLetter.value = text.copy_output_letter;
-        } else {
-            setCopyOutputLetter.value = defaultSettings["copy_output_letter"];
-        };
-        textCopyOutputLetter.textContent = setCopyOutputLetter.value.toUpperCase();
-    });
-    browser.storage.local.get("completion_key", (text) => {
-        if (text.completion_key !== undefined) {
-            setCompletionKey.value = text.completion_key;
-        } else {
-            setCompletionKey.value = defaultSettings["completion_key"];
-        };
-        textCompletionKey.textContent = setCompletionKey.value;
-    });
-    browser.storage.local.get("completion_letter", (text) => {
-        if (text.completion_letter !== undefined) {
-            setCompletionLetter.value = text.completion_letter;
-        } else {
-            setCompletionLetter.value = defaultSettings["completion_letter"];
-        };
-        textCompletionLetter.textContent = setCompletionLetter.value.toUpperCase();
-    });
-    browser.storage.local.get("completion_button", (button) => {
-        if (button.completion_button !== undefined) {
-            showCompletionBtn.checked = button.completion_button;
-        } else {
-            // Default is to show it on a device with a touch screen
-            showCompletionBtn.checked = defaultSettings["completion_button"];
-        };
-        completionBtn.style.display = (showCompletionBtn.checked) ? "inline-block" : "none";
-    });
-    browser.storage.local.get("built_commands", (list) => {
-        // Nothing is stored until a command is built, so the list can be missing
-        const builtCommands = list.built_commands ?? [];
-        const startingRow = commandsBuilt.rows.length;
-        for (let i=startingRow; i<builtCommands.length; i+=1) {
-            buildNewCommand();
-            commandsBuilt.rows[i].cells[0].children[0].value = builtCommands[i].type;
-            commandsBuilt.rows[i].cells[1].children[1].value = builtCommands[i].newInput;
-            // commandsBuilt.rows[i].cells[2].children[1].value = builtCommands[i].numArgs;
-            commandsBuilt.rows[i].cells[2].children[1].value = builtCommands[i].output;
-        };
-    });
+    // Puts the stored settings back in the Settings box
+    // Leaves the first box alone, since the user might be writing in it
+    return loadSettings().then(applySettingsBox);
 };
 
 function openSettings() {
@@ -210,20 +80,7 @@ function closeSettings() {
     verifySettings(setCopyOutputLetter.value, "letter");
     verifySettings(setCompletionLetter.value, "letter");
 
-    browser.storage.local.set({
-        "dark_mode" : darkMode.checked,
-        "font_size" : fontSize.value,
-        "font_family" : fontFamily.value,
-        "copy_input_key" : setCopyInputKey.value,
-        "copy_input_letter" : setCopyInputLetter.value,
-        "copy_output_key" : setCopyOutputKey.value,
-        "copy_output_letter" : setCopyOutputLetter.value,
-        "completion_key" : setCompletionKey.value,
-        "completion_letter" : setCompletionLetter.value,
-        "completion_button" : showCompletionBtn.checked,
-        "built_commands" : storeCommands()
-    });
-
+    saveSettings(settingsFromBox());
     applySettings();
 
     settingsBox.style.display = "none";

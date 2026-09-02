@@ -40,6 +40,14 @@ import {
     reportError
 } from "./core.js";
 
+import {
+    defaultSettings,
+    loadSettings,
+    saveSettings,
+    conversionSettings,
+    takeInstallReason
+} from "./settings.js";
+
 /// GLOBALS ///
 
 
@@ -138,27 +146,6 @@ const wordsDelimitersWOB = [" ", "", "\u000A", "^", "_", "(", ")", "[", "]", "{"
 
 
 
-// Recognize if the device is screen only
-const touchScreen = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-
-
-// Detects the prefered color scheme of the user
-const prefersDarkMode = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')).matches;
-
-// Default values for settings (only those in the Settings box)
-const defaultSettings = {
-    "dark_mode" : prefersDarkMode,
-    "font_size" : 14,
-    "font_family" : "monospace",
-    "open_mattalx_shortcut" : "Alt+M",
-    "copy_input_key" : "Alt",
-    "copy_input_letter" : "I",
-    "copy_output_key" : "Alt",
-    "copy_output_letter" : "O",
-    "completion_key" : "Alt",
-    "completion_letter" : "C",
-    "completion_button" : touchScreen   // Shown by default on a device with a touch screen
-};
 
 // Colors
 
@@ -238,6 +225,78 @@ function clear() {
     textOut.disabled = true;
     completionPopup.style.display = "none";
     completionPopup.textContent = "";
+};
+
+function settingsFromBox() {
+    // Everything the interface holds, in the shape settings.js stores
+    return {
+        "box1" : textIn.value,
+        "spaces" : spacesButton.checked,
+        "font" : changeFontButton.checked,
+        "mode" : changeModeButton.checked,
+        "dark_mode" : darkMode.checked,
+        "font_size" : fontSize.value,
+        "font_family" : fontFamily.value,
+        "copy_input_key" : setCopyInputKey.value,
+        "copy_input_letter" : setCopyInputLetter.value,
+        "copy_output_key" : setCopyOutputKey.value,
+        "copy_output_letter" : setCopyOutputLetter.value,
+        "completion_key" : setCompletionKey.value,
+        "completion_letter" : setCompletionLetter.value,
+        "completion_button" : showCompletionBtn.checked,
+        "built_commands" : storeCommands()
+    };
+};
+
+function applyTextAndToggles(settings) {
+    // The first box and the three checkboxes of the dropdown
+    textIn.value = settings["box1"];
+    spacesButton.checked = settings["spaces"];
+    changeFontButton.checked = settings["font"];
+    changeModeButton.checked = settings["mode"];
+};
+
+function applySettingsBox(settings) {
+    // Everything inside the Settings box
+    darkMode.checked = settings["dark_mode"];
+    updateMainColors();
+
+    fontSize.value = settings["font_size"];
+    textIn.style.fontSize = fontSize.value.toString() + "px";
+    textOut.style.fontSize = (parseInt(fontSize.value)+1).toString() + "px";
+
+    fontFamily.value = settings["font_family"];
+    textIn.style.fontFamily = fontFamily.value;
+    textOut.style.fontFamily = fontFamily.value;
+
+    setCopyInputKey.value = settings["copy_input_key"];
+    setCopyInputLetter.value = settings["copy_input_letter"];
+    setCopyOutputKey.value = settings["copy_output_key"];
+    setCopyOutputLetter.value = settings["copy_output_letter"];
+    setCompletionKey.value = settings["completion_key"];
+    setCompletionLetter.value = settings["completion_letter"];
+    textCopyInputKey.textContent = setCopyInputKey.value;
+    textCopyInputLetter.textContent = setCopyInputLetter.value.toUpperCase();
+    textCopyOutputKey.textContent = setCopyOutputKey.value;
+    textCopyOutputLetter.textContent = setCopyOutputLetter.value.toUpperCase();
+    textCompletionKey.textContent = setCompletionKey.value;
+    textCompletionLetter.textContent = setCompletionLetter.value.toUpperCase();
+
+    showCompletionBtn.checked = settings["completion_button"];
+    completionBtn.style.display = (showCompletionBtn.checked) ? "inline-block" : "none";
+
+    buildStoredCommands(settings["built_commands"]);
+};
+
+function buildStoredCommands(builtCommands) {
+    // Adds a row in the Settings box for each command the user built
+    for (let i=commandsBuilt.rows.length; i<builtCommands.length; i+=1) {
+        buildNewCommand();
+        commandsBuilt.rows[i].cells[0].children[0].value = builtCommands[i].type;
+        commandsBuilt.rows[i].cells[1].children[1].value = builtCommands[i].newInput;
+        // commandsBuilt.rows[i].cells[2].children[1].value = builtCommands[i].numArgs;
+        commandsBuilt.rows[i].cells[2].children[1].value = builtCommands[i].output;
+    };
 };
 
 function showErrors(errors) {
@@ -922,12 +981,7 @@ function main() {
     // Takes the original text (input) and outputs the new one, with the converted symbols
     // Everything the conversion needs to know is passed to core.js as settings
 
-    const result = convert(textIn.value + " ", {
-        mathMode : changeModeButton.checked,
-        mathFont : changeFontButton.checked,
-        adjustSpaces : spacesButton.checked,
-        customCommands : storeCommands()
-    });
+    const result = convert(textIn.value + " ", conversionSettings(settingsFromBox()));
 
     textOut.value = result.text;
     textOut.disabled = false;

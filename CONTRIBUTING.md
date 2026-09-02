@@ -30,8 +30,12 @@ Thank you for considering to help out!
 ## Code structure
 
 `common/core.js` holds the dictionaries and the parser, and never touches the DOM, so node can run it
-directly and the tests don't need a browser. `common/popup.js` is the interface, and it asks core.js for
-a conversion with `convert(text, settings)`.
+directly and the tests don't need a browser. `common/settings.js` reads and writes the user's settings and
+knows nothing about the DOM either. `common/popup.js` is the interface: it asks settings.js what the user
+chose and core.js for a conversion, with `convert(text, conversionSettings(settings))`.
+
+`chrome/popup-specific.js` and `firefox/popup-specific.js` hold only what the two browsers name
+differently. They are copied over `common` by `build.sh`.
 
 ## Testing
 
