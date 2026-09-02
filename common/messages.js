@@ -14,7 +14,7 @@ function firstMessage(version) {
     "popup by looking at the shortcut (will appear if you hover your mouse on the question mark) or click on the button if you are on a screen-only device! \r\n\r\n" +
     "Every letter will automatically be converted to a mathematical font, if you do not want that, you can uncheck 'Mathematical font'. \r\n\r\n" +
     "As a last tip, if you get an error and the command seems right, the character that you want might not exist in unicode:\r\n" + 
-    " x^{y} → 𝑥ʸ | x^{Y} → 𝑥^(𝑌) (ie y exists in superscript but not Y)\r\n \r\n" +
+    " x^{y} → 𝑥ʸ | x^{Y} → 𝑥^{𝑌} (ie y exists in superscript but not Y)\r\n \r\n" +
     "But, before jumping to a conclusion, please look at the documentation! The command, for various reasons, might be different than in 𝐿ᴬ𝑇ᴇ𝑋!";
     textIn.value = text;  // In "text_input" form
     textOut.value = tutorial;  // In "text_input" form

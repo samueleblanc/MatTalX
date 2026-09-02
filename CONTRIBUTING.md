@@ -6,7 +6,7 @@ Thank you for considering to help out!
 
 - Add symbols
 - Improve the error messages
-- Write better tests to make sure MatTalX works properly and a test to keep a check on speed during MatTalX's development
+- Add cases to `test/cases.js`, especially for commands that aren't covered yet
 - Make sure `bash build.sh` works for Windows and Mac users
 - Improve the documentation
 - Cleaning up the code (including HTML and CSS) or simply adding comments that help with code readability is always appreciated!
@@ -27,9 +27,33 @@ Thank you for considering to help out!
 - Please add comments to your code!
 - If you are unsure about a contribution, you can open a discussion or create an issue
 
+## Code structure
+
+`common/core.js` holds the dictionaries and the parser, and never touches the DOM, so node can run it
+directly and the tests don't need a browser. `common/popup.js` is the interface, and it asks core.js for
+a conversion with `convert(text, settings)`.
+
 ## Testing
 
-Basic tests can be run with `bash test.sh liveserver` and `bash test.sh parser`
+```
+npm test          # the conversion cases of test/cases.js
+npm run test:all  # same, plus every command MatTalX knows against test/snapshot.json
+npm run bench     # how fast a sentence is converted
+```
+
+The snapshot converts every command under a few settings combinations, so a change to the parser, the
+dictionaries or the spacing shows up as a diff. If the change was on purpose, run `npm run snapshot`
+and read the diff before committing it.
+
+Both run on every push (see `.github/workflows/test.yml`).
+
+## The web version
+
+<a href="https://mattalx.org/web-version.html" target="_blank">The web version</a> lives in the
+<a href="https://github.com/samueleblanc/MatTalX_website" target="_blank">website repository</a> and runs
+the very same `core.js`. A change to `core.js` opens a pull request there on its own
+(see `.github/workflows/sync-website.yml`), so `js/core.js` on the website should never be edited by hand.
+Its interface, `js/web-version.js`, is the website's own and is not synced.
 
 For a full test, it's recommended to build the extension or add-on (`bash build.sh chrome` or `bash build.sh firefox` respectively) and then test it in the browser.
 

@@ -1,0 +1,49 @@
+name: Sync core.js to the website
+
+# The web version of MatTalX (mattalx.org/web-version.html) runs the very same core.js as the
+# extension and the add-on. Rather than copying it by hand, which is how it fell two years
+# behind before, this opens a pull request on the website whenever core.js changes.
+#
+# Needs a WEBSITE_TOKEN secret: a fine-grained personal access token on samueleblanc/MatTalX_website
+# with "Contents: read and write" and "Pull requests: read and write".
+
+on:
+  push:
+    branches: [master]
+    paths: ["common/core.js"]
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MatTalX
+        uses: actions/checkout@v4
+        with:
+          path: mattalx
+
+      - name: Checkout the website
+        uses: actions/checkout@v4
+        with:
+          repository: samueleblanc/MatTalX_website
+          token: ${{ secrets.WEBSITE_TOKEN }}
+          path: website
+
+      - name: Copy core.js
+        run: cp mattalx/common/core.js website/js/core.js
+
+      - name: Open a pull request on the website
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.WEBSITE_TOKEN }}
+          path: website
+          branch: sync-core
+          delete-branch: true
+          commit-message: "sync core.js from the extension"
+          title: "Update core.js from the extension"
+          body: |
+            `js/core.js` copied from
+            [MatTalX@${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
+
+            Opened automatically because `common/core.js` changed. Nothing else is touched:
+            `js/web-version.js` is the website's own interface and stays as it is.

@@ -29,26 +29,9 @@ test_liveserver () {
 }
 
 test_parser () {
-    if [[ -e test_mattalx ]]; then
-        rm -r test_mattalx
-    fi
-    echo "Creating 'test_mattalx' directory..."
-    mkdir test_mattalx
-    copy_common test_mattalx
-    echo "Deleting lines associated with html"
-    sed -i -e '/const settingsFunctions/,/Other/d' test_mattalx/popup.js
-    sed -i '/^const touchScreen/d' test_mattalx/popup.js
-    sed -i -e '/const prefersDarkMode/,/Colors/d' test_mattalx/popup.js
-    sed -i -e '/if (touchScreen)/,/Completion box/d' test_mattalx/popup.js
-    cat test/parser_test.js >> test_mattalx/popup.js
-    echo "Directory made"
-    cd test_mattalx
-    echo ""
-    echo "--Start--"
-    echo ""
-    node popup.js
-    echo ""
-    echo "--Done--"
+    # The parser lives in common/core.js, which knows nothing about the DOM,
+    # so node can run it directly
+    npm run test:all
 }
 
 if [[ $1 == "liveserver" ]]; then

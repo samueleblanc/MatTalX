@@ -34,10 +34,21 @@ Thank you for considering to help out! Pull requests and issues are welcomed!
 
 More info [here](CONTRIBUTING.md).
 
-## Testing
-A basic (and quite specific) test can be run with `bash test.sh liveserver` and `bash test.sh parser`
+## Code
 
-For a more complete test, we recommend building the extension or add-on (`bash build.sh chrome` or `bash build.sh firefox` respectively) to test it in the browser.
+The conversion itself lives in `common/core.js`, which knows nothing about the DOM. `common/popup.js` is the interface around it.
+
+## Testing
+
+```
+npm test          # the conversion cases
+npm run test:all  # same, plus every command against the snapshot
+npm run bench     # how fast a sentence is converted
+```
+
+`npm run snapshot` rewrites `test/snapshot.json` after a deliberate change to the conversion; read the diff before committing it.
+
+`bash test.sh liveserver` opens MatTalX on localhost. For a more complete test, we recommend building the extension or add-on (`bash build.sh chrome` or `bash build.sh firefox` respectively) to test it in the browser.
 
 Links for testing in the browser:  
 * chrome://extensions/

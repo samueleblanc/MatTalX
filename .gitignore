@@ -1,0 +1,10 @@
+# Built by build.sh
+chrome_extension/
+chrome_extension.zip
+firefox_add_on/
+firefox_add_on.zip
+
+# Built by test.sh liveserver
+test_mattalx/
+
+node_modules/
