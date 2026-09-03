@@ -26,16 +26,29 @@ export async function convertInPage(inject) {
 
     // The user's settings decide, here as in the popup. With math mode off, which is how it
     // starts, only what is between '$', '\(' or '\[' is converted and the prose is left alone
-    const result = convert(target.text + " ", conversionSettings(await loadSettings()));
+    const settings = conversionSettings(await loadSettings());
+    const result = convert(target.text + " ", settings);
 
     // The space was only there to let the parser finish the last command
     const converted = (result.text.endsWith(" ")) ? result.text.slice(0, -1) : result.text;
 
     if (converted === target.text) {
-        await inject(showMessage, ["Nothing to convert"]);
+        await inject(showMessage, [nothingHappened(target.text, settings)]);
         return;
     };
     await inject(writeBack, [converted, target.kind, target.whole]);
+};
+
+export function nothingHappened(text, settings) {
+    // A shortcut that changes nothing looks like a broken one, so it says why instead
+    // Commands like \today or \textbf do work out of math mode, which is why this only
+    // reads as an explanation once the conversion has been tried and changed nothing
+    const delimited = /\$|\\\(|\\\[/.test(text);
+    const looksLikeCommand = /\\|\^|_/.test(text);
+    if ((!settings.mathMode) && (!delimited) && (looksLikeCommand)) {
+        return "Math mode is off, put the maths between $ and $";
+    };
+    return "Nothing to convert";
 };
 
 export function readTarget() {

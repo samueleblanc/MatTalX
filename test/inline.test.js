@@ -8,7 +8,7 @@
 
 import test from "node:test";
 import assert from "node:assert/strict";
-import { convertInPage } from "../common/inline.js";
+import { convertInPage, nothingHappened } from "../common/inline.js";
 import { useStorage } from "../common/settings.js";
 
 function storageWith(content = {}) {
@@ -53,6 +53,24 @@ test("with math mode off, the maths converts and the prose does not", async () =
         assert.ok(/nice|there/.test(written), "the prose should survive in " + JSON.stringify(written));
         assert.ok(!written.includes("\\"), "the maths should be converted in " + JSON.stringify(written));
     };
+});
+
+test("a shortcut that changes nothing says why", async () => {
+    // Someone with math mode off who writes a bare command would otherwise think it broke
+    const page = pageWith(field("\\alpha + \\beta"));
+    await convertInPage(page.inject);
+    assert.deepEqual(page.calls.map((c) => c.name), ["readTarget", "showMessage"]);
+    assert.equal(page.calls[1].args[0], "Math mode is off, put the maths between $ and $");
+});
+
+test("the reason is only about math mode when math mode is the reason", () => {
+    assert.equal(nothingHappened("x^2", {mathMode: false}),
+        "Math mode is off, put the maths between $ and $");
+    // Ordinary words are not a mistake, and neither is text that already has delimiters
+    assert.equal(nothingHappened("just plain words", {mathMode: false}), "Nothing to convert");
+    assert.equal(nothingHappened("$\\alpha$", {mathMode: false}), "Nothing to convert");
+    // With math mode on, math mode is not what stopped it
+    assert.equal(nothingHappened("\\alpha", {mathMode: true}), "Nothing to convert");
 });
 
 test("a field of ordinary words comes back untouched", async () => {
