@@ -3876,7 +3876,11 @@ const settingsFunctions = {
 
 // Main functions
 
-function tokenize(fullText, mathmode) {
+function tokenize(fullTextString, mathmode) {
+    // Everything MatTalX writes is outside the basic plane, so a symbol like '𝛼' takes two
+    // places in a string. Walking characters rather than those halves is what lets an
+    // already converted text be converted again without being cut in two.
+    const fullText = Array.from(fullTextString);
     // This function takes the text as entered by the user, and outputs a list of tokens
     // For instance "curl written as $\nabla \times \mathbf{F}$" will output
     //  [c,u,r,l, ,w,r,i,t,t,e,n, ,a,s, ,STARTMM,\nabla, ,\times, ,\mathbf,STARTARG,F,ENDARG,ENDMM]
@@ -4090,7 +4094,7 @@ function tokenize(fullText, mathmode) {
             } else if (fullText[i] === "{") {
                 outTokens.push(specialTokens.startArgument);
             } else {
-                char = fullText[i].normalize("NFD").split("");
+                char = Array.from(fullText[i].normalize("NFD"));
                 outTokens.push(...char);
             };
         };
@@ -4263,7 +4267,12 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing, callSpaceCommand=t
                         mistakes(tokens[i], dict[tokens[i]]);
                     } else {
                         outText += str(dict[tokens[i]], tokens[i]);
-                        mistakes("Out of math mode", dict[tokens[i]], tokens[i]);
+                        if (tokens[i][0] === "\\") {
+                            // Out of math mode a character is just text, and text that is
+                            // already converted shouldn't look like a mistake. A command
+                            // that didn't convert is still worth saying out loud
+                            mistakes("Out of math mode", dict[tokens[i]], tokens[i]);
+                        };
                     };
                 };
             };
@@ -4323,7 +4332,7 @@ function expandBracelessArgs(tokens) {
             chars = Array.from(tokens[i].substring(1));
             newTokens.push(tokens[i][0], specialTokens.startArgument, chars[0], specialTokens.endArgument);
             for (j=1; j<chars.length; j++) {
-                newTokens.push(...chars[j].normalize("NFD").split(""));
+                newTokens.push(...Array.from(chars[j].normalize("NFD")));
             };
         } else if (bracelessArg(tokens[i+1])) {
             newTokens.push(tokens[i], specialTokens.startArgument, tokens[i+1], specialTokens.endArgument);
@@ -4627,55 +4636,66 @@ function adjustSpacesCommon(input, symbolSpaced, conditionalSpaces) {
         // For instance, the spaces in 'x \equiv_{2} 0 \def x \equiv 0 (mod 2)' should be kept the same and therefore 'delay' the space
         // to be added from \equiv because of the subscript.
         const spacedChar = characters.concat(noSpaceSymbols, Object.values(Superscript));  // Add space around 'conditionalSpaces' if the previous symbol is in spacedChar
+        // Characters, not UTF-16 halves, so a symbol is never read as two things.
+        // The marks around what couldn't be converted go first: every command has run by
+        // now, and leaving them in would hide the character the spacing rules look at
+        const chars = Array.from(stripFailures(input).replace(/ /g, ""));
         let output = "";
-        input = input.replace(/ /g, "");
+        let previous = undefined;   // Last character written, kept rather than read back out
+        const write = (text) => {
+            output += text;
+            const written = Array.from(text);
+            if (written.length > 0) {
+                previous = written[written.length - 1];
+            };
+        };
         let delayedSpace = false;
         let spaceStored = [];
-        for (let i in input) {
-            delayedSpace = noSpaceSymbols.includes(input[parseInt(i)+1]);
-            if (symbolSpaced.includes(input[i])) {
-                if ((output[output.length - 1] !== " ") && (output[output.length - 1] !== undefined)) {
+        for (let i=0; i<chars.length; i++) {
+            delayedSpace = noSpaceSymbols.includes(chars[i+1]);
+            if (symbolSpaced.includes(chars[i])) {
+                if ((previous !== " ") && (previous !== undefined)) {
                     if (delayedSpace) {
-                        output += " " + input[i];
+                        write(" " + chars[i]);
                         spaceStored.push(" ");
                     } else {
-                        output += " " + input[i] + " ";
+                        write(" " + chars[i] + " ");
                     }
                 } else {
                     if (delayedSpace) {
-                        output += input[i];
+                        write(chars[i]);
                         spaceStored.push(" ");
                     } else {
-                        output += input[i] + " ";
+                        write(chars[i] + " ");
                     };
                 };
-            } else if (conditionalSpaces.includes(input[i])) {
-                if ((output[output.length - 1] !== " ") && (output[output.length - 1] !== undefined) && (spacedChar.includes(output[output.length - 1]))) {
+            } else if (conditionalSpaces.includes(chars[i])) {
+                if ((previous !== " ") && (previous !== undefined) && (spacedChar.includes(previous))) {
                     if (delayedSpace) {
-                        output += " " + input[i];
+                        write(" " + chars[i]);
                     } else {
-                        output += " " + input[i] + " ";
+                        write(" " + chars[i] + " ");
                     };
                 } else {
-                    output += input[i];
+                    write(chars[i]);
                 };
             } else {
                 if (delayedSpace) {
-                    output += input[i];
+                    write(chars[i]);
                 } else {
                     if (spaceStored.length >= 1) {
-                        output += input[i] + " ";
+                        write(chars[i] + " ");
                         spaceStored = [];
                     }
                     else {
-                        output += input[i];
+                        write(chars[i]);
                     };
                 };
             };
         };
         return spaceCommand(output);
     } else {
-        return spaceCommand(input);
+        return spaceCommand(stripFailures(input));
     };
 };
 
