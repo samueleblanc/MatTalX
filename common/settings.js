@@ -35,7 +35,7 @@ export const defaultSettings = {
     "box1" : "",                          // The text left in the first box
     "spaces" : true,
     "font" : true,
-    "mode" : true,
+    "mode" : false,                       // Off, so '$', '\(' and '\[' say where the maths is
     "dark_mode" : prefersDarkMode,
     "font_size" : 14,
     "font_family" : "monospace",

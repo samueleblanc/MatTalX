@@ -19,20 +19,14 @@ export async function convertInPage(inject) {
     if (!target) {
         return;
     };
-    if (!looksLikeLatex(target.text)) {
-        // A field of ordinary words would come back in a mathematical font with its spaces
-        // taken out, which is never what the user meant by pressing the shortcut
+    if (!target.text.trim()) {
         await inject(showMessage, ["Nothing to convert"]);
         return;
     };
 
-    const settings = conversionSettings(await loadSettings());
-    if (/\$|\\\(|\\\[/.test(target.text)) {
-        // The text says itself which parts are mathematics, so the rest is left as prose
-        // even when the user writes everything in math mode inside MatTalX
-        settings.mathMode = false;
-    };
-    const result = convert(target.text + " ", settings);
+    // The user's settings decide, here as in the popup. With math mode off, which is how it
+    // starts, only what is between '$', '\(' or '\[' is converted and the prose is left alone
+    const result = convert(target.text + " ", conversionSettings(await loadSettings()));
 
     // The space was only there to let the parser finish the last command
     const converted = (result.text.endsWith(" ")) ? result.text.slice(0, -1) : result.text;
@@ -42,12 +36,6 @@ export async function convertInPage(inject) {
         return;
     };
     await inject(writeBack, [converted, target.kind, target.whole]);
-};
-
-export function looksLikeLatex(text) {
-    // Nothing to do unless the text holds something MatTalX could convert:
-    // a command, a superscript, a subscript, or the start of math mode
-    return /\\|\^|_|\$/.test(text);
 };
 
 export function readTarget() {
