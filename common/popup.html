@@ -15,9 +15,12 @@
         <div id="dropdownInfo">
             <a target="_blank" href="https://mattalx.org/documentation.html"><input type="button" value="Documentation" id="docs"></a>
             <a target="_blank" href="https://github.com/samueleblanc/MatTalX"><input type="button" value="Code (GitHub)" id="git"></a>
-            <span id="adjustSpaces"><label for="adjust">Adjust spaces</label><input type="checkbox" name="adjust" id="adjust" checked></span>
-            <span id="changeFont"><label for="mathFont">Mathematical font</label><input type="checkbox" name="mathFont" id="mathFont" checked></span>
-            <span id="changeMode"><label for="mathMode">Math mode</label><input type="checkbox" name="mathMode" id="mathMode"></span>
+            <span id="adjustSpaces"><label for="adjust">Adjust spaces</label><input type="checkbox" name="adjust" id="adjust" checked>
+            <span class="settingHint">on: \alpha+\beta → 𝛼 + 𝛽</span></span>
+            <span id="changeFont"><label for="mathFont">Mathematical font</label><input type="checkbox" name="mathFont" id="mathFont" checked>
+            <span class="settingHint">on: f(x) → 𝑓(𝑥)</span></span>
+            <span id="changeMode"><label for="mathMode">Math mode</label><input type="checkbox" name="mathMode" id="mathMode">
+            <span class="settingHint">on: everything is converted, no $ ... $ needed</span></span>
             <input type="button" value="Settings" id="settingsBtn">
             <p id="shortcuts">
             <b id="shortcutTitle">Shortcuts</b><br>
