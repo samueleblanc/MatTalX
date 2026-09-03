@@ -36,7 +36,16 @@ export async function convertInPage(inject) {
         await inject(showMessage, [nothingHappened(target.text, settings)]);
         return;
     };
-    await inject(writeBack, [converted, target.kind, target.whole]);
+    const written = await inject(writeBack, [converted, target.kind, target.whole]);
+    await inject(showMessage, [resultMessage(target.kind, written)]);
+};
+
+export function resultMessage(kind, written) {
+    // What the message says once the text has been put back, or not
+    if (!written) {
+        return (kind === "clipboard") ? "Could not copy" : "Nothing to convert here";
+    };
+    return (kind === "clipboard") ? "Converted, press Ctrl+V to paste it" : "Converted";
 };
 
 export function nothingHappened(text, settings) {
@@ -82,33 +91,29 @@ export function readTarget() {
 };
 
 export function showMessage(message) {
-    // Runs in the page: the same small message writeBack shows, on its own
+    // Runs in the page: says what happened, briefly, in the corner
+    // Takes the opposite colours to the ones the user asked their system for, so that it
+    // stands out from a page that is following the same preference
+    const prefersDark = (window.matchMedia) &&
+        (window.matchMedia("(prefers-color-scheme: dark)").matches);
+    const background = (prefersDark) ? "rgba(246,246,246,.97)" : "rgba(34,34,34,.97)";
+    const colour = (prefersDark) ? "rgb(24,24,24)" : "rgb(246,246,246)";
+
     const box = document.createElement("div");
     box.textContent = message;
-    box.style.cssText = "position:fixed;z-index:2147483647;bottom:16px;right:16px;" +
-        "padding:7px 11px;border-radius:4px;font:13px/1.4 system-ui,sans-serif;" +
-        "background:rgba(39,39,39,.94);color:whitesmoke;pointer-events:none;" +
-        "box-shadow:0 2px 8px rgba(0,0,0,.3);transition:opacity .35s;";
+    box.style.cssText = "position:fixed;z-index:2147483647;bottom:20px;right:20px;" +
+        "padding:11px 16px;border-radius:6px;font:15px/1.45 system-ui,sans-serif;" +
+        "background:" + background + ";color:" + colour + ";pointer-events:none;" +
+        "box-shadow:0 3px 14px rgba(0,0,0,.35);transition:opacity .35s;";
     document.body.appendChild(box);
-    setTimeout(() => { box.style.opacity = "0"; }, 1100);
-    setTimeout(() => { box.remove(); }, 1500);
+    setTimeout(() => { box.style.opacity = "0"; }, 1400);
+    setTimeout(() => { box.remove(); }, 1800);
     return true;
 };
 
 export function writeBack(converted, kind, whole) {
     // Runs in the page: puts the converted text back where it was read from
-    const message = (text) => {
-        const box = document.createElement("div");
-        box.textContent = text;
-        box.style.cssText = "position:fixed;z-index:2147483647;bottom:16px;right:16px;" +
-            "padding:7px 11px;border-radius:4px;font:13px/1.4 system-ui,sans-serif;" +
-            "background:rgba(39,39,39,.94);color:whitesmoke;pointer-events:none;" +
-            "box-shadow:0 2px 8px rgba(0,0,0,.3);transition:opacity .35s;";
-        document.body.appendChild(box);
-        setTimeout(() => { box.style.opacity = "0"; }, 1100);
-        setTimeout(() => { box.remove(); }, 1500);
-    };
-
+    // Says whether it managed to, and showMessage tells the user afterwards
     if (kind === "clipboard") {
         // The page can't be written in, so the text is put on the clipboard to be pasted
         const area = document.createElement("textarea");
@@ -123,7 +128,6 @@ export function writeBack(converted, kind, whole) {
             copied = false;
         };
         area.remove();
-        message((copied) ? "Converted, press Ctrl+V to paste it" : "Could not copy");
         return copied;
     };
 
@@ -166,6 +170,5 @@ export function writeBack(converted, kind, whole) {
         written = true;
     };
 
-    message((written) ? "Converted" : "Nothing to convert here");
     return written;
 };

@@ -123,19 +123,8 @@ const showCompletionBtn = document.getElementById("showCompletionBtn");
 // can only show it and open the page where the browser lets the user change it
 const settingsOpenShortcut = document.getElementById("settingsOpenShortcut");
 const settingsInlineShortcut = document.getElementById("settingsInlineShortcut");
-const textInlineShortcut = document.getElementById("short_inline_command");
 const changeShortcutBtn = document.getElementById("changeShortcutBtn");
 changeShortcutBtn.onclick = function() {openShortcutSettings()};
-
-// Shortcuts info (in dropdownInfo)
-const shortcutsList = document.getElementById("shortcuts");
-const textOpenMatTalX = document.getElementById("short_open_mattalx_command");
-const textCopyInputKey = document.getElementById("short_copy_input_key");
-const textCopyInputLetter = document.getElementById("short_copy_input_letter");
-const textCopyOutputKey = document.getElementById("short_copy_output_key");
-const textCopyOutputLetter = document.getElementById("short_copy_output_letter");
-const textCompletionKey = document.getElementById("short_open_completion_key");
-const textCompletionLetter = document.getElementById("short_open_completion_letter");
 
 // Commands & Operators
 const buildCommandsBtn = document.getElementById("buildNewCommand");
@@ -283,12 +272,6 @@ function applySettingsBox(settings) {
     setCopyOutputLetter.value = settings["copy_output_letter"];
     setCompletionKey.value = settings["completion_key"];
     setCompletionLetter.value = settings["completion_letter"];
-    textCopyInputKey.textContent = setCopyInputKey.value;
-    textCopyInputLetter.textContent = setCopyInputLetter.value.toUpperCase();
-    textCopyOutputKey.textContent = setCopyOutputKey.value;
-    textCopyOutputLetter.textContent = setCopyOutputLetter.value.toUpperCase();
-    textCompletionKey.textContent = setCompletionKey.value;
-    textCompletionLetter.textContent = setCompletionLetter.value.toUpperCase();
 
     showCompletionBtn.checked = settings["completion_button"];
     completionBtn.style.display = (showCompletionBtn.checked) ? "inline-block" : "none";
@@ -308,13 +291,11 @@ function buildStoredCommands(builtCommands) {
 };
 
 function showBrowserShortcut(name, shortcut) {
-    // Shows a shortcut the browser owns, in the dropdown and in the Settings box
+    // Shows a shortcut the browser owns, in the Settings box
     const text = (shortcut) ? shortcut : "Not set";
     if (name === "convert_inline") {
-        textInlineShortcut.textContent = text;
         settingsInlineShortcut.textContent = text;
     } else {
-        textOpenMatTalX.textContent = text;
         settingsOpenShortcut.textContent = text;
     };
 };
@@ -345,21 +326,16 @@ function verifySettings(variable, varType) {
 };
 
 function applySettings() {
-    // Writes down the value of the shortcuts chosen in the settings and updates the font
+    // Checks the shortcuts chosen in the Settings box and updates the font
     // Called when MatTalX opens, when the Settings box closes and by resetSettings()
-    textCopyInputKey.textContent = setCopyInputKey.value;
-    textCopyInputLetter.textContent = setCopyInputLetter.value.toUpperCase();
-    textCopyOutputKey.textContent = setCopyOutputKey.value;
-    textCopyOutputLetter.textContent = setCopyOutputLetter.value.toUpperCase();
-    textCompletionKey.textContent = setCompletionKey.value;
-    textCompletionLetter.textContent = setCompletionLetter.value.toUpperCase();
 
     // Verify if each shortcut is unique
     const listShortcuts = [
-        textOpenMatTalX.textContent,
-        [textCopyInputKey.textContent, "+", textCopyInputLetter.textContent].join(""), 
-        [textCopyOutputKey.textContent, "+", textCopyOutputLetter.textContent].join(""),
-        [textCompletionKey.textContent, "+", textCompletionLetter.textContent].join("")
+        settingsOpenShortcut.textContent,
+        settingsInlineShortcut.textContent,
+        [setCopyInputKey.value, "+", setCopyInputLetter.value.toUpperCase()].join(""),
+        [setCopyOutputKey.value, "+", setCopyOutputLetter.value.toUpperCase()].join(""),
+        [setCompletionKey.value, "+", setCompletionLetter.value.toUpperCase()].join("")
     ];
     if ((new Set(listShortcuts)).size !== listShortcuts.length) {
         showErrors(reportError("Settings", "At least two shortcuts are identical"));
@@ -419,7 +395,6 @@ function updateMainColors() {
     textOut.style.backgroundColor = mainColors["text"]["background"][i];
     textOut.style.border = "2px solid " + mainColors["text"]["border"][i];
     dropdownInfo.style.backgroundColor = mainColors["dropdown"][i];
-    shortcutsList.style.color = mainColors["shortcuts"][i];
 
     docsBtn.style.color = mainColors["btnDropdown"]["color"][i];
     docsBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];

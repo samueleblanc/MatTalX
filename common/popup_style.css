@@ -88,9 +88,9 @@ body {
     /* Says what the checkbox above does. Takes its colour from the row it sits in,
        so it works the same in light and in dark mode */
     display: block;
-    font-size: 12px;
+    font-size: 15px;
     font-style: italic;
-    opacity: 0.7;
+    opacity: 0.85;
     padding: 0px 6px 3px 6px;
     cursor: default;
 }
