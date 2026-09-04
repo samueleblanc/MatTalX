@@ -96,6 +96,37 @@ export const cases = [
     { in: "x^2",
       out: "𝑥²",
       settings: {"mathMode":true} },
+    // --- spaces and missing curly brackets ---
+    // As in LaTeX, a command takes the first thing that follows it as its argument,
+    // however many spaces the user left in between
+    { in: "$\\mathbf {x}$",
+      out: "\u{1D499} " },
+    { in: "$\\mathbf  {x}$",
+      out: "\u{1D499} " },
+    { in: "$\\mathbf x$",
+      out: "\u{1D499} " },
+    { in: "$\\mathbf \\alpha$",
+      out: "\u{1D736} " },
+    { in: "$x^ {2}$",
+      out: "\u{1D465}\u00B2 " },
+    { in: "$x^ 2$",
+      out: "\u{1D465}\u00B2 " },
+    { in: "$\\sqrt[3] x$",
+      out: "\u221B\u{1D465} " },
+    // Only the first thing after the command, so the rest of the line is left alone
+    { in: "$\\sqrt x + y$",
+      out: "\u221A\u{1D465} + \u{1D466} " },
+    { in: "\\textbf {abc}",
+      out: "\u{1D5EE}\u{1D5EF}\u{1D5F0} " },
+    { in: "\\textbf abc",
+      out: "\u{1D5EE}bc " },
+    // A command MatTalX doesn't know is not given an argument it wasn't written with,
+    // but the space before the one it was written with means nothing either
+    { in: "$\\oingt {x}$",
+      out: "\\oingt{\u{1D465}} " },
+    { in: "$a {b}$",
+      out: "\u{1D44E}\u{1D44F} " },
+
     // --- commands built by the user ---
     { in: "$x \\in \\RR$",
       out: "𝑥 ∈ ℝ ",

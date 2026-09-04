@@ -61,6 +61,23 @@ export function buildInputs() {
     for (const key of Object.keys(d.lettersMath))  add("$" + key + "$");
     for (const key of Object.keys(d.lettersOutMathMode)) add(key);
 
+    // The same commands again, written the way LaTeX also allows: a space before the
+    // argument, or no curly brackets at all
+    for (const key of Object.keys(d.mathDictionary)) {
+        if (typeof d.mathDictionary[key] !== "function") continue;
+        add("$" + key + " {a}$");
+        add("$" + key + " a$");
+        add("$" + key + "a$");
+    };
+    for (const key of Object.keys(d.textCommands)) {
+        if ((typeof d.textCommands[key] !== "function") || (notDeterministic.includes(key))) continue;
+        add(key + " {abc}");
+        add(key + " abc");
+    };
+    for (const s of ["$x^ {2}$", "$x_ {2}$", "$x^ 2$", "$x^ \\alpha$", "$\\sqrt x + y$",
+                     "$\\sqrt[3] x$", "$\\frac {1}{2}$", "$\\frac{1} {2}$", "$\\not=$",
+                     "$\\oingt {x}$", "$\\mathbf {\\oingt}$", "$a {b}$", "hello {world}"]) add(s);
+
     return inputs;
 };
 

@@ -2040,10 +2040,10 @@ const frac = (arg, initialCommand) => {
         return output.concat(extraArgs(arg.slice(2), initialCommand));
     } else {
         // TODO: Why???
-        if (arg.join("").includes(spacesChar.add)) {
+        if (argsText(arg).includes(spacesChar.add)) {
             const spaces = arg.filter(c => {return c.includes(spacesChar.add)});
             for (let i in spaces) {
-                mistakes(initialCommand + "{" + arg.join("") + "}", undefined, spaces[i]);
+                mistakes(initialCommand + "{" + argsText(arg) + "}", undefined, spaces[i]);
             };
         };
         output = ["(", 
@@ -4103,11 +4103,15 @@ function tokenize(fullTextString, mathmode) {
     if (startMathmode) {
         outTokens.push(specialTokens.endMathmode);
     };
-    return expandBracelessArgs(outTokens);
+    return outTokens;
 };
 
 function tokensToText(tokens, dictMM, dictOut, adjustSpacing, callSpaceCommand=true) {
     // Takes a list of tokens as input and uses the dictonary to convert them to symbols
+
+    // What is written without curly brackets is filled in first, which needs the dictionaries
+    // to know what takes an argument
+    tokens = expandBracelessArgs(tokens, dictMM, dictOut);
     
     // The basic idea of the algorithm is:
     // Loop on tokens
@@ -4201,9 +4205,9 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing, callSpaceCommand=t
                         };
                         if (mathmode) {
                             mathmodeText += str(mathord(arg, "").join(""));
-                            mistakes("{"+arg.join("")+"}", mathord(arg, "").join(""), arg.join(""));
+                            mistakes("{"+argsText(arg)+"}", mathord(arg, "").join(""), argsText(arg));
                         } else {
-                            outText += mistakes("Out of math mode", undefined, "Can't find a function for {" + arg.join("") + "}" + ". Use '\\{' or '\\}' to output a curly bracket", "{" + arg.join("") + "}");
+                            outText += mistakes("Out of math mode", undefined, "Can't find a function for {" + argsText(arg) + "}" + ". Use '\\{' or '\\}' to output a curly bracket", "{" + argsText(arg) + "}");
                         };
                         arg = [];
                     };
@@ -4226,12 +4230,6 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing, callSpaceCommand=t
             if (typeof command == "function") {
                 if (tokens[i+1] === specialTokens.startArgument) {
                     fctStack.push(tokens[i]);
-                } else if (tokens.slice(i+1).filter(x => x !== " ")[0] === specialTokens.startArgument) {
-                    if (mathmode) {
-                        mathmodeText += mistakes(tokens[i]+" {}", undefined, "Remove extra spaces", tokens[i]);
-                    } else {
-                        outText += mistakes("Out of math mode: "+tokens[i]+" {}", undefined, "Remove extra spaces", tokens[i]);
-                    };
                 } else {
                     if (mathmode) {
                         if (command === sqrt) {
@@ -4298,8 +4296,29 @@ function tokensToText(tokens, dictMM, dictOut, adjustSpacing, callSpaceCommand=t
 
 // Used by main functions
 
+function isCommand(token, mathmode) {
+    // Says if a token is a command, so that what follows it can be its argument
+    if ((token === undefined) || (Object.values(specialTokens).includes(token))) {
+        return false;
+    } else if ((token[0] === "^") || (token[0] === "_")) {
+        // Out of math mode they are not superscript and subscript, just characters
+        return mathmode;
+    };
+    return (token[0] === "\\") && (token.length > 1);
+};
+
+function takesArgument(token, dict) {
+    // Says if a command is one the dictionary knows how to give an argument to
+    // A command it doesn't know keeps whatever is between its curly brackets, but is not
+    // given an argument it wasn't written with
+    // '\sqrt[3]' is called with '\sqrt', the same way tokensToText looks it up
+    const name = (token.substring(0,5) === "\\sqrt") ? token.replace(/\[.*\]/g, "") : token;
+    return (typeof dict[name] === "function");
+};
+
 function bracelessArg(token) {
-    // Says if a token can be the argument of a braceless '^' or '_' (e.g. the '2' in 'x^2')
+    // Says if a token can be the argument of a command written without curly brackets
+    // (e.g. the '2' in 'x^2')
     if ((token === undefined) || (Object.values(specialTokens).includes(token))) {
         return false;
     } else if ((notBracelessArg.includes(token)) || (token[0] === "^") || (token[0] === "_")) {
@@ -4311,32 +4330,49 @@ function bracelessArg(token) {
     };
 };
 
-function expandBracelessArgs(tokens) {
-    // As in LaTeX, a '^' or '_' written without curly brackets takes the single token that
-    // follows it as its argument, so 'x^2' is a shorthand for 'x^{2}' and 'x^\alpha' for 'x^{\alpha}'
-    // Only applies in math mode, since that is where '^' and '_' mean superscript and subscript
-    // tokenize leaves these in two shapes: merged (e.g. '^2n') or a lone '^' followed by a command
+function expandBracelessArgs(tokens, dictMM, dictOut) {
+    // As in LaTeX, a command written without curly brackets takes the first thing that
+    // follows it as its argument, and only that: 'x^2' is a shorthand for 'x^{2}', '\mathbf x'
+    // for '\mathbf{x}', and '\sqrt x + y' for '\sqrt{x} + y'
+    // The spaces in between mean nothing either, so '\mathbf {x}' is '\mathbf{x}' too
+    // tokenize leaves '^' and '_' in two shapes: merged (e.g. '^2n') or alone, followed by a command
     let newTokens = [];
     let mathmode = false;
-    let chars, i, j;
+    let dict, chars, next, i, j;
     for (i=0; i<tokens.length; i++) {
         if (tokens[i] === specialTokens.startMathmode) {
             mathmode = true;
         } else if (tokens[i] === specialTokens.endMathmode) {
             mathmode = false;
         };
-        if ((!mathmode) || ((tokens[i][0] !== "^") && (tokens[i][0] !== "_"))) {
+        dict = (mathmode) ? dictMM : dictOut;
+
+        if (!isCommand(tokens[i], mathmode)) {
             newTokens.push(tokens[i]);
-        } else if (tokens[i].length > 1) {
+            continue;
+        };
+        if ((tokens[i].length > 1) && ((tokens[i][0] === "^") || (tokens[i][0] === "_"))) {
             // Merged by tokenize (e.g. '^2n'), so the first character is the argument and the rest follows
             chars = Array.from(tokens[i].substring(1));
             newTokens.push(tokens[i][0], specialTokens.startArgument, chars[0], specialTokens.endArgument);
             for (j=1; j<chars.length; j++) {
                 newTokens.push(...Array.from(chars[j].normalize("NFD")));
             };
-        } else if (bracelessArg(tokens[i+1])) {
-            newTokens.push(tokens[i], specialTokens.startArgument, tokens[i+1], specialTokens.endArgument);
-            ++i;  // Skips the token that just became the argument
+            continue;
+        };
+
+        // The argument is whatever comes next, however many spaces the user left in between
+        j = i + 1;
+        while (tokens[j] === " ") {
+            ++j;
+        };
+        next = tokens[j];
+        if (next === specialTokens.startArgument) {
+            newTokens.push(tokens[i]);
+            i = j - 1;  // Drops the spaces, the curly brackets already say what the argument is
+        } else if ((takesArgument(tokens[i], dict)) && (bracelessArg(next))) {
+            newTokens.push(tokens[i], specialTokens.startArgument, next, specialTokens.endArgument);
+            i = j;  // Skips the spaces and the token that just became the argument
         } else {
             newTokens.push(tokens[i]);
         };
@@ -4412,6 +4448,13 @@ function addSymbolArray(args, command, checkMistakes=true) {
 function str(command, original=undefined) {
     // Make sure the command is a string, or keep the text that couldn't be converted
     return (typeof command === "string") ? command : failure(original);
+};
+
+function argsText(args) {
+    // Every argument of a command, one after the other, as the user wrote them
+    // 'args' holds one list of tokens per argument, so a plain join would leave a comma
+    // between them (e.g. '{a,b,c}' for '{abc}')
+    return args.map((a) => a.join("")).join("");
 };
 
 function extraArgs(args, initialCommand) {
@@ -4874,7 +4917,7 @@ function declareMathOperator(fullDict, argNums, input, output) {
     // TODO: If text: \mathrm, else: nothing
     const newOp = (arg, initialCommand) => {
         // This function will be the value of every operator built by the user
-        return [outputSymbol + "[" + arg.join("") + "]"];
+        return [outputSymbol + "[" + argsText(arg) + "]"];
     };
     fullDict[input] = newOp;
     return fullDict;
