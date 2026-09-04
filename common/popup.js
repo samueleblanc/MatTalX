@@ -127,6 +127,7 @@ const showCompletionBtn = document.getElementById("showCompletionBtn");
 // can only show it and open the page where the browser lets the user change it
 const settingsOpenShortcut = document.getElementById("settingsOpenShortcut");
 const settingsInlineShortcut = document.getElementById("settingsInlineShortcut");
+const settingsCompleteShortcut = document.getElementById("settingsCompleteShortcut");
 const changeShortcutBtn = document.getElementById("changeShortcutBtn");
 changeShortcutBtn.onclick = function() {openShortcutSettings()};
 
@@ -295,6 +296,8 @@ function showBrowserShortcut(name, shortcut) {
     const text = (shortcut) ? shortcut : "Not set";
     if (name === "convert_inline") {
         settingsInlineShortcut.textContent = text;
+    } else if (name === "complete_inline") {
+        settingsCompleteShortcut.textContent = text;
     } else {
         settingsOpenShortcut.textContent = text;
     };
@@ -330,13 +333,19 @@ function applySettings() {
     // Called when MatTalX opens, when the Settings box closes and by resetSettings()
 
     // Verify if each shortcut is unique
+    const completionInPopup = [setCompletionKey.value, "+", setCompletionLetter.value.toUpperCase()].join("");
     const listShortcuts = [
         settingsOpenShortcut.textContent,
         settingsInlineShortcut.textContent,
         [setCopyInputKey.value, "+", setCopyInputLetter.value.toUpperCase()].join(""),
         [setCopyOutputKey.value, "+", setCopyOutputLetter.value.toUpperCase()].join(""),
-        [setCompletionKey.value, "+", setCompletionLetter.value.toUpperCase()].join("")
+        completionInPopup
     ];
+    // Suggesting commands in the page and in the popup is the same thing on two surfaces,
+    // so the two are allowed to share a key and only counted once when they do
+    if (settingsCompleteShortcut.textContent !== completionInPopup) {
+        listShortcuts.push(settingsCompleteShortcut.textContent);
+    };
     if ((new Set(listShortcuts)).size !== listShortcuts.length) {
         showErrors(reportError("Settings", "At least two shortcuts are identical"));
     };

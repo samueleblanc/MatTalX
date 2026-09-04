@@ -23,6 +23,12 @@
                 "default": "Alt+W"
             },
             "description": "Convert what is written in the page"
+        },
+        "complete_inline": {
+            "suggested_key": {
+                "default": "Alt+C"
+            },
+            "description": "Suggest commands while writing in the page"
         }
     },
     "action": {

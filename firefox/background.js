@@ -1,9 +1,10 @@
 /*
-    Runs in the background: remembers why MatTalX was loaded, and converts what the user
-    wrote in the page when the shortcut is pressed.
+    Runs in the background: remembers why MatTalX was loaded, and answers the shortcuts
+    that work inside the page, converting what the user wrote or suggesting a command.
 */
 
 import { convertInPage } from "./inline.js";
+import { completeInPage } from "./inline-completion.js";
 
 browser.runtime.onInstalled.addListener((details) => {
     // Stores "install", "update" or other depending on the reason of onInstalled's message
@@ -17,8 +18,14 @@ browser.runtime.onUpdateAvailable.addListener((details) => {
     browser.runtime.reload();
 });
 
+const shortcuts = {
+    "convert_inline" : convertInPage,
+    "complete_inline" : completeInPage
+};
+
 browser.commands.onCommand.addListener(async (command) => {
-    if (command !== "convert_inline") {
+    const inPage = shortcuts[command];
+    if (inPage === undefined) {
         return;
     };
     const tabs = await browser.tabs.query({active: true, currentWindow: true});
@@ -26,7 +33,7 @@ browser.commands.onCommand.addListener(async (command) => {
         return;
     };
     // Pressing the shortcut is what gives access to the tab, and only to this one
-    await convertInPage(async (toRun, args) => {
+    await inPage(async (toRun, args) => {
         // executeScript takes code rather than a function here, so the function is sent as text
         const code = "(" + toRun.toString() + ").apply(null, " + JSON.stringify(args) + ");";
         const results = await browser.tabs.executeScript(tabs[0].id, {code: code});

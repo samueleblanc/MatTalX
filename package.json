@@ -6,9 +6,9 @@
     "license": "MIT",
     "type": "module",
     "scripts": {
-        "test": "node --test test/parser.test.js test/commands.test.js test/settings.test.js test/inline.test.js test/completion.test.js test/twice.test.js",
+        "test": "node --test test/parser.test.js test/commands.test.js test/settings.test.js test/inline.test.js test/inline-completion.test.js test/completion.test.js test/in-page-completion.test.js test/twice.test.js",
         "test:snapshot": "node --test test/snapshot.test.js",
-        "test:all": "node --test test/parser.test.js test/commands.test.js test/settings.test.js test/inline.test.js test/completion.test.js test/twice.test.js test/snapshot.test.js",
+        "test:all": "node --test test/parser.test.js test/commands.test.js test/settings.test.js test/inline.test.js test/inline-completion.test.js test/completion.test.js test/in-page-completion.test.js test/twice.test.js test/snapshot.test.js",
         "snapshot": "node test/update-snapshot.js",
         "bench": "node test/bench.js"
     }
