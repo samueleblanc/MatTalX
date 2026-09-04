@@ -33,12 +33,16 @@
 
 import {
     convert,
-    defaultDict,
-    spaceCommand,
     errorHeader,
     resetErrors,
     reportError
 } from "./core.js";
+
+import {
+    findWord,
+    semiAutoCompletion,
+    completionList
+} from "./completion.js";
 
 import {
     defaultSettings,
@@ -135,10 +139,6 @@ const commandsBuilt = document.getElementById("commandsBuilt");
 
 
 /** Other **/
-
-// Used in the subsection 'Completion box' to recognize on which word is the cursor
-const wordsDelimiters = [" ", "", "\u000A", "\\", "^", "_", "(", ")", "[", "]", "{", "}", ".", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!", "$"];
-const wordsDelimitersWOB = [" ", "", "\u000A", "^", "_", "(", ")", "[", "]", "{", "}", ".", ",", "/", "-", "+", "=", "<", ">", "|", "?", "!", "$"]; // Without backslash
 
 
 
@@ -807,169 +807,68 @@ function getCompletion() {
     };
 };
 
-function findWord(text, cursorPosition, addedLetter="") {
-    // Used in the completion popup
-    // Finds the word that is touched by the cursor
-    if (addedLetter.length === 1) {  // ie a letter
-        text = text.split("");
-        text[cursorPosition] += addedLetter;
-        text = text.join("");
-    } else if (addedLetter === "Backspace") {
-        text = text.split("");
-        text[cursorPosition] = "";
-        text = text.join("");
-        --cursorPosition;
-    };
-    let word = "";
-    while (!(wordsDelimiters.includes(text.charAt(cursorPosition + 1)))) {
-        ++cursorPosition;
-    };
-    while (!(wordsDelimitersWOB.includes(text.charAt(cursorPosition)))) {
-        if (text.charAt(cursorPosition) === "\\") {
-            word = text.charAt(cursorPosition) + word;
-            break;
-        } else {
-            word = text.charAt(cursorPosition) + word;
-            --cursorPosition;
-        }
-    };
-    return word;
-};
 
 function completion(command) {
     // Outputs list of other commands that are similar to the one currently being written
+    // What to suggest is decided in completion.js, which the page uses too, so the two
+    // can't end up suggesting different things
     const btnBackColor = mainColors["completion"]["backgroundTrTd"][(darkMode.checked) ? 1 : 0];
     const btnFontColor = (darkMode.checked) ? "whitesmoke" : "black";
-    if (command === "") {
+    const suggestions = completionList(command, storeCommands());
+
+    if ((suggestions.note === null) && (suggestions.matches.length === 0)) {
         closeCompletion();
-    } else if (command[0] !== "\\") {
+        return;
+    };
+    if (suggestions.note !== null) {
         let row = completionPopup.insertRow(-1);
         let cell = row.insertCell(0);
-        cell.textContent = "The first character of the command must be a backslash (\\). Superscript starts with ^ and subscript with _";
+        cell.textContent = suggestions.note;
         cell.style.color = btnFontColor;
-    } else {
-        command = command.substring(1, command.length);  // Erases the backslash so that, for instance, \arrow will also show \rightarrow, etc.
-        for (let keys in defaultDict) {
-            // Puts commands in button form, so they can be clicked on to replace the command being written
-            if (keys.toLowerCase().indexOf(command.toLowerCase()) !== -1) {
-                let row = completionPopup.insertRow(-1);
-                let cell = row.insertCell(0);
-                let btn = document.createElement("button");
-                btn.name = showCommand(keys);
-                btn.textContent = toReplaceCommand(keys);
-                btn.value = toReplaceCommand(keys);  // Value is unchanged
-
-                // Button style
-                btn.style.width = "145px";  // Would be cleaner with something like 'fit-content', but is way to slow
-                btn.style.height = "17px";
-                btn.style.backgroundColor = btnBackColor
-                btn.style.border = "1px solid " + btnBackColor;
-                btn.style.color = btnFontColor;
-                btn.style.borderRadius = "3px";
-                btn.type = "button";
-                btn.tabIndex = "0";
-
-                cell.style.border = "1px solid " + btnBackColor;
-                cell.style.backgroundColor = btnBackColor;
-
-                // Complete the command if the user clicks on that command
-                btn.addEventListener("click", () => {
-                    textIn.value = semiAutoCompletion(textIn.value, textIn.selectionEnd, btn.value);
-                    closeCompletion();
-                    textIn.focus();
-                });
-
-                // Shows what the command ouputs on mouseover, return to normal on mouseout
-                btn.addEventListener("mouseover", () => {
-                    let tmp = btn.textContent;
-                    btn.textContent = btn.name;
-                    btn.name = tmp;
-                });
-                btn.addEventListener("mouseout", () => {
-                    let tmp = btn.textContent;
-                    btn.textContent = btn.name;
-                    btn.name = tmp;
-                });
-                cell.appendChild(btn);
-            };
-        };
+        return;
     };
-};
 
-function semiAutoCompletion(textIn, cursorPosition, command) {
-    // Replace the command being written by the selected suggestion
-    let textOut = textIn;
-    // Find end of word
-    while (!(wordsDelimiters.includes(textIn.charAt(cursorPosition)))) {
-        ++cursorPosition;
-    };
-    // Deletes word
-    while (textIn.charAt(cursorPosition - 1) !== "\\") {
-        textOut = textOut.substring(0, cursorPosition - 1) + textOut.substring(cursorPosition);
-        --cursorPosition;
-    };
-    // Replace by selected suggestion
-    textOut = textOut.substring(0, cursorPosition - 1) + command + textOut.substring(cursorPosition);
-    return textOut;
-};
+    for (const suggestion of suggestions.matches) {
+        // Puts commands in button form, so they can be clicked on to replace the command being written
+        let row = completionPopup.insertRow(-1);
+        let cell = row.insertCell(0);
+        let btn = document.createElement("button");
+        btn.name = suggestion.preview;
+        btn.textContent = suggestion.insert;
+        btn.value = suggestion.insert;  // Value is unchanged
 
-function showCommand(key) {
-    // Used in completion
-    // Changes what's seen when the user hovers on a command in the completion popup
-    if (typeof defaultDict[key] == "function") {
-        if (key == "\\sqrt") {
-            return "\\sqrt[n]{x} \u2192 ⁿ√𝑥";
-        } else if (key == "\\frac") {
-            return "\\frac{1}{2} \u2192 ¹∕₂";
-        } else if (key == "\\frac*") {
-            return "\\frac*{1}{2} \u2192 ½";
-        } else if ((key == "\\overset") || (key == "\\underset") || (key == "\\stackrel") || (key == "\\hspace") || (key == "\\vskip")) {
-            return key + "{}";
-        } else if ((key == "_") || (key == "^")) {
-            return "x" + key + "{a1} \u2192 𝑥" + spaceCommand((defaultDict[key]([["a", "1"]], key)).join(""));
-        } else if (key == "\\pmod") {
-            return key + "{n} \u2192 " + spaceCommand(defaultDict[key]([["n"]], key).join(""));
-        } else if (key == "\\matrix") {
-            return key + "{[a,b]} \u2192 " + spaceCommand(defaultDict[key](["[a,b]".split("")], key).join(""));
-        } else {
-            return key + "{abc} \u2192 " + spaceCommand((defaultDict[key]([["a", "b", "c"]], key)).join(""));
-        };
-    } else {
-        if (key == "\\:") {
-            return "1 space";
-        } else if ((key == "\\;") || ((key == "\\quad") || (key == "\\qquad"))) {
-            return defaultDict[key].length + " spaces";
-        } else if (key === "\\!") {
-            return "Remove a space";
-        } else if ((key == "\\id2") || (key == "\\id3") || (key == "\\id4") || (key == "\\idn")) {
-            const M = {
-                "\\id2": "⎡ 1 0 ⎤\u000A⎣ 0 1 ⎦",
-                "\\id3" : "⎡ 1 0 0 ⎤\u000A⎢ 0 1 0 ⎥\u000A⎣ 0 0 1 ⎦",
-                "\\id4" : "⎡ 1 0 0 0 ⎤\u000A⎢ 0 1 0 0 ⎥\u000A⎢ 0 0 1 0 ⎥\u000A⎣ 0 0 0 1 ⎦",
-                "\\idn" : "⎡ 1 0 ⋯ 0 ⎤\u000A⎢ 0 1 ⋯ 0 ⎥\u000A⎢  ⋮  ⋮  ⋱  ⋮ ⎥\u000A⎣ 0 0 ⋯ 1 ⎦"
-            }
-            return M[key];
-        } else {
-            return spaceCommand(defaultDict[key]);
-        };
-    };
-};
+        // Button style
+        btn.style.width = "145px";  // Would be cleaner with something like 'fit-content', but is way to slow
+        btn.style.height = "17px";
+        btn.style.backgroundColor = btnBackColor
+        btn.style.border = "1px solid " + btnBackColor;
+        btn.style.color = btnFontColor;
+        btn.style.borderRadius = "3px";
+        btn.type = "button";
+        btn.tabIndex = "0";
 
-function toReplaceCommand(key) {
-    // Used in completion
-    // Changes what the user sees when the completion popup is opened
-    if (typeof defaultDict[key] == "function") {
-        if (key == "\\sqrt") {
-            return "\\sqrt[]{}";
-        } else if (key == "\\frac") {
-            return "\\frac{}{}";
-        } else if (key == "\\frac*") {
-            return "\\frac*{}{}";
-        } else {
-            return key + "{}";
-        };
-    } else {
-        return key
+        cell.style.border = "1px solid " + btnBackColor;
+        cell.style.backgroundColor = btnBackColor;
+
+        // Complete the command if the user clicks on that command
+        btn.addEventListener("click", () => {
+            textIn.value = semiAutoCompletion(textIn.value, textIn.selectionEnd, btn.value);
+            closeCompletion();
+            textIn.focus();
+        });
+
+        // Shows what the command ouputs on mouseover, return to normal on mouseout
+        btn.addEventListener("mouseover", () => {
+            let tmp = btn.textContent;
+            btn.textContent = btn.name;
+            btn.name = tmp;
+        });
+        btn.addEventListener("mouseout", () => {
+            let tmp = btn.textContent;
+            btn.textContent = btn.name;
+            btn.name = tmp;
+        });
+        cell.appendChild(btn);
     };
 };
 
