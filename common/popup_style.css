@@ -103,6 +103,9 @@ body {
 #adjustSpaces,
 #changeFont,
 #changeMode {
+    /* border-box, or this indent is added to the 100% width above and the menu grows a
+       scrollbar it has no use for. <input> already gets border-box from the browser */
+    box-sizing: border-box;
     padding-left: 30px;
 }
 .settingHint {
@@ -221,15 +224,29 @@ input[type=button], input[type=reset] {
 ::selection {
     background-color: #0f8867;
 }
+/* accent-color does not reach a scrollbar, which is why setting it on :root left the
+   bar grey. A scrollbar has to be asked for by name: scrollbar-color is the standard
+   way, ::-webkit-scrollbar covers Chrome before 121. The settings box is the one place
+   left with a bar, now that the menu no longer overflows */
+#settingsContent {
+    scrollbar-color: #0f8867 transparent;
+    scrollbar-width: thin;
+}
+#settingsContent::-webkit-scrollbar {
+    width: 8px;
+}
+#settingsContent::-webkit-scrollbar-thumb {
+    background-color: #0f8867;
+    border-radius: 4px;
+}
+#settingsContent::-webkit-scrollbar-track {
+    background: transparent;
+}
 
 /* The Dark mode switch in Settings, which the media queries below cannot see.
    popup.js puts one of these two on <body>, so the green is right in all four
    combinations of system setting and chosen setting */
-body.darkChosen { accent-color: #22b98d; }
-body.darkChosen ::selection { background-color: #22b98d; }
 body.darkChosen #subtitle { color: #22b98d; }
-body.lightChosen { accent-color: #0f8867; }
-body.lightChosen ::selection { background-color: #0f8867; }
 body.lightChosen #subtitle { color: #0f8867; }
 
 @media (prefers-color-scheme: light) {
@@ -394,12 +411,6 @@ body.lightChosen #subtitle { color: #0f8867; }
     #changeMode:hover,
     #settingsBtn:hover  {
         background-color: rgb(41, 41, 41);
-    }
-    :root {
-        accent-color: #22b98d;
-    }
-    ::selection {
-        background-color: #22b98d;
     }
     #subtitle {
         color: #22b98d;
