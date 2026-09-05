@@ -533,10 +533,6 @@ function updateMainColors() {
 
     if (darkMode.checked) {
         titleDark.style.display = "inline-block";
-        titleDark.style.width = "25%";
-        titleDark.style.height = "25%";
-        titleDark.style.marginLeft = "37%";
-        titleDark.style.marginRight = "37%";
         titleLight.style.display = "none";
         infoBtnDark.style.display = "inline-block";
         infoBtnDark.style.border = "none";
@@ -551,10 +547,6 @@ function updateMainColors() {
         infoImgLight.style.display = "none";
     } else {
         titleLight.style.display = "inline-block";
-        titleLight.style.width = "25%";
-        titleLight.style.height = "25%";
-        titleLight.style.marginLeft = "37%";
-        titleLight.style.marginRight = "37%";
         titleDark.style.display = "none";
         infoBtnLight.style.display = "inline-block";
         infoBtnLight.style.border = "none";
