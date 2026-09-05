@@ -14,7 +14,8 @@
     "browser_specific_settings": {
         "gecko": {
             "id": "mattalx@samuel.ca"
-        }
+        },
+        "gecko_android": {}
     },
     "commands": {
         "_execute_browser_action": {
