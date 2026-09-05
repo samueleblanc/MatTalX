@@ -30,7 +30,7 @@ a {
     position: relative;
 }
 body {
-    min-width: 500px;
+    min-width: 700px;
     height: auto;
 }
 #text_in {
@@ -215,12 +215,12 @@ input[type=button], input[type=reset] {
     /* Sized by height, so the header stays put whatever width the popup is given.
        Width follows from the file's own 800x240. Only which one is shown, and the
        opacity of the dark one, belong to the colour scheme */
-    height: 40px;
+    height: 60px;
     width: auto;
     margin-right: 12px;
 }
 #subtitle {
-    font-size: 1.5em;
+    font-size: 19px;
     color: #0f8867;
     font-family: Helvetica, Arial, sans-serif;
 }
