@@ -218,6 +218,18 @@ test("the keys the box does not answer to are left to the page", async () => {
     };
 });
 
+test("a suggestion is written even in an editor that keeps its own copy", async () => {
+    // Replacing the word being typed is the same change as typing it, so insertText is
+    // what every editor takes. Handing it a paste instead left the word only selected
+    const page = fakePage("x + \\alp", 8);
+    page.field.isContentEditable = false;
+    page.field.closest = () => ({});   // says it is one of those editors
+    open(page, "\\alp");
+    const first = matching(commands, "\\alp").matches[0].insert;
+    await press(page, "Enter");
+    assert.equal(page.field.value, "x + " + first);
+});
+
 test("a command the user built is written like any other", async () => {
     const own = everyCommand([{type: "\\newcommand", newInput: "\\RR", output: "\\mathbb{R}"}]);
     const page = fakePage("x \\in \\R", 8);

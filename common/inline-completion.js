@@ -262,20 +262,9 @@ export function showCompletion(options) {
     };
 
     function write(command) {
-        // An editor that keeps its own copy of what it holds (X, Discord and the like) is
-        // handed a paste, which is a change it makes itself: writing straight into the page
-        // leaves the two disagreeing and the editor stops taking anything at all
-        const ownItself = "[data-lexical-editor],[data-slate-editor],.ProseMirror," +
-                          ".public-DraftEditor-content,[data-contents],.cm-content,.ql-editor";
-        if ((editable) && (element.closest) && (element.closest(ownItself) !== null)) {
-            try {
-                const data = new DataTransfer();
-                data.setData("text/plain", command);
-                element.dispatchEvent(new ClipboardEvent("paste",
-                    {clipboardData: data, bubbles: true, cancelable: true}));
-            } catch (err) {};
-            return;
-        };
+        // Replacing the word being typed is the same change as typing it, which every
+        // editor takes: it is replacing everything at once that leaves some of them stuck,
+        // and that only happens when the whole field is converted, over in inline.js
         // insertText is what lets the page notice the change and what keeps Ctrl+Z working
         let written = false;
         try {

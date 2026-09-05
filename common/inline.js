@@ -126,12 +126,19 @@ export function writeBack(converted, kind, whole) {
 
     function copy(text, giveBackTo) {
         // The page can't be written in, so the text is put on the clipboard to be pasted
+        // What was converted stays selected, so Ctrl+V puts the answer in its place rather
+        // than beside it, and the user doesn't have to select it all over again
+        const selection = window.getSelection();
+        const range = ((selection) && (selection.rangeCount > 0)) ?
+            selection.getRangeAt(0).cloneRange() : null;
+        const inField = (giveBackTo) && (giveBackTo.setSelectionRange);
+        const start = (inField) ? giveBackTo.selectionStart : undefined;
+        const end = (inField) ? giveBackTo.selectionEnd : undefined;
+
         const area = document.createElement("textarea");
         area.value = text;
         area.style.cssText = "position:fixed;top:-1000px;opacity:0;";
         document.body.appendChild(area);
-        const start = (giveBackTo) ? giveBackTo.selectionStart : undefined;
-        const end = (giveBackTo) ? giveBackTo.selectionEnd : undefined;
         area.select();
         let copied = false;
         try {
@@ -140,12 +147,18 @@ export function writeBack(converted, kind, whole) {
             copied = false;
         };
         area.remove();
-        // Ctrl+V has to land where the user was writing, so the cursor is put back
+
+        // Selecting the textarea took the selection away, so it is given back
         if (giveBackTo) {
             giveBackTo.focus();
-            if (start !== undefined) {
-                try { giveBackTo.setSelectionRange(start, end); } catch (err) {};
-            };
+        };
+        if (start !== undefined) {
+            try { giveBackTo.setSelectionRange(start, end); } catch (err) {};
+        } else if (range) {
+            try {
+                selection.removeAllRanges();
+                selection.addRange(range);
+            } catch (err) {};
         };
         return copied;
     };

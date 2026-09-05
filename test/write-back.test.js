@@ -14,7 +14,8 @@ import assert from "node:assert/strict";
 import { writeBack } from "../common/inline.js";
 
 // Neither of these is a real DOM: only what writeBack asks for is answered
-function page({owner = null, takesInsertText = true, takesPaste = false, text = "$\\alpha$"}) {
+function page({owner = null, takesInsertText = true, takesPaste = false,
+               takesValueSet = true, text = "$\\alpha$"}) {
     const copied = {value: null};
     const element = {
         tagName: "DIV",
@@ -49,11 +50,25 @@ function page({owner = null, takesInsertText = true, takesPaste = false, text = 
             return false;
         }
     };
-    global.window = {
-        getSelection: () => ({removeAllRanges() {}, addRange() {}}),
-        HTMLTextAreaElement: {prototype: {}},
-        HTMLInputElement: {prototype: {}}
+    const held = {range: {name: "what the user had selected"}, rangeCount: 1};
+    const selection = {
+        get rangeCount() { return held.rangeCount; },
+        getRangeAt: () => ({cloneRange: () => held.range}),
+        removeAllRanges() { held.rangeCount = 0; held.range = null; },
+        addRange(range) { held.rangeCount = 1; held.range = range; }
     };
+    const prototype = {};
+    Object.defineProperty(prototype, "value", {
+        set(written) { if (takesValueSet) element.value = written; },
+        get() { return element.value; },
+        configurable: true
+    });
+    global.window = {
+        getSelection: () => selection,
+        HTMLTextAreaElement: {prototype: prototype},
+        HTMLInputElement: {prototype: prototype}
+    };
+    element.held = held;
     global.DataTransfer = class {
         constructor() { this.held = {}; };
         setData(type, value) { this.held[type] = value; };
@@ -118,4 +133,29 @@ test("nothing editable means the text goes to the clipboard", () => {
     const there = page({});
     assert.equal(writeBack("𝛼", "clipboard", false), "clipboard");
     assert.equal(there.copied.value, "𝛼");
+});
+
+test("what the user selected is still selected after copying", () => {
+    // They asked for part of it to be converted, so Ctrl+V has to land on that part
+    const there = page({owner: ".ProseMirror", takesPaste: false, takesInsertText: false});
+    assert.equal(writeBack("𝛼", "editable", false), "clipboard");
+    assert.equal(there.element.held.rangeCount, 1, "nothing is selected any more");
+    assert.equal(there.element.held.range.name, "what the user had selected");
+});
+
+test("converting the whole thing leaves the whole thing selected", () => {
+    // Ctrl+V then puts the answer in its place, rather than after it
+    const there = page({owner: ".ProseMirror", takesPaste: false, takesInsertText: false});
+    assert.equal(writeBack("𝛼", "editable", true), "clipboard");
+    assert.equal(there.element.held.rangeCount, 1, "nothing is selected any more");
+});
+
+test("a field that refuses every write keeps what was selected in it", () => {
+    const there = page({takesInsertText: false, takesValueSet: false});
+    there.element.tagName = "TEXTAREA";
+    there.element.selectionStart = 4;
+    there.element.selectionEnd = 9;
+    assert.equal(writeBack("𝛼", "field", false), "clipboard");
+    assert.equal(there.element.start, 4, "the selection should be back where it was");
+    assert.equal(there.element.end, 9);
 });
