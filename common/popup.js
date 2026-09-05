@@ -148,52 +148,6 @@ let chosenSuggestion = 0;
 
 
 
-// Colors
-
-// Index 0 is for light mode and 1 is for dark mode
-const mainColors = {
-    "body" : ["white", "rgb(39,39,39)"],
-    "text" : {
-        "color" : ["black", "whitesmoke"],
-        "background" : ["whitesmoke", "rgb(83,83,83)"],
-        "border" : ["rgb(231,231,231)", "rgb(83,83,83)"]
-    },
-    "infoBtn" : ["white", "rgb(39,39,39)"],
-    "shortcuts" : ["black", "whitesmoke"],
-    "dropdown" : ["whitesmoke", "rgb(31,31,31)"],
-    "btnDropdown" : {
-        "color" : ["black", "whitesmoke"],
-        "background" : ["whitesmoke", "rgb(31,31,31)"],
-        "hover" : ["lightgrey", "rgb(41,41,41)"]
-    },
-    "mainBtn" : {
-        "color" : ["black", "whitesmoke"],
-        "background" : ["rgb(230,229,229)", "rgb(53,53,53)"],
-        "hover" : ["lightgrey", "rgb(61,61,61)"]
-    },
-    "mistakes" : ["black", "whitesmoke"],
-    "completion" : {
-        "border" : ["rgb(238,238,238)", "rgb(31,31,31)"],
-        "backgroundTrTd" : ["white", "rgb(39,39,39)"]
-    },
-    "settingsBox" : {
-        "background" : ["rgba(245,245,245,0.7)", "rgba(31,31,31,0.7)"],
-        "backgroundBackup" : ["whitesmoke", "rgb(31,31,31)"]
-    },
-    "settingsContent" : {
-        "color" : ["black", "whitesmoke"],
-        "background" : ["whitesmoke", "rgb(31,31,31)"],
-        "input" : {
-            "color" : ["black", "whitesmoke"],
-            "background" : ["white", "rgb(61,61,61)"]
-        },
-        "inputBtn" : {
-            "color" : ["black", "whitesmoke"],
-            "background" : ["rgb(230,229,229)", "rgb(53,53,53)"],
-            "hover" : ["lightgrey", "rgb(61,61,61)"]
-        }
-    }
-};
 
 
 /**************************************************************************************/
@@ -369,192 +323,11 @@ function resetSettings() {
 };
 
 function updateMainColors() {
-    // Updates the colors (light or dark mode) of the popup
-    const titleLight = document.getElementById("title_light");
-    const titleDark = document.getElementById("title_dark");
-    const infoBtnLight = document.getElementById("infoButton_light");
-    const infoBtnDark = document.getElementById("infoButton_dark");
-    const infoImgLight = document.getElementById("info_light");
-    const infoImgDark = document.getElementById("info_dark");
-    const dropdownInfo = document.getElementById("dropdownInfo");
-    const docsBtn = document.getElementById("docs");
-    const gitBtn = document.getElementById("git");
-    const adjustSpacesBtn = document.getElementById("adjustSpaces");
-    const changeFontBtn = document.getElementById("changeFont");
-    const changeModeBtn = document.getElementById("changeMode");
-    const settingsContent = document.getElementById("settingsContent");
-    const settingsContentInp = settingsContent.getElementsByTagName("input");
-    const settingsContentSel = settingsContent.getElementsByTagName("select");
-
-    const i = (darkMode.checked) ? 1 : 0;
-    document.body.style.backgroundColor = mainColors["body"][i];
-    textIn.style.color = mainColors["text"]["color"][i];
-    textIn.style.backgroundColor = mainColors["text"]["background"][i];
-    textIn.style.border = "2px solid " + mainColors["text"]["border"][i];
-    textOut.style.color = mainColors["text"]["color"][i];
-    textOut.style.backgroundColor = mainColors["text"]["background"][i];
-    textOut.style.border = "2px solid " + mainColors["text"]["border"][i];
-    dropdownInfo.style.backgroundColor = mainColors["dropdown"][i];
-
-    docsBtn.style.color = mainColors["btnDropdown"]["color"][i];
-    docsBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
-    docsBtn.addEventListener("mouseenter", (e) => {
-        docsBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
-    });
-    docsBtn.addEventListener("mouseleave", (e) => {
-        docsBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
-    });
-    gitBtn.style.color = mainColors["btnDropdown"]["color"][i];
-    gitBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
-    gitBtn.addEventListener("mouseenter", (e) => {
-        gitBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
-    });
-    gitBtn.addEventListener("mouseleave", (e) => {
-        gitBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
-    });
-    adjustSpacesBtn.style.color = mainColors["btnDropdown"]["color"][i];
-    adjustSpacesBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
-    adjustSpacesBtn.addEventListener("mouseenter", (e) => {
-        adjustSpacesBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
-    });
-    adjustSpacesBtn.addEventListener("mouseleave", (e) => {
-        adjustSpacesBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
-    });
-    changeFontBtn.style.color = mainColors["btnDropdown"]["color"][i];
-    changeFontBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
-    changeFontBtn.addEventListener("mouseenter", (e) => {
-        changeFontBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
-    });
-    changeFontBtn.addEventListener("mouseleave", (e) => {
-        changeFontBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
-    });
-    changeModeBtn.style.color = mainColors["btnDropdown"]["color"][i];
-    changeModeBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
-    changeModeBtn.addEventListener("mouseenter", (e) => {
-        changeModeBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
-    });
-    changeModeBtn.addEventListener("mouseleave", (e) => {
-        changeModeBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
-    });
-    settingsBtn.style.color = mainColors["btnDropdown"]["color"][i];
-    settingsBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
-    settingsBtn.addEventListener("mouseenter", (e) => {
-        settingsBtn.style.backgroundColor = mainColors["btnDropdown"]["hover"][i];
-    });
-    settingsBtn.addEventListener("mouseleave", (e) => {
-        settingsBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
-    });
-    convertButton.style.color = mainColors["mainBtn"]["color"][i];
-    convertButton.style.backgroundColor = mainColors["mainBtn"]["background"][i];
-    convertButton.addEventListener("mouseenter", (e) => {
-        convertButton.style.backgroundColor = mainColors["mainBtn"]["hover"][i];
-    });
-    convertButton.addEventListener("mouseleave", (e) => {
-        convertButton.style.backgroundColor = mainColors["mainBtn"]["background"][i];
-    });
-    resetButton.style.color = mainColors["mainBtn"]["color"][i];
-    resetButton.style.backgroundColor = mainColors["mainBtn"]["background"][i];
-    resetButton.addEventListener("mouseenter", (e) => {
-        resetButton.style.backgroundColor = mainColors["mainBtn"]["hover"][i];
-    });
-    resetButton.addEventListener("mouseleave", (e) => {
-        resetButton.style.backgroundColor = mainColors["mainBtn"]["background"][i];
-    });
-    copyButton.style.color = mainColors["mainBtn"]["color"][i];
-    copyButton.style.backgroundColor = mainColors["mainBtn"]["background"][i];
-    copyButton.addEventListener("mouseenter", (e) => {
-        copyButton.style.backgroundColor = mainColors["mainBtn"]["hover"][i];
-    });
-    copyButton.addEventListener("mouseleave", (e) => {
-        copyButton.style.backgroundColor = mainColors["mainBtn"]["background"][i];
-    });
-    completionBtn.style.color = mainColors["mainBtn"]["color"][i];
-    completionBtn.style.backgroundColor = mainColors["mainBtn"]["background"][i];
-    completionBtn.addEventListener("mouseenter", (e) => {
-        completionBtn.style.backgroundColor = mainColors["mainBtn"]["hover"][i];
-    });
-    completionBtn.addEventListener("mouseleave", (e) => {
-        completionBtn.style.backgroundColor = mainColors["mainBtn"]["background"][i];
-    });
-
-    mistakesBox.style.color = mainColors["mistakes"][i];
-    completionPopup.style.border = "1px solid " + mainColors["completion"]["border"][i];
-    completionPopup.style.backgroundColor = mainColors["completion"]["border"][i];
-    settingsBox.style.backgroundColor = mainColors["settingsBox"]["backgroundBackup"][i];
-    settingsBox.style.backgroundColor = mainColors["settingsBox"]["background"][i];
-    settingsContent.style.color = mainColors["settingsContent"]["color"][i];
-    settingsContent.style.backgroundColor = mainColors["settingsContent"]["background"][i];
-    resetSettingsButton.addEventListener("mouseenter", (e) => {
-        resetSettingsButton.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["hover"][i];
-    });
-    resetSettingsButton.addEventListener("mouseleave", (e) => {
-        resetSettingsButton.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][i];
-    });
-    buildCommandsBtn.addEventListener("mouseenter", (e) => {
-        buildCommandsBtn.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["hover"][i];
-    });
-    buildCommandsBtn.addEventListener("mouseleave", (e) => {
-        buildCommandsBtn.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][i];
-    });
-    changeShortcutBtn.addEventListener("mouseenter", (e) => {
-        changeShortcutBtn.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["hover"][i];
-    });
-    changeShortcutBtn.addEventListener("mouseleave", (e) => {
-        changeShortcutBtn.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][i];
-    });
-
-    let j;
-    for (j=0; j<settingsContentInp.length; j++) {
-        if ((settingsContentInp[j].type == "number") || (settingsContentInp[j].type == "text")) {
-            settingsContentInp[j].style.color = mainColors["settingsContent"]["input"]["color"][i];
-            settingsContentInp[j].style.backgroundColor = mainColors["settingsContent"]["input"]["background"][i];
-        } else if (settingsContentInp[j].type == "button") {
-            settingsContentInp[j].style.color = mainColors["settingsContent"]["inputBtn"]["color"][i];
-            settingsContentInp[j].style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][i];
-        };
-    };
-    for (j=0; j<settingsContentSel.length; j++) {
-        settingsContentSel[j].style.color = mainColors["settingsContent"]["input"]["color"][i];
-        settingsContentSel[j].style.backgroundColor = mainColors["settingsContent"]["input"]["background"][i];
-    };
-
-    if (darkMode.checked) {
-        titleDark.style.display = "inline-block";
-        titleDark.style.width = "25%";
-        titleDark.style.height = "25%";
-        titleDark.style.marginLeft = "37%";
-        titleDark.style.marginRight = "37%";
-        titleLight.style.display = "none";
-        infoBtnDark.style.display = "inline-block";
-        infoBtnDark.style.border = "none";
-        infoBtnDark.style.float = "right";
-        infoBtnDark.style.backgroundColor = mainColors["infoBtn"][i];
-        infoBtnLight.style.display = "none";
-        infoImgDark.style.display = "inline-block";
-        infoImgDark.style.width = "15px";
-        infoImgDark.style.height = "15px";
-        infoImgDark.style.cursor = "default";
-        infoImgDark.style.float = "right";
-        infoImgLight.style.display = "none";
-    } else {
-        titleLight.style.display = "inline-block";
-        titleLight.style.width = "25%";
-        titleLight.style.height = "25%";
-        titleLight.style.marginLeft = "37%";
-        titleLight.style.marginRight = "37%";
-        titleDark.style.display = "none";
-        infoBtnLight.style.display = "inline-block";
-        infoBtnLight.style.border = "none";
-        infoBtnLight.style.float = "right";
-        infoBtnLight.style.backgroundColor = mainColors["infoBtn"][i];
-        infoBtnDark.style.display = "none";
-        infoImgLight.style.display = "inline-block";
-        infoImgLight.style.width = "15px";
-        infoImgLight.style.height = "15px";
-        infoImgLight.style.cursor = "default";
-        infoImgLight.style.float = "right";
-        infoImgDark.style.display = "none";
-    };
+    // Light or dark is one attribute on <html>. Every colour lives in popup_style.css,
+    // so nothing here has to know what any of them are.
+    // Hover is CSS too, which is what stops a colour sticking to a button after the
+    // user changes theme -- the reason the delete button's hover had to be turned off.
+    document.documentElement.dataset.theme = (darkMode.checked) ? "dark" : "light";
 };
 
 darkMode.addEventListener("click", (e) => {
@@ -630,7 +403,6 @@ document.addEventListener("keydown", (keyPressed) => {
 function buildNewCommand() {
     // Called when 'buildCommandsBtn' is clicked
     // Adds a new command (two new rows) to the 'commandsBuilt' table
-    const darkModeInt = (darkMode.checked) ? 1 : 0;
 
     commandsBuilt.style.display = "block";
 
@@ -677,8 +449,6 @@ function buildNewCommand() {
     selectCmdType.add(renewCommandOpt);
     selectCmdType.add(declareMathOperatorOpt);
     selectCmdType.add(declareUnicodeCharacterOpt);
-    selectCmdType.style.color = mainColors["settingsContent"]["input"]["color"][darkModeInt];
-    selectCmdType.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][darkModeInt];
     typeInput.appendChild(selectCmdType);
     row1.appendChild(typeInput);
 
@@ -688,8 +458,6 @@ function buildNewCommand() {
     let newCommandName = document.createElement("td");
     let inputNewCommandName = document.createElement("input");
     inputNewCommandName.type = "text";
-    inputNewCommandName.style.color = mainColors["settingsContent"]["input"]["color"][darkModeInt];
-    inputNewCommandName.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][darkModeInt];
     inputNewCommandName.style.display = "inline";
     inputNewCommandName.style.width = "80%";
     newCommandName.appendChild(curlyBracketsLeftCN);
@@ -706,8 +474,6 @@ function buildNewCommand() {
     numArgs.min = "0";
     numArgs.max = "99";
     numArgs.step = "1";
-    numArgs.style.color = mainColors["settingsContent"]["input"]["color"][darkModeInt];
-    numArgs.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][darkModeInt];
     numArgs.style.width = "3em";
     numArgs.style.display = "inline";
     numberArgsField.appendChild(squareBracketLeft);
@@ -722,8 +488,6 @@ function buildNewCommand() {
     let defaultCommandName = document.createElement("td");
     let inputDefaultCommandArg = document.createElement("input");
     inputDefaultCommandArg.type = "text";
-    inputDefaultCommandArg.style.color = mainColors["settingsContent"]["input"]["color"][darkModeInt];
-    inputDefaultCommandArg.style.backgroundColor = mainColors["settingsContent"]["input"]["background"][darkModeInt];
     inputDefaultCommandArg.style.width = "80%";
     inputDefaultCommandArg.style.display = "inline";
     defaultCommandName.appendChild(curlyBracketsLeftCA);
@@ -743,19 +507,8 @@ function buildNewCommand() {
     deleteCommandBtn.style.fontSize = "18px";
     deleteCommandBtn.style.borderRadius = "6px";
     deleteCommandBtn.style.padding = "5px";
-    deleteCommandBtn.style.color = mainColors["settingsContent"]["inputBtn"]["color"][darkModeInt];
-    deleteCommandBtn.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][darkModeInt];
 
-    // Commented out since it leads to a bug. The color chosen now "sticks" to the button. Therefore, if the user changes 
-    // the color mode, the button won't have the right color when hover.
-    /*
-    deleteCommandBtn.addEventListener("mouseenter", (e) => {
-        deleteCommandBtn.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["hover"][darkModeInt];
-    });
-    deleteCommandBtn.addEventListener("mouseleave", (e) => {
-        deleteCommandBtn.style.backgroundColor = mainColors["settingsContent"]["inputBtn"]["background"][darkModeInt];
-    });
-    */
+    // Its hover is in popup_style.css now, so it follows the theme
 
     deleteCommandBtn.addEventListener("click", () => {
         // Delete the command
@@ -811,12 +564,9 @@ function pickSuggestion(i) {
     if (suggestions.length === 0) {
         return;
     };
-    const darkModeInt = (darkMode.checked) ? 1 : 0;
-    suggestions[chosenSuggestion].style.backgroundColor =
-        mainColors["completion"]["backgroundTrTd"][darkModeInt];
+    suggestions[chosenSuggestion].classList.remove("chosen");
     chosenSuggestion = (i + suggestions.length) % suggestions.length;
-    suggestions[chosenSuggestion].style.backgroundColor =
-        mainColors["mainBtn"]["hover"][darkModeInt];
+    suggestions[chosenSuggestion].classList.add("chosen");
     suggestions[chosenSuggestion].scrollIntoView({block: "nearest"});
 };
 
@@ -844,8 +594,6 @@ function completion(command) {
     // Outputs list of other commands that are similar to the one currently being written
     // What to suggest is decided in completion.js, which the page uses too, so the two
     // can't end up suggesting different things
-    const btnBackColor = mainColors["completion"]["backgroundTrTd"][(darkMode.checked) ? 1 : 0];
-    const btnFontColor = (darkMode.checked) ? "whitesmoke" : "black";
     const found = completionList(command, storeCommands(), changeFontButton.checked);
     suggestions = [];
     chosenSuggestion = 0;
@@ -858,7 +606,7 @@ function completion(command) {
         let row = completionPopup.insertRow(-1);
         let cell = row.insertCell(0);
         cell.textContent = found.note;
-        cell.style.color = btnFontColor;
+        cell.className = "note";
         return;
     };
 
@@ -870,20 +618,7 @@ function completion(command) {
         btn.textContent = suggestion.label;   // The command and what it gives
         btn.value = suggestion.insert;        // What gets written, which is not the same
 
-        // Button style
-        btn.style.width = "240px";  // Would be cleaner with something like 'fit-content', but is way to slow
-        btn.style.height = "17px";
-        btn.style.textAlign = "left";
-        btn.style.overflow = "hidden";
-        btn.style.whiteSpace = "nowrap";
-        btn.style.backgroundColor = btnBackColor
-        btn.style.border = "1px solid " + btnBackColor;
-        btn.style.color = btnFontColor;
-        btn.style.borderRadius = "3px";
-        btn.type = "button";
-
-        cell.style.border = "1px solid " + btnBackColor;
-        cell.style.backgroundColor = btnBackColor;
+        btn.type = "button";   // What it looks like is in popup_style.css
 
         // Complete the command if the user clicks on that command
         btn.addEventListener("click", () => {
