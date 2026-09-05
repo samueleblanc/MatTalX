@@ -37,15 +37,18 @@ export async function convertInPage(inject) {
         return;
     };
     const written = await inject(writeBack, [converted, target.kind, target.whole]);
-    await inject(showMessage, [resultMessage(target.kind, written)]);
+    await inject(showMessage, [resultMessage(written)]);
 };
 
-export function resultMessage(kind, written) {
+export function resultMessage(written) {
     // What the message says once the text has been put back, or not
-    if (!written) {
-        return (kind === "clipboard") ? "Could not copy" : "Nothing to convert here";
+    // Some editors keep the text to themselves, so it goes to the clipboard instead
+    if (written === "page") {
+        return "Converted";
+    } else if (written === "clipboard") {
+        return "Converted, press Ctrl+V to paste it";
     };
-    return (kind === "clipboard") ? "Converted, press Ctrl+V to paste it" : "Converted";
+    return "Nothing to convert here";
 };
 
 export function nothingHappened(text, settings) {
@@ -113,13 +116,22 @@ export function showMessage(message) {
 
 export function writeBack(converted, kind, whole) {
     // Runs in the page: puts the converted text back where it was read from
-    // Says whether it managed to, and showMessage tells the user afterwards
-    if (kind === "clipboard") {
+    // Says how it went, and showMessage tells the user afterwards
+
+    // Editors that keep their own copy of what they hold: X, Discord and the like. Writing
+    // straight into the page leaves the two disagreeing, and the editor stops taking input
+    // altogether, so those are handed a paste instead, which is a change they make themselves
+    const ownItself = "[data-lexical-editor],[data-slate-editor],.ProseMirror," +
+                      ".public-DraftEditor-content,[data-contents],.cm-content,.ql-editor";
+
+    function copy(text, giveBackTo) {
         // The page can't be written in, so the text is put on the clipboard to be pasted
         const area = document.createElement("textarea");
-        area.value = converted;
+        area.value = text;
         area.style.cssText = "position:fixed;top:-1000px;opacity:0;";
         document.body.appendChild(area);
+        const start = (giveBackTo) ? giveBackTo.selectionStart : undefined;
+        const end = (giveBackTo) ? giveBackTo.selectionEnd : undefined;
         area.select();
         let copied = false;
         try {
@@ -128,47 +140,75 @@ export function writeBack(converted, kind, whole) {
             copied = false;
         };
         area.remove();
+        // Ctrl+V has to land where the user was writing, so the cursor is put back
+        if (giveBackTo) {
+            giveBackTo.focus();
+            if (start !== undefined) {
+                try { giveBackTo.setSelectionRange(start, end); } catch (err) {};
+            };
+        };
         return copied;
+    };
+
+    if (kind === "clipboard") {
+        return (copy(converted, null)) ? "clipboard" : "";
     };
 
     const element = document.activeElement;
     if (!element) {
-        return false;
+        return "";
     };
+    const editable = (kind === "editable");
+    const holds = () => (editable) ? element.innerText : element.value;
+    const before = holds();
 
     // With nothing selected the whole field is replaced, so all of it is selected first
     if (whole) {
-        if (kind === "field") {
-            element.setSelectionRange(0, element.value.length);
-        } else {
+        if (editable) {
             const range = document.createRange();
             range.selectNodeContents(element);
             const selection = window.getSelection();
             selection.removeAllRanges();
             selection.addRange(range);
+        } else {
+            element.setSelectionRange(0, element.value.length);
         };
     };
 
-    // insertText is what lets the page notice the change and what keeps Ctrl+Z working
-    let written = false;
-    try {
-        written = document.execCommand("insertText", false, converted);
-    } catch (err) {
-        written = false;
+    if ((editable) && (element.closest(ownItself) !== null)) {
+        // A paste that the editor ignores changes nothing at all, which is the safe way
+        // to be wrong here: what is read back below is what decides whether it worked
+        try {
+            const data = new DataTransfer();
+            data.setData("text/plain", converted);
+            element.dispatchEvent(new ClipboardEvent("paste",
+                {clipboardData: data, bubbles: true, cancelable: true}));
+        } catch (err) {};
+    } else {
+        // insertText is what lets the page notice the change and what keeps Ctrl+Z working
+        let written = false;
+        try {
+            written = document.execCommand("insertText", false, converted);
+        } catch (err) {
+            written = false;
+        };
+        if ((!written) && (!editable)) {
+            // Some fields refuse insertText. Assigning to value would be ignored by React and
+            // the like, so the value is set through the prototype and an event is sent after
+            const prototype = (element.tagName === "TEXTAREA") ?
+                window.HTMLTextAreaElement.prototype : window.HTMLInputElement.prototype;
+            const setValue = Object.getOwnPropertyDescriptor(prototype, "value").set;
+            const start = element.selectionStart;
+            const end = element.selectionEnd;
+            setValue.call(element, element.value.slice(0, start) + converted + element.value.slice(end));
+            element.dispatchEvent(new Event("input", { bubbles: true }));
+        };
     };
 
-    if ((!written) && (kind === "field")) {
-        // Some fields refuse insertText. Assigning to value would be ignored by React and
-        // the like, so the value is set through the prototype and an event is sent after
-        const prototype = (element.tagName === "TEXTAREA") ?
-            window.HTMLTextAreaElement.prototype : window.HTMLInputElement.prototype;
-        const setValue = Object.getOwnPropertyDescriptor(prototype, "value").set;
-        const start = element.selectionStart;
-        const end = element.selectionEnd;
-        setValue.call(element, element.value.slice(0, start) + converted + element.value.slice(end));
-        element.dispatchEvent(new Event("input", { bubbles: true }));
-        written = true;
+    // The page has the last word: whatever was tried, the text is either there or it isn't
+    const now = holds();
+    if ((now !== before) && (now.includes(converted))) {
+        return "page";
     };
-
-    return written;
+    return (copy(converted, element)) ? "clipboard" : "";
 };

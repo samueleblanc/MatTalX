@@ -33,7 +33,8 @@ function pageWith(target) {
     const calls = [];
     const inject = async (toRun, args) => {
         calls.push({name: toRun.name, args: args});
-        return (toRun.name === "readTarget") ? target : true;
+        if (toRun.name === "readTarget") return target;
+        return (toRun.name === "writeBack") ? "page" : true;
     };
     return {inject, calls};
 };
@@ -117,12 +118,10 @@ test("the page is written to first, and told about it after", async () => {
 });
 
 test("the message matches what happened", () => {
-    assert.equal(resultMessage("field", true), "Converted");
-    assert.equal(resultMessage("editable", true), "Converted");
-    assert.equal(resultMessage("field", false), "Nothing to convert here");
-    // Nothing can be written in, so it goes to the clipboard and says how to use it
-    assert.equal(resultMessage("clipboard", true), "Converted, press Ctrl+V to paste it");
-    assert.equal(resultMessage("clipboard", false), "Could not copy");
+    assert.equal(resultMessage("page"), "Converted");
+    // Nothing could be written in, so it went to the clipboard and says how to use it
+    assert.equal(resultMessage("clipboard"), "Converted, press Ctrl+V to paste it");
+    assert.equal(resultMessage(""), "Nothing to convert here");
 });
 
 test("where the text came from is passed back to the page", async () => {
