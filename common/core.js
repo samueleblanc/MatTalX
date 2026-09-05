@@ -4787,7 +4787,6 @@ export function convert(fullText, userSettings) {
     // Returns the converted text and the errors found on the way, for the interface to display
     settings = {...defaultConversionSettings, ...userSettings};
     errorsList = "";
-    const dictOutMathmode = {...lettersOutMathMode, ...accents, ...textCommands};
     const firstWord = fullText.split(" ")[0];
     let fullDict;
     if (firstWord === "!chem") {  // TODO: Should remove this option
@@ -4804,8 +4803,32 @@ export function convert(fullText, userSettings) {
     return {text: stripFailures(fullText), errors: stripFailures(errorsList)};
 };
 
+// Nothing out of math mode depends on the settings, so it is built once
+const dictOutMathmode = {...lettersOutMathMode, ...accents, ...textCommands};
+
+// Building the dictionary in math mode is nearly all of the time a conversion takes, and it
+// only depends on the settings, so the last one is kept and handed back when they are the same
+// Nothing writes to it while converting, only while building it, which is what makes this safe
+let builtDict = {key: null, dict: null, errors: ""};
+
 function makeDict(documentClass) {
     // Returns the full dictionary (in mathmode) with all the commands, letters, etc. based on documentclass and font choice
+    const key = documentClass + "\u0000" + settings.mathFont + "\u0000" +
+                JSON.stringify(settings.customCommands);
+    if (builtDict.key === key) {
+        // What was said while building it has to be said again: a command the user got
+        // wrong would otherwise be reported once and never again
+        errorsList += builtDict.errors;
+        return builtDict.dict;
+    };
+    const before = errorsList.length;
+    const dict = buildDict(documentClass);
+    builtDict = {key: key, dict: dict, errors: errorsList.substring(before)};
+    return dict;
+};
+
+function buildDict(documentClass) {
+    // Puts the dictionary together, which makeDict() only does when it has to
     const greek = (settings.mathFont) ? stdGreek : noStyleGreek;
     let letters;  // lettersMath or lettersNoFont
     if (documentClass === "!chem") {

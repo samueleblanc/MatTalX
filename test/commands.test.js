@@ -24,6 +24,29 @@ test("\\newcommand refuses a name that already exists", () => {
     assert.ok(result.errors.includes("already defined"));
 });
 
+test("a command the user got wrong is reported every time, not only the first", () => {
+    // The dictionary is built once and kept, so what was said while building it has to be
+    // said again on the conversions that reuse it
+    const settings = {mathMode: false,
+        customCommands: [{type: "\\newcommand", newInput: "\\alpha", output: "\\beta"}]};
+    for (let time=1; time<=3; time++) {
+        assert.ok(convert("$\\alpha$ ", settings).errors.includes("already defined"),
+            "nothing was reported on conversion number " + time);
+    };
+});
+
+test("what the dictionary holds follows the settings, kept or not", () => {
+    // Two conversions in a row with different settings must not share a dictionary
+    const greek = (mathFont) => convert("$\\alpha$ ", {mathMode: false, mathFont: mathFont}).text;
+    assert.equal(greek(true), "\u{1D6FC} ");
+    assert.equal(greek(false), "\u03B1 ");
+    assert.equal(greek(true), "\u{1D6FC} ");
+    const own = (output) => convert("$\\RR$ ", {mathMode: false,
+        customCommands: [{type: "\\newcommand", newInput: "\\RR", output: output}]}).text;
+    assert.equal(own("\\mathbb{R}"), "ℝ  ");
+    assert.equal(own("\\mathbb{Q}"), "ℚ  ");
+});
+
 test("\\renewcommand overrides an existing command", () => {
     const run = withCommands([{type: "\\renewcommand", newInput: "\\alpha", output: "\\beta"}]);
     assert.equal(run("$\\alpha$"), "𝛽 ");

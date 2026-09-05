@@ -6,6 +6,7 @@
         v 2.5.7 - 0.0035s/sentence
         v 2.7.3 - 0.0112s/sentence
         v 2.7.4 - 0.0121s/sentence
+        v 2.7.5 - 0.0013s/sentence  (the dictionary is built once, not on every conversion)
 */
 
 import { convert } from "../common/core.js";
