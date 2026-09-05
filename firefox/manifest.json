@@ -1,7 +1,7 @@
 {
-    "name": "MatTalX - Write math symbols",
-    "description": "Write mathematical expressions anywhere - Convert LaTeX commands to plain text and paste it on any platform!",
-    "version": "2.7.5",
+    "name": "MatTalX - LaTeX to Unicode math symbols",
+    "description": "Type LaTeX in any text field and press Alt+Shift+W to get Unicode math: \\alpha becomes 𝛼. No popup, no copy-paste.",
+    "version": "3.0.0",
     "icons": {
         "48": "/images/mattalx_favicon48.png",
         "96": "/images/mattalx_favicon96.png"
@@ -41,7 +41,7 @@
             "48": "/images/mattalx_favicon48.png",
             "96": "/images/mattalx_favicon96.png"
         },
-        "default_title": "MatTalX - Write math symbols"
+        "default_title": "MatTalX - LaTeX to Unicode math symbols"
     },
     "permissions": [
         "storage",

@@ -1,7 +1,7 @@
 {
     "name": "mattalx",
-    "version": "2.7.5",
-    "description": "Convert LaTeX commands to plain text, so math symbols can be written anywhere online",
+    "version": "3.0.0",
+    "description": "Type LaTeX in any text field and get Unicode math, anywhere on the web",
     "homepage": "https://mattalx.org",
     "license": "MIT",
     "type": "module",
