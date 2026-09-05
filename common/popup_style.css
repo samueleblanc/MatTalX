@@ -1,181 +1,58 @@
-/*
-    The look of the popup.
-
-    Every colour is a token defined once below, so light and dark can't drift apart and
-    the accent can be changed in one place. popup.js only puts data-theme on <html>:
-    it no longer writes colours onto elements one at a time.
-
-    Three states have to hold, because "follow the system" leaves no attribute behind:
-      :root                                   the user chose light, or hasn't chosen
-      prefers-color-scheme + no data-theme    the system is dark and nothing was chosen
-      [data-theme="dark"]                     the user chose dark
-*/
-
-:root {
-    /* Surfaces, from the page up to what sits on it */
-    --ground: #FFFFFF;
-    --sunk: #F1F0EE;
-    --raised: #F6F5F3;
-    --rule: #DDDBD6;
-
-    /* Text */
-    --ink: #1B1D22;
-    --ink-soft: #5C6270;
-
-    /* The one accent: the Convert button, the chosen suggestion, focus rings */
-    --accent: #2B4C8C;
-    --accent-ink: #FFFFFF;
-    --accent-hover: #213C71;
-    --accent-soft: #E8EEF8;
-
-    /* Quiet buttons: everything that isn't the main action */
-    --btn: #E7E5E1;
-    --btn-hover: #D8D5D0;
-
-    --error: #A8341F;
-
-    /* Which logo and which question mark are shown, swapped with the theme */
-    --show-light: inline-block;
-    --show-dark: none;
-
-    /* One family for the interface. The two text boxes follow the user's own choice,
-       which popup.js sets on them directly */
-    --ui: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-
-    /* Three sizes, rather than the five that had grown up here */
-    --fs-sm: 13px;
-    --fs: 15px;
-    --fs-lg: 17px;
-
-    --radius: 6px;
-    --radius-sm: 4px;
-    --gap: 10px;
-}
-
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-        --ground: #23252B;
-        --sunk: #1A1C21;
-        --raised: #2C2F36;
-        --rule: #3A3E47;
-
-        --ink: #E9E8E4;
-        --ink-soft: #A2A8B4;
-
-        --accent: #7FA3DE;
-        --accent-ink: #16181D;
-        --accent-hover: #9BB8E8;
-        --accent-soft: #2A3444;
-
-        --btn: #383B43;
-        --btn-hover: #454951;
-
-        --error: #E98577;
-
-        --show-light: none;
-        --show-dark: inline-block;
-    }
-}
-
-:root[data-theme="dark"] {
-    --ground: #23252B;
-    --sunk: #1A1C21;
-    --raised: #2C2F36;
-    --rule: #3A3E47;
-
-    --ink: #E9E8E4;
-    --ink-soft: #A2A8B4;
-
-    --accent: #7FA3DE;
-    --accent-ink: #16181D;
-    --accent-hover: #9BB8E8;
-    --accent-soft: #2A3444;
-
-    --btn: #383B43;
-    --btn-hover: #454951;
-
-    --error: #E98577;
-
-    --show-light: none;
-    --show-dark: inline-block;
-}
-
-
 /* Position and size */
-
-html {
-    font-family: var(--ui);
-}
-body {
-    min-width: 500px;
-    height: auto;
-    margin: 0;
-    background-color: var(--ground);
-    color: var(--ink);
-    font-family: var(--ui);
-    font-size: var(--fs);
-}
 #body {
-    /* The width used to be 80%, which spent a fifth of the popup on empty margins */
-    width: auto;
-    padding: 0 16px 12px;
+    margin: auto;
+    width: 80%;
+    padding: 1%;
 }
 header {
-    padding: 0 16px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
-a {
-    text-decoration: none;
-}
-
-/* Anything focused by the keyboard has to say so */
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-}
-
-#title_light {
-    display: var(--show-light);
-    width: 25%;
-    height: 25%;
-    margin-right: 37%;
-    margin-left: 37%;
-}
-#title_dark {
-    display: var(--show-dark);
-    width: 25%;
-    height: 25%;
-    margin-right: 37%;
-    margin-left: 37%;
-    opacity: 85%;
-}
-
 #infoDiv {
     position: relative;
     float: right;
 }
-#infoButton_light,
-#infoButton_dark {
-    background-color: transparent;
-    border: none;
-    float: right;
-    cursor: pointer;
-    padding: 4px;
+a {
+    text-decoration: none;
 }
-#infoButton_light { display: var(--show-light); }
-#infoButton_dark  { display: var(--show-dark); }
-#info_light { display: var(--show-light); }
-#info_dark  { display: var(--show-dark); }
-#info_light,
-#info_dark {
-    width: 15px;
-    height: 15px;
-    cursor: pointer;
-    float: right;
+#infoDiv:hover #dropdownInfo {
+    text-align: center;
+    display: block;
+    padding: 8px;
 }
-
+#shortcutTitle {
+    padding-top: 6px;
+    padding-bottom: 0px;
+    cursor: default;
+}
+.completion {
+    display: inline-block;
+    position: relative;
+}
+body {
+    min-width: 500px;
+    height: auto;
+}
+#text_in {
+    border-radius: 4px;
+    width: 100%;
+    height: 100px;
+    font-size: 14px;
+    text-decoration: none;
+}
+#text_out {
+    border-radius: 4px;
+    width: 100%;
+    height: 100px;
+    font-size: 15px;
+    text-decoration: none;
+}
+#shortcuts {
+    font-size: 15x;
+    font-family: 'Times New Roman';
+    text-decoration: none;
+    cursor: default;
+}
 #dropdownInfo {
     display: none;
     position: absolute;
@@ -183,112 +60,19 @@ textarea:focus-visible {
     width: max-content;
     overflow: auto;
     right: 0;
-    border-radius: var(--radius);
-    border: 1px solid var(--rule);
-    background-color: var(--raised);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+    border-radius: 7px;
 }
-#infoDiv:hover #dropdownInfo {
-    text-align: center;
-    display: block;
-    padding: 6px;
-}
-
-#shortcutTitle {
-    padding-top: 6px;
-    padding-bottom: 0px;
-    cursor: default;
-}
-#shortcuts {
-    font-size: var(--fs);
-    color: var(--ink);
-    text-decoration: none;
-    cursor: default;
-}
+#docs,
+#git,
+#adjustSpaces,
+#changeFont,
+#changeMode,
+#settingsBtn,
 #shortcuts b,
 #shortcuts span {
-    font-size: var(--fs);
+    font-size: 15px;
+    font-family: 'Times New Roman';
 }
-
-
-/* The two text boxes */
-
-#text_in,
-#text_out {
-    box-sizing: border-box;
-    width: 100%;
-    height: 100px;
-    /* Was 2px, which left the text against the border */
-    padding: 10px;
-    border: 1px solid var(--rule);
-    border-radius: var(--radius);
-    background-color: var(--sunk);
-    color: var(--ink);
-    text-decoration: none;
-    resize: vertical;
-}
-#text_in { font-size: 14px; }
-#text_out { font-size: 15px; }
-#text_in:focus,
-#text_out:focus {
-    border-color: var(--accent);
-}
-
-
-/* The row of buttons under the first box */
-
-#convert,
-#reset,
-#copy,
-#completionBtn {
-    font-family: var(--ui);
-    font-size: var(--fs);
-    padding: 8px 16px;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    border: 1px solid transparent;
-}
-
-/* Convert is the point of the popup, so it is the only filled button in it */
-#convert {
-    background-color: var(--accent);
-    color: var(--accent-ink);
-    font-weight: 600;
-}
-#convert:hover {
-    background-color: var(--accent-hover);
-}
-
-#reset,
-#copy,
-#completionBtn {
-    background-color: transparent;
-    color: var(--ink);
-    border-color: var(--rule);
-}
-#reset:hover,
-#copy:hover,
-#completionBtn:hover {
-    background-color: var(--btn-hover);
-}
-#completionBtn {
-    display: none;   /* popup.js shows it when the setting asks for it */
-}
-#copy {
-    min-width: 70px;
-    width: fit-content;
-    height: auto;
-}
-
-#mistakes {
-    white-space: pre-wrap;
-    font-size: var(--fs-sm);
-    color: var(--error);
-}
-
-
-/* The rows inside the question mark menu */
-
 #docs,
 #git,
 #adjustSpaces,
@@ -297,41 +81,46 @@ textarea:focus-visible {
 #settingsBtn {
     display: block;
     width: 100%;
-    font-family: var(--ui);
-    font-size: var(--fs);
-    text-align: left;
     text-decoration: none;
     border: none;
-    border-radius: var(--radius-sm);
-    padding: 5px 8px;
-    color: var(--ink);
-    background-color: transparent;
-    cursor: pointer;
-}
-#docs:hover,
-#git:hover,
-#adjustSpaces:hover,
-#changeFont:hover,
-#changeMode:hover,
-#settingsBtn:hover {
-    background-color: var(--accent-soft);
 }
 .settingHint {
-    /* Says what the checkbox above does */
+    /* Says what the checkbox above does. Takes its colour from the row it sits in,
+       so it works the same in light and in dark mode */
     display: block;
-    font-size: var(--fs-sm);
+    font-size: 15px;
     font-style: italic;
-    color: var(--ink-soft);
+    opacity: 0.85;
     padding: 0px 6px 3px 6px;
     cursor: default;
 }
-
-
-/* The list of suggested commands */
-
-.completion {
-    display: inline-block;
-    position: relative;
+#convert,
+#reset {
+    font-size: 14px;
+    font-family: 'Lucida Grande';
+    border: none;
+    padding: 8px;
+}
+#completionBtn {
+    display: none;
+    font-size: 14px;
+    font-family: 'Lucida Grande';
+    border: none;
+    padding: 8px;
+}
+#copy {
+    font-size: 14px;
+    font-family: 'Lucida Grande';
+    border: none;
+    padding: 8px;
+    min-width: 70px;
+    width: fit-content;
+    height: auto;
+}
+#mistakes {
+    white-space: pre-wrap;
+    font-size: 15x;
+    font-family: 'Times New Roman';
 }
 #completion {
     display: none;
@@ -340,130 +129,63 @@ textarea:focus-visible {
     min-width: 140px;
     min-height: 20px;
     height: fit-content;
-    border-radius: var(--radius);
-    border: 1px solid var(--rule);
-    background-color: var(--raised);
+    border-radius: 5px;
     position: absolute;
-    z-index: 2;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
-    overflow: hidden;
 }
 #completion tr,
 #completion td {
-    border: none;
     border-collapse: collapse;
     width: 100%;
-    background-color: transparent;
 }
-#completion button {
-    width: 240px;   /* fit-content would be cleaner, and far too slow */
-    height: 17px;
-    text-align: left;
-    overflow: hidden;
-    white-space: nowrap;
-    font-family: var(--ui);
-    font-size: var(--fs-sm);
-    border: none;
-    border-radius: var(--radius-sm);
-    background-color: transparent;
-    color: var(--ink);
-    cursor: pointer;
-    padding: 0 6px;
-}
-/* The one the arrows have landed on, which Enter would take */
-#completion button.chosen {
-    background-color: var(--accent);
-    color: var(--accent-ink);
-}
-#completion .note {
-    color: var(--ink-soft);
-    font-size: var(--fs-sm);
-    padding: 6px;
-}
-
-
-/* Settings */
-
 #settingsBox {
     display: none;
     position: fixed;
-    z-index: 3;
+    z-index: 1;
     width: 100%;
     height: 100%;
     left: 0;
     top: 0;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.35);
 }
 #settingsContent {
     position: absolute;
     display: block;
-    padding: 16px;
-    border-radius: var(--radius);
-    border: 1px solid var(--rule);
+    padding: 12px;
+    border-radius: 5px;
     width: 70%;
     height: 80%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: var(--fs);
+    font-size: 14px;
     text-decoration: none;
-    overflow-y: auto;
-    background-color: var(--raised);
-    color: var(--ink);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow-y: scroll;
 }
 #settingsContent h3 {
     text-align: center;
-    font-size: var(--fs-lg);
-    margin: 0 0 12px;
-}
-#settingsContent h4 {
-    font-size: var(--fs);
-    color: var(--ink-soft);
-    margin: 16px 0 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
 }
 #settingsContent span {
     display: block;
-    padding: 3px 0;
+    padding: 1px;
 }
 #settingsContent input[type=number],
 #settingsContent input[type=text],
-#settingsContent select,
-#commandsBuilt input[type=text],
-#commandsBuilt input[type=number],
-#commandsBuilt select {
-    border: 1px solid var(--rule);
-    border-radius: var(--radius-sm);
-    padding: 4px 6px;
-    font-family: var(--ui);
-    font-size: var(--fs-sm);
-    background-color: var(--ground);
-    color: var(--ink);
+#settingsContent select {
+    border: none;
+    border-radius: 5px;
+    padding: 4px;
 }
-#settingsContent input[type=button],
-#commandsBuilt input[type=button] {
-    font-family: var(--ui);
-    font-size: var(--fs-sm);
-    border: 1px solid var(--rule);
-    border-radius: var(--radius-sm);
-    padding: 6px 12px;
-    background-color: var(--btn);
-    color: var(--ink);
-    cursor: pointer;
+#settingsContent input[type=button] {
+    font-size: 14px;
+    font-family: 'Lucida Grande';
+    border: none;
+    padding: 8px;
 }
-#settingsContent input[type=button]:hover,
-#commandsBuilt input[type=button]:hover {
-    background-color: var(--btn-hover);
-}
-
 #commandsBuilt {
     display: none;
     width: 95%;
     text-align: center;
-    border-radius: var(--radius);
+    border-radius: 5px;
     position: absolute;
 }
 #commandsBuilt tr,
@@ -471,4 +193,217 @@ textarea:focus-visible {
     border: none;
     border-collapse: collapse;
     background: none;
+}
+
+/* Colors and style */
+@media (prefers-color-scheme: light) {
+    body {
+        background-color: white;
+    }
+    #title_light {
+        width: 25%;
+        height: 25%;
+        margin-right: 37%;
+        margin-left: 37%;
+    }
+    #title_dark {
+        display: none;
+    }
+    #text_in, 
+    #text_out {
+        color: black;
+        border: 2px solid rgb(231, 231, 231);
+        background-color: whitesmoke;
+    }
+    #infoButton_dark {
+        display: none;
+    }
+    #infoButton_light {
+        background-color: white;
+        border: none;
+        float: right;
+    }
+    #info_dark {
+        display: none;
+    }
+    #info_light {
+        width: 15px;
+        height: 15px;
+        cursor: default;
+        float: right;
+    }
+    #shortcuts {
+        color: black;
+    }
+    #dropdownInfo {
+        background-color: whitesmoke;
+    }
+    #docs, 
+    #git, 
+    #adjustSpaces,
+    #changeFont,
+    #changeMode,
+    #settingsBtn {
+        color: black;
+        background-color: whitesmoke;
+    }
+    #docs:hover,
+    #git:hover,
+    #adjustSpaces:hover,
+    #changeFont:hover,
+    #changeMode:hover,
+    #settingsBtn:hover {
+        background-color: lightgrey;
+    }
+    #convert,
+    #reset,
+    #completionBtn,
+    #copy {
+        color: black;
+        background-color: rgb(230, 229, 229);
+    }
+    #convert:hover,
+    #reset:hover,
+    #completionBtn:hover,
+    #copy:hover {
+        background-color: lightgrey;
+    }
+    #mistakes {
+        color: black;
+    }
+    #completion {
+        border: 1px solid rgb(238, 238, 238);
+        background-color: rgb(238, 238, 238);
+    }
+    tr, td {
+        border: 1px solid rgb(238, 238, 238);
+        background-color: white;
+    }
+    #settingsBox {
+        background-color: whitesmoke;
+        background-color: rgba(245, 245, 245, 0.7);
+    }
+    #settingsContent {
+        background-color: whitesmoke;
+        color: black;
+    }
+    #settingsContent input[type=number],
+    #settingsContent input[type=text],
+    #settingsContent select {
+        color: black;
+        background-color: white;
+    }
+    #settingsContent input[type=button] {
+        color: black;
+        background-color: rgb(230, 229, 229);
+    }
+    #settingsContent input[type=button]:hover {
+        background-color: lightgrey;
+    }
+}
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: rgb(39, 39, 39);
+    }
+    #title_light {
+        display: none;
+    }
+    #title_dark {
+        width: 25%;
+        height: 25%;
+        margin-right: 37%;
+        margin-left: 37%;
+        opacity: 85%;
+    }
+    #text_in, 
+    #text_out {
+        color: whitesmoke;
+        border: 2px solid rgb(83, 83, 83);
+        background-color: rgb(83, 83, 83);
+    }
+    #infoButton_light {
+        display: none;
+    }
+    #infoButton_dark {
+        background-color: rgb(39, 39, 39);
+        border: none;
+        float: right;
+    }
+    #info_light {
+        display: none;
+    }
+    #info_dark {
+        width: 15px;
+        height: 15px;
+        cursor: default;
+        float: right;
+    }
+    #shortcuts {
+        color: whitesmoke;
+    }
+    #dropdownInfo {
+        background-color: rgb(31, 31, 31);
+    }
+    #docs, 
+    #git, 
+    #adjustSpaces,
+    #changeFont,
+    #changeMode,
+    #settingsBtn {
+        color: whitesmoke;
+        background-color: rgb(31, 31, 31);
+    }
+    #docs:hover,
+    #git:hover,
+    #adjustSpaces:hover,
+    #changeFont:hover,
+    #changeMode:hover,
+    #settingsBtn:hover  {
+        background-color: rgb(41, 41, 41);
+    }
+    #convert,
+    #reset,
+    #completionBtn,
+    #copy {
+        color: whitesmoke;
+        background-color: rgb(53, 53, 53);
+    }
+    #convert:hover,
+    #reset:hover,
+    #completionBtn:hover,
+    #copy:hover {
+        background-color: rgb(61, 61, 61);
+    }
+    #mistakes {
+        color: whitesmoke;
+    }
+    #completion {
+        border: 1px solid rgb(31, 31, 31);
+        background-color: rgb(31, 31, 31);
+    }
+    tr, td {
+        border: 1px solid rgb(31, 31, 31);
+        background-color: rgb(39, 39, 39);
+    }
+    #settingsBox {
+        background-color: rgb(31, 31, 31);
+        background-color: rgba(31, 31, 31, 0.7);
+    }
+    #settingsContent {
+        background-color: rgb(31, 31, 31);
+        color: whitesmoke;
+    }
+    #settingsContent input[type=number],
+    #settingsContent input[type=text],
+    #settingsContent select {
+        color: whitesmoke;
+        background-color: rgb(61, 61, 61);
+    }
+    #settingsContent input[type=button] {
+        color: whitesmoke;
+        background-color: rgb(53, 53, 53);
+    }
+    #settingsContent input[type=button]:hover {
+        background-color: rgb(61, 61, 61);
+    }
 }
