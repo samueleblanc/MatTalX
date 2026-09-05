@@ -64,12 +64,18 @@ function fakePage(value, caret) {
             return true;
         }
     };
+    // The box listens on the window, so that nothing in the page sees the keys first
+    const listeners = {};
     global.window = {
         innerHeight: 800, innerWidth: 1200,
-        addEventListener() {}, removeEventListener() {},
+        listeners: listeners,
+        addEventListener(type, fn) { (listeners[type] = listeners[type] || []).push(fn); },
+        removeEventListener(type, fn) {
+            listeners[type] = (listeners[type] || []).filter((f) => f !== fn);
+        },
         getSelection: () => null
     };
-    return {field, body};
+    return {field, body, listeners};
 };
 
 const openBox = (page) => page.body.children.find((child) => child.id === "mattalx-completion");
@@ -78,9 +84,13 @@ const shownNow = (page) => openBox(page).children.map((line) => line.textContent
 function press(page, key) {
     // The page writes the letter itself, so a letter is put in the field by hand too
     const field = page.field;
-    for (const listener of (field.listeners["keydown"] || [])) {
-        listener({key: key, code: (key === " ") ? "Space" : "Key", preventDefault() {}});
+    const seen = {stopped: false};
+    for (const listener of [...(page.listeners["keydown"] || [])]) {
+        listener({key: key, code: (key === " ") ? "Space" : "Key",
+                  preventDefault() { seen.prevented = true; },
+                  stopImmediatePropagation() { seen.stopped = true; }});
     };
+    page.lastKey = seen;
     if (key === "Backspace") {
         field.value = field.value.slice(0, -1);
         field.selectionStart = field.selectionEnd = field.value.length;
@@ -164,10 +174,10 @@ test("the shortcut closes the box when it is already open", () => {
     open(page, "\\alp");
     assert.ok(openBox(page).gone, "the box should have been taken out of the page");
     // And the run that drew it stopped listening, rather than being left behind
-    assert.deepEqual(page.field.listeners["keydown"], []);
+    assert.deepEqual(page.listeners["keydown"], []);
 });
 
-test("Escape and space close the box", async () => {
+test("Escape and space both close the box", async () => {
     for (const key of ["Escape", " "]) {
         const page = fakePage("\\alp", 4);
         open(page, "\\alp");
@@ -180,8 +190,30 @@ test("nothing is left listening in the page once the box is closed", async () =>
     const page = fakePage("\\alp", 4);
     open(page, "\\alp");
     await press(page, "Escape");
-    assert.deepEqual(page.field.listeners["keydown"], []);
+    assert.deepEqual(page.listeners["keydown"], []);
     assert.deepEqual(page.field.listeners["blur"], []);
+});
+
+test("the keys the box answers to never reach the page", async () => {
+    // Enter used to pick a command and send the post on X at the same time
+    for (const key of ["Enter", "ArrowDown", "ArrowUp", "Escape"]) {
+        const page = fakePage("\\alp", 4);
+        open(page, "\\alp");
+        await press(page, key);
+        assert.ok(page.lastKey.stopped, key + " should not reach the page");
+        assert.ok(page.lastKey.prevented, key + " should not do what the page would do");
+    };
+});
+
+test("the keys the box does not answer to are left to the page", async () => {
+    // Tab moves on, space is a space: the box just gets out of the way
+    for (const key of ["Tab", " "]) {
+        const page = fakePage("\\alp", 4);
+        open(page, "\\alp");
+        await press(page, key);
+        assert.ok(!page.lastKey.stopped, key + " belongs to the page");
+        assert.ok(openBox(page).gone, key + " should close the box");
+    };
 });
 
 test("a command the user built is written like any other", async () => {

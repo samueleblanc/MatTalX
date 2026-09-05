@@ -140,6 +140,10 @@ const commandsBuilt = document.getElementById("commandsBuilt");
 
 /** Other **/
 
+// The suggestions currently shown, and which one the arrows are on
+let suggestions = [];
+let chosenSuggestion = 0;
+
 
 
 
@@ -590,7 +594,15 @@ document.addEventListener("keydown", (keyPressed) => {
         // If any key is pressed while the completion popup is opened, it adjusts the suggestions
         // The word must be adjusted "by hand" because the eventListener is synchronous
         if (completionPopup.style.display === "inline-block") {
-            if (keyPressed.key === "Backspace") {
+            if ((keyPressed.key === "ArrowDown") || (keyPressed.key === "ArrowUp")) {
+                keyPressed.preventDefault();
+                pickSuggestion(chosenSuggestion + ((keyPressed.key === "ArrowDown") ? 1 : -1));
+            } else if (keyPressed.key === "Enter") {
+                keyPressed.preventDefault();
+                takeSuggestion();
+            } else if (keyPressed.key === "Escape") {
+                closeCompletion();
+            } else if (keyPressed.key === "Backspace") {
                 completionPopup.textContent = "";
                 let word = findWord(textIn.value, textIn.selectionEnd - 1, "Backspace");
                 completion(word);
@@ -600,10 +612,10 @@ document.addEventListener("keydown", (keyPressed) => {
                 completionPopup.textContent = "";
                 let word = findWord(textIn.value, textIn.selectionEnd - 1, keyPressed.key);
                 completion(word);
-            } else if ((keyPressed.key === "ArrowUp") || (keyPressed.key === "ArrowRight") || (keyPressed.key === "ArrowLeft") || (keyPressed.key === "ArrowDown")) {
+            } else if ((keyPressed.key === "ArrowRight") || (keyPressed.key === "ArrowLeft")) {
                 completionPopup.textContent = "";
-                const arrows = {"ArrowUp": 0, "ArrowRight": 1, "ArrowLeft": -1, "ArrowDown": 0};
-                let word = findWord(textIn.value, (textIn.selectionEnd - 1 + arrows[keyPressed.key]));  // Only adjusts the cursor position for right and left arrows
+                const arrows = {"ArrowRight": 1, "ArrowLeft": -1};
+                let word = findWord(textIn.value, (textIn.selectionEnd - 1 + arrows[keyPressed.key]));
                 completion(word);
             };
         };
@@ -790,6 +802,29 @@ function closeCompletion() {
     // Close and empties the completion popup
     completionPopup.style.display = "none";
     completionPopup.textContent = "";
+    suggestions = [];
+    chosenSuggestion = 0;
+};
+
+function pickSuggestion(i) {
+    // Moves the highlight, the way the arrows do in the box drawn inside a page
+    if (suggestions.length === 0) {
+        return;
+    };
+    const darkModeInt = (darkMode.checked) ? 1 : 0;
+    suggestions[chosenSuggestion].style.backgroundColor =
+        mainColors["completion"]["backgroundTrTd"][darkModeInt];
+    chosenSuggestion = (i + suggestions.length) % suggestions.length;
+    suggestions[chosenSuggestion].style.backgroundColor =
+        mainColors["mainBtn"]["hover"][darkModeInt];
+    suggestions[chosenSuggestion].scrollIntoView({block: "nearest"});
+};
+
+function takeSuggestion() {
+    // Enter writes the command that is highlighted, which is what clicking it does
+    if (suggestions.length > 0) {
+        suggestions[chosenSuggestion].click();
+    };
 };
 
 function getCompletion() {
@@ -811,21 +846,23 @@ function completion(command) {
     // can't end up suggesting different things
     const btnBackColor = mainColors["completion"]["backgroundTrTd"][(darkMode.checked) ? 1 : 0];
     const btnFontColor = (darkMode.checked) ? "whitesmoke" : "black";
-    const suggestions = completionList(command, storeCommands());
+    const found = completionList(command, storeCommands());
+    suggestions = [];
+    chosenSuggestion = 0;
 
-    if ((suggestions.note === null) && (suggestions.matches.length === 0)) {
+    if ((found.note === null) && (found.matches.length === 0)) {
         closeCompletion();
         return;
     };
-    if (suggestions.note !== null) {
+    if (found.note !== null) {
         let row = completionPopup.insertRow(-1);
         let cell = row.insertCell(0);
-        cell.textContent = suggestions.note;
+        cell.textContent = found.note;
         cell.style.color = btnFontColor;
         return;
     };
 
-    for (const suggestion of suggestions.matches) {
+    for (const suggestion of found.matches) {
         // Puts commands in button form, so they can be clicked on to replace the command being written
         let row = completionPopup.insertRow(-1);
         let cell = row.insertCell(0);
@@ -842,7 +879,6 @@ function completion(command) {
         btn.style.color = btnFontColor;
         btn.style.borderRadius = "3px";
         btn.type = "button";
-        btn.tabIndex = "0";
 
         cell.style.border = "1px solid " + btnBackColor;
         cell.style.backgroundColor = btnBackColor;
@@ -866,7 +902,9 @@ function completion(command) {
             btn.name = tmp;
         });
         cell.appendChild(btn);
+        suggestions.push(btn);
     };
+    pickSuggestion(0);
 };
 
 

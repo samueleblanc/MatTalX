@@ -99,7 +99,9 @@ export function showCompletion(options) {
 
     place();
     document.body.appendChild(box);
-    element.addEventListener("keydown", onKey, true);
+    // On the window rather than the field, and first: a site that sends its message on
+    // Enter does it from its own handler, which preventDefault() alone does not stop
+    window.addEventListener("keydown", onKey, true);
     window.addEventListener("scroll", place, true);
     element.addEventListener("blur", close);
     box.addEventListener("mattalx-close", close);
@@ -188,21 +190,29 @@ export function showCompletion(options) {
     };
 
     function onKey(event) {
-        if ((event.key === "Escape") || (event.code === "Space")) {
+        // Nothing else in the page gets to see the keys the box answers to, or Enter would
+        // send the message on X while it is picking a command
+        const ours = () => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        };
+        if (event.key === "Escape") {
+            ours();
             close();
             return;
         };
-        if ((event.key === "ArrowLeft") || (event.key === "ArrowRight")) {
-            close();  // The cursor left the command that was being written
-            return;
+        if ((event.code === "Space") || (event.key === "Tab") ||
+            (event.key === "ArrowLeft") || (event.key === "ArrowRight")) {
+            close();  // The cursor is leaving the command that was being written
+            return;   // and the key is the page's, not the box's
         };
         if ((event.key === "ArrowDown") || (event.key === "ArrowUp")) {
-            event.preventDefault();
+            ours();
             pick(chosen + ((event.key === "ArrowDown") ? 1 : -1));
             return;
         };
-        if (((event.key === "Enter") || (event.key === "Tab")) && (shown.length > 0)) {
-            event.preventDefault();
+        if ((event.key === "Enter") && (shown.length > 0)) {
+            ours();
             insert(shown[chosen].insert);
             return;
         };
@@ -295,7 +305,7 @@ export function showCompletion(options) {
     };
 
     function close() {
-        element.removeEventListener("keydown", onKey, true);
+        window.removeEventListener("keydown", onKey, true);
         window.removeEventListener("scroll", place, true);
         element.removeEventListener("blur", close);
         box.remove();
