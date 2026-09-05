@@ -396,6 +396,14 @@ function updateMainColors() {
     textOut.style.border = "2px solid " + mainColors["text"]["border"][i];
     dropdownInfo.style.backgroundColor = mainColors["dropdown"][i];
 
+    // The pictures in the question mark menu are drawn in black for a light background
+    // and in whitesmoke for a dark one, the same way the logo and the question mark are
+    const menuPictures = {"docs": "documentation", "git": "github", "settingsBtn": "setting"};
+    for (const id of Object.keys(menuPictures)) {
+        const name = menuPictures[id] + ((darkMode.checked) ? "_dark" : "") + ".png";
+        document.getElementById(id).style.backgroundImage = 'url("images/' + name + '")';
+    };
+
     docsBtn.style.color = mainColors["btnDropdown"]["color"][i];
     docsBtn.style.backgroundColor = mainColors["btnDropdown"]["background"][i];
     docsBtn.addEventListener("mouseenter", (e) => {

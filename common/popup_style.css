@@ -84,6 +84,22 @@ body {
     text-decoration: none;
     border: none;
 }
+
+/* The rows that carry a picture. An <input> can't hold an <img>, so the picture is a
+   background: 16px at the left, with the text pushed clear of it. Left aligned rather
+   than centred, so the three pictures line up in a column down the menu */
+#docs,
+#git,
+#settingsBtn {
+    text-align: left;
+    padding-left: 30px;
+    background-repeat: no-repeat;
+    background-position: 8px center;
+    background-size: 16px 16px;
+}
+#docs      { background-image: url("images/documentation.png"); }
+#git       { background-image: url("images/github.png"); }
+#settingsBtn { background-image: url("images/setting.png"); }
 .settingHint {
     /* Says what the checkbox above does. Takes its colour from the row it sits in,
        so it works the same in light and in dark mode */
@@ -104,7 +120,7 @@ body {
 }
 #mistakes {
     white-space: pre-wrap;
-    font-size: 15x;
+    font-size: 15px;
     font-family: 'Times New Roman';
 }
 #completion {
@@ -363,6 +379,9 @@ input[type=button], input[type=reset] {
     #settingsBtn:hover  {
         background-color: rgb(41, 41, 41);
     }
+    #docs      { background-image: url("images/documentation_dark.png"); }
+    #git       { background-image: url("images/github_dark.png"); }
+    #settingsBtn { background-image: url("images/setting_dark.png"); }
     #mistakes {
         color: whitesmoke;
     }
