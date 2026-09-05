@@ -24,13 +24,16 @@
             <input type="button" value="Settings" id="settingsBtn">
         </div>
         </div>
-        <img id="title_light" alt="MatTalX" src="images/mattalx_logo_nobg_light.png">
-        <img id="title_dark" alt="MatTalX" src="images/mattalx_logo_nobg_dark.png">
+        <div id="title_container">
+            <img id="title_light" alt="MatTalX" src="images/mattalx_logo_nobg_light.png">
+            <img id="title_dark" alt="MatTalX" src="images/mattalx_logo_nobg_dark.png">
+            <span id="subtitle">Write math anywhere.</span>
+        </div>
     </header>
     <div id="settingsBox">
         <div id="settingsContent">
-            <h3>Settings</h3>
-            <h4>Style</h4>
+            <h2>SETTINGS</h2>
+            <h4>STYLE</h4>
             <span><label for="darkMode">Dark mode</label><input type="checkbox" name="darkMode" id="darkMode"></span>
             <span><label for="fontSize">Font size: </label><input type="number" name="fontSize" id="fontSize" value="14" min="1" max="99" step="1"></span>
             <span><label for="fontFamily">Font family: </label>
@@ -44,7 +47,7 @@
                 <option value="Segoe UI">Segoe UI</option>
                 <option value="Times New Roman">Times New Roman</option>
             </select></span>
-            <h4>Shortcuts</h4>
+            <h4>SHORTCUTS</h4>
             <span>Open/Close MatTalX: <b id="settingsOpenShortcut"></b></span>
             <span>Convert in the page: <b id="settingsInlineShortcut"></b></span>
             <span>Suggest commands: <b id="settingsCompleteShortcut"></b></span>
@@ -68,7 +71,7 @@
             <span><label for="showCompletionBtn">Show completion button</label><input type="checkbox" id="showCompletionBtn"></span>
             <br>
             <input type="button" value="Reset" id="resetSettingsBtn">
-            <h4>Commands & Operators</h4>
+            <h4>COMMANDS & OPERATORS</h4>
             <input type="button" value="Build" id="buildNewCommand">
             <br><br>
             <table id="commandsBuilt"></table>
