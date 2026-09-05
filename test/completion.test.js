@@ -48,9 +48,9 @@ test("a command that takes an argument is suggested with its curly brackets", ()
 
 test("a suggestion says what the command gives", () => {
     const shown = matching(commands, "\\alpha").matches;
-    assert.equal(shown.find((match) => match.insert === "\\alpha").preview, "\u{1D6FC}");
+    assert.equal(shown.find((match) => match.insert === "\\alpha").label, "\\alpha: \u{1D6FC}");
     const root = matching(commands, "\\sqrt").matches.find((match) => match.insert === "\\sqrt[]{}");
-    assert.ok(root.preview.includes("√"), root.preview);
+    assert.ok(root.label.includes("√"), root.label);
 });
 
 test("there is something to say when there is nothing to suggest", () => {
@@ -71,12 +71,13 @@ test("the commands the user built are suggested too", () => {
     ];
     const mine = matching(everyCommand(own), "\\RR").matches;
     assert.equal(mine[0].insert, "\\RR");
-    assert.equal(mine[0].preview, "\\RR → ℝ");
+    assert.equal(mine[0].label, "\\RR: ℝ");
     // An operator is written with an argument, so it is suggested with one
     const operator = matching(everyCommand(own), "\\Aut").matches;
     assert.equal(operator[0].insert, "\\Aut{}");
+    assert.equal(operator[0].label, "\\Aut: A → \u{1D434}\u{1D462}\u{1D461}[\u{1D434}]");
     // A character the user declared is worth suggesting as much as the rest
-    assert.equal(matching(everyCommand(own), "\\snow").matches[0].preview, "\\snow → ❄");
+    assert.equal(matching(everyCommand(own), "\\snow").matches[0].label, "\\snow: ❄");
 });
 
 test("the user's own commands come before the ones MatTalX knows", () => {
@@ -88,7 +89,7 @@ test("a command the user redefined is suggested once, with what they made of it"
     const own = [{type: "\\renewcommand", newInput: "\\alpha", output: "\\beta"}];
     const shown = matching(everyCommand(own), "\\alpha").matches.filter((m) => m.insert === "\\alpha");
     assert.equal(shown.length, 1);
-    assert.equal(shown[0].preview, "\\alpha → \u{1D6FD}");
+    assert.equal(shown[0].label, "\\alpha: \u{1D6FD}");
 });
 
 test("a command that was half built is left out", () => {
@@ -107,4 +108,34 @@ test("choosing a suggestion replaces the command being written", () => {
 
 test("the list the page is given is the same one the popup reads", () => {
     assert.deepEqual(completionList("\\alpha"), matching(everyCommand([]), "\\alpha"));
+});
+
+test("a suggestion shows what the command gives, next to its name", () => {
+    // On hover it could not be read without looking for it first
+    const at = (insert, font) => everyCommand([], font).find((c) => c.insert === insert).label;
+    assert.equal(at("\\implies", true), "\\implies: ⟹");
+    assert.equal(at("\\mathcal{}", true), "\\mathcal: A → 𝒜");
+    assert.equal(at("\\frac{}{}", true), "\\frac: A,B → ᴬ∕ʙ");
+    // Whether the letters are in a mathematical font follows what the user chose
+    assert.equal(at("\\alpha", true), "\\alpha: \u{1D6FC}");
+    assert.equal(at("\\alpha", false), "\\alpha: \u03B1");
+    // The ones whose argument is not a letter, or whose answer doesn't fit on a line
+    assert.equal(at("\\quad", true), "\\quad: 3 spaces");
+    assert.equal(at("\\!", true), "\\!: removes a space");
+    assert.equal(at("\\hspace{}", true), "\\hspace: 3 → 3 spaces");
+    assert.equal(at("\\id2", true), "\\id2: the 2x2 identity matrix");
+});
+
+test("every suggestion has a name and an answer, and none shows a raw command", () => {
+    for (const command of everyCommand([], true)) {
+        assert.ok(command.label.includes(":"), "no answer for " + command.insert);
+        assert.ok(!/→ *\\\\/.test(command.label), "unconverted: " + command.label);
+        assert.ok(command.label.length < 45, "too long to read: " + command.label);
+    };
+});
+
+test("the list is not built again when nothing about it changed", () => {
+    // The popup asks for it on every keystroke
+    assert.equal(everyCommand([], true), everyCommand([], true));
+    assert.notEqual(everyCommand([], true), everyCommand([], false));
 });

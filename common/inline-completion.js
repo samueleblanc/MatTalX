@@ -29,7 +29,7 @@ export async function completeInPage(inject) {
 
     const settings = await loadSettings();
     await inject(showCompletion, [{
-        commands : everyCommand(settings["built_commands"]),
+        commands : everyCommand(settings["built_commands"], settings["font"]),
         word : findWord(target.text, target.caret - 1),
         dark : settings["dark_mode"],
         noBackslash : noBackslash
@@ -159,16 +159,9 @@ export function showCompletion(options) {
         };
         for (let i=0; i<shown.length; i++) {
             const line = document.createElement("div");
-            line.textContent = shown[i].insert;
+            line.textContent = shown[i].label;   // The command and what it gives
             line.style.cssText = "padding:3px 7px;border-radius:3px;cursor:pointer;white-space:pre;";
-            // Shows what the command gives while the pointer is on it, as the popup does
-            line.addEventListener("mouseover", () => {
-                line.textContent = shown[i].preview;
-                pick(i);
-            });
-            line.addEventListener("mouseout", () => {
-                line.textContent = shown[i].insert;
-            });
+            line.addEventListener("mouseover", () => { pick(i); });
             // mousedown rather than click, so the field doesn't lose the cursor first
             line.addEventListener("mousedown", (event) => {
                 event.preventDefault();

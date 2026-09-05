@@ -846,7 +846,7 @@ function completion(command) {
     // can't end up suggesting different things
     const btnBackColor = mainColors["completion"]["backgroundTrTd"][(darkMode.checked) ? 1 : 0];
     const btnFontColor = (darkMode.checked) ? "whitesmoke" : "black";
-    const found = completionList(command, storeCommands());
+    const found = completionList(command, storeCommands(), changeFontButton.checked);
     suggestions = [];
     chosenSuggestion = 0;
 
@@ -867,13 +867,15 @@ function completion(command) {
         let row = completionPopup.insertRow(-1);
         let cell = row.insertCell(0);
         let btn = document.createElement("button");
-        btn.name = suggestion.preview;
-        btn.textContent = suggestion.insert;
-        btn.value = suggestion.insert;  // Value is unchanged
+        btn.textContent = suggestion.label;   // The command and what it gives
+        btn.value = suggestion.insert;        // What gets written, which is not the same
 
         // Button style
-        btn.style.width = "145px";  // Would be cleaner with something like 'fit-content', but is way to slow
+        btn.style.width = "240px";  // Would be cleaner with something like 'fit-content', but is way to slow
         btn.style.height = "17px";
+        btn.style.textAlign = "left";
+        btn.style.overflow = "hidden";
+        btn.style.whiteSpace = "nowrap";
         btn.style.backgroundColor = btnBackColor
         btn.style.border = "1px solid " + btnBackColor;
         btn.style.color = btnFontColor;
@@ -890,17 +892,6 @@ function completion(command) {
             textIn.focus();
         });
 
-        // Shows what the command ouputs on mouseover, return to normal on mouseout
-        btn.addEventListener("mouseover", () => {
-            let tmp = btn.textContent;
-            btn.textContent = btn.name;
-            btn.name = tmp;
-        });
-        btn.addEventListener("mouseout", () => {
-            let tmp = btn.textContent;
-            btn.textContent = btn.name;
-            btn.name = tmp;
-        });
         cell.appendChild(btn);
         suggestions.push(btn);
     };

@@ -108,7 +108,7 @@ const open = (page, word) => showCompletion({
 test("the box shows what the popup would show for the same word", () => {
     const page = fakePage("\\alp", 4);
     open(page, "\\alp");
-    assert.deepEqual(shownNow(page), matching(commands, "\\alp").matches.map((m) => m.insert));
+    assert.deepEqual(shownNow(page), matching(commands, "\\alp").matches.map((m) => m.label));
 });
 
 test("typing narrows the list without asking for it again", async () => {
@@ -118,23 +118,25 @@ test("typing narrows the list without asking for it again", async () => {
     await press(page, "t");
     const after = shownNow(page);
     assert.ok(after.length < before, "the list should be shorter, was " + before + " now " + after.length);
-    assert.deepEqual(after, matching(commands, "\\mat").matches.map((m) => m.insert));
+    assert.deepEqual(after, matching(commands, "\\mat").matches.map((m) => m.label));
 });
 
 test("erasing a letter brings the other commands back", async () => {
     const page = fakePage("\\mat", 4);
     open(page, "\\mat");
     await press(page, "Backspace");
-    assert.deepEqual(shownNow(page), matching(commands, "\\ma").matches.map((m) => m.insert));
+    assert.deepEqual(shownNow(page), matching(commands, "\\ma").matches.map((m) => m.label));
 });
 
 test("the arrows move down the list and Enter writes what is picked", async () => {
     const page = fakePage("x + \\alp", 8);
     open(page, "\\alp");
-    const second = shownNow(page)[1];
+    // What is shown is the command and what it gives; what is written is only the command
+    const second = matching(commands, "\\alp").matches[1];
+    assert.equal(shownNow(page)[1], second.label);
     await press(page, "ArrowDown");
     await press(page, "Enter");
-    assert.equal(page.field.value, "x + " + second);
+    assert.equal(page.field.value, "x + " + second.insert);
 });
 
 test("the command being written is the only thing replaced", async () => {
