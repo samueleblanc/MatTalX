@@ -437,3 +437,42 @@ body.lightChosen #subtitle { color: #0f8867; }
         background-color: rgb(61, 61, 61);
     }
 }
+
+/* A phone. Firefox for Android opens the popup as a page the width of the screen,
+   which is nothing like the 700px a desktop popup is given. The breakpoint sits
+   below 700 so the desktop popup never picks these up.
+   Note that the three shortcuts do nothing here: there is no keyboard, so this is
+   the popup and the clipboard */
+@media (max-width: 600px) {
+    body {
+        min-width: 0;
+    }
+    header {
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+    #body {
+        /* 80% of a phone is a lot of nothing down each side */
+        width: auto;
+        padding: 0 12px 12px;
+    }
+    #title_container {
+        flex-wrap: wrap;
+    }
+    #title_light,
+    #title_dark {
+        height: 44px;
+        margin-right: 8px;
+    }
+    #subtitle {
+        font-size: 16px;
+    }
+    #dropdownInfo {
+        max-width: calc(100vw - 24px);
+    }
+    #settingsContent {
+        width: 92%;
+        height: 88%;
+        padding: 12px;
+    }
+}
