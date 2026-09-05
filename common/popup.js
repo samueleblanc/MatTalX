@@ -80,7 +80,7 @@ const completionBtn = document.getElementById("completionBtn");
 completionBtn.onclick = function() {getCompletion()};
 
 // Originally hidden
-// Can be accessed with a keyboard shortcut (Alt+C by default) or by clicking the button
+// Can be accessed with a keyboard shortcut (Alt+Shift+C by default) or by clicking the button
 const completionPopup = document.getElementById("completion");
 
 // Adjust spaces button

@@ -15,18 +15,18 @@
     "commands": {
         "_execute_action": {
             "suggested_key": {
-                "default": "Alt+M"
+                "default": "Alt+Shift+M"
             }
         },
         "convert_inline": {
             "suggested_key": {
-                "default": "Alt+W"
+                "default": "Alt+Shift+W"
             },
             "description": "Convert what is written in the page"
         },
         "complete_inline": {
             "suggested_key": {
-                "default": "Alt+C"
+                "default": "Alt+Shift+C"
             },
             "description": "Suggest commands while writing in the page"
         }

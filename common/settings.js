@@ -39,7 +39,7 @@ export const defaultSettings = {
     "dark_mode" : prefersDarkMode,
     "font_size" : 14,
     "font_family" : "monospace",
-    "open_mattalx_shortcut" : "Alt+M",    // Only a fallback: the browser owns this one
+    "open_mattalx_shortcut" : "Alt+Shift+M",   // Only a fallback: the browser owns this one
     "copy_input_key" : "Alt",
     "copy_input_letter" : "I",
     "copy_output_key" : "Alt",
