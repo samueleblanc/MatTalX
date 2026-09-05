@@ -396,6 +396,11 @@ function updateMainColors() {
     textOut.style.border = "2px solid " + mainColors["text"]["border"][i];
     dropdownInfo.style.backgroundColor = mainColors["dropdown"][i];
 
+    // The accent green has a lighter version for a dark background. A colour behind
+    // ::selection can't be written on an element, so it goes on a class instead
+    document.body.classList.toggle("darkChosen", darkMode.checked);
+    document.body.classList.toggle("lightChosen", !darkMode.checked);
+
     // The pictures in the question mark menu are drawn in black for a light background
     // and in whitesmoke for a dark one, the same way the logo and the question mark are
     const menuPictures = {"docs": "documentation", "git": "github", "settingsBtn": "setting"};

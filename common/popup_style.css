@@ -16,7 +16,7 @@ a {
     text-decoration: none;
 }
 #infoDiv:hover #dropdownInfo {
-    text-align: center;
+    text-align: left;
     display: block;
     padding: 8px;
 }
@@ -71,7 +71,7 @@ body {
 #shortcuts b,
 #shortcuts span {
     font-size: 15px;
-    font-family: 'Helvetica';
+    font-family: Helvetica, Arial, sans-serif;
 }
 #docs,
 #git,
@@ -100,6 +100,11 @@ body {
 #docs      { background-image: url("images/documentation.png"); }
 #git       { background-image: url("images/github.png"); }
 #settingsBtn { background-image: url("images/setting.png"); }
+#adjustSpaces,
+#changeFont,
+#changeMode {
+    padding-left: 30px;
+}
 .settingHint {
     /* Says what the checkbox above does. Takes its colour from the row it sits in,
        so it works the same in light and in dark mode */
@@ -107,7 +112,7 @@ body {
     font-size: 15px;
     font-style: italic;
     opacity: 0.85;
-    padding: 0px 6px 3px 6px;
+    padding: 0px 6px 3px 0px;
     cursor: default;
 }
 #completionBtn {
@@ -162,7 +167,8 @@ body {
     text-decoration: none;
     overflow-y: scroll;
 }
-#settingsContent h2, h3 {
+#settingsContent h2,
+#settingsContent h3 {
     text-align: center;
 }
 #settingsContent span {
@@ -178,7 +184,7 @@ body {
 }
 input[type=button], input[type=reset] {
     font-size: 14px;
-    font-family: 'Helvetica';
+    font-family: Helvetica, Arial, sans-serif;
     border: none;
     padding: 8px;
     border-radius: 5px;
@@ -204,7 +210,7 @@ input[type=button], input[type=reset] {
 #subtitle {
     font-size: 1.5em;
     color: #0f8867;
-    font-family: 'Helvetica';
+    font-family: Helvetica, Arial, sans-serif;
 }
 
 /* Colors and style */
@@ -215,6 +221,16 @@ input[type=button], input[type=reset] {
 ::selection {
     background-color: #0f8867;
 }
+
+/* The Dark mode switch in Settings, which the media queries below cannot see.
+   popup.js puts one of these two on <body>, so the green is right in all four
+   combinations of system setting and chosen setting */
+body.darkChosen { accent-color: #22b98d; }
+body.darkChosen ::selection { background-color: #22b98d; }
+body.darkChosen #subtitle { color: #22b98d; }
+body.lightChosen { accent-color: #0f8867; }
+body.lightChosen ::selection { background-color: #0f8867; }
+body.lightChosen #subtitle { color: #0f8867; }
 
 @media (prefers-color-scheme: light) {
     body {
@@ -378,6 +394,15 @@ input[type=button], input[type=reset] {
     #changeMode:hover,
     #settingsBtn:hover  {
         background-color: rgb(41, 41, 41);
+    }
+    :root {
+        accent-color: #22b98d;
+    }
+    ::selection {
+        background-color: #22b98d;
+    }
+    #subtitle {
+        color: #22b98d;
     }
     #docs      { background-image: url("images/documentation_dark.png"); }
     #git       { background-image: url("images/github_dark.png"); }
