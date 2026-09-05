@@ -45,6 +45,7 @@ export const defaultSettings = {
     "copy_output_key" : "Alt",
     "copy_output_letter" : "O",
     "completion_button" : touchScreen,    // Shown by default on a device with a touch screen
+    "main_symbols" : touchScreen,         // '$', '\\', '{' and '}', hard to reach on a phone
     "built_commands" : []                 // Array of {type, newInput, output}
 };
 

@@ -70,6 +70,7 @@
             </select> + 
             <input type="text" name="shortCopyOutput" id="shortCopyOutputL" value="O" maxlength="1" size="1"></span>
             <span><label for="showCompletionBtn">Show completion button</label><input type="checkbox" id="showCompletionBtn"></span>
+            <span><label for="showMainSymbols">Show main symbols</label><input type="checkbox" id="showMainSymbols"></span>
             <br>
             <input type="button" value="Reset" id="resetSettingsBtn">
             <h4>COMMANDS & OPERATORS</h4>
@@ -84,7 +85,11 @@
         <div class="completion"><table id="completion"></table></div><br>
         <input type="button" value="Convert" id="convert">
         <input type="button" value="Completion" id="completionBtn">
-        <input type="reset" value="Clear" id="reset"><br><br>
+        <input type="reset" value="Clear" id="reset">
+        <input type="button" value="$" id="dollarSign" class="symbolBtn">
+        <input type="button" value="\" id="backslash" class="symbolBtn">
+        <input type="button" value="{" id="openCurly" class="symbolBtn">
+        <input type="button" value="}" id="closeCurly" class="symbolBtn"><br><br>
         <textarea type="text" name="text_out" id="text_out" spellcheck="false" disabled></textarea><br><br>
         <input type="button" value="Copy text" id="copy"><br>
         <p id="mistakes"></p><br>

@@ -79,6 +79,13 @@ resetButton.onclick = function() {clear()};
 const completionBtn = document.getElementById("completionBtn");
 completionBtn.onclick = function() {getCompletion()};
 
+// '$', '\\', '{' and '}': the four a phone keyboard buries a few taps deep
+// Hidden like the completion button, and shown by the same kind of setting
+const symbolButtons = [...document.getElementsByClassName("symbolBtn")];
+for (const button of symbolButtons) {
+    button.onclick = function() {writeSymbol(button.value)};
+};
+
 // Originally hidden
 // Can be accessed with a keyboard shortcut (Alt+Shift+C by default) or by clicking the button
 const completionPopup = document.getElementById("completion");
@@ -121,6 +128,7 @@ const setCopyInputLetter = document.getElementById("shortCopyInputL");
 const setCopyOutputKey = document.getElementById("shortCopyOutputK");
 const setCopyOutputLetter = document.getElementById("shortCopyOutputL");
 const showCompletionBtn = document.getElementById("showCompletionBtn");
+const showMainSymbols = document.getElementById("showMainSymbols");
 
 // The shortcut that opens MatTalX belongs to the browser, not to MatTalX, so the Settings box
 // can only show it and open the page where the browser lets the user change it
@@ -243,6 +251,7 @@ function settingsFromBox() {
         "copy_output_key" : setCopyOutputKey.value,
         "copy_output_letter" : setCopyOutputLetter.value,
         "completion_button" : showCompletionBtn.checked,
+        "main_symbols" : showMainSymbols.checked,
         "built_commands" : storeCommands()
     };
 };
@@ -275,6 +284,8 @@ function applySettingsBox(settings) {
 
     showCompletionBtn.checked = settings["completion_button"];
     completionBtn.style.display = (showCompletionBtn.checked) ? "inline-block" : "none";
+    showMainSymbols.checked = settings["main_symbols"];
+    showSymbols();
 
     buildStoredCommands(settings["built_commands"]);
 };
@@ -350,6 +361,25 @@ function applySettings() {
     textOut.style.fontFamily = fontFamily.value;
 
     completionBtn.style.display = (showCompletionBtn.checked) ? "inline-block" : "none";
+    showSymbols();
+};
+
+function showSymbols() {
+    // The four symbol keys follow their setting, the way the completion button does
+    for (const button of symbolButtons) {
+        button.style.display = (showMainSymbols.checked) ? "inline-block" : "none";
+    };
+};
+
+function writeSymbol(symbol) {
+    // Writes the symbol where the cursor is, or over what is selected, and leaves the
+    // cursor after it. Clicking the button takes the focus off the box, but a textarea
+    // keeps where its cursor was, so it can be put back exactly
+    const start = textIn.selectionStart;
+    const end = textIn.selectionEnd;
+    textIn.value = textIn.value.substring(0, start) + symbol + textIn.value.substring(end);
+    textIn.focus();
+    textIn.setSelectionRange(start + symbol.length, start + symbol.length);
 };
 
 function resetSettings() {
@@ -363,6 +393,7 @@ function resetSettings() {
     setCopyOutputKey.value = defaultSettings["copy_output_key"];
     setCopyOutputLetter.value = defaultSettings["copy_output_letter"];
     showCompletionBtn.checked = defaultSettings["completion_button"];
+    showMainSymbols.checked = defaultSettings["main_symbols"];
 
     updateMainColors();
     applySettings();
@@ -489,6 +520,16 @@ function updateMainColors() {
     completionBtn.addEventListener("mouseleave", (e) => {
         completionBtn.style.backgroundColor = mainColors["mainBtn"]["background"][i];
     });
+    for (const button of symbolButtons) {
+        button.style.color = mainColors["mainBtn"]["color"][i];
+        button.style.backgroundColor = mainColors["mainBtn"]["background"][i];
+        button.addEventListener("mouseenter", (e) => {
+            button.style.backgroundColor = mainColors["mainBtn"]["hover"][i];
+        });
+        button.addEventListener("mouseleave", (e) => {
+            button.style.backgroundColor = mainColors["mainBtn"]["background"][i];
+        });
+    };
 
     mistakesBox.style.color = mainColors["mistakes"][i];
     completionPopup.style.border = "1px solid " + mainColors["completion"]["border"][i];

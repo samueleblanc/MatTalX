@@ -115,3 +115,23 @@ test("math mode starts off, so prose stays prose", () => {
     assert.equal(defaultSettings["mode"], false);
     assert.equal(conversionSettings(defaultSettings).mathMode, false);
 });
+
+test("the keys a phone hides follow the touch screen, like the completion button", () => {
+    // '$', '\\', '{' and '}' are a few taps deep on a phone keyboard, so MatTalX offers
+    // them as buttons wherever it offers the completion button: on a touch screen, and
+    // anywhere else the user asks for them
+    assert.ok("main_symbols" in defaultSettings);
+    assert.equal(defaultSettings["main_symbols"], defaultSettings["completion_button"]);
+    // Neither is part of the conversion, so neither reaches core.js
+    assert.ok(!("main_symbols" in conversionSettings(defaultSettings)));
+});
+
+test("a setting the user changed comes back, and the rest keep their defaults", () => {
+    // Nothing stored for main_symbols means the touch screen decides, as on a fresh install
+    useStorage(fakeStorage({"main_symbols": true, "mode": true}));
+    return loadSettings().then((settings) => {
+        assert.equal(settings["main_symbols"], true);
+        assert.equal(settings["mode"], true);
+        assert.equal(settings["font"], defaultSettings["font"]);
+    });
+});

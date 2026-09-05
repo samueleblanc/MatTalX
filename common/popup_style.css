@@ -121,6 +121,18 @@ body {
 #completionBtn {
     display: none;
 }
+.symbolBtn {
+    /* Shown only when the setting asks, which it does on its own on a touch screen */
+    display: none;
+}
+/* Written as input[type=button].symbolBtn rather than .symbolBtn: the rule above for
+   every button is (0,1,1), so a lone class would lose the font and the padding to it */
+input[type=button].symbolBtn {
+    /* Wide enough to be tapped, and monospace so '\', '{' and '}' are unmistakable */
+    min-width: 40px;
+    font-family: monospace;
+    font-size: 16px;
+}
 #copy {
     min-width: 70px;
     width: fit-content;
@@ -299,14 +311,16 @@ body.lightChosen #subtitle { color: #0f8867; }
     #convert,
     #reset,
     #completionBtn,
-    #copy {
+    #copy,
+    .symbolBtn {
         color: black;
         background-color: rgb(230, 229, 229);
     }
     #convert:hover,
     #reset:hover,
     #completionBtn:hover,
-    #copy:hover {
+    #copy:hover,
+    .symbolBtn:hover {
         background-color: lightgrey;
     }
     #mistakes {
@@ -466,6 +480,11 @@ body.lightChosen #subtitle { color: #0f8867; }
     }
     #subtitle {
         font-size: 16px;
+    }
+    input[type=button].symbolBtn {
+        /* A finger, not a mouse pointer */
+        min-width: 48px;
+        padding: 12px 8px;
     }
     #dropdownInfo {
         max-width: calc(100vw - 24px);
