@@ -107,3 +107,11 @@ test("a key press is matched against the shortcut the browser owns", () => {
     assert.ok(!isShortcut(press("c", {altKey: true}), ""));
     assert.ok(!isShortcut(press("c", {altKey: true}), undefined));
 });
+
+test("math mode starts off, so prose stays prose", () => {
+    // Someone who writes an ordinary sentence and presses the shortcut should get their
+    // sentence back, not every letter of it in a mathematical font. The maths is what
+    // goes between '$', '\\(' or '\\['
+    assert.equal(defaultSettings["mode"], false);
+    assert.equal(conversionSettings(defaultSettings).mathMode, false);
+});
