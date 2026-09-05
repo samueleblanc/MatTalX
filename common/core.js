@@ -2517,7 +2517,7 @@ const mathDictionary = {
     "\\leftsquigarrow" : "\u21DC",
     "\\rightsquigarrow" : "\u21DD",
     "\\leftrightsquigarrow" : "\u21AD",
-    "\\longrightsquiglearrow" : "\u27FF",
+    "\\longrightsquigarrow" : "\u27FF",
     "\\looparrowleft" : "\u21AB",
     "\\looparrowright" : "\u21AC",
     "\\circlearrowleft" : "\u21BA",
@@ -2971,6 +2971,12 @@ const noStyleGreek = {
     "\\psi" : "\u03C8",
     "\\Omega" : "\u03A9",
     "\\omega" : "\u03C9"
+};
+
+// Names that were once misspelled, kept so a text written with the old one still converts
+// Left out of defaultDict on purpose: they convert, but there is no reason to suggest them
+export const oldNames = {
+    "\\longrightsquiglearrow" : "\u27FF"   // \longrightsquigarrow
 };
 
 // Default dict (in math mode), used in the completion popup
@@ -4836,7 +4842,7 @@ function buildDict(documentClass) {
     } else {  // documentClass === "default"
         letters = (settings.mathFont) ? lettersMath : lettersNoFont;
     };
-    return buildAllCommands({...mathDictionary, ...greek, ...letters, ...accents});
+    return buildAllCommands({...mathDictionary, ...oldNames, ...greek, ...letters, ...accents});
 };
 
 function buildAllCommands(fullDict) {

@@ -4,7 +4,7 @@
 
 import test from "node:test";
 import assert from "node:assert/strict";
-import { convert } from "../common/core.js";
+import { convert, oldNames } from "../common/core.js";
 import { cases } from "./cases.js";
 
 test("conversion cases", async (t) => {
@@ -67,4 +67,15 @@ test("core.js never touches the DOM", () => {
     // Runs in node, so anything reaching for document or window would already have thrown
     assert.equal(typeof globalThis.document, "undefined");
     assert.equal(convert("$x^2$ ", {mathMode: false}).text, "𝑥² ");
+});
+
+test("a command that was once misspelled still converts", () => {
+    // '\\longrightsquiglearrow' was the name until 3.0.0, and someone's saved text may
+    // still hold it, so it keeps working while '\\longrightsquigarrow' is the one to use
+    assert.equal(convert("$\\longrightsquigarrow$ ", {mathMode: false}).text, "\u27FF ");
+    for (const old of Object.keys(oldNames)) {
+        const result = convert("$" + old + "$ ", {mathMode: false});
+        assert.equal(result.errors, "", old + " no longer converts");
+        assert.equal(result.text, oldNames[old] + " ");
+    };
 });

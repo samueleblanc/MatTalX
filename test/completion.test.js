@@ -139,3 +139,10 @@ test("the list is not built again when nothing about it changed", () => {
     assert.equal(everyCommand([], true), everyCommand([], true));
     assert.notEqual(everyCommand([], true), everyCommand([], false));
 });
+
+test("a name that was once misspelled is not suggested", () => {
+    // It still converts, but there is no reason to put the old spelling in front of anyone
+    const arrows = matching(commands, "\\squig").matches.map((match) => match.insert);
+    assert.ok(arrows.includes("\\longrightsquigarrow"), arrows.join(" "));
+    assert.ok(!arrows.includes("\\longrightsquiglearrow"), "the misspelling is still suggested");
+});

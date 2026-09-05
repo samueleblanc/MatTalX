@@ -8,7 +8,7 @@ function firstMessage(version) {
     // Fills both boxes: something to convert on the left, what to do with it on the right.
     // The first thing someone does should be pressing Convert and seeing it work, rather
     // than reading a list of what can go wrong.
-    const example = "Let $\\alpha > 0$ and $x_{n} \\to 0$, so $\\sum a_{n} \\in \\mathbb{R}$.";
+    const example = "For all $\\epsilon > 0$, there is $N > 0$ such that $n > N$ implies $|x_n - x| < \\epsilon$, where $x \\in \\mathbb R$.";
     const tutorial = "Welcome to 𝑀ᴀᴛ𝑇ᴀʟ𝑋 " + version + "! Press Convert to see what the box above gives.\r\n\r\n" +
     "You do not need this popup. Wherever you write on the web:\r\n" +
     "  Alt+Shift+W  converts what you have written\r\n" +
