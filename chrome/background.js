@@ -17,9 +17,24 @@ const shortcuts = {
     "complete_inline" : completeInPage
 };
 
+async function popupIsOpen() {
+    // The same shortcuts work inside MatTalX itself, on what it holds rather than on the
+    // page behind it, so the page is left alone while the popup is there
+    try {
+        const contexts = await chrome.runtime.getContexts({contextTypes: ["POPUP"]});
+        return contexts.length > 0;
+    } catch (err) {
+        // getContexts arrived in Chrome 116, and an older one just keeps the old behaviour
+        return false;
+    };
+};
+
 chrome.commands.onCommand.addListener(async (command) => {
     const inPage = shortcuts[command];
     if (inPage === undefined) {
+        return;
+    };
+    if (await popupIsOpen()) {
         return;
     };
     const tabs = await chrome.tabs.query({active: true, currentWindow: true});

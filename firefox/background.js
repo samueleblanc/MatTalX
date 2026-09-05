@@ -23,9 +23,22 @@ const shortcuts = {
     "complete_inline" : completeInPage
 };
 
+function popupIsOpen() {
+    // The same shortcuts work inside MatTalX itself, on what it holds rather than on the
+    // page behind it, so the page is left alone while the popup is there
+    try {
+        return browser.extension.getViews({type: "popup"}).length > 0;
+    } catch (err) {
+        return false;
+    };
+};
+
 browser.commands.onCommand.addListener(async (command) => {
     const inPage = shortcuts[command];
     if (inPage === undefined) {
+        return;
+    };
+    if (popupIsOpen()) {
         return;
     };
     const tabs = await browser.tabs.query({active: true, currentWindow: true});

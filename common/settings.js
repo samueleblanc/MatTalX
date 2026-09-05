@@ -44,10 +44,27 @@ export const defaultSettings = {
     "copy_input_letter" : "I",
     "copy_output_key" : "Alt",
     "copy_output_letter" : "O",
-    "completion_key" : "Alt",
-    "completion_letter" : "C",
     "completion_button" : touchScreen,    // Shown by default on a device with a touch screen
     "built_commands" : []                 // Array of {type, newInput, output}
+};
+
+export function isShortcut(keyPressed, shortcut) {
+    // Says if a key press is the shortcut the browser is showing (e.g. "Alt+Shift+C")
+    // Read the way the browser writes it, so changing it there changes it here as well
+    if ((!shortcut) || (!shortcut.includes("+"))) {
+        return false;   // "Not set", or a shortcut with no key to press
+    };
+    const parts = shortcut.split("+");
+    const letter = parts[parts.length-1];
+    if ((letter.length !== 1) || (keyPressed.key.toUpperCase() !== letter.toUpperCase())) {
+        return false;
+    };
+    // Every other key has to match too, or Alt+Shift+C would answer to Alt+C
+    const asked = (name) => parts.slice(0, -1).includes(name);
+    return (Boolean(keyPressed.altKey) === asked("Alt")) &&
+           (Boolean(keyPressed.shiftKey) === asked("Shift")) &&
+           (Boolean(keyPressed.ctrlKey) === (asked("Ctrl") || asked("MacCtrl"))) &&
+           (Boolean(keyPressed.metaKey) === asked("Command"));
 };
 
 export function loadSettings() {

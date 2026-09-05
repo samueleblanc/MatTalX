@@ -76,7 +76,6 @@ function closeSettings() {
     verifySettings(fontSize.value, "font");
     verifySettings(setCopyInputLetter.value, "letter");
     verifySettings(setCopyOutputLetter.value, "letter");
-    verifySettings(setCompletionLetter.value, "letter");
 
     saveSettings(settingsFromBox());
     applySettings();

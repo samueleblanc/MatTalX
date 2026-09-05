@@ -49,7 +49,8 @@ import {
     loadSettings,
     saveSettings,
     conversionSettings,
-    takeInstallReason
+    takeInstallReason,
+    isShortcut
 } from "./settings.js";
 
 /// GLOBALS ///
@@ -119,8 +120,6 @@ const setCopyInputKey = document.getElementById("shortCopyInputK");
 const setCopyInputLetter = document.getElementById("shortCopyInputL");
 const setCopyOutputKey = document.getElementById("shortCopyOutputK");
 const setCopyOutputLetter = document.getElementById("shortCopyOutputL");
-const setCompletionKey = document.getElementById("shortCompletionK");
-const setCompletionLetter = document.getElementById("shortCompletionL");
 const showCompletionBtn = document.getElementById("showCompletionBtn");
 
 // The shortcut that opens MatTalX belongs to the browser, not to MatTalX, so the Settings box
@@ -239,8 +238,6 @@ function settingsFromBox() {
         "copy_input_letter" : setCopyInputLetter.value,
         "copy_output_key" : setCopyOutputKey.value,
         "copy_output_letter" : setCopyOutputLetter.value,
-        "completion_key" : setCompletionKey.value,
-        "completion_letter" : setCompletionLetter.value,
         "completion_button" : showCompletionBtn.checked,
         "built_commands" : storeCommands()
     };
@@ -271,8 +268,6 @@ function applySettingsBox(settings) {
     setCopyInputLetter.value = settings["copy_input_letter"];
     setCopyOutputKey.value = settings["copy_output_key"];
     setCopyOutputLetter.value = settings["copy_output_letter"];
-    setCompletionKey.value = settings["completion_key"];
-    setCompletionLetter.value = settings["completion_letter"];
 
     showCompletionBtn.checked = settings["completion_button"];
     completionBtn.style.display = (showCompletionBtn.checked) ? "inline-block" : "none";
@@ -333,19 +328,13 @@ function applySettings() {
     // Called when MatTalX opens, when the Settings box closes and by resetSettings()
 
     // Verify if each shortcut is unique
-    const completionInPopup = [setCompletionKey.value, "+", setCompletionLetter.value.toUpperCase()].join("");
     const listShortcuts = [
         settingsOpenShortcut.textContent,
         settingsInlineShortcut.textContent,
+        settingsCompleteShortcut.textContent,
         [setCopyInputKey.value, "+", setCopyInputLetter.value.toUpperCase()].join(""),
-        [setCopyOutputKey.value, "+", setCopyOutputLetter.value.toUpperCase()].join(""),
-        completionInPopup
+        [setCopyOutputKey.value, "+", setCopyOutputLetter.value.toUpperCase()].join("")
     ];
-    // Suggesting commands in the page and in the popup is the same thing on two surfaces,
-    // so the two are allowed to share a key and only counted once when they do
-    if (settingsCompleteShortcut.textContent !== completionInPopup) {
-        listShortcuts.push(settingsCompleteShortcut.textContent);
-    };
     if ((new Set(listShortcuts)).size !== listShortcuts.length) {
         showErrors(reportError("Settings", "At least two shortcuts are identical"));
     };
@@ -369,8 +358,6 @@ function resetSettings() {
     setCopyInputLetter.value = defaultSettings["copy_input_letter"];
     setCopyOutputKey.value = defaultSettings["copy_output_key"];
     setCopyOutputLetter.value = defaultSettings["copy_output_letter"];
-    setCompletionKey.value = defaultSettings["completion_key"];
-    setCompletionLetter.value = defaultSettings["completion_letter"];
     showCompletionBtn.checked = defaultSettings["completion_button"];
 
     updateMainColors();
@@ -572,16 +559,17 @@ darkMode.addEventListener("click", (e) => {
 
 document.addEventListener("keydown", (keyPressed) => {
     // Listens for keydown to open completion popup, copy the input text or copy the output
-    if (((keyPressed.key === setCompletionLetter.value.toLowerCase()) || (keyPressed.key === setCompletionLetter.value.toUpperCase())) && 
-         (
-          (keyPressed.altKey && ("Alt" === setCompletionKey.value)) || 
-          (keyPressed.ctrlKey && ("Ctrl" === setCompletionKey.value)) || 
-          (keyPressed.altKey && keyPressed.shiftKey && ("Alt+Shift" === setCompletionKey.value)) ||
-          (keyPressed.ctrlKey && keyPressed.shiftKey && ("Ctrl+Shift" === setCompletionKey.value))
-          ) &&
-         (textIn == document.activeElement)) {
+    // The two shortcuts that work inside a page work here too, on what the popup holds:
+    // background.js leaves them alone while the popup is open
+    if (isShortcut(keyPressed, settingsCompleteShortcut.textContent) &&
+        (textIn == document.activeElement)) {
         // Shows completion but closes the popup if the completion box is already opened
+        keyPressed.preventDefault();
         getCompletion();
+    } else if (isShortcut(keyPressed, settingsInlineShortcut.textContent)) {
+        // Converting the page behind the popup is not what the user is looking at
+        keyPressed.preventDefault();
+        main();
     } else if (((keyPressed.key === setCopyInputLetter.value.toLowerCase()) || (keyPressed.key === setCopyInputLetter.value.toUpperCase())) && 
         (
         (keyPressed.altKey && ("Alt" === setCopyInputKey.value)) || 

@@ -10,7 +10,8 @@ import {
     saveSettings,
     conversionSettings,
     takeInstallReason,
-    useStorage
+    useStorage,
+    isShortcut
 } from "../common/settings.js";
 
 function fakeStorage(content = {}) {
@@ -85,4 +86,24 @@ test("the install reason is read once and then gone", async () => {
     useStorage(storage);
     assert.equal(await takeInstallReason(), "install");
     assert.equal(await takeInstallReason(), undefined);
+});
+
+test("a key press is matched against the shortcut the browser owns", () => {
+    const press = (key, held = {}) => ({key: key, altKey: false, ctrlKey: false,
+                                        shiftKey: false, metaKey: false, ...held});
+    assert.ok(isShortcut(press("c", {altKey: true}), "Alt+C"));
+    assert.ok(isShortcut(press("C", {altKey: true}), "Alt+C"));
+    // Every other key has to match, or Alt+Shift+C would answer to Alt+C
+    assert.ok(!isShortcut(press("c", {altKey: true, shiftKey: true}), "Alt+C"));
+    assert.ok(isShortcut(press("c", {altKey: true, shiftKey: true}), "Alt+Shift+C"));
+    assert.ok(!isShortcut(press("c", {altKey: true}), "Alt+Shift+C"));
+    assert.ok(!isShortcut(press("w", {altKey: true}), "Alt+C"));
+    assert.ok(!isShortcut(press("c", {ctrlKey: true}), "Alt+C"));
+    assert.ok(isShortcut(press("c", {ctrlKey: true}), "Ctrl+C"));
+    // What a Mac says, and what the browser shows when there is nothing to show
+    assert.ok(isShortcut(press("c", {metaKey: true}), "Command+C"));
+    assert.ok(isShortcut(press("c", {ctrlKey: true}), "MacCtrl+C"));
+    assert.ok(!isShortcut(press("c", {altKey: true}), "Not set"));
+    assert.ok(!isShortcut(press("c", {altKey: true}), ""));
+    assert.ok(!isShortcut(press("c", {altKey: true}), undefined));
 });
