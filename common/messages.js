@@ -33,11 +33,10 @@ function updateMessage(version) {
     "  Alt+Shift+W  converts what you have written, in the page\r\n" +
     "  Alt+Shift+C  suggests a command as you write it, here or in the page\r\n" +
     "  Alt+Shift+M  opens and closes 𝑀ᴀᴛ𝑇ᴀʟ𝑋\r\n\r\n" +
-    "The shortcuts moved to Alt+Shift, out of the way of Outlook and other sites. Yours are " +
+    "The shortcuts moved to Alt+Shift, out of the way of other sites. Yours are " +
     "listed under Settings, where you can also change them.\r\n\r\n" +
-    "If the two new ones say 'Not set' there, that is your browser rather than 𝑀ᴀᴛ𝑇ᴀʟ𝑋: it " +
-    "hands shortcuts out when an extension is installed, and a command that arrives in an " +
-    "update gets none. Settings has a button that opens the page where you can set them.\r\n\r\n" +
+    "If the two new ones say 'Not set' there, that is your browser rather than 𝑀ᴀᴛ𝑇ᴀʟ𝑋: " +
+    "Settings has a button that opens the page where you can set them.\r\n\r\n" +
     "Major changes: \r\n" +
     " 1) Math mode starts off, so an ordinary sentence stays one. The maths goes between " +
     "$ ... $, \\( ... \\) or \\[ ... \\].\r\n" +

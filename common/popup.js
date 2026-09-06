@@ -324,8 +324,7 @@ function noteUnsetShortcuts() {
         .filter((shown) => shown.textContent === "Not set").length;
     shortcutNote.textContent = (unset === 0) ? "" :
         ((unset === 1) ? "One of these has no shortcut. " : unset + " of these have no shortcut. ") +
-        "The browser only hands them out when MatTalX is installed, so one that arrived " +
-        "in an update starts with none. The button above is where to set it.";
+        "Click the button above to set the shortcut" + ((unset === 1) ? "." : unset + "s.");
 };
 
 function showErrors(errors) {
