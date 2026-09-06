@@ -2,7 +2,7 @@
 
 ## Documentation
 
-<a href="https://mattalx.org/documentation.html" target="_blank">Full documentation</a>
+<a href="https://mattalx.org/docs/" target="_blank">Full documentation</a>
 
 The documentation (PDF and text file) is also [here](docs)
 
@@ -27,7 +27,7 @@ Full and comprehensive documentation is available if you put your mouse above th
 Versions:
 * <a href="https://chrome.google.com/webstore/detail/mattalx-write-math-symbol/jllceliamggkpffccbefpefgmcigaglb" target="_blank">Chrome</a>
 * <a href="https://addons.mozilla.org/firefox/addon/mattalx-write-math-symbols/" target="_blank">Firefox</a>
-* <a href="https://mattalx.org/web-version.html">Web version</a>
+* <a href="https://mattalx.org/web-version/">Web version</a>
 
 ## Contributing
 Thank you for considering to help out! Pull requests and issues are welcomed!

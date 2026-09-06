@@ -57,7 +57,7 @@ Both run on every push (see `.github/workflows/test.yml`).
 
 ## The web version
 
-<a href="https://mattalx.org/web-version.html" target="_blank">The web version</a> lives in the
+<a href="https://mattalx.org/web-version/" target="_blank">The web version</a> lives in the
 <a href="https://github.com/samueleblanc/MatTalX_website" target="_blank">website repository</a> and runs
 the very same `core.js`. A change to `core.js` opens a pull request there on its own
 (see `.github/workflows/sync-website.yml`), so `js/core.js` on the website should never be edited by hand.
