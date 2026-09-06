@@ -28,8 +28,11 @@ export function useStorage(storage) {
 export const prefersDarkMode = ((typeof window !== "undefined") && (window.matchMedia)) ?
     window.matchMedia("(prefers-color-scheme: dark)").matches : false;
 
-export const touchScreen = (typeof window !== "undefined") ?
-    (("ontouchstart" in window) || (navigator.maxTouchPoints > 0)) : false;
+// A phone or a tablet, rather than anything that merely reports a touch digitiser:
+// plenty of laptops answer yes to 'ontouchstart' and to maxTouchPoints while being
+// driven with a trackpad, and were being given buttons meant for fingers
+export const touchScreen = ((typeof window !== "undefined") && (window.matchMedia)) ?
+    window.matchMedia("(hover: none) and (pointer: coarse)").matches : false;
 
 export const defaultSettings = {
     "box1" : "",                          // The text left in the first box

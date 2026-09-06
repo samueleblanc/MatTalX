@@ -455,12 +455,13 @@ body.lightChosen #subtitle { color: #0f8867; }
     }
 }
 
-/* A phone. Firefox for Android opens the popup as a page the width of the screen,
-   which is nothing like the 700px a desktop popup is given. The breakpoint sits
-   below 700 so the desktop popup never picks these up.
-   Note that the three shortcuts do nothing here: there is no keyboard, so this is
-   the popup and the clipboard */
-@media (max-width: 600px) {
+/* A phone or a tablet. This asks what is pointing at the screen rather than how wide
+   it is, because a width breakpoint cannot work here: a desktop popup is sized to fit
+   its own contents, so 'min-width: 0' below made it narrow, which kept a max-width
+   query matching, which kept it narrow. Asking about the pointer cannot loop.
+   Note that the three shortcuts do nothing on a phone: there is no keyboard, so this
+   is the popup and the clipboard */
+@media (hover: none) and (pointer: coarse) {
     body {
         min-width: 0;
     }
