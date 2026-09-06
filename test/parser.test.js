@@ -79,3 +79,23 @@ test("a command that was once misspelled still converts", () => {
         assert.equal(result.text, oldNames[old] + " ");
     };
 });
+
+test("\\emph turns emphasis on and off, rather than only on", () => {
+    // On upright text it is \\textit, but a second one inside the first comes back,
+    // which is what makes it \\emph and not an alias
+    const run = (text) => convert(text + " ", {mathMode: false}).text;
+    assert.equal(run("\\emph{abc}"), "\u{1D622}\u{1D623}\u{1D624} ");
+    assert.equal(run("\\textit{abc}"), run("\\emph{abc}"));
+    assert.equal(run("\\emph{\\emph{abc}}"), "abc ");
+    assert.equal(run("\\emph{\\textit{abc}}"), "abc ");
+
+    // Inside bold it emphasises without losing the weight, whichever way round it is
+    // written, and a second one gives the weight back on its own
+    assert.equal(run("\\emph{\\textbf{abc}}"), "\u{1D656}\u{1D657}\u{1D658} ");
+    assert.equal(run("\\textbf{\\emph{abc}}"), run("\\emph{\\textbf{abc}}"));
+    assert.equal(run("\\emph{\\emph{\\textbf{abc}}}"), run("\\textbf{abc}"));
+    assert.equal(convert("\\emph{\\emph{\\textbf{abc}}} ", {mathMode: false}).errors, "");
+
+    // In maths the letters are already slanted, so emphasising them stands them up
+    assert.equal(convert("$\\emph{abc}$ ", {mathMode: false}).text, "abc ");
+});

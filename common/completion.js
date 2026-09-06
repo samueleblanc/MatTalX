@@ -67,7 +67,11 @@ export function semiAutoCompletion(textIn, cursorPosition, command) {
 const twoArguments = ["\\frac", "\\frac*", "\\overset", "\\underset", "\\stackrel"];
 
 // Commands whose argument is not a letter, or whose answer doesn't fit on a line
+// '\\emph' is here for a different reason: it is the one command whose answer depends on
+// how its argument already looks, and the preview is given a letter this dictionary has
+// already converted. That made it read '\\emph: A → A', as though it did nothing
 const inWords = {
+    "\\emph" : "A → \u{1D608}, and \u{1D608} → A",
     "\\:" : "1 space",
     "\\!" : "removes a space",
     "\\hspace" : "3 → 3 spaces",
