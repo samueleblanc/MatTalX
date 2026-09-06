@@ -8,9 +8,17 @@
     What is left here is what Firefox names differently from Chrome.
 */
 
-window.addEventListener("blur", () => {
-    // Saves everything, so nothing is lost if you change page or close MatTalX
-    saveSettings(settingsFromBox());
+// Saves everything, so nothing is lost if you change page or close MatTalX.
+// 'blur' is what a desktop popup gives when it closes. Firefox for Android opens the
+// popup as a page and never fires it, so what was written in the first box was thrown
+// away every time: 'pagehide' and a hidden 'visibilitychange' are what it does give
+const saveEverything = () => saveSettings(settingsFromBox());
+window.addEventListener("blur", saveEverything);
+window.addEventListener("pagehide", saveEverything);
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+        saveEverything();
+    };
 });
 
 window.addEventListener("focus", () => {
@@ -21,7 +29,9 @@ window.addEventListener("focus", () => {
 function applyStoredSettings() {
     // Everything the popup needs from storage and from the browser, in one place, so
     // that opening it and returning to it put the same things in place
-    loadSettings().then((settings) => {
+    // Gives back a promise, because the welcome message writes in the same two boxes and
+    // has to come after this rather than race it
+    const applied = loadSettings().then((settings) => {
         applyTextAndToggles(settings);
         applySettingsBox(settings);
     });
@@ -38,23 +48,25 @@ function applyStoredSettings() {
             showBrowserShortcut("_execute_browser_action", defaultSettings["open_mattalx_shortcut"]);
         }
     );
+    return applied;
 };
 
 window.addEventListener("DOMContentLoaded", () => {
-    // The settings have to be put in place as soon as the popup exists. Waiting for
-    // 'focus' works on a desktop, but Firefox for Android opens the popup as a page and
-    // never fires it: the buttons that depend on a setting stayed hidden, and the
-    // shortcuts stayed blank, which applySettings() then read as three identical ones
-    applyStoredSettings();
-
-    // Tells the user what changed, when background.js says MatTalX was just installed or updated
+    // The settings go in as soon as the popup exists. Waiting for 'focus' works on a
+    // desktop, but Firefox for Android opens the popup as a page and never fires it.
+    // The welcome message writes in the same two boxes, so it comes after, rather than
+    // racing it -- and it is saved once written, so that the next thing to apply the
+    // stored settings reads it back instead of emptying the box again
     const manifest = browser.runtime.getManifest();
-    takeInstallReason().then((reason) => {
+    applyStoredSettings().then(takeInstallReason).then((reason) => {
         if (reason === "install") {
             firstMessage(manifest.version);
         } else if (reason === "update") {
             updateMessage(manifest.version);
+        } else {
+            return;
         };
+        saveSettings(settingsFromBox());
     });
 });
 
