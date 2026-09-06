@@ -136,6 +136,7 @@ const showMainSymbols = document.getElementById("showMainSymbols");
 const settingsOpenShortcut = document.getElementById("settingsOpenShortcut");
 const settingsInlineShortcut = document.getElementById("settingsInlineShortcut");
 const settingsCompleteShortcut = document.getElementById("settingsCompleteShortcut");
+const shortcutNote = document.getElementById("shortcutNote");
 const changeShortcutBtn = document.getElementById("changeShortcutBtn");
 changeShortcutBtn.onclick = function() {openShortcutSettings()};
 
@@ -312,6 +313,19 @@ function showBrowserShortcut(name, shortcut) {
     } else {
         settingsOpenShortcut.textContent = text;
     };
+    noteUnsetShortcuts();
+};
+
+function noteUnsetShortcuts() {
+    // A browser gives a command its shortcut when the extension is installed, and leaves
+    // what it has alone afterwards. A command that arrives in an update therefore starts
+    // with nothing, and the user has no way of knowing that except by trying it
+    const unset = [settingsOpenShortcut, settingsInlineShortcut, settingsCompleteShortcut]
+        .filter((shown) => shown.textContent === "Not set").length;
+    shortcutNote.textContent = (unset === 0) ? "" :
+        ((unset === 1) ? "One of these has no shortcut. " : unset + " of these have no shortcut. ") +
+        "The browser only hands them out when MatTalX is installed, so one that arrived " +
+        "in an update starts with none. The button above is where to set it.";
 };
 
 function showErrors(errors) {
