@@ -1,8 +1,13 @@
-name: Sync core.js to the website
+name: Sync the conversion files to the website
 
-# The web version of MatTalX (mattalx.org/web-version.html) runs the very same core.js as the
-# extension and the add-on. Rather than copying it by hand, which is how it fell two years
-# behind before, this opens a pull request on the website whenever core.js changes.
+# The web version of MatTalX (mattalx.org/web-version/) runs the very same core.js and
+# completion.js as the extension and the add-on. Rather than copying them by hand, which
+# is how core.js fell two years behind before, this opens a pull request on the website
+# whenever either one changes.
+#
+# Both files know nothing about the DOM, which is what makes them safe to share: core.js
+# converts, completion.js decides what to suggest, and each interface draws the result
+# its own way. js/web-version.js is the website's own and is never touched here.
 #
 # Needs a WEBSITE_TOKEN secret: a fine-grained personal access token on samueleblanc/MatTalX_website
 # with "Contents: read and write" and "Pull requests: read and write".
@@ -10,7 +15,9 @@ name: Sync core.js to the website
 on:
   push:
     branches: [master]
-    paths: ["common/core.js"]
+    paths:
+      - "common/core.js"
+      - "common/completion.js"
   workflow_dispatch:
 
 jobs:
@@ -29,8 +36,10 @@ jobs:
           token: ${{ secrets.WEBSITE_TOKEN }}
           path: website
 
-      - name: Copy core.js
-        run: cp mattalx/common/core.js website/js/core.js
+      - name: Copy the shared files
+        run: |
+          cp mattalx/common/core.js website/js/core.js
+          cp mattalx/common/completion.js website/js/completion.js
 
       - name: Open a pull request on the website
         uses: peter-evans/create-pull-request@v7
@@ -39,11 +48,11 @@ jobs:
           path: website
           branch: sync-core
           delete-branch: true
-          commit-message: "sync core.js from the extension"
-          title: "Update core.js from the extension"
+          commit-message: "sync core.js and completion.js from the extension"
+          title: "Update core.js and completion.js from the extension"
           body: |
-            `js/core.js` copied from
+            `js/core.js` and `js/completion.js` copied from
             [MatTalX@${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
 
-            Opened automatically because `common/core.js` changed. Nothing else is touched:
-            `js/web-version.js` is the website's own interface and stays as it is.
+            Opened automatically because one of them changed in the extension. Nothing else
+            is touched: `js/web-version.js` is the website's own interface and stays as it is.
