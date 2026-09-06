@@ -86,10 +86,12 @@
         <input type="button" value="Convert" id="convert">
         <input type="button" value="Completion" id="completionBtn">
         <input type="reset" value="Clear" id="reset">
-        <input type="button" value="$" id="dollarSign" class="symbolBtn">
-        <input type="button" value="\" id="backslash" class="symbolBtn">
-        <input type="button" value="{" id="openCurly" class="symbolBtn">
-        <input type="button" value="}" id="closeCurly" class="symbolBtn"><br><br>
+        <span id="symbolRow">
+            <input type="button" value="$" id="dollarSign" class="symbolBtn">
+            <input type="button" value="\" id="backslash" class="symbolBtn">
+            <input type="button" value="{" id="openCurly" class="symbolBtn">
+            <input type="button" value="}" id="closeCurly" class="symbolBtn">
+        </span><br><br>
         <textarea type="text" name="text_out" id="text_out" spellcheck="false" disabled></textarea><br><br>
         <input type="button" value="Copy text" id="copy"><br>
         <p id="mistakes"></p><br>

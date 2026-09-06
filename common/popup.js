@@ -81,6 +81,7 @@ completionBtn.onclick = function() {getCompletion()};
 
 // '$', '\\', '{' and '}': the four a phone keyboard buries a few taps deep
 // Hidden like the completion button, and shown by the same kind of setting
+const symbolRow = document.getElementById("symbolRow");
 const symbolButtons = [...document.getElementsByClassName("symbolBtn")];
 for (const button of symbolButtons) {
     button.onclick = function() {writeSymbol(button.value)};
@@ -343,13 +344,16 @@ function applySettings() {
     // Called when MatTalX opens, when the Settings box closes and by resetSettings()
 
     // Verify if each shortcut is unique
+    // A shortcut the browser has not bound reads as "Not set", and one it has not
+    // answered about yet reads as nothing at all. Neither is a shortcut, so neither can
+    // clash with another one: without this, three blanks counted as three the same
     const listShortcuts = [
         settingsOpenShortcut.textContent,
         settingsInlineShortcut.textContent,
         settingsCompleteShortcut.textContent,
         [setCopyInputKey.value, "+", setCopyInputLetter.value.toUpperCase()].join(""),
         [setCopyOutputKey.value, "+", setCopyOutputLetter.value.toUpperCase()].join("")
-    ];
+    ].filter((shortcut) => (shortcut) && (shortcut !== "Not set"));
     if ((new Set(listShortcuts)).size !== listShortcuts.length) {
         showErrors(reportError("Settings", "At least two shortcuts are identical"));
     };
@@ -365,10 +369,10 @@ function applySettings() {
 };
 
 function showSymbols() {
-    // The four symbol keys follow their setting, the way the completion button does
-    for (const button of symbolButtons) {
-        button.style.display = (showMainSymbols.checked) ? "inline-block" : "none";
-    };
+    // The four symbol keys follow their setting, the way the completion button does.
+    // A class rather than a display, so the stylesheet decides whether they sit on the
+    // line with Convert or on one of their own, which is what a phone wants
+    symbolRow.classList.toggle("shown", showMainSymbols.checked);
 };
 
 function writeSymbol(symbol) {

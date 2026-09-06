@@ -121,9 +121,12 @@ body {
 #completionBtn {
     display: none;
 }
-.symbolBtn {
+#symbolRow {
     /* Shown only when the setting asks, which it does on its own on a touch screen */
     display: none;
+}
+#symbolRow.shown {
+    display: inline;
 }
 /* Written as input[type=button].symbolBtn rather than .symbolBtn: the rule above for
    every button is (0,1,1), so a lone class would lose the font and the padding to it */
@@ -480,6 +483,11 @@ body.lightChosen #subtitle { color: #0f8867; }
     }
     #subtitle {
         font-size: 16px;
+    }
+    #symbolRow.shown {
+        /* Their own line, under Convert, Completion and Clear */
+        display: block;
+        margin-top: 10px;
     }
     input[type=button].symbolBtn {
         /* A finger, not a mouse pointer */

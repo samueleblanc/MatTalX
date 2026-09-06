@@ -14,6 +14,13 @@ window.addEventListener("blur", () => {
 });
 
 window.addEventListener("focus", () => {
+    applyStoredSettings();
+    textIn.focus();
+});
+
+function applyStoredSettings() {
+    // Everything the popup needs from storage and from the browser, in one place, so
+    // that opening it and returning to it put the same things in place
     loadSettings().then((settings) => {
         applyTextAndToggles(settings);
         applySettingsBox(settings);
@@ -31,10 +38,15 @@ window.addEventListener("focus", () => {
             showBrowserShortcut("_execute_action", defaultSettings["open_mattalx_shortcut"]);
         }
     );
-    textIn.focus();
-});
+};
 
 window.addEventListener("DOMContentLoaded", () => {
+    // The settings have to be put in place as soon as the popup exists. Waiting for
+    // 'focus' works on a desktop, but Firefox for Android opens the popup as a page and
+    // never fires it: the buttons that depend on a setting stayed hidden, and the
+    // shortcuts stayed blank, which applySettings() then read as three identical ones
+    applyStoredSettings();
+
     // Tells the user what changed, when background.js says MatTalX was just installed or updated
     const manifest = chrome.runtime.getManifest();
     takeInstallReason().then((reason) => {
