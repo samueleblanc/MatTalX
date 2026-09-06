@@ -8,3 +8,6 @@ firefox_add_on.zip
 test_mattalx/
 
 node_modules/
+
+# A plain textarea to record screenshots and GIFs against, kept out of the package
+capture.html

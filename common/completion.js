@@ -71,7 +71,7 @@ const twoArguments = ["\\frac", "\\frac*", "\\overset", "\\underset", "\\stackre
 // how its argument already looks, and the preview is given a letter this dictionary has
 // already converted. That made it read '\\emph: A → A', as though it did nothing
 const inWords = {
-    "\\emph" : "A → \u{1D608}, and \u{1D608} → A",
+    "\\emph" : "A → \u{1D608} and \u{1D608} → A",
     "\\:" : "1 space",
     "\\!" : "removes a space",
     "\\hspace" : "3 → 3 spaces",
