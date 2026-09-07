@@ -1,33 +1,59 @@
 ![MatTalX logo](common/images/mattalx_logo.png)
 
-## Documentation
+Type LaTeX where you are already typing. Press Alt+Shift+W. Get Unicode maths.
 
-<a href="https://mattalx.org/docs/" target="_blank">Full documentation</a>
+MatTalX turns LaTeX commands into real Unicode characters, inside the text box you are writing in — an email, a message, a post, a comment. There is no popup to open and no symbol to hunt down on another website.
 
-The documentation (PDF and text file) is also [here](docs)
+- \alpha         →   𝛼
+- x_n \to 0      →   𝑥ₙ → 0
+- \mathbb{R}^n   →   ℝⁿ
+- A \subseteq B  →   𝐴 ⊆ 𝐵
 
-## Presentation from the Chrome webstore and Firefox Add-ons marketplace
+Because the answer is ordinary text, it goes wherever text goes. It can be searched, selected, quoted, forwarded and read aloud by a screen reader. It is not a picture of an equation.
 
-Write mathematical expressions anywhere - Convert LaTeX commands to plain text and paste it on any platform!
+**Writing with MatTalX**
 
-With MatTalX (pronounced "Math Talk"), you can convert a simple command, like e^{x} or \alpha into 𝑒ˣ and 𝛼 respectively. They can then be sent via Facebook, 𝕏, Instagram, Teams, Gmail, and every other online platform.
+Press Alt+Shift+W in any text field and what you have written is converted where it sits. Select part of it first and only that part is converted.
 
-You can finally talk about physics, mathematics, chemistry, and (even) chess with your friends! There are more than 1000 commands and you can even create your own! They are quite easy to remember, especially if you are already familiar with LaTeX! If not, simply open the completion popup!
+Cannot remember a command? Write a piece of it and press Alt+Shift+C. Typing "\arrow" brings up all 67 arrows MatTalX knows, each shown beside the character it gives — \rightarrow: →, \hookrightarrow: ↪, \Longrightarrow: ⟹. Arrow keys to move, Enter to take one. It works in the page and in the popup, the same way in both.
 
-Copy and paste " H(t) | \psi (t) \rangle = i \hbar \frac{\partial}{\partial t}| \psi (t) \rangle " in the upper square, click "Convert" and see what happens! 
-
-Simple, free, and open-source!
+An ordinary sentence stays an ordinary sentence: the maths goes between \$ ... \$, \\( ... \\) or \\[ ... \\]. Prefer to convert everything? Turn on Math mode.
 
 
-** Documentation **
+**Make it yours**
 
-Full and comprehensive documentation is available if you put your mouse above the question mark (?) on the top right corner of the popup that will appear once you open MatTalX.
+\newcommand, \renewcommand, \DeclareMathOperator and \DeclareUnicodeCharacter all work, so \RR can be your ℝ and \Aut your operator. Commands you define are suggested next to the ones MatTalX ships with.
+
+
+**What you get**
+
+- More than 650 commands, the LaTeX ones you already know
+- Suggestions as you type, in the page or in the popup
+- Your own commands and operators
+- Greek, blackboard bold, script, fraktur, bold, sans serif, superscripts, subscripts, arrows, accents, matrices, and many math symbols
+- Free and open source under the MIT licence
+
+**Where it works**
+
+In ordinary text boxes — Gmail, Outlook, Stack Exchange, GitHub, comment forms — the text is converted where you typed it.
+
+Some editors keep their own copy of what you write and refuse to be written into by anything but themselves. X, Discord, Messenger, Slack and Reddit are the common ones. There MatTalX puts the converted text on your clipboard and leaves what it replaces selected, so a single Ctrl+V finishes the job.
+
+
+**Privacy**
+
+MatTalX reads the field you are writing in, on the tab you are looking at, and only after you press one of its shortcuts. The conversion happens on your own computer. Nothing is uploaded, nothing is collected, there is no account and there are no analytics.
+
 
 ## Use MatTalX
 Versions:
 * <a href="https://chrome.google.com/webstore/detail/mattalx-write-math-symbol/jllceliamggkpffccbefpefgmcigaglb" target="_blank">Chrome</a>
-* <a href="https://addons.mozilla.org/firefox/addon/mattalx-write-math-symbols/" target="_blank">Firefox</a>
+* <a href="https://addons.mozilla.org/firefox/addon/mattalx-latex-unicode-math/" target="_blank">Firefox</a>
 * <a href="https://mattalx.org/web-version/">Web version</a>
+
+## Documentation
+
+Full documentation available <a href="https://mattalx.org/docs/" target="_blank">here</a>.
 
 ## Contributing
 Thank you for considering to help out! Pull requests and issues are welcomed!
