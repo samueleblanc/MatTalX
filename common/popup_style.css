@@ -361,7 +361,7 @@ body.lightChosen #subtitle { color: #0f8867; }
 }
 @media (prefers-color-scheme: dark) {
     body {
-        background-color: rgb(39, 39, 39);
+        background-color: #14181a;
     }
     #title_light {
         display: none;
@@ -372,14 +372,14 @@ body.lightChosen #subtitle { color: #0f8867; }
     #text_in, 
     #text_out {
         color: whitesmoke;
-        border: 2px solid rgb(83, 83, 83);
-        background-color: rgb(83, 83, 83);
+        border: 2px solid rgb(47, 47, 47);
+        background-color: rgb(43, 43, 43);
     }
     #infoButton_light {
         display: none;
     }
     #infoButton_dark {
-        background-color: rgb(39, 39, 39);
+        background-color: #14181a;
         border: none;
         float: right;
     }
@@ -396,7 +396,7 @@ body.lightChosen #subtitle { color: #0f8867; }
         color: whitesmoke;
     }
     #dropdownInfo {
-        background-color: rgb(31, 31, 31);
+        background-color: black;
     }
     #docs, 
     #git, 
@@ -405,7 +405,7 @@ body.lightChosen #subtitle { color: #0f8867; }
     #changeMode,
     #settingsBtn {
         color: whitesmoke;
-        background-color: rgb(31, 31, 31);
+        background-color: black;
     }
     #docs:hover,
     #git:hover,
@@ -444,14 +444,14 @@ body.lightChosen #subtitle { color: #0f8867; }
     #settingsContent input[type=text],
     #settingsContent select {
         color: whitesmoke;
-        background-color: rgb(61, 61, 61);
+        background-color: rgb(43, 42, 42);
     }
     input[type=button], input[type=reset] {
         color: whitesmoke;
-        background-color: rgb(53, 53, 53);
+        background-color: rgb(41, 41, 41);
     }
     input[type=button]:hover, input[type=reset]:hover {
-        background-color: rgb(61, 61, 61);
+        background-color: rgb(53, 53, 53);
     }
 }
 

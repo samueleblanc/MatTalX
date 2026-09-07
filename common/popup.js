@@ -162,25 +162,28 @@ let chosenSuggestion = 0;
 
 // Index 0 is for light mode and 1 is for dark mode
 const mainColors = {
-    "body" : ["white", "rgb(39,39,39)"],
+    "body" : ["white", "#14181a"],
     "text" : {
         "color" : ["black", "whitesmoke"],
-        "background" : ["whitesmoke", "rgb(83,83,83)"],
-        "border" : ["rgb(231,231,231)", "rgb(83,83,83)"]
+        "background" : ["whitesmoke", "rgb(43,43,43)"],
+        "border" : ["rgb(231,231,231)", "rgb(47,47,47)"]
     },
-    "infoBtn" : ["white", "rgb(39,39,39)"],
+    "infoBtn" : ["white", "#14181a"],
     "shortcuts" : ["black", "whitesmoke"],
-    "dropdown" : ["whitesmoke", "rgb(31,31,31)"],
+    "dropdown" : ["whitesmoke", "black"],
     "btnDropdown" : {
         "color" : ["black", "whitesmoke"],
-        "background" : ["whitesmoke", "rgb(31,31,31)"],
+        "background" : ["whitesmoke", "black"],
         "hover" : ["lightgrey", "rgb(41,41,41)"]
     },
     "mainBtn" : {
         "color" : ["black", "whitesmoke"],
-        "background" : ["rgb(230,229,229)", "rgb(53,53,53)"],
-        "hover" : ["lightgrey", "rgb(61,61,61)"]
+        "background" : ["rgb(230,229,229)", "rgb(41,41,41)"],
+        "hover" : ["lightgrey", "rgb(53,53,53)"]
     },
+    // The suggestion the arrows are sitting on. It used to be read from mainBtn.hover,
+    // which is now a darker colour than the highlight the web version draws
+    "suggestionChosen" : ["lightgrey", "rgb(61,61,61)"],
     "mistakes" : ["black", "whitesmoke"],
     "completion" : {
         "border" : ["rgb(238,238,238)", "rgb(31,31,31)"],
@@ -195,12 +198,12 @@ const mainColors = {
         "background" : ["whitesmoke", "rgb(31,31,31)"],
         "input" : {
             "color" : ["black", "whitesmoke"],
-            "background" : ["white", "rgb(61,61,61)"]
+            "background" : ["white", "rgb(43,42,42)"]
         },
         "inputBtn" : {
             "color" : ["black", "whitesmoke"],
-            "background" : ["rgb(230,229,229)", "rgb(53,53,53)"],
-            "hover" : ["lightgrey", "rgb(61,61,61)"]
+            "background" : ["rgb(230,229,229)", "rgb(41,41,41)"],
+            "hover" : ["lightgrey", "rgb(53,53,53)"]
         }
     }
 };
@@ -879,7 +882,7 @@ function pickSuggestion(i) {
         mainColors["completion"]["backgroundTrTd"][darkModeInt];
     chosenSuggestion = (i + suggestions.length) % suggestions.length;
     suggestions[chosenSuggestion].style.backgroundColor =
-        mainColors["mainBtn"]["hover"][darkModeInt];
+        mainColors["suggestionChosen"][darkModeInt];
     suggestions[chosenSuggestion].scrollIntoView({block: "nearest"});
 };
 
