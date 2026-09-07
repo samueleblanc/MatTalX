@@ -14,7 +14,10 @@ const withCommands = (customCommands) => (text) =>
 
 test("\\newcommand adds a command", () => {
     const run = withCommands([{type: "\\newcommand", newInput: "\\RR", output: "\\mathbb{R}"}]);
-    assert.equal(run("$\\RR$"), "ℝ  ");  // The output of a built command keeps a trailing space
+    // One space, the same as the '\\mathbb{R}' it is defined as would give. The space
+    // that ends the output in buildAllCommands is there to close the command, not to be
+    // part of it
+    assert.equal(run("$\\RR$"), "ℝ ");
 });
 
 test("\\newcommand refuses a name that already exists", () => {
@@ -43,8 +46,30 @@ test("what the dictionary holds follows the settings, kept or not", () => {
     assert.equal(greek(true), "\u{1D6FC} ");
     const own = (output) => convert("$\\RR$ ", {mathMode: false,
         customCommands: [{type: "\\newcommand", newInput: "\\RR", output: output}]}).text;
-    assert.equal(own("\\mathbb{R}"), "ℝ  ");
-    assert.equal(own("\\mathbb{Q}"), "ℚ  ");
+    assert.equal(own("\\mathbb{R}"), "ℝ ");
+    assert.equal(own("\\mathbb{Q}"), "ℚ ");
+});
+
+test("a built command gives what the command it is defined as gives", () => {
+    // The trailing space that closes the output used to be kept in the value, which made
+    // it two characters wide: 'x^\\bb' could then find no superscript and came back as
+    // 'x^{𝛽}' where '\\beta' itself gives '𝑥ᵝ'
+    const built = withCommands([
+        {type: "\\renewcommand", newInput: "\\bb", output: "\\beta"},
+        {type: "\\newcommand", newInput: "\\RR", output: "\\mathbb{R}"}
+    ]);
+    const native = withCommands([]);
+    for (const [own, defined] of [
+        ["$\\bb$", "$\\beta$"],
+        ["$x^\\bb$", "$x^\\beta$"],
+        ["$x_\\bb$", "$x_\\beta$"],
+        ["$\\hat{\\bb}$", "$\\hat{\\beta}$"],
+        ["$\\RR$", "$\\mathbb{R}$"],
+        ["$a\\RR b$", "$a\\mathbb{R} b$"]
+    ]) {
+        assert.equal(built(own), native(defined),
+            own + " should give what " + defined + " gives");
+    };
 });
 
 test("\\renewcommand overrides an existing command", () => {
