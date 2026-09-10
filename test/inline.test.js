@@ -41,6 +41,23 @@ function pageWith(target) {
 
 const field = (text) => ({kind: "field", text: text, whole: true});
 
+// A message in a page comes back as its text nodes, and is written back the same way
+function pageWithPieces(pieces, wrote = "page") {
+    const calls = [];
+    const inject = async (toRun, args) => {
+        calls.push({name: toRun.name, args: args});
+        if (toRun.name === "readTarget") {
+            const text = pieces.map((piece, i) => (
+                ((i > 0) && (piece.apart)) ? "\n" + piece.text : piece.text
+            )).join("");
+            return {kind: "editable", text: text, whole: true, pieces: pieces};
+        };
+        if (toRun.name === "writePieces") return wrote;
+        return (toRun.name === "writeBack") ? "page" : true;
+    };
+    return {inject, calls};
+};
+
 test.beforeEach(() => useStorage(storageWith()));
 
 test("with math mode off, the maths converts and the prose does not", async () => {
@@ -150,4 +167,39 @@ test("the other settings are followed too", async () => {
     const page = pageWith(field("$\\alpha x$"));
     await convertInPage(page.inject);
     assert.equal(page.calls[1].args[0], "αx");   // plain alpha, not the mathematical one
+});
+
+test("a message in a page is written back a text node at a time", async () => {
+    const page = pageWithPieces([
+        {index: 0, from: 0, to: 22, text: "the limit is $\\alpha$ ", apart: false},
+        {index: 1, from: 0, to: 9, text: "this link", apart: false}
+    ]);
+    await convertInPage(page.inject);
+    assert.equal(page.calls[1].name, "writePieces");
+    // What each node should hold: the maths converted, the link's text untouched
+    assert.deepEqual(page.calls[1].args[1], ["the limit is 𝛼 ", "this link"]);
+    assert.equal(page.calls[2].args[0], "Converted");
+});
+
+test("a message that converts to itself is not written at all", async () => {
+    const page = pageWithPieces([
+        {index: 0, from: 0, to: 21, text: "an ordinary sentence ", apart: false},
+        {index: 1, from: 0, to: 9, text: "this link", apart: false}
+    ]);
+    await convertInPage(page.inject);
+    assert.equal(page.calls[1].name, "showMessage");
+    assert.equal(page.calls[1].args[0], "Nothing to convert");
+});
+
+test("a page that moved falls back to replacing the lot, rather than doing nothing", async () => {
+    const page = pageWithPieces([
+        {index: 0, from: 0, to: 9, text: "$\\alpha$ ", apart: false},
+        {index: 1, from: 0, to: 8, text: "$\\beta$", apart: true}
+    ], "stale");
+    await convertInPage(page.inject);
+    assert.equal(page.calls[1].name, "writePieces");
+    assert.equal(page.calls[2].name, "writeBack");
+    // The line break the page shows between the two is kept in what replaces them
+    assert.equal(page.calls[2].args[0], "𝛼 \n𝛽");
+    assert.equal(page.calls[3].args[0], "Converted");
 });

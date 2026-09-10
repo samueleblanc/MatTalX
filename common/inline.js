@@ -2,14 +2,19 @@
     Converting what the user wrote directly in the page, without opening MatTalX.
 
     background.js calls convertInPage() when the shortcut is pressed. The conversion itself
-    stays here, in the extension: readTarget() and the two functions after it are sent to the
-    page as text and run there, so they can only use what is written inside them. That is why
-    they repeat a few things instead of calling a helper.
+    stays here, in the extension: readTarget() and the ones after it are sent to the page as
+    text and run there, so they can only use what is written inside them. That is why they
+    repeat a few things instead of calling a helper.
+
+    A message in a page is a tree rather than a line: paragraphs, links, bold runs, each
+    holding its own text. Reading it as one line and writing that line back is what used to
+    throw all of that away, so what is editable is read and written one text node at a time,
+    and the nodes an expression runs across are the only ones read together.
 */
 
 "use strict";
 
-import { convert } from "./core.js";
+import { convert, mathSpans } from "./core.js";
 import { loadSettings, conversionSettings } from "./settings.js";
 
 export async function convertInPage(inject) {
@@ -27,6 +32,29 @@ export async function convertInPage(inject) {
     // The user's settings decide, here as in the popup. With math mode off, which is how it
     // starts, only what is between '$', '\(' or '\[' is converted and the prose is left alone
     const settings = conversionSettings(await loadSettings());
+
+    if (target.pieces) {
+        const replacements = convertPieces(target.pieces, settings);
+        if (replacements === null) {
+            await inject(showMessage, [nothingHappened(target.text, settings)]);
+            return;
+        };
+        const written = await inject(writePieces, [target.pieces, replacements]);
+        if (written === "page") {
+            await inject(showMessage, [resultMessage("page")]);
+            return;
+        };
+        // The page moved between reading it and writing to it, or would not take the
+        // change. Replacing the lot is what MatTalX did before all of this, and getting
+        // the maths at the cost of the formatting beats getting neither
+        const flat = joinPieces(target.pieces.map((piece, i) => (
+            {text: replacements[i], apart: piece.apart}
+        ))).text;
+        const wroteFlat = await inject(writeBack, [flat, target.kind, target.whole]);
+        await inject(showMessage, [resultMessage(wroteFlat)]);
+        return;
+    };
+
     const result = convert(target.text + " ", settings);
 
     // The space was only there to let the parser finish the last command
@@ -38,6 +66,84 @@ export async function convertInPage(inject) {
     };
     const written = await inject(writeBack, [converted, target.kind, target.whole]);
     await inject(showMessage, [resultMessage(written)]);
+};
+
+export function joinPieces(pieces) {
+    // The pieces as one text, the way the page reads: a line break where a paragraph, a
+    // list item or a <br> separates them, and nothing at all where only a change of font
+    // or a link does. Says where each piece starts in it, since that is where the
+    // question of whether they can be read apart is asked
+    const parts = [];
+    const starts = [];
+    let at = 0;
+    for (let i=0; i<pieces.length; i+=1) {
+        if ((i > 0) && (pieces[i].apart)) {
+            parts.push("\n");
+            at += 1;
+        };
+        starts.push(at);
+        parts.push(pieces[i].text);
+        at += pieces[i].text.length;
+    };
+    return {text: parts.join(""), starts: starts};
+};
+
+export function chunkPieces(pieces, settings) {
+    // Groups the pieces that cannot be read apart, and leaves the rest alone.
+
+    // Two pieces have to be read together when the boundary between them falls inside a
+    // piece of maths -- '$\mathbf x$' with the bold half in a node of its own -- or in
+    // the middle of a word, where a command could be cut in two. A boundary at a space,
+    // outside the maths, is a boundary the conversion cannot see, so the pieces on either
+    // side are converted on their own and everything between them is left untouched.
+    // Reading too much together costs nothing where nothing converts: a chunk that comes
+    // back unchanged is never written, so its links and its fonts are never touched
+    const joined = joinPieces(pieces);
+    const spans = mathSpans(joined.text, settings.mathMode);
+    const insideMaths = (at) => spans.some((span) => (span.start < at) && (at < span.end));
+    const atASpace = (at) => {
+        const before = joined.text[at-1];
+        const after = joined.text[at];
+        return ((before === undefined) || (after === undefined) ||
+                (/\s/.test(before)) || (/\s/.test(after)));
+    };
+
+    const chunks = [];
+    for (let i=0; i<pieces.length; i+=1) {
+        const boundary = joined.starts[i];
+        const together = (i > 0) && (!pieces[i].apart) &&
+                         ((insideMaths(boundary)) || (!atASpace(boundary)));
+        if (together) {
+            chunks[chunks.length-1].push(i);
+        } else {
+            chunks.push([i]);
+        };
+    };
+    return chunks;
+};
+
+export function convertPieces(pieces, settings) {
+    // What every text node should hold now, or null when nothing changes.
+    // A chunk that converts is written into the first of its nodes and the others are
+    // emptied: what it became is one run of text, and the first node is where it started
+    const chunks = chunkPieces(pieces, settings);
+    const replacements = pieces.map((piece) => piece.text);
+    let changed = false;
+    for (const chunk of chunks) {
+        const before = chunk.map((i) => pieces[i].text).join("");
+        // The space is only there to let the parser finish the last command
+        const result = convert(before + " ", settings);
+        const after = (result.text.endsWith(" ")) ? result.text.slice(0, -1) : result.text;
+        if (after === before) {
+            continue;
+        };
+        changed = true;
+        replacements[chunk[0]] = after;
+        for (let i=1; i<chunk.length; i+=1) {
+            replacements[chunk[i]] = "";
+        };
+    };
+    return (changed) ? replacements : null;
 };
 
 export function resultMessage(written) {
@@ -79,18 +185,164 @@ export function readTarget() {
     };
 
     if (element && element.isContentEditable) {
+        // Read a text node at a time, so that what is written back can go straight into
+        // those same nodes and leave every element around them where it is
         const selection = window.getSelection();
-        const selected = (selection) && (!selection.isCollapsed);
-        return {
-            kind: "editable",
-            text: (selected) ? selection.toString() : element.innerText,
-            whole: !selected
+        const selected = (selection) && (selection.rangeCount > 0) && (!selection.isCollapsed);
+        const range = (selected) ? selection.getRangeAt(0) : null;
+
+        // Whether a paragraph, a list item or a <br> comes between two pieces of text,
+        // which is what decides that they are two lines rather than one
+        const blocks = new Map();
+        const isBlock = (node) => {
+            if (!blocks.has(node)) {
+                const display = window.getComputedStyle(node).display;
+                blocks.set(node, (display.slice(0, 6) !== "inline") && (display !== "contents"));
+            };
+            return blocks.get(node);
         };
+        const blockOf = (node) => {
+            let parent = node.parentElement;
+            while ((parent) && (parent !== element) && (!isBlock(parent))) {
+                parent = parent.parentElement;
+            };
+            return parent;
+        };
+
+        const pieces = [];
+        const walker = document.createTreeWalker(element,
+            NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
+        let block = null;
+        let broke = false;
+        let index = -1;
+        let node;
+        while ((node = walker.nextNode())) {
+            if (node.nodeType === 1) {
+                if (node.tagName === "BR") {
+                    broke = true;
+                };
+                continue;
+            };
+            const parent = node.parentElement;
+            if ((parent) && ((parent.tagName === "SCRIPT") || (parent.tagName === "STYLE"))) {
+                continue;   // Counted by neither this nor writePieces, so they agree
+            };
+            index += 1;
+            if ((range) && (!range.intersectsNode(node))) {
+                continue;
+            };
+            const from = ((range) && (node === range.startContainer)) ? range.startOffset : 0;
+            const to = ((range) && (node === range.endContainer)) ?
+                range.endOffset : node.nodeValue.length;
+            if (from >= to) {
+                continue;
+            };
+            const mine = blockOf(node);
+            pieces.push({
+                index: index,
+                from: from,
+                to: to,
+                text: node.nodeValue.slice(from, to),
+                apart: (pieces.length > 0) && ((broke) || (mine !== block))
+            });
+            block = mine;
+            broke = false;
+        };
+
+        // What it all reads as, for the messages and for the older way of writing it back
+        const text = pieces.map((piece, i) => (
+            ((i > 0) && (piece.apart)) ? "\n" + piece.text : piece.text
+        )).join("");
+        return {kind: "editable", text: text, whole: !selected, pieces: pieces};
     };
 
     // Nothing that can be written in, so whatever is selected is converted and copied
     const selection = window.getSelection();
     return { kind: "clipboard", text: (selection) ? selection.toString() : "", whole: false };
+};
+
+export function writePieces(pieces, replacements) {
+    // Runs in the page: puts each piece back in the text node it came from, and touches
+    // nothing else. The colours, the fonts, the links and the paragraphs are all held by
+    // the elements around those nodes, and not one of them is taken apart
+
+    // Editors that keep their own copy of what they hold: X, Discord and the like. Writing
+    // straight into the page leaves the two disagreeing, and the editor stops taking input
+    // altogether, so those are left to writeBack(), which hands them a paste instead
+    const ownItself = "[data-lexical-editor],[data-slate-editor],.ProseMirror," +
+                      ".public-DraftEditor-content,[data-contents],.cm-content,.ql-editor";
+
+    const element = document.activeElement;
+    if ((!element) || (!element.isContentEditable) || (element.closest(ownItself) !== null)) {
+        return "";
+    };
+
+    const nodes = [];
+    const walker = document.createTreeWalker(element,
+        NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) {
+        if (node.nodeType === 1) {
+            continue;
+        };
+        const parent = node.parentElement;
+        if ((parent) && ((parent.tagName === "SCRIPT") || (parent.tagName === "STYLE"))) {
+            continue;
+        };
+        nodes.push(node);
+    };
+
+    // The page had a life of its own between being read and being written to. Nothing is
+    // touched at all unless every piece is still exactly where it was left
+    for (let i=0; i<pieces.length; i+=1) {
+        const held = nodes[pieces[i].index];
+        if ((!held) ||
+            (held.nodeValue.slice(pieces[i].from, pieces[i].to) !== pieces[i].text)) {
+            return "stale";
+        };
+    };
+
+    let last = null;
+    for (let i=0; i<pieces.length; i+=1) {
+        if (replacements[i] === pieces[i].text) {
+            continue;
+        };
+        const held = nodes[pieces[i].index];
+        const held_text = held.nodeValue;
+        held.nodeValue = held_text.slice(0, pieces[i].from) + replacements[i] +
+                         held_text.slice(pieces[i].to);
+        // Where the maths ran across several nodes it went back into the first of them
+        // and the others were emptied, so the cursor follows the text rather than the
+        // last node touched: an empty one is no place to leave it
+        if ((replacements[i].length > 0) || (last === null)) {
+            last = {node: held, at: pieces[i].from + replacements[i].length};
+        };
+    };
+    if (last === null) {
+        return "";
+    };
+
+    // The editor keeps its own idea of what it is holding, and an input event is what
+    // tells it to look again
+    try {
+        element.dispatchEvent(new InputEvent("input",
+            {bubbles: true, inputType: "insertText", data: null}));
+    } catch (err) {
+        try {
+            element.dispatchEvent(new Event("input", {bubbles: true}));
+        } catch (err) {};
+    };
+
+    // The cursor goes after what was written, the way it would after typing it
+    try {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.setStart(last.node, Math.min(last.at, last.node.nodeValue.length));
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    } catch (err) {};
+    return "page";
 };
 
 export function showMessage(message) {
