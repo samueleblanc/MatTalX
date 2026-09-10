@@ -58,14 +58,27 @@ function inThePage(root, selection = null) {
             let at = -1;
             return {nextNode: () => { at += 1; return (at < all.length) ? all[at] : null; }};
         },
-        createRange: () => ({setStart() {}, collapse() {}})
+        createRange: () => {
+            const range = {};
+            range.setStart = (node, at) => { range.node = node; range.at = at; };
+            range.collapse = () => {};
+            return range;
+        }
     };
+    const nothing = {rangeCount: 0, isCollapsed: true, placed: null,
+                     removeAllRanges() {}, addRange(range) { nothing.placed = range; }};
     global.window = {
         getComputedStyle: (node) => ({display: node.display || "inline"}),
-        getSelection: () => (selection) ? selection :
-            {rangeCount: 0, isCollapsed: true, removeAllRanges() {}, addRange() {}}
+        getSelection: () => (selection) ? selection : nothing
     };
     return root;
+};
+
+function cursorIn(node, at) {
+    // A cursor, and nothing selected
+    const cursor = {rangeCount: 1, isCollapsed: true, anchorNode: node, anchorOffset: at,
+                    placed: null, removeAllRanges() {}, addRange(range) { cursor.placed = range; }};
+    return cursor;
 };
 
 // The tree as it reads now, so a test can say what should and should not have moved
@@ -232,4 +245,56 @@ test("what is selected is converted, and the rest of the node is not", () => {
     const replacements = convertPieces(target.pieces, plain);
     assert.equal(writePieces(target.pieces, replacements), "page");
     assert.equal(shownAs(root), "<DIV><P>keep 𝛼 drop</P></DIV>");
+});
+
+test("a cursor in a paragraph nobody wrote to is not moved", () => {
+    // Maths in the first paragraph, the user typing in the third: converting must not
+    // send the cursor back up to where the maths was
+    const typing = text("and now I am writing here");
+    const root = element("DIV", "block", [
+        element("P", "block", [text("$\\alpha$")]),
+        element("P", "block", [text("some prose")]),
+        element("P", "block", [typing])
+    ]);
+    const cursor = cursorIn(typing, typing.nodeValue.length);
+    inThePage(root, cursor);
+    const target = readTarget();
+    assert.equal(writePieces(target.pieces, convertPieces(target.pieces, plain)), "page");
+    assert.equal(shownAs(root), "<DIV><P>𝛼</P><P>some prose</P><P>and now I am writing here</P></DIV>");
+    assert.equal(cursor.placed, null, "the cursor should have been left alone");
+});
+
+test("a cursor at the end of what was converted stays at the end of it", () => {
+    // The usual case: the user typed the line and pressed the shortcut
+    const typed = text("the limit is $\\alpha_n \\to 0$ so");
+    const root = element("DIV", "block", [element("P", "block", [typed])]);
+    const cursor = cursorIn(typed, typed.nodeValue.length);
+    inThePage(root, cursor);
+    const target = readTarget();
+    assert.equal(writePieces(target.pieces, convertPieces(target.pieces, plain)), "page");
+    assert.equal(typed.nodeValue, "the limit is 𝛼ₙ → 0 so");
+    assert.equal(cursor.placed.node, typed);
+    assert.equal(cursor.placed.at, typed.nodeValue.length);
+});
+
+test("a cursor before what was converted does not move either", () => {
+    const typed = text("here: $\\alpha$");
+    const root = element("DIV", "block", [element("P", "block", [typed])]);
+    const cursor = cursorIn(typed, 3);   // In "here"
+    inThePage(root, cursor);
+    const target = readTarget();
+    writePieces(target.pieces, convertPieces(target.pieces, plain));
+    assert.equal(cursor.placed.at, 3);
+});
+
+test("a cursor inside the maths goes after what it became", () => {
+    // Nothing in '𝛼' answers to the third character of '\\alpha'
+    const typed = text("here: $\\alpha$ done");
+    const root = element("DIV", "block", [element("P", "block", [typed])]);
+    const cursor = cursorIn(typed, 9);   // Inside '\\alpha'
+    inThePage(root, cursor);
+    const target = readTarget();
+    writePieces(target.pieces, convertPieces(target.pieces, plain));
+    assert.equal(typed.nodeValue, "here: 𝛼 done");
+    assert.equal(typed.nodeValue.slice(0, cursor.placed.at), "here: 𝛼");
 });

@@ -302,6 +302,14 @@ export function writePieces(pieces, replacements) {
         };
     };
 
+    // The cursor stays where the user left it. A node that is not written to keeps it as
+    // it is; in one that is, it moves with the text around it. Only a selection has
+    // nowhere to stay, and is collapsed after the last thing converted
+    const selection = window.getSelection();
+    const caret = ((selection) && (selection.rangeCount > 0) && (selection.isCollapsed)) ?
+        {node: selection.anchorNode, at: selection.anchorOffset} : null;
+    let moved = null;   // The cursor's new place, when its node was written to
+
     let last = null;
     for (let i=0; i<pieces.length; i+=1) {
         if (replacements[i] === pieces[i].text) {
@@ -311,9 +319,32 @@ export function writePieces(pieces, replacements) {
         const held_text = held.nodeValue;
         held.nodeValue = held_text.slice(0, pieces[i].from) + replacements[i] +
                          held_text.slice(pieces[i].to);
+        if ((caret) && (caret.node === held)) {
+            // Only what actually changed counts, and a piece mostly does not: the prose
+            // around the maths is the same before and after. Before what changed, the
+            // cursor is left alone; after it, it is carried along; inside it there is no
+            // place in the converted text that answers to one in the LaTeX, so it goes
+            // after, the way it would after typing it
+            const was = pieces[i].text;
+            const now = replacements[i];
+            let same = 0;
+            while ((same < was.length) && (same < now.length) && (was[same] === now[same])) {
+                same += 1;
+            };
+            let tail = 0;
+            while ((tail < was.length - same) && (tail < now.length - same) &&
+                   (was[was.length-1-tail] === now[now.length-1-tail])) {
+                tail += 1;
+            };
+            const changedFrom = pieces[i].from + same;
+            const changedTo = pieces[i].to - tail;
+            moved = (caret.at <= changedFrom) ? caret.at :
+                    ((caret.at >= changedTo) ? caret.at + (now.length - was.length) :
+                     pieces[i].from + now.length - tail);
+        };
         // Where the maths ran across several nodes it went back into the first of them
-        // and the others were emptied, so the cursor follows the text rather than the
-        // last node touched: an empty one is no place to leave it
+        // and the others were emptied, so a cursor that has to be placed follows the
+        // text rather than the last node touched: an empty one is no place to leave it
         if ((replacements[i].length > 0) || (last === null)) {
             last = {node: held, at: pieces[i].from + replacements[i].length};
         };
@@ -333,15 +364,18 @@ export function writePieces(pieces, replacements) {
         } catch (err) {};
     };
 
-    // The cursor goes after what was written, the way it would after typing it
-    try {
-        const selection = window.getSelection();
-        const range = document.createRange();
-        range.setStart(last.node, Math.min(last.at, last.node.nodeValue.length));
-        range.collapse(true);
-        selection.removeAllRanges();
-        selection.addRange(range);
-    } catch (err) {};
+    // A cursor in a node nobody wrote to is exactly where it was, and is left there
+    const place = (moved !== null) ? {node: caret.node, at: moved} :
+                  ((caret === null) ? last : null);
+    if (place !== null) {
+        try {
+            const range = document.createRange();
+            range.setStart(place.node, Math.min(place.at, place.node.nodeValue.length));
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        } catch (err) {};
+    };
     return "page";
 };
 
