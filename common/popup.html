@@ -49,11 +49,15 @@
                 <option value="Times New Roman">Times New Roman</option>
             </select></span>
             <h4>SHORTCUTS</h4>
-            <span>Open/Close MatTalX: <b id="settingsOpenShortcut"></b></span>
-            <span>Convert in the page: <b id="settingsInlineShortcut"></b></span>
-            <span>Suggest commands: <b id="settingsCompleteShortcut"></b></span>
-            <span><input type="button" value="Change these in the browser" id="changeShortcutBtn"></span>
-            <span class="settingHint" id="shortcutNote"></span>
+            <!-- The shortcuts the browser owns. Firefox for Android has no commands API,
+                 so there is nothing to show and nowhere to send the user: hidden there -->
+            <div id="browserShortcuts">
+                <span>Open/Close MatTalX: <b id="settingsOpenShortcut"></b></span>
+                <span>Convert in the page: <b id="settingsInlineShortcut"></b></span>
+                <span>Suggest commands: <b id="settingsCompleteShortcut"></b></span>
+                <span><input type="button" value="Change these in the browser" id="changeShortcutBtn"></span>
+                <span class="settingHint" id="shortcutNote"></span>
+            </div>
             <span><label for="shortCopyInput">Copy input (first box): </label>
             <select name="shortOpen" id="shortCopyInputK">
                 <option value="Alt">Alt</option>

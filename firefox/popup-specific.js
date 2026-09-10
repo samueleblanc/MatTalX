@@ -8,16 +8,29 @@
     What is left here is what Firefox names differently from Chrome.
 */
 
-// Saves everything, so nothing is lost if you change page or close MatTalX.
+// Firefox for Android has no commands API at all: the shortcuts are a desktop matter,
+// and reaching for browser.commands there throws rather than answering. Everything that
+// asks about them goes through this, so a missing API is a blank list rather than a
+// popup that stops half way through setting itself up
+const browserCommands = (browser.commands) ? browser.commands : null;
+
+// What is left to do on the way out. Everything is kept as it is changed now, so this
+// only catches a change the last few hundred milliseconds have not reached yet, and puts
+// away a message that has been in front of the user until now
 // 'blur' is what a desktop popup gives when it closes. Firefox for Android opens the
-// popup as a page and never fires it, so what was written in the first box was thrown
-// away every time: 'pagehide' and a hidden 'visibilitychange' are what it does give
-const saveEverything = () => saveSettings(settingsFromBox());
-window.addEventListener("blur", saveEverything);
-window.addEventListener("pagehide", saveEverything);
+// popup as a page and never fires it: 'pagehide' and a hidden 'visibilitychange' are
+// what it does give, and none of the three can be relied on to outlive the page
+const closing = () => {
+    saveNow();       // Reads the boxes at once, so the message still counts as unread
+    if (popupWasSeen) {
+        messageRead();
+    };
+};
+window.addEventListener("blur", closing);
+window.addEventListener("pagehide", closing);
 document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") {
-        saveEverything();
+        closing();
     };
 });
 
@@ -34,20 +47,28 @@ function applyStoredSettings() {
     const applied = loadSettings().then((settings) => {
         applyTextAndToggles(settings);
         applySettingsBox(settings);
+        // Nothing is saved before this. Until the stored settings are in place the boxes
+        // hold the plain HTML the popup was built from, and writing that back is how
+        // every setting, and every command the user built, would be wiped
+        settingsInPlace = true;
     });
-    browser.commands.getAll().then(
-        // Show the right shortcut used to open and close MatTalX
-        // Function is different from the others since this shortcut can be modified from
-        // the browser settings, not directly from MatTalX
-        (commands) => {
-            for (const command of commands) {
-                showBrowserShortcut(command.name, command.shortcut);
-            };
-        },
-        () => {
-            showBrowserShortcut("_execute_browser_action", defaultSettings["open_mattalx_shortcut"]);
-        }
-    );
+    if (browserCommands) {
+        browserCommands.getAll().then(
+            // Show the right shortcut used to open and close MatTalX
+            // Function is different from the others since this shortcut can be modified from
+            // the browser settings, not directly from MatTalX
+            (commands) => {
+                for (const command of commands) {
+                    showBrowserShortcut(command.name, command.shortcut);
+                };
+            },
+            () => {
+                showBrowserShortcut("_execute_browser_action", defaultSettings["open_mattalx_shortcut"]);
+            }
+        );
+    } else {
+        hideBrowserShortcuts();
+    };
     return applied;
 };
 
@@ -55,10 +76,9 @@ window.addEventListener("DOMContentLoaded", () => {
     // The settings go in as soon as the popup exists. Waiting for 'focus' works on a
     // desktop, but Firefox for Android opens the popup as a page and never fires it.
     // The welcome message writes in the same two boxes, so it comes after, rather than
-    // racing it -- and it is saved once written, so that the next thing to apply the
-    // stored settings reads it back instead of emptying the box again
+    // racing it
     const manifest = browser.runtime.getManifest();
-    applyStoredSettings().then(takeInstallReason).then((reason) => {
+    applyStoredSettings().then(installReason).then((reason) => {
         if (reason === "install") {
             firstMessage(manifest.version);
         } else if (reason === "update") {
@@ -66,7 +86,10 @@ window.addEventListener("DOMContentLoaded", () => {
         } else {
             return;
         };
-        saveSettings(settingsFromBox());
+        // The message is not stored anywhere. It is put back every time the popup opens
+        // until it has been read -- converted, cleared, typed over or closed -- so a
+        // popup the phone reloads or takes away first does not swallow it
+        welcomeStanding = true;
     });
 });
 
@@ -97,21 +120,16 @@ function openSettings() {
 };
 
 function closeSettings() {
-    verifySettings(fontSize.value, "font");
-    verifySettings(setCopyInputLetter.value, "letter");
-    verifySettings(setCopyOutputLetter.value, "letter");
-
-    saveSettings(settingsFromBox());
-    applySettings();
-
+    // Everything in the box is checked, applied and kept as it is changed, so closing
+    // the box only puts it away
     settingsBox.style.display = "none";
 };
 
 function openShortcutSettings() {
     // Firefox opens the shortcut page itself since version 127
     // Older versions get the add-ons page, where the shortcuts are under the gear menu
-    if (browser.commands.openShortcutSettings) {
-        browser.commands.openShortcutSettings();
+    if ((browserCommands) && (browserCommands.openShortcutSettings)) {
+        browserCommands.openShortcutSettings();
     } else {
         browser.tabs.create({url: "about:addons"});
     };

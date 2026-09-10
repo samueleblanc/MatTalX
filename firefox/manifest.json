@@ -1,7 +1,7 @@
 {
     "name": "MatTalX - LaTeX to Unicode math symbols",
     "description": "Type LaTeX in any text field and press Alt+Shift+W to get Unicode math: \\alpha becomes 𝛼. Never leave the text box.",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "icons": {
         "48": "/images/mattalx_favicon48.png",
         "96": "/images/mattalx_favicon96.png"

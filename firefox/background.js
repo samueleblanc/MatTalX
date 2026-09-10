@@ -5,10 +5,17 @@
 
 import { convertInPage } from "./inline.js";
 import { completeInPage } from "./inline-completion.js";
+import { sameRelease } from "./settings.js";
 
 browser.runtime.onInstalled.addListener((details) => {
     // Stores "install", "update" or other depending on the reason of onInstalled's message
     // MatTalX uses it to tell the user the new version's details or other info
+    // A fix has nothing to announce: 3.0.0 and 3.0.1 are the same release, and someone who
+    // has already read what 3.0 brought should not be shown it again for every patch
+    if ((details.reason === "update") &&
+        (sameRelease(details.previousVersion, browser.runtime.getManifest().version))) {
+        return;
+    };
     browser.storage.local.set({"reason": details.reason});
 });
 

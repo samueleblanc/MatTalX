@@ -22,6 +22,7 @@ function firstMessage(version) {
     "𝑀ᴀᴛ𝑇ᴀʟ𝑋 names it under the second box.";
     textIn.value = example;  // In "text_input" form
     textOut.value = tutorial;  // In "text_input" form
+    textOut.disabled = false;  // Or the message is the one thing that cannot be copied
 };
 
 // Message after an update
@@ -47,4 +48,5 @@ function updateMessage(version) {
     " 5) When nothing happens, 𝑀ᴀᴛ𝑇ᴀʟ𝑋 says why.\r\n" +
     " 6) Converting is about ten times faster.";
     textOut.value = majorChanges;  // In "text_input" form
+    textOut.disabled = false;  // Or the message is the one thing that cannot be copied
 };

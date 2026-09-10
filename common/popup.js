@@ -49,7 +49,8 @@ import {
     loadSettings,
     saveSettings,
     conversionSettings,
-    takeInstallReason,
+    installReason,
+    forgetInstallReason,
     isShortcut
 } from "./settings.js";
 
@@ -137,6 +138,7 @@ const settingsOpenShortcut = document.getElementById("settingsOpenShortcut");
 const settingsInlineShortcut = document.getElementById("settingsInlineShortcut");
 const settingsCompleteShortcut = document.getElementById("settingsCompleteShortcut");
 const shortcutNote = document.getElementById("shortcutNote");
+const browserShortcuts = document.getElementById("browserShortcuts");
 const changeShortcutBtn = document.getElementById("changeShortcutBtn");
 changeShortcutBtn.onclick = function() {openShortcutSettings()};
 
@@ -144,6 +146,36 @@ changeShortcutBtn.onclick = function() {openShortcutSettings()};
 const buildCommandsBtn = document.getElementById("buildNewCommand");
 buildCommandsBtn.onclick = function() {buildNewCommand()};
 const commandsBuilt = document.getElementById("commandsBuilt");
+
+
+// Keeping what the user does, as they do it
+
+// The first box and the three switches of the question mark menu
+textIn.addEventListener("input", () => {
+    messageRead();
+    saveSoon();
+});
+for (const button of [spacesButton, changeFontButton, changeModeButton]) {
+    button.addEventListener("change", () => {
+        messageRead();
+        saveSoon();
+    });
+};
+
+// The Settings box. Nothing here waits for the box to be closed any more
+darkMode.addEventListener("change", saveSoon);
+fontSize.addEventListener("input", settingChanged);
+fontFamily.addEventListener("change", settingChanged);
+setCopyInputKey.addEventListener("change", settingChanged);
+setCopyOutputKey.addEventListener("change", settingChanged);
+setCopyInputLetter.addEventListener("input", settingChanged);
+setCopyOutputLetter.addEventListener("input", settingChanged);
+showCompletionBtn.addEventListener("change", settingChanged);
+showMainSymbols.addEventListener("change", settingChanged);
+
+// The table builds its rows as they are asked for, so it is the table that listens
+commandsBuilt.addEventListener("input", saveSoon);
+commandsBuilt.addEventListener("change", saveSoon);
 
 //-----------------------------------------------------//
 
@@ -153,6 +185,31 @@ const commandsBuilt = document.getElementById("commandsBuilt");
 // The suggestions currently shown, and which one the arrows are on
 let suggestions = [];
 let chosenSuggestion = 0;
+
+// True once the stored settings have reached the interface. Nothing is saved before that:
+// what the boxes hold until then is the plain HTML the popup was built from, and writing
+// that back is how every setting, and every command the user built, gets wiped
+let settingsInPlace = false;
+
+// True while the welcome or the update message is in the second box and nothing has been
+// done with it. The message is not stored anywhere: it is put back on every load until it
+// has been read, so a popup the phone reloads or closes early does not swallow it
+let welcomeStanding = false;
+
+// True once the popup has actually been on screen. A document that is built and taken
+// away again without ever being shown has shown nobody the welcome message, so it is not
+// the one that should put it away
+let popupWasSeen = (document.visibilityState === "visible");
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+        popupWasSeen = true;
+    };
+});
+
+// Saving waits for the typing to stop. Chrome takes 120 writes a minute to sync storage,
+// which a key press each would go through in seconds
+let saveTimer = null;
+const savingWaits = 400;   // ms
 
 
 
@@ -234,6 +291,10 @@ function copyTextIn() {
 
 function clear() {
     // Clears everything
+    messageRead();
+    // The form empties the two boxes itself, and quietly: no input event comes of it, so
+    // the empty box is kept from here. Saving waits long enough to see it emptied first
+    saveSoon();
     copyButton.value = "Copy text";
     mistakesBox.textContent = "";
     textOut.disabled = true;
@@ -261,9 +322,73 @@ function settingsFromBox() {
     };
 };
 
+function saveSoon() {
+    // Everything is kept as it is changed rather than as MatTalX closes. A popup on a
+    // phone is a page, and a page can be taken away without giving anything time to
+    // write: what was hanging off the way out was simply lost
+    if (saveTimer !== null) {
+        clearTimeout(saveTimer);
+    };
+    saveTimer = setTimeout(saveNow, savingWaits);
+};
+
+function saveNow() {
+    // Says so in the mistakes box when the browser refuses, rather than letting the
+    // settings quietly stop being kept
+    if (saveTimer !== null) {
+        clearTimeout(saveTimer);
+        saveTimer = null;
+    };
+    if (!settingsInPlace) {
+        return Promise.resolve();
+    };
+    const settings = settingsFromBox();
+    if (welcomeStanding) {
+        // The example in the first box came with the message rather than from the user,
+        // and comes back with it next time, so it is not what they left there
+        delete settings["box1"];
+    };
+    return saveSettings(settings).then((refused) => {
+        if (refused) {
+            resetErrors();
+            showErrors(reportError("Settings", "not saved, " + refused));
+        };
+    });
+};
+
+function messageRead() {
+    // The welcome and the update message stay until they have been used: converted,
+    // cleared, typed over or put away by closing MatTalX
+    if (!welcomeStanding) {
+        return;
+    };
+    welcomeStanding = false;
+    forgetInstallReason();
+};
+
+function settingChanged() {
+    // A setting is checked, applied and kept the moment it changes. It used to be all
+    // three at once when the Settings box was closed, and on a phone that box is more
+    // often left than closed
+    if (fontSize.value === "") {
+        return;   // Half way through typing a number
+    };
+    resetErrors();
+    showErrors("");
+    verifySettings(fontSize.value, "font");
+    verifySettings(setCopyInputLetter.value, "letter");
+    verifySettings(setCopyOutputLetter.value, "letter");
+    applySettings();
+    saveSoon();
+};
+
 function applyTextAndToggles(settings) {
     // The first box and the three checkboxes of the dropdown
-    textIn.value = settings["box1"];
+    // The example belongs to the welcome message, which is not stored: while it is still
+    // standing, applying the settings again would empty the box from under it
+    if (!welcomeStanding) {
+        textIn.value = settings["box1"];
+    };
     spacesButton.checked = settings["spaces"];
     changeFontButton.checked = settings["font"];
     changeModeButton.checked = settings["mode"];
@@ -317,6 +442,12 @@ function showBrowserShortcut(name, shortcut) {
         settingsOpenShortcut.textContent = text;
     };
     noteUnsetShortcuts();
+};
+
+function hideBrowserShortcuts() {
+    // Firefox for Android has no commands API. There are no browser shortcuts to show
+    // there, no page to send anyone to, and no keyboard to press them with anyway
+    browserShortcuts.style.display = "none";
 };
 
 function noteUnsetShortcuts() {
@@ -417,6 +548,7 @@ function resetSettings() {
 
     updateMainColors();
     applySettings();
+    saveSoon();
 };
 
 function updateMainColors() {
@@ -827,6 +959,7 @@ function buildNewCommand() {
         // Delete the command
         row1.remove();
         // row2.remove();
+        saveSoon();
     });
 
     deleteCommand.appendChild(deleteCommandBtn);
@@ -973,6 +1106,7 @@ function main() {
     // Takes the original text (input) and outputs the new one, with the converted symbols
     // Everything the conversion needs to know is passed to core.js as settings
 
+    messageRead();
     const result = convert(textIn.value + " ", conversionSettings(settingsFromBox()));
 
     textOut.value = result.text;

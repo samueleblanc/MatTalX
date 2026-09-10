@@ -1,6 +1,6 @@
 {
     "name": "mattalx",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "description": "Type LaTeX in any text field and get Unicode math, anywhere on the web",
     "homepage": "https://mattalx.org",
     "license": "MIT",

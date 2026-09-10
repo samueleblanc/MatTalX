@@ -9,7 +9,9 @@ import {
     loadSettings,
     saveSettings,
     conversionSettings,
-    takeInstallReason,
+    installReason,
+    forgetInstallReason,
+    sameRelease,
     useStorage,
     isShortcut
 } from "../common/settings.js";
@@ -81,11 +83,60 @@ test("the stored settings become what convert() expects", () => {
     });
 });
 
-test("the install reason is read once and then gone", async () => {
+test("the install reason stays until the message has been read", async () => {
+    // A popup can be closed, or reloaded by the phone, before the welcome has been read.
+    // Reading the reason used to consume it, so the message was gone either way
     const storage = fakeStorage({reason: "install"});
     useStorage(storage);
-    assert.equal(await takeInstallReason(), "install");
-    assert.equal(await takeInstallReason(), undefined);
+    assert.equal(await installReason(), "install");
+    assert.equal(await installReason(), "install");
+    await forgetInstallReason();
+    assert.equal(await installReason(), undefined);
+});
+
+test("the first box is kept on the device, and the settings where they were", async () => {
+    // Chrome refuses a whole write when one item is over its sync limit, and the first
+    // box is the one thing here with no size to it
+    const synced = fakeStorage();
+    const device = fakeStorage();
+    useStorage(synced, device);
+    await saveSettings({box1: "$\\alpha$", font_family: "Georgia"});
+    assert.equal(device.stored["box1"], "$\\alpha$");
+    assert.equal(synced.stored["box1"], undefined);
+    assert.equal(synced.stored["font_family"], "Georgia");
+    assert.equal(device.stored["font_family"], undefined);
+});
+
+test("what an older version left in sync storage is taken across, not lost", async () => {
+    // Whoever upgrades should find the first box as they left it
+    const synced = fakeStorage({box1: "left in 3.0.0", font_size: 22});
+    const device = fakeStorage();
+    useStorage(synced, device);
+    const settings = await loadSettings();
+    assert.equal(settings["box1"], "left in 3.0.0");
+    assert.equal(settings["font_size"], 22);
+    assert.equal(device.stored["box1"], "left in 3.0.0");
+    // And the copy stays where it is, for a machine still running the older version
+    assert.equal(synced.stored["box1"], "left in 3.0.0");
+});
+
+test("what the device holds wins over the copy left behind", async () => {
+    const synced = fakeStorage({box1: "the old copy"});
+    const device = fakeStorage({box1: "what was written here"});
+    useStorage(synced, device);
+    const settings = await loadSettings();
+    assert.equal(settings["box1"], "what was written here");
+});
+
+test("a fix is the same release, and has nothing to announce", () => {
+    // 3.0.0 read what 3.0 brought; 3.0.1 should not show it to them again
+    assert.ok(sameRelease("3.0.0", "3.0.1"));
+    assert.ok(sameRelease("3.0.1", "3.0.12"));
+    assert.ok(!sameRelease("3.0.1", "3.1.0"));
+    assert.ok(!sameRelease("2.7.4", "3.0.0"));
+    // Nothing to compare against means nothing is the same: a fresh install speaks up
+    assert.ok(!sameRelease(undefined, "3.0.1"));
+    assert.ok(!sameRelease("", "3.0.1"));
 });
 
 test("a key press is matched against the shortcut the browser owns", () => {
