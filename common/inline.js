@@ -34,23 +34,24 @@ export async function convertInPage(inject) {
     const settings = conversionSettings(await loadSettings());
 
     if (target.pieces) {
-        const replacements = convertPieces(target.pieces, settings);
-        if (replacements === null) {
+        const done = convertPieces(target.pieces, settings);
+        if (done === null) {
             await inject(showMessage, [nothingHappened(target.text, settings)]);
             return;
         };
-        const written = await inject(writePieces, [target.pieces, replacements]);
+        const written = await inject(writePieces, [target.pieces, done.edits]);
         if (written === "page") {
             await inject(showMessage, [resultMessage("page")]);
             return;
         };
-        // The page moved between reading it and writing to it, or would not take the
-        // change. Replacing the lot is what MatTalX did before all of this, and getting
-        // the maths at the cost of the formatting beats getting neither
-        const flat = joinPieces(target.pieces.map((piece, i) => (
-            {text: replacements[i], apart: piece.apart}
-        ))).text;
-        const wroteFlat = await inject(writeBack, [flat, target.kind, target.whole]);
+        // The page moved between reading it and writing to it, or the editor keeps its
+        // own copy of what it holds and takes a paste instead: X, Discord, Messenger.
+        // Replacing the lot is what MatTalX did before all of this, and getting the
+        // maths at the cost of the formatting beats getting neither. The text comes
+        // from the chunks rather than from converting the whole, so the line breaks
+        // between paragraphs survive: convert() reads a newline the way LaTeX does,
+        // as nothing at all
+        const wroteFlat = await inject(writeBack, [done.flat, target.kind, target.whole]);
         await inject(showMessage, [resultMessage(wroteFlat)]);
         return;
     };
@@ -123,12 +124,14 @@ export function chunkPieces(pieces, settings) {
 };
 
 export function convertPieces(pieces, settings) {
-    // What every text node should hold now, or null when nothing changes.
-    // A chunk that converts is written into the first of its nodes and the others are
-    // emptied: what it became is one run of text, and the first node is where it started
+    // What to do to the page, or null when nothing changes.
+    // 'edits' is one edit per chunk that converts, covering only what differs in it: the
+    // prose around the maths is the same before and after, and is left out, so that
+    // nothing that has not changed is touched. 'flat' is the whole text as converted, for
+    // an editor that has to be handed the lot
     const chunks = chunkPieces(pieces, settings);
-    const replacements = pieces.map((piece) => piece.text);
-    let changed = false;
+    const converted = pieces.map((piece) => ({text: piece.text, apart: piece.apart}));
+    const edits = [];
     for (const chunk of chunks) {
         const before = chunk.map((i) => pieces[i].text).join("");
         // The space is only there to let the parser finish the last command
@@ -137,13 +140,52 @@ export function convertPieces(pieces, settings) {
         if (after === before) {
             continue;
         };
-        changed = true;
-        replacements[chunk[0]] = after;
+        const [same, tail] = whatDiffers(before, after);
+        edits.push({
+            start: placeIn(pieces, chunk, same, false),
+            end: placeIn(pieces, chunk, before.length - tail, true),
+            text: after.slice(same, after.length - tail)
+        });
+        converted[chunk[0]].text = after;
         for (let i=1; i<chunk.length; i+=1) {
-            replacements[chunk[i]] = "";
+            converted[chunk[i]].text = "";
         };
     };
-    return (changed) ? replacements : null;
+    return (edits.length > 0) ? {edits: edits, flat: joinPieces(converted).text} : null;
+};
+
+export function whatDiffers(before, after) {
+    // How much the two texts share at the start and at the end
+    let same = 0;
+    while ((same < before.length) && (same < after.length) && (before[same] === after[same])) {
+        same += 1;
+    };
+    let tail = 0;
+    while ((tail < before.length - same) && (tail < after.length - same) &&
+           (before[before.length-1-tail] === after[after.length-1-tail])) {
+        tail += 1;
+    };
+    return [same, tail];
+};
+
+function placeIn(pieces, chunk, offset, closing) {
+    // Where an offset in a chunk's text falls: which text node, and where in it
+    // A boundary between two pieces belongs to the earlier one when it closes an edit and
+    // to the later one when it opens one, so an edit never reaches into a node it changes
+    // nothing in
+    let counted = 0;
+    for (const i of chunk) {
+        const length = pieces[i].text.length;
+        const here = (closing) ? ((offset > counted) && (offset <= counted + length)) :
+                                 ((offset >= counted) && (offset < counted + length));
+        if (here) {
+            return {index: pieces[i].index, at: pieces[i].from + (offset - counted)};
+        };
+        counted += length;
+    };
+    // The very edges: opening at the end of the chunk, or closing at its start
+    const i = (closing) ? chunk[0] : chunk[chunk.length-1];
+    return {index: pieces[i].index, at: (closing) ? pieces[i].from : pieces[i].to};
 };
 
 export function resultMessage(written) {
@@ -261,10 +303,10 @@ export function readTarget() {
     return { kind: "clipboard", text: (selection) ? selection.toString() : "", whole: false };
 };
 
-export function writePieces(pieces, replacements) {
-    // Runs in the page: puts each piece back in the text node it came from, and touches
-    // nothing else. The colours, the fonts, the links and the paragraphs are all held by
-    // the elements around those nodes, and not one of them is taken apart
+export function writePieces(pieces, edits) {
+    // Runs in the page: makes each edit where it falls, and touches nothing else. The
+    // colours, the fonts, the links and the paragraphs are all held by the elements
+    // around the text, and an edit only ever covers the text that changed
 
     // Editors that keep their own copy of what they hold: X, Discord and the like. Writing
     // straight into the page leaves the two disagreeing, and the editor stops taking input
@@ -277,106 +319,182 @@ export function writePieces(pieces, replacements) {
         return "";
     };
 
-    const nodes = [];
-    const walker = document.createTreeWalker(element,
-        NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
-    let node;
-    while ((node = walker.nextNode())) {
-        if (node.nodeType === 1) {
-            continue;
+    // The text nodes in order, counted the way readTarget() counted them
+    const textNodes = () => {
+        const found = [];
+        const walker = document.createTreeWalker(element,
+            NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
+        let node;
+        while ((node = walker.nextNode())) {
+            if (node.nodeType === 1) {
+                continue;
+            };
+            const parent = node.parentElement;
+            if ((parent) && ((parent.tagName === "SCRIPT") || (parent.tagName === "STYLE"))) {
+                continue;
+            };
+            found.push(node);
         };
-        const parent = node.parentElement;
-        if ((parent) && ((parent.tagName === "SCRIPT") || (parent.tagName === "STYLE"))) {
-            continue;
-        };
-        nodes.push(node);
+        return found;
     };
+    const nodes = textNodes();
 
     // The page had a life of its own between being read and being written to. Nothing is
     // touched at all unless every piece is still exactly where it was left
-    for (let i=0; i<pieces.length; i+=1) {
-        const held = nodes[pieces[i].index];
-        if ((!held) ||
-            (held.nodeValue.slice(pieces[i].from, pieces[i].to) !== pieces[i].text)) {
+    for (const piece of pieces) {
+        const held = nodes[piece.index];
+        if ((!held) || (held.nodeValue.slice(piece.from, piece.to) !== piece.text)) {
             return "stale";
         };
     };
 
-    // The cursor stays where the user left it. A node that is not written to keeps it as
-    // it is; in one that is, it moves with the text around it. Only a selection has
-    // nowhere to stay, and is collapsed after the last thing converted
+    // Places are counted in characters of text from the start of the message rather than
+    // held as a node and an offset: the browser is free to split and join text nodes as
+    // it writes, and does, so the cursor is found again afterwards by counting
+    const countTo = (list, node, at) => {
+        let counted = 0;
+        for (const held of list) {
+            if (held === node) {
+                return counted + at;
+            };
+            counted += held.nodeValue.length;
+        };
+        return -1;
+    };
+    const countAll = (list) => list.reduce((sum, held) => sum + held.nodeValue.length, 0);
+
+    // The cursor stays where the user left it. Before what changed it is left alone; after
+    // it, it is carried along; inside it there is no place in the converted text that
+    // answers to one in the LaTeX, so it goes after, the way it would after typing it.
+    // Only a selection has nowhere to stay, and is collapsed after the last edit
     const selection = window.getSelection();
-    const caret = ((selection) && (selection.rangeCount > 0) && (selection.isCollapsed)) ?
-        {node: selection.anchorNode, at: selection.anchorOffset} : null;
-    let moved = null;   // The cursor's new place, when its node was written to
+    let cursor = ((selection) && (selection.rangeCount > 0) && (selection.isCollapsed)) ?
+        countTo(nodes, selection.anchorNode, selection.anchorOffset) : -1;
 
-    let last = null;
-    for (let i=0; i<pieces.length; i+=1) {
-        if (replacements[i] === pieces[i].text) {
-            continue;
-        };
-        const held = nodes[pieces[i].index];
-        const held_text = held.nodeValue;
-        held.nodeValue = held_text.slice(0, pieces[i].from) + replacements[i] +
-                         held_text.slice(pieces[i].to);
-        if ((caret) && (caret.node === held)) {
-            // Only what actually changed counts, and a piece mostly does not: the prose
-            // around the maths is the same before and after. Before what changed, the
-            // cursor is left alone; after it, it is carried along; inside it there is no
-            // place in the converted text that answers to one in the LaTeX, so it goes
-            // after, the way it would after typing it
-            const was = pieces[i].text;
-            const now = replacements[i];
-            let same = 0;
-            while ((same < was.length) && (same < now.length) && (was[same] === now[same])) {
-                same += 1;
+    // The node and offset a count falls on, in the nodes as they are now. On a boundary
+    // between two nodes it is the end of the earlier one when closing an edit and the
+    // start of the later one when opening it, so an edit never reaches into a node it
+    // changes nothing in
+    const locate = (count, closing) => {
+        const list = textNodes();
+        let counted = 0;
+        for (const held of list) {
+            const length = held.nodeValue.length;
+            const here = (closing) ? ((count > counted) && (count <= counted + length)) :
+                                     ((count >= counted) && (count < counted + length));
+            if (here) {
+                return {node: held, at: count - counted};
             };
-            let tail = 0;
-            while ((tail < was.length - same) && (tail < now.length - same) &&
-                   (was[was.length-1-tail] === now[now.length-1-tail])) {
-                tail += 1;
-            };
-            const changedFrom = pieces[i].from + same;
-            const changedTo = pieces[i].to - tail;
-            moved = (caret.at <= changedFrom) ? caret.at :
-                    ((caret.at >= changedTo) ? caret.at + (now.length - was.length) :
-                     pieces[i].from + now.length - tail);
+            counted += length;
         };
-        // Where the maths ran across several nodes it went back into the first of them
-        // and the others were emptied, so a cursor that has to be placed follows the
-        // text rather than the last node touched: an empty one is no place to leave it
-        if ((replacements[i].length > 0) || (last === null)) {
-            last = {node: held, at: pieces[i].from + replacements[i].length};
+        if (list.length === 0) {
+            return null;
         };
-    };
-    if (last === null) {
-        return "";
+        const edge = (closing) ? list[0] : list[list.length-1];
+        return {node: edge, at: (closing) ? 0 : edge.nodeValue.length};
     };
 
-    // The editor keeps its own idea of what it is holding, and an input event is what
-    // tells it to look again
-    try {
-        element.dispatchEvent(new InputEvent("input",
-            {bubbles: true, inputType: "insertText", data: null}));
-    } catch (err) {
-        try {
-            element.dispatchEvent(new Event("input", {bubbles: true}));
-        } catch (err) {};
-    };
+    // From the end of the message back to the start, so no edit moves the ones still to
+    // come: what an edit does to the count only reaches what comes after it
+    const ordered = edits.map((edit) => ({
+        text: edit.text,
+        from: countTo(nodes, nodes[edit.start.index], edit.start.at),
+        to: countTo(nodes, nodes[edit.end.index], edit.end.at)
+    })).sort((one, other) => other.from - one.from);
 
-    // A cursor in a node nobody wrote to is exactly where it was, and is left there
-    const place = (moved !== null) ? {node: caret.node, at: moved} :
-                  ((caret === null) ? last : null);
-    if (place !== null) {
+    for (const edit of ordered) {
+        // Found again each time rather than held on to: the browser is free to join
+        // and remake the text nodes around every edit it makes, and does
+        const start = locate(edit.from, false);
+        const end = locate(edit.to, true);
+        if ((start === null) || (end === null)) {
+            break;
+        };
+        const before = countAll(textNodes());
+
+        // Through the browser's own editing, so that the editor sees it as typing: Ctrl+Z
+        // takes it back, its own history stays right, and a newline becomes a line break
+        // rather than a character nobody can see. What is typed over a selection keeps
+        // the formatting the selection started in, which is what keeps the bold bold
+        let written = false;
         try {
             const range = document.createRange();
-            range.setStart(place.node, Math.min(place.at, place.node.nodeValue.length));
-            range.collapse(true);
+            range.setStart(start.node, start.at);
+            range.setEnd(end.node, end.at);
             selection.removeAllRanges();
             selection.addRange(range);
-        } catch (err) {};
+            written = document.execCommand("insertText", false, edit.text);
+        } catch (err) {
+            written = false;
+        };
+        if (!written) {
+            writeStraight(start, end, edit.text);
+        };
+
+        // What the write did to the count. A newline became a line break, not a character
+        const grew = countAll(textNodes()) - before;
+        const endedAt = edit.from + (edit.to - edit.from) + grew;
+        if (cursor === -1) {
+            cursor = endedAt;   // The last edit in the message is the first one made
+        } else if (cursor >= edit.to) {
+            cursor += grew;
+        } else if (cursor > edit.from) {
+            cursor = endedAt;
+        };
     };
+
+    // The editor keeps its own idea of what it holds, and looks again when told to
+    try {
+        element.dispatchEvent(new Event("input", {bubbles: true}));
+    } catch (err) {};
+
+    // The cursor, found again by counting
+    try {
+        let counted = 0;
+        for (const held of textNodes()) {
+            if (cursor <= counted + held.nodeValue.length) {
+                const range = document.createRange();
+                range.setStart(held, cursor - counted);
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
+                break;
+            };
+            counted += held.nodeValue.length;
+        };
+    } catch (err) {};
     return "page";
+
+    function writeStraight(start, end, text) {
+        // For an editor that refuses the browser's own editing: straight into the nodes.
+        // A newline is a line break, not a character, so it becomes a <br> here, the way
+        // the editing engine would have made one
+        const list = textNodes();
+        const head = start.node.nodeValue.slice(0, start.at);
+        const rest = end.node.nodeValue.slice(end.at);
+        for (let i = list.indexOf(start.node) + 1; i < list.indexOf(end.node); i += 1) {
+            list[i].nodeValue = "";
+        };
+        if (end.node !== start.node) {
+            end.node.nodeValue = rest;
+            start.node.nodeValue = head + text;
+        } else {
+            start.node.nodeValue = head + text + rest;
+        };
+        let node = start.node;
+        let from = head.length;
+        let left = text.length;
+        let cut;
+        while ((left > 0) && ((cut = node.nodeValue.indexOf("\n", from)) !== -1) &&
+               (cut < from + left)) {
+            const after = node.splitText(cut);
+            after.nodeValue = after.nodeValue.slice(1);
+            node.parentNode.insertBefore(document.createElement("br"), after);
+            left -= (cut - from) + 1;
+            node = after;
+            from = 0;
+        };
+    };
 };
 
 export function showMessage(message) {

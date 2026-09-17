@@ -176,8 +176,9 @@ test("a message in a page is written back a text node at a time", async () => {
     ]);
     await convertInPage(page.inject);
     assert.equal(page.calls[1].name, "writePieces");
-    // What each node should hold: the maths converted, the link's text untouched
-    assert.deepEqual(page.calls[1].args[1], ["the limit is 𝛼 ", "this link"]);
+    // One edit, over the maths alone: the prose around it and the link are not touched
+    assert.deepEqual(page.calls[1].args[1],
+        [{start: {index: 0, at: 13}, end: {index: 0, at: 21}, text: "𝛼"}]);
     assert.equal(page.calls[2].args[0], "Converted");
 });
 
@@ -199,7 +200,9 @@ test("a page that moved falls back to replacing the lot, rather than doing nothi
     await convertInPage(page.inject);
     assert.equal(page.calls[1].name, "writePieces");
     assert.equal(page.calls[2].name, "writeBack");
-    // The line break the page shows between the two is kept in what replaces them
+    // The whole text, built from the chunks so the line break between the paragraphs
+    // survives: convert() alone would read it as nothing, the way LaTeX does
     assert.equal(page.calls[2].args[0], "𝛼 \n𝛽");
+    assert.deepEqual(page.calls[2].args.slice(1), ["editable", true]);
     assert.equal(page.calls[3].args[0], "Converted");
 });

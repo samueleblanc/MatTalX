@@ -15,6 +15,7 @@ import {
     joinPieces,
     chunkPieces,
     convertPieces,
+    whatDiffers,
     readTarget,
     writePieces
 } from "../common/inline.js";
@@ -24,19 +25,34 @@ const everything = {...plain, mathMode: true};
 
 // A tree, built by hand. 'display' is what the stylesheet would have said
 function text(value) {
-    return {nodeType: 3, nodeValue: value, parentElement: null};
+    const node = {nodeType: 3, nodeValue: value, parentElement: null};
+    Object.defineProperty(node, "parentNode", {get: () => node.parentElement});
+    node.splitText = (at) => {
+        // The tail becomes a node of its own, right after this one
+        const tail = text(node.nodeValue.slice(at));
+        node.nodeValue = node.nodeValue.slice(0, at);
+        const siblings = node.parentElement.childNodes;
+        siblings.splice(siblings.indexOf(node) + 1, 0, tail);
+        tail.parentElement = node.parentElement;
+        return tail;
+    };
+    return node;
 };
 function element(tagName, display, children) {
     const node = {nodeType: 1, tagName: tagName, display: display, childNodes: children,
                   parentElement: null, isContentEditable: true, closest: () => null,
                   dispatched: [], dispatchEvent(event) { node.dispatched.push(event); return true; }};
+    node.insertBefore = (child, before) => {
+        node.childNodes.splice(node.childNodes.indexOf(before), 0, child);
+        child.parentElement = node;
+    };
     for (const child of children) {
         child.parentElement = node;
     };
     return node;
 };
 
-function inThePage(root, selection = null) {
+function inThePage(root, selection = null, {takesInsertText = true} = {}) {
     // Only the handful of things the two functions reach for
     const walk = (node, seen) => {
         for (const child of node.childNodes || []) {
@@ -45,6 +61,9 @@ function inThePage(root, selection = null) {
         };
         return seen;
     };
+    const nothing = {rangeCount: 0, isCollapsed: true, placed: null, range: null,
+                     removeAllRanges() {}, addRange(range) { nothing.range = range; nothing.placed = range; }};
+    const held = (selection) ? selection : nothing;
     global.NodeFilter = {SHOW_ELEMENT: 1, SHOW_TEXT: 4};
     global.Node = {ELEMENT_NODE: 1, TEXT_NODE: 3};
     global.InputEvent = function (type, options) { return {type: type, ...options}; };
@@ -61,23 +80,44 @@ function inThePage(root, selection = null) {
         createRange: () => {
             const range = {};
             range.setStart = (node, at) => { range.node = node; range.at = at; };
+            range.setEnd = (node, at) => { range.endNode = node; range.endAt = at; };
             range.collapse = () => {};
             return range;
+        },
+        createElement: (tagName) => element(tagName.toUpperCase(), "inline", []),
+        execCommand(name, _, written) {
+            // What the browser does with insertText over the selection, less the tidying
+            // up: a newline stays a character here, and an emptied element stays put
+            if ((name !== "insertText") || (!takesInsertText)) {
+                return false;
+            };
+            const range = held.range;
+            if (range.node === range.endNode) {
+                range.node.nodeValue = range.node.nodeValue.slice(0, range.at) + written +
+                                       range.node.nodeValue.slice(range.endAt);
+            } else {
+                const all = walk(root, []).filter((node) => node.nodeType === 3);
+                for (let i = all.indexOf(range.node) + 1; i < all.indexOf(range.endNode); i += 1) {
+                    all[i].nodeValue = "";
+                };
+                range.endNode.nodeValue = range.endNode.nodeValue.slice(range.endAt);
+                range.node.nodeValue = range.node.nodeValue.slice(0, range.at) + written;
+            };
+            return true;
         }
     };
-    const nothing = {rangeCount: 0, isCollapsed: true, placed: null,
-                     removeAllRanges() {}, addRange(range) { nothing.placed = range; }};
     global.window = {
         getComputedStyle: (node) => ({display: node.display || "inline"}),
-        getSelection: () => (selection) ? selection : nothing
+        getSelection: () => held
     };
     return root;
 };
 
 function cursorIn(node, at) {
-    // A cursor, and nothing selected
+    // A cursor, and nothing selected. Remembers the last place it was put
     const cursor = {rangeCount: 1, isCollapsed: true, anchorNode: node, anchorOffset: at,
-                    placed: null, removeAllRanges() {}, addRange(range) { cursor.placed = range; }};
+                    placed: null, range: null, removeAllRanges() {},
+                    addRange(range) { cursor.range = range; cursor.placed = range; }};
     return cursor;
 };
 
@@ -130,12 +170,19 @@ test("the pieces read as one text, with a line break where the page shows one", 
     assert.deepEqual(joinPieces(pieces).starts, [0, 4, 7]);
 });
 
-test("only the piece that changes is replaced", () => {
-    const pieces = [{text: "the limit is $\\alpha$ ", apart: false},
-                    {text: "as in this link", apart: false}];
-    const replacements = convertPieces(pieces, plain);
-    assert.equal(replacements[0], "the limit is 𝛼 ");
-    assert.equal(replacements[1], "as in this link");   // Not written, since it is the same
+test("an edit covers what changed, and not the prose around it", () => {
+    const pieces = [{index: 0, from: 0, to: 22, text: "the limit is $\\alpha$ ", apart: false},
+                    {index: 1, from: 0, to: 15, text: "as in this link", apart: false}];
+    const done = convertPieces(pieces, plain);
+    assert.equal(done.edits.length, 1);   // The link is not touched
+    assert.deepEqual(done.edits[0], {start: {index: 0, at: 13}, end: {index: 0, at: 21}, text: "𝛼"});
+    assert.equal(done.flat, "the limit is 𝛼 as in this link");
+});
+
+test("what differs is what is left once the shared start and end are taken off", () => {
+    assert.deepEqual(whatDiffers("here: $\\alpha$ done", "here: 𝛼 done"), [6, 5]);
+    assert.deepEqual(whatDiffers("$\\alpha$", "𝛼"), [0, 0]);
+    assert.deepEqual(whatDiffers("same", "same"), [4, 0]);
 });
 
 test("nothing to convert gives nothing back, so nothing is written", () => {
@@ -144,11 +191,19 @@ test("nothing to convert gives nothing back, so nothing is written", () => {
     assert.equal(convertPieces(pieces, plain), null);
 });
 
-test("maths across two nodes converts into the first of them", () => {
-    const pieces = [{text: "$\\mathbf ", apart: false}, {text: "x$", apart: false}];
-    const replacements = convertPieces(pieces, plain);
-    assert.equal(replacements[0], "𝒙");
-    assert.equal(replacements[1], "");
+test("maths across two nodes is one edit, from the first node into the second", () => {
+    const pieces = [{index: 0, from: 0, to: 9, text: "$\\mathbf ", apart: false},
+                    {index: 1, from: 0, to: 2, text: "x$", apart: false}];
+    const done = convertPieces(pieces, plain);
+    assert.deepEqual(done.edits, [{start: {index: 0, at: 0}, end: {index: 1, at: 2}, text: "𝒙"}]);
+});
+
+test("an edit that ends on a boundary stops in the earlier node", () => {
+    // '<b>$\\alpha$</b> and' -- the edit must not reach into ' and'
+    const pieces = [{index: 0, from: 0, to: 8, text: "$\\alpha$", apart: false},
+                    {index: 1, from: 0, to: 4, text: " and", apart: false}];
+    const done = convertPieces(pieces, plain);
+    assert.deepEqual(done.edits, [{start: {index: 0, at: 0}, end: {index: 0, at: 8}, text: "𝛼"}]);
 });
 
 
@@ -177,8 +232,8 @@ test("converting a message leaves every element where it was", () => {
     ]);
     inThePage(root);
     const target = readTarget();
-    const replacements = convertPieces(target.pieces, plain);
-    assert.equal(writePieces(target.pieces, replacements), "page");
+    const done = convertPieces(target.pieces, plain);
+    assert.equal(writePieces(target.pieces, done.edits), "page");
     assert.equal(shownAs(root),
         "<DIV><P>the limit is 𝛼, see <A>this link</A></P><P>and 𝛽 too</P></DIV>");
     // The editor is told to look again, once
@@ -193,8 +248,8 @@ test("a run in bold that carries half the maths is put back in one piece", () =>
     ]);
     inThePage(root);
     const target = readTarget();
-    const replacements = convertPieces(target.pieces, plain);
-    assert.equal(writePieces(target.pieces, replacements), "page");
+    const done = convertPieces(target.pieces, plain);
+    assert.equal(writePieces(target.pieces, done.edits), "page");
     // The bold element is still there, holding nothing, and the text is where it started
     assert.equal(shownAs(root), "<DIV><P>here is 𝒙<B></B> and more</P></DIV>");
 });
@@ -203,10 +258,10 @@ test("a page that moved is left alone", () => {
     const root = element("DIV", "block", [element("P", "block", [text("$\\alpha$")])]);
     inThePage(root);
     const target = readTarget();
-    const replacements = convertPieces(target.pieces, plain);
+    const done = convertPieces(target.pieces, plain);
     // Something else wrote in the message between reading it and writing to it
     root.childNodes[0].childNodes[0].nodeValue = "something else entirely";
-    assert.equal(writePieces(target.pieces, replacements), "stale");
+    assert.equal(writePieces(target.pieces, done.edits), "stale");
     assert.equal(shownAs(root), "<DIV><P>something else entirely</P></DIV>");
     assert.equal(root.dispatched.length, 0);
 });
@@ -216,8 +271,8 @@ test("an editor that keeps its own copy is left to the older way", () => {
     inThePage(root);
     root.closest = (selector) => (selector.includes("ProseMirror")) ? root : null;
     const target = readTarget();
-    const replacements = convertPieces(target.pieces, plain);
-    assert.equal(writePieces(target.pieces, replacements), "");
+    const done = convertPieces(target.pieces, plain);
+    assert.equal(writePieces(target.pieces, done.edits), "");
     assert.equal(shownAs(root), "<DIV><P>$\\alpha$</P></DIV>");
 });
 
@@ -242,8 +297,8 @@ test("what is selected is converted, and the rest of the node is not", () => {
     const target = readTarget();
     assert.equal(target.whole, false);
     assert.deepEqual(target.pieces.map((piece) => piece.text), ["$\\alpha$"]);
-    const replacements = convertPieces(target.pieces, plain);
-    assert.equal(writePieces(target.pieces, replacements), "page");
+    const done = convertPieces(target.pieces, plain);
+    assert.equal(writePieces(target.pieces, done.edits), "page");
     assert.equal(shownAs(root), "<DIV><P>keep 𝛼 drop</P></DIV>");
 });
 
@@ -259,9 +314,10 @@ test("a cursor in a paragraph nobody wrote to is not moved", () => {
     const cursor = cursorIn(typing, typing.nodeValue.length);
     inThePage(root, cursor);
     const target = readTarget();
-    assert.equal(writePieces(target.pieces, convertPieces(target.pieces, plain)), "page");
+    assert.equal(writePieces(target.pieces, convertPieces(target.pieces, plain).edits), "page");
     assert.equal(shownAs(root), "<DIV><P>𝛼</P><P>some prose</P><P>and now I am writing here</P></DIV>");
-    assert.equal(cursor.placed, null, "the cursor should have been left alone");
+    assert.equal(cursor.placed.node, typing, "the cursor should be where it was");
+    assert.equal(cursor.placed.at, typing.nodeValue.length);
 });
 
 test("a cursor at the end of what was converted stays at the end of it", () => {
@@ -271,7 +327,7 @@ test("a cursor at the end of what was converted stays at the end of it", () => {
     const cursor = cursorIn(typed, typed.nodeValue.length);
     inThePage(root, cursor);
     const target = readTarget();
-    assert.equal(writePieces(target.pieces, convertPieces(target.pieces, plain)), "page");
+    assert.equal(writePieces(target.pieces, convertPieces(target.pieces, plain).edits), "page");
     assert.equal(typed.nodeValue, "the limit is 𝛼ₙ → 0 so");
     assert.equal(cursor.placed.node, typed);
     assert.equal(cursor.placed.at, typed.nodeValue.length);
@@ -283,7 +339,7 @@ test("a cursor before what was converted does not move either", () => {
     const cursor = cursorIn(typed, 3);   // In "here"
     inThePage(root, cursor);
     const target = readTarget();
-    writePieces(target.pieces, convertPieces(target.pieces, plain));
+    writePieces(target.pieces, convertPieces(target.pieces, plain).edits);
     assert.equal(cursor.placed.at, 3);
 });
 
@@ -294,7 +350,40 @@ test("a cursor inside the maths goes after what it became", () => {
     const cursor = cursorIn(typed, 9);   // Inside '\\alpha'
     inThePage(root, cursor);
     const target = readTarget();
-    writePieces(target.pieces, convertPieces(target.pieces, plain));
+    writePieces(target.pieces, convertPieces(target.pieces, plain).edits);
     assert.equal(typed.nodeValue, "here: 𝛼 done");
     assert.equal(typed.nodeValue.slice(0, cursor.placed.at), "here: 𝛼");
+});
+
+test("a display equation goes on a line of its own", () => {
+    // Through the browser's own editing a newline becomes a line break. An editor that
+    // refuses that gets a <br> put in by hand, since a newline in a text node shows as
+    // nothing at all
+    const typed = text("so \\[x^2\\] then");
+    const root = element("DIV", "block", [element("P", "block", [typed])]);
+    inThePage(root, null, {takesInsertText: false});
+    const target = readTarget();
+    assert.equal(writePieces(target.pieces, convertPieces(target.pieces, plain).edits), "page");
+    assert.equal(shownAs(root), "<DIV><P>so <BR></BR>𝑥²<BR></BR> then</P></DIV>");
+});
+
+test("the cursor is found again by counting, after the browser has rearranged the nodes", () => {
+    // The stand-in keeps a newline as a character, so the count grows by the whole text
+    const typed = text("so \\[x^2\\] then");
+    const root = element("DIV", "block", [element("P", "block", [typed])]);
+    const cursor = cursorIn(typed, typed.nodeValue.length);
+    inThePage(root, cursor);
+    const target = readTarget();
+    writePieces(target.pieces, convertPieces(target.pieces, plain).edits);
+    assert.equal(typed.nodeValue, "so \n𝑥²\n then");
+    assert.equal(cursor.placed.node, typed);
+    assert.equal(cursor.placed.at, typed.nodeValue.length);
+});
+
+test("the flat text keeps the line breaks between paragraphs", () => {
+    // What X, Discord and Messenger are handed to paste. convert() reads a newline the
+    // way LaTeX does, as nothing, so the flat text is put together from the chunks
+    const pieces = [{index: 0, from: 0, to: 9, text: "$\\alpha$ ", apart: false},
+                    {index: 1, from: 0, to: 8, text: "$\\beta$", apart: true}];
+    assert.equal(convertPieces(pieces, plain).flat, "𝛼 \n𝛽");
 });
