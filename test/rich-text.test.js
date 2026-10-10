@@ -16,9 +16,12 @@ import {
     chunkPieces,
     convertPieces,
     whatDiffers,
+    changedRuns,
     readTarget,
     writePieces
 } from "../common/inline.js";
+import { convert } from "../common/core.js";
+import { buildInputs } from "./snapshot-cases.js";
 
 const plain = {mathMode: false, mathFont: true, adjustSpaces: true, customCommands: []};
 const everything = {...plain, mathMode: true};
@@ -237,8 +240,9 @@ test("converting a message leaves every element where it was", () => {
     assert.equal(shownAs(root),
         "<DIV><P>the limit is 𝛼, see <A>this link</A></P><P>and 𝛽 too</P></DIV>");
     // The editor is told to look again, once
-    assert.equal(root.dispatched.length, 1);
-    assert.equal(root.dispatched[0].type, "input");
+    // The browser's own editing says so itself, once per edit. Saying it again over the
+    // top of that hands the editor a change it has already been told about
+    assert.equal(root.dispatched.length, 0);
 });
 
 test("a run in bold that carries half the maths is put back in one piece", () => {
@@ -365,6 +369,9 @@ test("a display equation goes on a line of its own", () => {
     const target = readTarget();
     assert.equal(writePieces(target.pieces, convertPieces(target.pieces, plain).edits), "page");
     assert.equal(shownAs(root), "<DIV><P>so <BR></BR>𝑥²<BR></BR> then</P></DIV>");
+    // Writing into the nodes tells the editor nothing, so it is told by hand here
+    assert.equal(root.dispatched.length, 1);
+    assert.equal(root.dispatched[0].type, "input");
 });
 
 test("the cursor is found again by counting, after the browser has rearranged the nodes", () => {
@@ -386,4 +393,84 @@ test("the flat text keeps the line breaks between paragraphs", () => {
     const pieces = [{index: 0, from: 0, to: 9, text: "$\\alpha$ ", apart: false},
                     {index: 1, from: 0, to: 8, text: "$\\beta$", apart: true}];
     assert.equal(convertPieces(pieces, plain).flat, "𝛼 \n𝛽");
+});
+
+
+test("a line with several expressions gives an edit for each, and none for the prose", () => {
+    // The prose between them is the same before and after. Replacing it along with the
+    // maths deletes and retypes what the user wrote, which is what left the editor's
+    // undo pointing at text that was no longer there
+    const line = "Let $x$ be real, so $\\alpha_n \\to 0$ and $\\sum_n a_n$ converges";
+    const runs = changedRuns(line, convert(line + " ", plain).text.slice(0, -1));
+    assert.deepEqual(runs.map((run) => line.slice(run.from, run.to)),
+        ["$x$", "$\\alpha_n \\to 0$", "$\\sum_n a_n$"]);
+    assert.deepEqual(runs.map((run) => run.text), ["𝑥", "𝛼ₙ → 0", "∑ₙ𝑎ₙ"]);
+});
+
+test("nothing to change gives nothing to do", () => {
+    assert.deepEqual(changedRuns("an ordinary sentence", "an ordinary sentence"), []);
+    assert.deepEqual(changedRuns("", ""), []);
+});
+
+test("a run never holds half of a symbol", () => {
+    // '𝛼' and '𝛽' share their first half, so lining the two texts up on what they have
+    // in common can stop between the halves of a character
+    const runs = changedRuns("$\\alpha$", "𝛼");
+    assert.deepEqual(runs, [{from: 0, to: 8, text: "𝛼"}]);
+    const held = "𝛼 and 𝛽";
+    const acrossHalves = changedRuns(held, "𝛼 and 𝛾");
+    // Only the last symbol differs, and the run holds the whole of it
+    assert.deepEqual(acrossHalves, [{from: 7, to: 9, text: "𝛾"}]);
+    for (const run of acrossHalves) {
+        for (const at of [run.from, run.to]) {
+            const code = held.charCodeAt(at);   // NaN at the very end, which is no symbol
+            assert.ok((at === 0) || (at === held.length) || (code < 0xDC00) || (code > 0xDFFF),
+                "a run boundary fell between the two halves of a symbol");
+        };
+    };
+});
+
+test("the edits, put back, give exactly what the conversion gives", () => {
+    // Over every command MatTalX knows. The edits are what reaches the page, so what
+    // they add up to has to be what convert() said, to the character
+    const apply = (before, runs) => {
+        let out = "";
+        let at = 0;
+        for (const run of runs) {
+            out += before.slice(at, run.from) + run.text;
+            at = run.to;
+        };
+        return out + before.slice(at);
+    };
+    let checked = 0;
+    for (const input of buildInputs()) {
+        const result = convert(input + " ", plain).text;
+        const after = (result.endsWith(" ")) ? result.slice(0, -1) : result;
+        assert.equal(apply(input, changedRuns(input, after)), after,
+            "the edits do not add up for " + JSON.stringify(input));
+        checked += 1;
+    };
+    assert.ok(checked > 1000, "the corpus should be the whole dictionary");
+});
+
+test("a run that begins where a node begins takes the whole node with it", () => {
+    // Chrome puts text holding a space before the element rather than inside it when it
+    // is written over a range that starts exactly where a text node starts: the bold half
+    // of an expression lands beside the bold. Replacing the whole node is not caught by
+    // that, so a chunk like this is written as one piece
+    const bold = "$|x_n - x| < \\epsilon$";
+    const alone = [{index: 1, from: 0, to: bold.length, text: bold, apart: false}];
+    assert.deepEqual(convertPieces(alone, plain).edits,
+        [{start: {index: 1, at: 0}, end: {index: 1, at: bold.length}, text: "|𝑥ₙ − 𝑥| < ϵ"}]);
+    // Left alone, the diff would have cut it in two and only written the halves
+    assert.equal(changedRuns(bold, "|𝑥ₙ − 𝑥| < ϵ").length, 2);
+});
+
+test("a line that starts with prose still gets an edit for each expression", () => {
+    // The whole point: the prose between them is not deleted and typed again
+    const line = "Let $x$ be real, so $\\alpha_n \\to 0$ and $\\sum_n a_n$ converges";
+    const edits = convertPieces(
+        [{index: 0, from: 0, to: line.length, text: line, apart: false}], plain).edits;
+    assert.deepEqual(edits.map((edit) => [edit.start.at, edit.end.at]),
+        [[4, 7], [20, 36], [41, 53]]);
 });

@@ -140,12 +140,13 @@ export function convertPieces(pieces, settings) {
         if (after === before) {
             continue;
         };
-        const [same, tail] = whatDiffers(before, after);
-        edits.push({
-            start: placeIn(pieces, chunk, same, false),
-            end: placeIn(pieces, chunk, before.length - tail, true),
-            text: after.slice(same, after.length - tail)
-        });
+        for (const run of keptInsideNodes(pieces, chunk, changedRuns(before, after), after)) {
+            edits.push({
+                start: placeIn(pieces, chunk, run.from, false),
+                end: placeIn(pieces, chunk, run.to, true),
+                text: run.text
+            });
+        };
         converted[chunk[0]].text = after;
         for (let i=1; i<chunk.length; i+=1) {
             converted[chunk[i]].text = "";
@@ -166,6 +167,121 @@ export function whatDiffers(before, after) {
         tail += 1;
     };
     return [same, tail];
+};
+
+// A symbol MatTalX writes takes two places in a string, and a boundary must never fall
+// between them: half a character is not a character, and a range that starts on one
+// cannot be written to
+const lowHalf = (code) => (code >= 0xDC00) && (code <= 0xDFFF);
+const highHalf = (code) => (code >= 0xD800) && (code <= 0xDBFF);
+
+const shortestAnchor = 3;   // Shorter than this is not worth an edit of its own
+
+function longestShared(before, aFrom, aTo, after, bFrom, bTo) {
+    // The longest run of text the two have in common, which is where they line up again
+    const n = aTo - aFrom;
+    const m = bTo - bFrom;
+    if ((n <= 0) || (m <= 0) || (n * m > 250000)) {
+        return null;   // Nothing to look in, or more work than the answer is worth
+    };
+    let previous = new Array(m + 1).fill(0);
+    let current = new Array(m + 1).fill(0);
+    let best = 0;
+    let endsBefore = 0;
+    let endsAfter = 0;
+    for (let i = 1; i <= n; i += 1) {
+        for (let j = 1; j <= m; j += 1) {
+            current[j] = (before[aFrom+i-1] === after[bFrom+j-1]) ? previous[j-1] + 1 : 0;
+            if (current[j] > best) {
+                best = current[j];
+                endsBefore = aFrom + i;
+                endsAfter = bFrom + j;
+            };
+        };
+        const swap = previous;
+        previous = current;
+        current = swap;
+        current.fill(0);
+    };
+    let at = endsBefore - best;
+    let to = endsAfter - best;
+    // A run that starts on the second half of a symbol, or ends on the first, is holding
+    // half a character: it is shortened until it holds whole ones
+    if ((best > 0) && (lowHalf(before.charCodeAt(at)))) {
+        at += 1;
+        to += 1;
+        best -= 1;
+    };
+    if ((best > 0) && (highHalf(before.charCodeAt(at + best - 1)))) {
+        best -= 1;
+    };
+    return (best > 0) ? {at: at, to: to, length: best} : null;
+};
+
+export function changedRuns(before, after) {
+    // Every stretch of 'before' that 'after' replaces, in order, as {from, to, text}.
+    //
+    // A line of a message usually holds more than one expression, with the user's own
+    // prose between them. Taking only what the two texts share at each end would leave
+    // that prose inside the edit, so it would be deleted and typed again exactly as it
+    // was. Nothing would look different, but it is no longer the text the editor
+    // remembers the user writing, and its undo stops lining up with it.
+    //
+    // So the two are lined up again on the longest run they share, and each side of it
+    // is looked at in turn. What is left over at the end is the maths, and nothing else
+    const runs = [];
+    const walk = (aFrom, aTo, bFrom, bTo) => {
+        while ((aFrom < aTo) && (bFrom < bTo) && (before[aFrom] === after[bFrom])) {
+            aFrom += 1;
+            bFrom += 1;
+        };
+        if ((aFrom > 0) && (lowHalf(before.charCodeAt(aFrom)))) {
+            aFrom -= 1;   // Stopped between the two halves of a symbol
+            bFrom -= 1;
+        };
+        while ((aFrom < aTo) && (bFrom < bTo) && (before[aTo-1] === after[bTo-1])) {
+            aTo -= 1;
+            bTo -= 1;
+        };
+        if ((aTo < before.length) && (highHalf(before.charCodeAt(aTo-1)))) {
+            aTo += 1;
+            bTo += 1;
+        };
+        if ((aFrom >= aTo) && (bFrom >= bTo)) {
+            return;   // The two are the same here
+        };
+        const shared = longestShared(before, aFrom, aTo, after, bFrom, bTo);
+        if ((shared === null) || (shared.length < shortestAnchor)) {
+            runs.push({from: aFrom, to: aTo, text: after.slice(bFrom, bTo)});
+            return;
+        };
+        walk(aFrom, shared.at, bFrom, shared.to);
+        walk(shared.at + shared.length, aTo, shared.to + shared.length, bTo);
+    };
+    walk(0, before.length, 0, after.length);
+    return runs;
+};
+
+function keptInsideNodes(pieces, chunk, runs, after) {
+    // Text written over a range that starts where a text node starts, and that holds a
+    // space, is put before the element that node belongs to rather than inside it: the
+    // bold half of an expression ends up beside the bold rather than in it. Replacing the
+    // whole of a node is not caught by that, so when a run begins where a node begins and
+    // does not reach its end, the chunk is written as one piece, the way it used to be
+    let at = 0;
+    const spans = [];
+    for (const i of chunk) {
+        spans.push({start: at, end: at + pieces[i].text.length});
+        at += pieces[i].text.length;
+    };
+    const startsANode = (run) => spans.some(
+        (span) => (run.from === span.start) && (run.to !== span.end));
+    if (!runs.some(startsANode)) {
+        return runs;
+    };
+    const before = chunk.map((i) => pieces[i].text).join("");
+    const [same, tail] = whatDiffers(before, after);
+    return [{from: same, to: before.length - tail, text: after.slice(same, after.length - tail)}];
 };
 
 function placeIn(pieces, chunk, offset, closing) {
@@ -394,6 +510,11 @@ export function writePieces(pieces, edits) {
         return {node: edge, at: (closing) ? 0 : edge.nodeValue.length};
     };
 
+    // Writing straight into a text node tells the editor nothing, so it is told afterwards.
+    // The browser's own editing says so itself, once per edit, and saying it again over
+    // the top of that is how an editor is given a change it has already seen
+    let toldByHand = false;
+
     // From the end of the message back to the start, so no edit moves the ones still to
     // come: what an edit does to the count only reaches what comes after it
     const ordered = edits.map((edit) => ({
@@ -429,6 +550,7 @@ export function writePieces(pieces, edits) {
         };
         if (!written) {
             writeStraight(start, end, edit.text);
+            toldByHand = true;
         };
 
         // What the write did to the count. A newline became a line break, not a character
@@ -443,10 +565,11 @@ export function writePieces(pieces, edits) {
         };
     };
 
-    // The editor keeps its own idea of what it holds, and looks again when told to
-    try {
-        element.dispatchEvent(new Event("input", {bubbles: true}));
-    } catch (err) {};
+    if (toldByHand) {
+        try {
+            element.dispatchEvent(new Event("input", {bubbles: true}));
+        } catch (err) {};
+    };
 
     // The cursor, found again by counting
     try {
