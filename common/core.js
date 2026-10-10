@@ -2904,6 +2904,7 @@ const mathDictionary = {
     "\\sqrt" : sqrt,
     "\\frac" : frac,
     "\\frac*" : singleCharFrac,
+	"\\sfrac" : stackedFraction,
 
     // Combining symbols
     "\\overline" : overline,
@@ -5251,6 +5252,35 @@ function buildAllCommands(fullDict) {
     };
     return fullDict;
 };
+export function stackedFraction(arg, initialCommand) {
+    if (arg.length < 2) {
+        mistakes(initialCommand + "{}{}", undefined, "Two arguments needed");
+        return [failure(initialCommand + arg.map(a => "{" + a.join("") + "}").join(""))];
+    }
+
+    const num = addSymbolArray(arg[0], initialCommand);
+    const den = addSymbolArray(arg[1], initialCommand);
+
+    // Contamos caracteres visuales reales (resuelve símbolos matemáticos UTF-16)
+    const numLen = Array.from(num).length;
+    const denLen = Array.from(den).length;
+    const maxLen = Math.max(numLen, denLen);
+    const barLen = maxLen + 2;
+
+    // spacesChar.add es el espacio protegido que MatTalX NO elimina
+    const S = spacesChar.add;
+    const bar = S + "\u2500".repeat(barLen) + S; // Barra con margen
+
+    const pad = (str, strLen, targetLen) => {
+        const diff = targetLen - strLen;
+        const left = Math.floor(diff / 2);
+        const right = diff - left;
+        return S + S.repeat(left) + str + S.repeat(right) + S;
+    };
+
+    const result = pad(num, numLen, barLen) + "\n" + bar + "\n" + pad(den, denLen, barLen);
+    return [result].concat(extraArgs(arg.slice(2), initialCommand));
+}
 
 export function buildCommandWithArgs(fullDict, argNums, input, output) {
     // Called by newCommand or renewCommand if argNums >= 1
