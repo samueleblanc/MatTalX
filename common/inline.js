@@ -125,10 +125,10 @@ export function chunkPieces(pieces, settings) {
 
 export function convertPieces(pieces, settings) {
     // What to do to the page, or null when nothing changes.
-    // 'edits' is one edit per chunk that converts, covering only what differs in it: the
-    // prose around the maths is the same before and after, and is left out, so that
-    // nothing that has not changed is touched. 'flat' is the whole text as converted, for
-    // an editor that has to be handed the lot
+    // 'edits' is one edit for each stretch of text that differs, and only those: the
+    // prose around the maths reads the same before and after, so it is never inside one
+    // and is never written over. 'flat' is the whole text as converted, for an editor
+    // that has to be handed the lot
     const chunks = chunkPieces(pieces, settings);
     const converted = pieces.map((piece) => ({text: piece.text, apart: piece.apart}));
     const edits = [];
@@ -140,7 +140,8 @@ export function convertPieces(pieces, settings) {
         if (after === before) {
             continue;
         };
-        for (const run of keptInsideNodes(pieces, chunk, changedRuns(before, after), after)) {
+        const runs = keptInsideNodes(pieces, chunk, changedRuns(before, after), before, after);
+        for (const run of runs) {
             edits.push({
                 start: placeIn(pieces, chunk, run.from, false),
                 end: placeIn(pieces, chunk, run.to, true),
@@ -262,7 +263,7 @@ export function changedRuns(before, after) {
     return runs;
 };
 
-function keptInsideNodes(pieces, chunk, runs, after) {
+function keptInsideNodes(pieces, chunk, runs, before, after) {
     // Text written over a range that starts where a text node starts, and that holds a
     // space, is put before the element that node belongs to rather than inside it: the
     // bold half of an expression ends up beside the bold rather than in it. Replacing the
@@ -279,7 +280,6 @@ function keptInsideNodes(pieces, chunk, runs, after) {
     if (!runs.some(startsANode)) {
         return runs;
     };
-    const before = chunk.map((i) => pieces[i].text).join("");
     const [same, tail] = whatDiffers(before, after);
     return [{from: same, to: before.length - tail, text: after.slice(same, after.length - tail)}];
 };
