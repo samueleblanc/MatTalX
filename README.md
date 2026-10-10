@@ -48,6 +48,7 @@ MatTalX reads the field you are writing in, on the tab you are looking at, and o
 ## Use MatTalX
 Versions:
 * <a href="https://chrome.google.com/webstore/detail/mattalx-write-math-symbol/jllceliamggkpffccbefpefgmcigaglb" target="_blank">Chrome</a>
+* <a href="https://microsoftedge.microsoft.com/addons/detail/mattalx-latex-to-unicod/kpkhggbecnllinjfjmcfegalombhkdmc" target="_blank">Edge</a>
 * <a href="https://addons.mozilla.org/firefox/addon/mattalx-latex-unicode-math/" target="_blank">Firefox</a>
 * <a href="https://mattalx.org/web-version/">Web version</a>
 
